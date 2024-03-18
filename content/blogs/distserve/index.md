@@ -1,5 +1,5 @@
 +++
-title = "Throughput is not all you need: Maximizing Goodput in LLM Serving using Prefill-Decode Disaggregation"
+title = "Throughput is Not All You Need: Maximizing Goodput in LLM Serving using Prefill-Decode Disaggregation"
 date = 2024-03-17T12:00:00-08:00
 authors = ["Yinmin Zhong", "Junda Chen", "Shengyu Liu", "Yibo Zhu", "Xin Jin", "Hao Zhang"]
 author = "Yinmin Zhong, Junda Chen, Shengyu Liu, Yibo Zhu, Xin Jin, Hao Zhang"
@@ -16,38 +16,36 @@ draft = false
 
 {{< justify >}}
 
-**TL;DR:** 
+**TL;DR:** LLM apps today have diverse latency requirements. For example, a chatbot may require a fast initial response (e.g., under 0.2 seconds) but moderate speed in decoding which only need to match human reading speed, whereas code completion requires a fast end-to-end generation time for real-time code suggestions.
 
-LLM apps today have diverse latency requirements. For example, a chatbot may require a fast initial response (e.g. under 0.2 seconds) but moderate speed in decoding (only need to match human reading speed), whereas code completion requires a fast end-to-end generation time for real-time code suggestions.
+In this blogpost, we show existing serving systems that optimize **throughput** are not optimal under latency criteria. We advocate using **goodput**, the number of completed requests per second adhering to the Service Level Objectives (SLOs), as an improved measure of LLM serving performance to account for both cost and user satisfaction.
 
-In this blogpost, we show existing serving systems that optimize throughput are not optimal under latency criteria. We advocate using **goodput, the number of completed requests per second adhering to the Service Level Objective (SLO)**, as an improved measure of LLM serving performance to account for both cost and user satisfaction.
-
-To optimize goodput, we introduce prefill-decode disaggregation, aka splitting prefill from decode into different GPUs. We also build **DistServe**, which achieves up to 4.48x goodput or 10.2x tighter SLO compared to SOTA serving systems, while staying within tight latency constraints. We are integrating DistServe with vLLM to bring the technique to the community.
+To optimize goodput, we introduce prefill-decode disaggregation, a.k.a. splitting prefill from decode into different GPUs. We also build [**DistServe**](https://arxiv.org/pdf/2401.09670.pdf), which achieves up to 4.48x goodput or 10.2x tighter SLO compared to exiting state-of-the-art serving systems, while staying within tight latency constraints. We are integrating DistServe with vLLM to bring the technique to the community.
 
 {{< /justify >}}
 
 
 ## Background: Throughput vs. Goodput 
 
-Large language models (LLMs) are changing how the industry adopts AI technology in their services, but the cost of LLM serving remains high. To reduce serving costs, many companies today focus on maximizing the overall LLM serving system **throughput, i.e., the number of requests served per second (or rps)**, as a proxy to minimize **dollar per request ($/req)**. Almost all popular LLM serving engines like [vLLM](https://blog.vllm.ai/2023/06/20/vllm.html) and [TensorRT-LLM](https://github.com/NVIDIA/TensorRT-LLM) use throughput as the only metric to compare performance with each other.
+Large language models (LLMs) are changing how the industry adopts AI technology in their services, but the cost of LLM serving remains high. To reduce serving costs, many companies today focus on maximizing the overall LLM serving system **throughput**, i.e., the number of requests served per second (or rps), as a proxy to minimize **dollar per request ($/req)**. Almost all popular LLM serving engines like [vLLM](https://blog.vllm.ai/2023/06/20/vllm.html) and [TensorRT-LLM](https://github.com/NVIDIA/TensorRT-LLM) use throughput as the primary metric to compare performance with each other.
 
-In reality, downstream applications come in different flavors. These LLM-based applications may have different latency requirements for user experience, hence dramatically different [**service level objectives** (**SLO**)](https://en.wikipedia.org/wiki/Service-level_objective) to satisfy. The most widely used SLO in LLM services are:
+In reality, downstream applications come in different flavors -- they may have different latency requirements for user experience, hence dramatically different [service level objectives (SLO)](https://en.wikipedia.org/wiki/Service-level_objective) to satisfy. The most widely used SLOs in LLM services are:
 
-- Time to first token latency (**TTFT**): measuring the time taken for the LLM to respond the first generated token to the user
-- Time per output token (**TPOT**): measuring the average latency between two subsequent generated tokens
+- Time to first token latency (**TTFT**): measuring the time taken for the LLM to respond the first generated token to the user.
+- Time per output token (**TPOT**): measuring the average latency between two subsequent generated tokens.
 
 
 {{< image src="img/diverse_slo.png" alt="diverse_slo" width="100%" title="Figure 0. Applications have diverse SLO.">}}
 
 
-Throughput measures the number of requests or tokens completed across all users and requests, hence overlooking these latency requirements. We introduce **Goodput,** the number of completed requests per second that adheres to SLOs, and show it is a much better proxy metric measure dollars per request, because it captures request throughput under SLO attainment. 
+Throughput measures the number of requests or tokens completed *across all users and requests*, hence overlooking these latency requirements. We introduce **Goodput**, the number of completed requests per second that adheres to SLOs (TTFT and TPOT requirements), and show it is a much better metric, because it captures request throughput under SLO attainment -- hence both cost and service quality.
 
 To briefly illustrate goodput, assuming an application require TTFT < 200 ms and TPOT < 50 ms for at least 90% of the requests, we get the following definition:
 
 
 Goodput (P90 TTFT < 200ms and P90 TPOT < 50ms) = maximum request rate per second when at least 90% of requests has both TTFT < 200ms and TPOT < 50ms
 
-**Figure 1** shows a simple case where an application with high throughput may have a low goodput. The application has a throughput of 10 requests per second. But with the latency constraint, only 3 requests hold within the SLO constraint, yielding a goodput of 3 requests per second. As you can imagine, a user of this high-throughput but low-goodput serving system will still suffer from low quality of service and user satisfaction.
+**Figure 1** shows a simple case where an application with high throughput may have a low goodput. The application has a throughput of 10 requests per second. But with the latency constraint, only 3 requests hold within the SLO constraint, yielding a goodput of 3 requests per second. As you can imagine, a user of this high-throughput but low-goodput serving system will still suffer from low quality of service.
 
 
 {{< image src="img/nxUG7_NlXaez-liC4_mNmOIIu_UTS_nApBPFU4eqQgaOiRKItHCJGKDHJDAuf-fxqDV_O0NSbKcv5ccl4SZDUenms-mQJ_3JrOg0OZt7HUVnOZaITWZiN_pPIqeVtaekXDB9jeWC4rK8lixF5TkKxc4.png" alt="high_throughput_is_not_high_goodput" width="100%" title="Figure 1. High throughput ≠ High goodput. Systems optimizing throughput can have low goodput under certain SLO constraints.">}}
@@ -68,15 +66,14 @@ Let’s summarize the terms introduced in the subsection:
 ## Why Existing Systems Fail to Achieve High Goodput? 
 
 ### How does an LLM request get processed?
+Before we dive deeper, let’s revisit the lifecycle of a request in LLM serving. Figure 2 shows this process. When a request comes into an LLM inference engine, the system will first take the user input to generate the first token (**prefill**), then generate outputs token-by-token autoregressively (**decode**). A request usually consists of one prefill step, and multiple decoding steps until termination. 
 
-Before we dive deeper, let’s revisit the lifecycle of a request in LLM serving. Figure 2 shows this process. When a request comes into an LLM inference engine, the LLM will first take the user input to generate the first token (**prefill**), and then generate outputs token-by-token auto-regressively (**decode**). A request usually consists of one prefill step, and multiple decoding steps until termination. 
+LLM serving systems usually batch prefill and decoding all together using a technique called [**iteration-level scheduling**](https://www.usenix.org/conference/osdi22/presentation/yu) or [**continuous batching**](https://www.anyscale.com/blog/continuous-batching-llm-inference#continuous-batching), so that the GPUs process a batch size as large as possible, run one iteration, and generate one token for all of these requests. This technique effectively enhances the overall throughput (tokens per second) and is widely adopted in popular serving systems such as vLLM and TensorRT-LLM. 
 
-LLM serving systems usually batch prefill and decoding all together using a technique called [**iteration-level scheduling**](https://www.usenix.org/conference/osdi22/presentation/yu) or [**continuous batching**](https://www.anyscale.com/blog/continuous-batching-llm-inference#continuous-batching), so that the GPUs process a batch size as large as possible, run one iteration, and generate one token for all of these requests. This technique effectively enhances the overall throughput (token per second) and is widely adopted in popular serving systems such as vLLM and TensorRT-LLM. 
-
-{{< image src="img/distserve-anime-colocate-crop.gif" alt="prefill_decode_process" width="100%" title="Figure 2. How requests get processed.">}}
+{{< image src="img/distserve-anime-colocate-crop.gif" alt="prefill_decode_process" width="100%" title="Figure 2. How requests get processed in traditional LLM serving systems.">}}
 
 
-However, **the two phases have very distinct characteristics in computation.** Prefill is very easily compute-bound, meaning a small batch of requests or even a long enough request will saturate computation very quickly. On the other hand, decoding needs a much bigger batch size to hit the compute bound, and is more easily subject to the memory-limit of the GPU. 
+However, **the two phases have very distinct characteristics in computation.** Prefill is very compute-bound, meaning a small batch of prefills or even a single long enough prefill will easily saturate GPU computation. On the other hand, decoding needs a much bigger batch size to hit the compute bound, and is more easily subject to the memory bandwidth limit of the GPU. 
 
 Due to their vastly different compute patterns and SLOs, colocating these two phases is not optimal for achieving high goodput because:
 
