@@ -90,25 +90,23 @@ We explain them next.
 {{< image src="img/lvHuoscAJhmWUmO2hN9ENRxYpW83WJRNLpeDfX52JqjATOpwdCD72PwbcH6LvA_bCMrnqxHdhi7snoUEt8DvvrJKEUuaHdCayqNLPfied_43of9cedDSvAqrpLqRQz2m3v6BZUkwdlDadMlelK-PVfU.png" alt="continuous_batching_interference" width="100%" title="Figure 3. Continuous batching causes interference.">}}
 
 
-As a result of this interference, when engineers want the system to meet the SLO of both TTFT and TPOT, they usually have to over-provision resources to meet the latency goal, especially when either SLO is strict. 
+As a result of this interference, as shown in Figure 4, when services must satisfy both TTFT and TPOT SLOs, systems have to over-provision resources to meet the latency goal, especially when either SLO is strict.
 
 {{< image src="img/v-G1pP-L0ns16SwUSokflz3L116UBcfU3IRq7Os_TaGLndVns9GCGl0LpmuY-XsFTQL1Im_uTMEIE2el3mgHDNZ8c2V-3amPTmTXYQply3S3tSjQv6FGByJOyHZ8Kf5pDhlzcAh9NlDTuth_ZI4tqJU.png" alt="collocation_overprovision" width="100%" title="Figure 4. To meet SLO, system that collocates prefill and decode needs to overprovision resources to meet SLO target.">}}
 
 
-### Parallelism strategy is coupled between prefill and decode
-
-Moreover, with continuous batching, the parallelism strategies (tensor/pipeline/data parallelism) are naturally coupled in the prefill and decoding phase. However, as discussed previously, the computation pattern of prefill and decoding is very different, and their latency requirements also differ according to the specific application. As a result, the optimal parallelism strategy for prefill and decoding phase is usually different. For example, with a strict TTFT SLO and a loose TPOT SLO, the compute-intensive prefill phase prefers tensor parallelism (TP) to reduce the execution latency to meet the tight latency requirement while the memory-bound decoding phase prefers pipeline parallelism (PP) which has much lower communication overhead compared to TP.  
-
+### Resource allocation and parallelism strategy are coupled
+Moreover, with colocation, the parallelism strategies (tensor, pipeline, or data parallelism) are inherently coupled for the prefill and decoding computation. As discussed previously, due to their distinct computation patterns and latency goals, the optimal parallelism strategy for the prefill and decoding phase is usually different. For example, when TTFT is stringent and TPOT is loose, the prefill phase prefers tensor parallelism (TP) to meet the tight latency target while the decoding phase prefers data or pipeline parallelism to boost the throughput. We next describe our new approach to address these problems.
 
 
-## New Approach: Disaggregation + Tailored Parallelism Strategy
 
+## Disaggregating Prefill and Decoding
 The intuition is simple: disaggregating prefill and decode into different GPUs and customize parallelism strategies for each phase. This naturally solves the two problems above:
 
-1. **No interference between prefill and decode** makes both phases faster and easier to attain SLO.
-2. **Decoupled parallelism strategy** such that optimization can tailor for prefill and decode separately.
+1. **No interference between prefill and decode** makes both phases faster and easier to attain their respective SLO.
+2. **Decoupled resource allocation and parallelism strategy** such that optimization can tailor for prefill and decode separately.
 
-Figure 5 illustrates how a request is processed in such a disaggregated system. When a request arrives in the system, it first goes to a **prefill worker** and completes its prefill phase. After its intermediate states (mainly [KV Cache](https://medium.com/@joaolages/kv-caching-explained-276520203249)) migrate to a **decode worker,** multiple decode steps are taken to generate subsequent tokens. The request leaves the system once it finishes generation. 
+Figure 5 illustrates how a request is processed in such a disaggregated system. When a request arrives in the system, it first goes to a prefill worker and completes its prefill phase. Then the system migrates its intermediate states (mainly [KV Cache](https://medium.com/@joaolages/kv-caching-explained-276520203249)) to a **decode worker,** multiple decode steps are taken to generate subsequent tokens. The request leaves the system once it finishes generation. 
 
 {{< image src="img/distserve_anime-crop.gif" alt="disaggregation" width="100%" title="Figure 5. How requests get processed when prefill/decode is disaggregated.">}}
 
