@@ -144,10 +144,9 @@ We would like to thank Junda Chen and Lanxiang Hu for providing insightful feedb
 
 ## Citation
 ```
-@article{duan2024muxserve,
-  title={MuxServe: Flexible Multiplexing for Efficient Multiple LLM Serving},
+@inproceedings{duanmuxserve,
+  title={MuxServe: Flexible Spatial-Temporal Multiplexing for Multiple LLM Serving},
   author={Duan, Jiangfei and Lu, Runyu and Duanmu, Haojie and Li, Xiuhong and Zhang, Xingcheng and Lin, Dahua and Stoica, Ion and Zhang, Hao},
-  journal={arXiv preprint arXiv:2404.02015},
-  year={2024}
+  booktitle={Forty-first International Conference on Machine Learning}
 }
 ```
