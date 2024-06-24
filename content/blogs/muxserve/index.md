@@ -139,6 +139,9 @@ MuxServe can be a promising solution for LLM endpoint providers to efficiently s
 
 <!-- MuxServe outperforms the spatial partitioning and temporal multiplexing baselines by up to $1.8\times$ in throughput and up to $2.9\times$ in SLO attainment on synthetic workloads. -->
 
+## Acknowledgement
+We would like to thank Junda Chen and Lanxiang Hu for providing insightful feedback to our blog. 
+
 ## Citation
 ```
 @article{duan2024muxserve,
