@@ -7,11 +7,31 @@ summary: publications
 
 ### 2024
 
-{{< publication title="CLLMs: Consistency Large Language Models" venue="ICML 2024" paperLink="https://arxiv.org/pdf/2403.00835.pdf" codeLink="https://github.com/hao-ai-lab/Consistency_LLM" award="" project="" data-topic="Selected, Large Language Models, Scalable ML, ML Systems" >}}
+{{< publication title="Optimizing Speculative Decoding for Serving Large Language Models Using Goodput" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2406.14066" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Scalable ML, ML Systems" >}}
+Xiaoxuan Liu, Cade Daniel, Langxiang Hu, Woosuk Kwon, Zhuohan Li, Xiangxi Mo, Alvin Cheung, Zhijie Deng, Ion Stoica, Hao Zhang
+{{< /publication >}}
+
+{{< publication title="AdaMoE: Token-Adaptive Routing with Null Experts for Mixture-of-Experts Language Models" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2406.13233" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Scalable ML" >}}
+Zihao Zeng, Yibo Miao, Hongcheng Gao, Hao Zhang, Zhijie Deng
+{{< /publication >}}
+
+{{< publication title="Toward Inference-optimal Mixture-of-Expert Large Language Models" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2404.02852" codeLink="" award="" project="" data-topic="Selected, Large Language Models" >}}
+Longfei Yun*, Yonghao Zhuang*, Yao Fu, Eric P Xing, Hao Zhang
+{{< /publication >}}
+
+{{< publication title="Megalodon: Efficient LLM Pretraining and Inference with Unlimited Context Length" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2404.08801" codeLink="https://github.com/XuezheMax/megalodon" award="" project="" data-topic="Selected, Large Language Models" >}}
+Xuezhe Ma*, Xiaomeng Yang*, Wenhan Xiong, Beidi Chen, Lili Yu, Hao Zhang, Jonathan May, Luke Zettlemoyer, Omer Levy, Chunting Zhou*
+{{< /publication >}}
+
+{{< publication title="MuxServe: Flexible Spatial-Temporal Multiplexing for Multiple LLM Serving" venue="ICML 2024" paperLink="https://arxiv.org/pdf/2404.02015" codeLink="https://github.com/hao-ai-lab/MuxServe" award="" project="https://hao-ai-lab.github.io/blogs/muxserve/" data-topic="Selected, Large Language Models, Scalable ML, ML Systems" >}}
+Jiangfei Duan, Runyu Lu, Haojie Duanmu, Xiuhong Li, Xingcheng Zhang, Dahua Lin, Ion Stoica, Hao Zhang
+{{< /publication >}}
+
+{{< publication title="CLLMs: Consistency Large Language Models" venue="ICML 2024" paperLink="https://arxiv.org/pdf/2403.00835.pdf" codeLink="https://github.com/hao-ai-lab/Consistency_LLM" award="" project="https://hao-ai-lab.github.io/blogs/cllm/" data-topic="Selected, Large Language Models, Scalable ML, ML Systems" >}}
 Siqi Kou*, Lanxiang Hu*, Zhezhi He, Zhijie Deng, Hao Zhang
 {{< /publication >}}
 
-{{< publication title="DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving" venue="OSDI 2024" paperLink="https://arxiv.org/pdf/2401.09670v1.pdf" codeLink="" award="" project="" data-topic="Selected, Large Language Models, ML Systems" >}}
+{{< publication title="DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving" venue="OSDI 2024" paperLink="https://arxiv.org/pdf/2401.09670v1.pdf" codeLink="https://github.com/LLMServe/DistServe" award="" project="https://hao-ai-lab.github.io/blogs/distserve/" data-topic="Selected, Large Language Models, ML Systems" >}}
 Yinmin Zhong, Shengyu Liu, Junda Chen, Jianbo Hu, Yibo Zhu, Xuanzhe Liu, Xin Jin, Hao Zhang
 {{< /publication >}}
 
@@ -19,7 +39,7 @@ Yinmin Zhong, Shengyu Liu, Junda Chen, Jianbo Hu, Yibo Zhu, Xuanzhe Liu, Xin Jin
 Wei-Lin Chiang*, Lianmin Zheng*, Ying Sheng, Anastasios Nikolas Angelopoulos, Tianle Li, Dacheng Li, Banghua Zhu, Hao Zhang, Michael Jordan, Joseph E. Gonzalez, Ion Stoica
 {{< /publication >}}
 
-{{< publication title="APIServe: Efficient API Support for Large-Language Model Inferencing" venue="ICML 2024" paperLink="https://arxiv.org/pdf/2402.01869.pdf" codeLink="" award="" project="" data-topic="Selected, Large Language Models, ML Systems" >}}
+{{< publication title="InferCept: Efficient Intercept Support for Augmented Large Language Model Inference" venue="ICML 2024" paperLink="https://arxiv.org/pdf/2402.01869.pdf" codeLink="https://github.com/WukLab/InferCept" award="" project="https://mlsys.wuklab.io/posts/infercept/" data-topic="Selected, Large Language Models, ML Systems" >}}
 Reyna Abhyankar*, Zijian He*, Vikranth Srivatsa, Hao Zhang, Yiying Zhang
 {{< /publication >}}
 
@@ -31,24 +51,24 @@ Yichao Fu, Peter Bailis, Ion Stoica, Hao Zhang
 Xiaoxuan Liu, Lanxiang Hu, Peter Bailis, Ion Stoica, Zhijie Deng, Alvin Cheung, Hao Zhang
 {{< /publication >}}
 
-&emsp;
-
-### 2023
-
-{{< publication title="How Long Can Context Length of Open-Source LLMs truly Promise?" venue="Instruction Tuning and Instruction Following Workshop @ NeurIPS 2023 " paperLink="https://openreview.net/pdf?id=LywifFNXV5" codeLink="" award="" project="https://github.com/DachengLi1/LongChat" data-topic="Selected, Large Language Models" >}}
-Dacheng Li*, Rulin Shao*, Anze Xie, Ying Sheng, Lianmin Zheng, Joseph Gonzalez, Ion Stoica, Xuezhe Ma, Hao Zhang
-{{< /publication >}}
-
-{{< publication title="Lightseq: Sequence Level Parallelism for Distributed Training of Long Context Transformers" venue="Preprint 2023" paperLink="https://arxiv.org/pdf/2310.03294.pdf" codeLink="https://github.com/RulinShao/LightSeq" award="" project="" data-topic="Large Language Models, ML Systems" >}}
+{{< publication title="DistFlashAttn: Distributed Memory-efficient Attention for Long-context LLMs Training" venue="COLM 2024" paperLink="https://arxiv.org/pdf/2310.03294.pdf" codeLink="https://github.com/RulinShao/LightSeq" award="" project="" data-topic="Large Language Models, ML Systems" >}}
 Dacheng Li*, Rulin Shao*, Anze Xie, Eric P Xing, Joseph E Gonzalez, Ion Stoica, Xuezhe Ma, Hao Zhang
 {{< /publication >}}
 
-{{< publication title="Efficient Detection of LLM-generated Texts with a Bayesian Surrogate Model" venue="Preprint 2023" paperLink="https://arxiv.org/pdf/2305.16617.pdf" codeLink="" award="" project="" data-topic="Large Language Models, ML Security" >}}
-Zhijie Deng*, Hongcheng Gao*, Yibo Miao, Hao Zhang
+{{< publication title="Efficient Detection of LLM-generated Texts with a Bayesian Surrogate Model" venue="ACL 2024" paperLink="https://arxiv.org/pdf/2305.16617.pdf" codeLink="" award="" project="" data-topic="Large Language Models, ML Security" >}}
+Yibo Miao*, Hongcheng Gao*, Hao Zhang, Zhijie Deng
 {{< /publication >}}
 
 {{< publication title="LMSYS-Chat-1M: A Large-Scale Real-World LLM Conversation Dataset" venue="ICLR 2024" paperLink="https://arxiv.org/pdf/2309.11998" codeLink="" award="" project="https://huggingface.co/datasets/lmsys/lmsys-chat-1m" data-topic="Selected, Large Language Models" >}}
 Lianmin Zheng*, Wei-Lin Chiang*, Ying Sheng, Tianle Li, Siyuan Zhuang, Zhanghao Wu, Yonghao Zhuang, Zhuohan Li, Zi Lin, Eric Xing, Joseph E Gonzalez, Ion Stoica, Hao Zhang
+{{< /publication >}}
+
+&emsp;
+
+### 2023
+
+{{< publication title="How Long Can Context Length of Open-Source LLMs truly Promise?" venue="Instruction Tuning and Instruction Following Workshop @ NeurIPS 2023" paperLink="https://openreview.net/pdf?id=LywifFNXV5" codeLink="" award="" project="https://github.com/DachengLi1/LongChat" data-topic="Selected, Large Language Models" >}}
+Dacheng Li*, Rulin Shao*, Anze Xie, Ying Sheng, Lianmin Zheng, Joseph Gonzalez, Ion Stoica, Xuezhe Ma, Hao Zhang
 {{< /publication >}}
 
 {{< publication title="Judging LLM-as-a-judge with MT-Bench and Chatbot Arena" venue="NeurIPS 2023" paperLink="https://arxiv.org/pdf/2306.05685" codeLink="https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge" award="" project="https://chat.lmsys.org/?arena" data-topic="Selected, Large Language Models" >}}
@@ -71,20 +91,20 @@ Wei-Lin Chiang†, Zhuohan Li†, Zi Lin†, Ying Sheng†, Zhanghao Wu†, Hao 
 Zhuohan Li*, Lianmin Zheng*, Yinmin Zhong*, Vincent Liu, Ying Sheng, Xin Jin, Yanping Huang, Zhifeng Chen, Hao Zhang, Joseph E Gonzalez, Ion Stoica
 {{< /publication >}}
 
-&emsp;
-
-### 2022
-
 {{< publication title="On Optimizing the Communication of Model Parallelism" venue="MLSYS 2023" paperLink="https://arxiv.org/pdf/2211.05322.pdf" codeLink="https://github.com/alpa-projects/alpa/blob/main/alpa/pipeline_parallel/cross_mesh_resharding.py" award="" project="" data-topic="Selected, ML Systems, Large Language Models" >}}
 Yonghao Zhuang*, Hexu Zhao*, Lianmin Zheng, Zhuohan Li, Eric P. Xing, Qirong Ho, Joseph E. Gonzalez, Ion Stoica, Hao Zhang
 {{< /publication >}}
 
-{{< publication title="AMP: Automatically Finding Model Parallel Strategies with Heterogeneity Awareness" venue="NeurIPS 2022" paperLink="https://proceedings.neurips.cc/paper_files/paper/2022/file/2b4bfa1cebe78d125fefd7ea6ffcfc6d-Paper-Conference.pdf" codeLink="https://github.com/DachengLi1/AMP" award="" project="" data-topic="ML Systems, Large Language Models, Scalable ML" >}}
-Dacheng Li, Hongyi Wang, Eric Xing, Hao Zhang
-{{< /publication >}}
-
 {{< publication title="MPCFormer: Fast, Performant and Private Transformer Inference with MPC" venue="ICLR 2023" paperLink="https://arxiv.org/pdf/2211.01452.pdf" codeLink="https://github.com/DachengLi1/MPCFormer" award="Notable-top-25%" project="" data-topic="Selected, Large Language Models, ML Security" >}}
 Dacheng Li*, Rulin Shao*, Hongyi Wang*, Han Guo, Eric P. Xing, Hao Zhang
+{{< /publication >}}
+
+&emsp;
+
+### 2022
+
+{{< publication title="AMP: Automatically Finding Model Parallel Strategies with Heterogeneity Awareness" venue="NeurIPS 2022" paperLink="https://proceedings.neurips.cc/paper_files/paper/2022/file/2b4bfa1cebe78d125fefd7ea6ffcfc6d-Paper-Conference.pdf" codeLink="https://github.com/DachengLi1/AMP" award="" project="" data-topic="ML Systems, Large Language Models, Scalable ML" >}}
+Dacheng Li, Hongyi Wang, Eric Xing, Hao Zhang
 {{< /publication >}}
 
 {{< publication title="Neural Eigenfunctions Are Structured Representation Learners" venue="Preprint 2022" paperLink="https://arxiv.org/pdf/2210.12637" codeLink="" award="" project="" data-topic="Scalable ML" >}}
@@ -107,13 +127,13 @@ Gengwei Zhang, Yiming Gao, Hang Xu, Hao Zhang, Zhenguo Li, Xiaodan Liang
 Zhuohan Li, Siyuan Zhuang, Shiyuan Guo, Danyang Zhuo, Hao Zhang, Dawn Song, Ion Stoica
 {{< /publication >}}
 
-&emsp;
-
-### 2020
-
 {{< publication title="Pollux: Co-adaptive Cluster Scheduling for Goodput-optimized Deep Learning" venue="OSDI 2021" paperLink="https://arxiv.org/pdf/2008.12260.pdf" codeLink="https://github.com/petuum/adaptdl" award="Jay Lepreau Best Paper Award" project="" data-topic="Selected, ML Systems" >}}
 Aurick Qiao, Sang Keun Choe, Suhas Jayaram Subramanya, Willie Neiswanger, Qirong Ho, Hao Zhang, Gregory R Ganger, Eric P Xing
 {{< /publication >}}
+
+&emsp;
+
+### 2020
 
 {{< publication title="Machine Learning Parallelism Could Be Adaptive, Composable, and Automated" venue="CMU PhD Dissertation 2020" paperLink="https://kilthub.cmu.edu/ndownloader/files/27533894" codeLink="" award="" project="" data-topic="Selected, ML Systems, Scalable ML, AutoML" >}}
 Hao Zhang
@@ -125,7 +145,7 @@ Hao Zhang*, Yuan Li*, Zhijie Deng, Xiaodan Liang, Lawrence Carin, Eric Xing
 
 &emsp;
 
-### 2018
+### 2019
 
 {{< publication title="Toward Understanding the Impact of Staleness in Distributed Machine Learning" venue="ICLR 2019" paperLink="https://arxiv.org/pdf/1810.03264.pdf" codeLink="" award="" project="" data-topic="Selected, Scalable ML" >}}
 Wei Dai, Yi Zhou, Nanqing Dong, Hao Zhang, Eric P Xing
@@ -135,6 +155,14 @@ Wei Dai, Yi Zhou, Nanqing Dong, Hao Zhang, Eric P Xing
 Haowen Xu*, Hao Zhang*, Zhiting Hu, Xiaodan Liang, Ruslan Salakhutdinov, Eric Xing
 {{< /publication >}}
 
+{{< publication title="Scan: Structure Correcting Adversarial Network for Organ Segmentation in Chest X-rays" venue="Workshop on Deep Learning in Medical Image Analysis 2019" paperLink="https://arxiv.org/pdf/1703.08770.pdf" codeLink="" award="" project="" data-topic="Healthcare" >}}
+Wei Dai, Nanqing Dong, Zeya Wang, Xiaodan Liang, Hao Zhang, Eric P Xing
+{{< /publication >}}
+
+&emsp;
+
+### 2018
+
 {{< publication title="Symbolic Graph Reasoning Meets Convolutions" venue="NeurIPS 2018" paperLink="https://proceedings.neurips.cc/paper_files/paper/2018/file/cbb6a3b884f4f88b3a8e3d44c636cbd8-Paper.pdf" codeLink="" award="" project="" data-topic="Large-scale ML Applications" >}}
 Xiaodan Liang, Zhiting Hu, Hao Zhang, Liang Lin, Eric P Xing
 {{< /publication >}}
@@ -143,17 +171,13 @@ Xiaodan Liang, Zhiting Hu, Hao Zhang, Liang Lin, Eric P Xing
 Xiaodan Liang, Hao Zhang, Liang Lin, Eric Xing
 {{< /publication >}}
 
-&emsp;
-
-### 2017
-
-{{< publication title="Scan: Structure Correcting Adversarial Network for Organ Segmentation in Chest X-rays" venue="Workshop on Deep Learning in Medical Image Analysis 2019" paperLink="https://arxiv.org/pdf/1703.08770.pdf" codeLink="" award="" project="" data-topic="Healthcare" >}}
-Wei Dai, Nanqing Dong, Zeya Wang, Xiaodan Liang, Hao Zhang, Eric P Xing
-{{< /publication >}}
-
 {{< publication title="Cavs: An Efficient Runtime System for Dynamic Neural Networks" venue="ATC 2018" paperLink="https://www.usenix.org/system/files/conference/atc18/atc18-xu-shizhen.pdf" codeLink="https://github.com/zhisbug/Cavs" award="" project="" data-topic="Selected, ML Systems" >}}
 Shizhen Xu*, Hao Zhang*, Graham Neubig, Wei Dai, Jin Kyu Kim, Zhijie Deng, Qirong Ho, Guangwen Yang, Eric P Xing
 {{< /publication >}}
+
+&emsp;
+
+### 2017
 
 {{< publication title="Zm-net: Real-time Zero-shot Image Manipulation Network" venue="Preprint 2017" paperLink="https://arxiv.org/pdf/1703.07255" codeLink="" award="" project="" data-topic="Large-scale ML Applications" >}}
 Hao Wang, Xiaodan Liang, Hao Zhang, Dit-Yan Yeung, Eric P Xing
@@ -231,7 +255,7 @@ Ye Liu, Hao Zhang, Qibin Zhao, Liqing Zhang
 Hao Zhang, Ye Liu, Jianyi Liang, Jianting Cao, Liqing Zhang
 {{< /publication >}}
 
-{{< publication title="Single-trial Discrimination of EEG Signals for Stroke Patients: a General Multi-way Analysis" venue="EMBC 2013" paperLink="https://people.eecs.berkeley.edu/~hao/projects/TensorJNM/06609973.pdf" codeLink="" award="" project="" data-topic="Healthcare" >}}
+{{< publication title="Single-trial Discrimination of EEG Signals for Stroke Patients: a General Multi-way Analysis" venue="EMBC 2013" paperLink="https://people.eecs.berkeley.edu/~hao/projects/TensorJNM/06609973.pdf" codeLink="" award="" project="" data-topic="" >}}
 Ye Liu, Mingfen Li, Hao Zhang, Junhua Li, Jie Jia, Yi Wu, Jianting Cao, Liqing Zhang
 {{< /publication >}}
 

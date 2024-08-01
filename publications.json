@@ -1,13 +1,73 @@
 [
     {
+        "title": "Optimizing Speculative Decoding for Serving Large Language Models Using Goodput",
+        "authors": "Xiaoxuan Liu, Cade Daniel, Langxiang Hu, Woosuk Kwon, Zhuohan Li, Xiangxi Mo, Alvin Cheung, Zhijie Deng, Ion Stoica, Hao Zhang",
+        "venue": "Preprint 2024",
+        "pdf": "https://arxiv.org/pdf/2406.14066",
+        "code": "",
+        "presentation": "",
+        "award": "",
+        "project": "",
+        "tag": "Selected, Large Language Models, Scalable ML, ML Systems",
+        "date": "06/2024"
+    },
+    {
+        "title": "AdaMoE: Token-Adaptive Routing with Null Experts for Mixture-of-Experts Language Models",
+        "authors": "Zihao Zeng, Yibo Miao, Hongcheng Gao, Hao Zhang, Zhijie Deng",
+        "venue": "Preprint 2024",
+        "pdf": "https://arxiv.org/pdf/2406.13233",
+        "code": "",
+        "presentation": "",
+        "award": "",
+        "project": "",
+        "tag": "Selected, Large Language Models, Scalable ML",
+        "date": "06/2024"
+    },
+    {
+        "title": "Toward Inference-optimal Mixture-of-Expert Large Language Models",
+        "authors": "Longfei Yun*, Yonghao Zhuang*, Yao Fu, Eric P Xing, Hao Zhang",
+        "venue": "Preprint 2024",
+        "pdf": "https://arxiv.org/pdf/2404.02852",
+        "code": "",
+        "presentation": "",
+        "award": "",
+        "project": "",
+        "tag": "Selected, Large Language Models",
+        "date": "04/2024"
+    },
+    {
+        "title": "Megalodon: Efficient LLM Pretraining and Inference with Unlimited Context Length",
+        "authors": "Xuezhe Ma*, Xiaomeng Yang*, Wenhan Xiong, Beidi Chen, Lili Yu, Hao Zhang, Jonathan May, Luke Zettlemoyer, Omer Levy, Chunting Zhou*",
+        "venue": "Preprint 2024",
+        "pdf": "https://arxiv.org/pdf/2404.08801",
+        "code": "https://github.com/XuezheMax/megalodon",
+        "presentation": "",
+        "award": "",
+        "project": "",
+        "tag": "Selected, Large Language Models",
+        "date": "04/2024"
+    },
+    {
+        "title": "MuxServe: Flexible Spatial-Temporal Multiplexing for Multiple LLM Serving",
+        "authors": "Jiangfei Duan, Runyu Lu, Haojie Duanmu, Xiuhong Li, Xingcheng Zhang, Dahua Lin, Ion Stoica, Hao Zhang",
+        "venue": "ICML 2024",
+        "pdf": "https://arxiv.org/pdf/2404.02015",
+        "code": "https://github.com/hao-ai-lab/MuxServe",
+        "presentation": "",
+        "award": "",
+        "project": "https://hao-ai-lab.github.io/blogs/muxserve/",
+        "tag": "Selected, Large Language Models, Scalable ML, ML Systems",
+        "date": "06/2024"
+    },
+    {
         "title": "CLLMs: Consistency Large Language Models",
         "authors": "Siqi Kou*, Lanxiang Hu*, Zhezhi He, Zhijie Deng, Hao Zhang",
-        "venue": "Preprint 2024",
+        "venue": "ICML 2024",
         "pdf": "https://arxiv.org/pdf/2403.00835.pdf",
         "code": "https://github.com/hao-ai-lab/Consistency_LLM",
         "presentation": "",
         "award": "",
-        "project": "",
+        "project": "https://hao-ai-lab.github.io/blogs/cllm/",
         "tag": "Selected, Large Language Models, Scalable ML, ML Systems",
         "date": "03/2024"
     },
@@ -16,17 +76,17 @@
         "authors": "Yinmin Zhong, Shengyu Liu, Junda Chen, Jianbo Hu, Yibo Zhu, Xuanzhe Liu, Xin Jin, Hao Zhang",
         "venue": "OSDI 2024",
         "pdf": "https://arxiv.org/pdf/2401.09670v1.pdf",
-        "code": "",
+        "code": "https://github.com/LLMServe/DistServe",
         "presentation": "",
         "award": "",
-        "project": "",
+        "project": "https://hao-ai-lab.github.io/blogs/distserve/",
         "tag": "Selected, Large Language Models, ML Systems",
         "date": "01/2024"
     },
     {
         "title": "Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference",
         "authors": "Wei-Lin Chiang*, Lianmin Zheng*, Ying Sheng, Anastasios Nikolas Angelopoulos, Tianle Li, Dacheng Li, Banghua Zhu, Hao Zhang, Michael Jordan, Joseph E. Gonzalez, Ion Stoica",
-        "venue": "Preprint 2024",
+        "venue": "ICML 2024",
         "pdf": "https://arxiv.org/pdf/2403.04132.pdf",
         "code": "https://github.com/lm-sys/FastChat",
         "presentation": "",
@@ -36,21 +96,21 @@
         "date": "03/2024"
     },
     {
-        "title": "APIServe: Efficient API Support for Large-Language Model Inferencing",
+        "title": "InferCept: Efficient Intercept Support for Augmented Large Language Model Inference",
         "authors": "Reyna Abhyankar*, Zijian He*, Vikranth Srivatsa, Hao Zhang, Yiying Zhang",
-        "venue": "Preprint 2024",
+        "venue": "ICML 2024",
         "pdf": "https://arxiv.org/pdf/2402.01869.pdf",
-        "code": "",
+        "code": "https://github.com/WukLab/InferCept",
         "presentation": "",
         "award": "",
-        "project": "",
+        "project": "https://mlsys.wuklab.io/posts/infercept/",
         "tag": "Selected, Large Language Models, ML Systems",
         "date": "02/2024"
     },
     {
         "title": "Break the Sequential Dependency of LLM Inference using Lookahead Decoding",
         "authors": "Yichao Fu, Peter Bailis, Ion Stoica, Hao Zhang",
-        "venue": "Preprint 2024",
+        "venue": "ICML 2024",
         "pdf": "https://arxiv.org/pdf/2402.02057v1.pdf",
         "code": "https://github.com/hao-ai-lab/LookaheadDecoding",
         "presentation": "",
@@ -62,7 +122,7 @@
     {
         "title": "How Long Can Context Length of Open-Source LLMs truly Promise?",
         "authors": "Dacheng Li*, Rulin Shao*, Anze Xie, Ying Sheng, Lianmin Zheng, Joseph Gonzalez, Ion Stoica, Xuezhe Ma, Hao Zhang",
-        "venue": "Instruction Tuning and Instruction Following Workshop @ NeurIPS 2023 ",
+        "venue": "Instruction Tuning and Instruction Following Workshop @ NeurIPS 2023",
         "pdf": "https://openreview.net/pdf?id=LywifFNXV5",
         "code": "",
         "presentation": "",
@@ -74,7 +134,7 @@
     {
         "title": "Online Speculative Decoding",
         "authors": "Xiaoxuan Liu, Lanxiang Hu, Peter Bailis, Ion Stoica, Zhijie Deng, Alvin Cheung, Hao Zhang",
-        "venue": "Preprint 2023",
+        "venue": "ICML 2024",
         "pdf": "https://arxiv.org/pdf/2310.07177.pdf",
         "code": "",
         "presentation": "",
@@ -83,11 +143,10 @@
         "tag": "Selected, Large Language Models, ML Systems, Scalable ML",
         "date": "10/2023"
     },
-
     {
-        "title": "Lightseq: Sequence Level Parallelism for Distributed Training of Long Context Transformers",
+        "title": "DistFlashAttn: Distributed Memory-efficient Attention for Long-context LLMs Training",
         "authors": "Dacheng Li*, Rulin Shao*, Anze Xie, Eric P Xing, Joseph E Gonzalez, Ion Stoica, Xuezhe Ma, Hao Zhang",
-        "venue": "Preprint 2023",
+        "venue": "COLM 2024",
         "pdf": "https://arxiv.org/pdf/2310.03294.pdf",
         "code": "https://github.com/RulinShao/LightSeq",
         "presentation": "",
@@ -98,8 +157,8 @@
     },
     {
         "title": "Efficient Detection of LLM-generated Texts with a Bayesian Surrogate Model",
-        "authors": "Zhijie Deng*, Hongcheng Gao*, Yibo Miao, Hao Zhang",
-        "venue": "Preprint 2023",
+        "authors": "Yibo Miao*, Hongcheng Gao*, Hao Zhang, Zhijie Deng",
+        "venue": "ACL 2024",
         "pdf": "https://arxiv.org/pdf/2305.16617.pdf",
         "code": "",
         "presentation": "",
@@ -561,7 +620,7 @@
         "presentation": "",
         "award": "",
         "project": "",
-        "tag": "Healthcare",
+        "tag": "",
         "date": "07/2013"
     }
 ]
