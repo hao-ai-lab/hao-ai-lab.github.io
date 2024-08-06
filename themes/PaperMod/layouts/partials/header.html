@@ -111,7 +111,7 @@
                 {{- else if eq .Name "Twitter" }}
                   <!-- Replace the text with Font Awesome Twitter icon -->
                   <a href="{{ .URL | absLangURL }}" title="{{ .Title | default .Name }}">
-                    <i class="fab fa-twitter fa-lg"></i>
+                    <i class="fab fa-x-twitter fa-lg"></i>
                   </a>
                 {{- else }}
                   <a href="{{ .URL | absLangURL }}" title="{{ .Title | default .Name }} {{- cond $is_search (" (Alt + /)" | safeHTMLAttr) ("" | safeHTMLAttr ) }}"
