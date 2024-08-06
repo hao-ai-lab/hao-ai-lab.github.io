@@ -8,7 +8,7 @@ summary: publications
 ### 2024
 
 {{< publication title="Optimizing Speculative Decoding for Serving Large Language Models Using Goodput" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2406.14066" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Scalable ML, ML Systems" >}}
-Xiaoxuan Liu, Cade Daniel, Langxiang Hu, Woosuk Kwon, Zhuohan Li, Xiangxi Mo, Alvin Cheung, Zhijie Deng, Ion Stoica, Hao Zhang
+Xiaoxuan Liu, Cade Daniel, Lanxiang Hu, Woosuk Kwon, Zhuohan Li, Xiangxi Mo, Alvin Cheung, Zhijie Deng, Ion Stoica, Hao Zhang
 {{< /publication >}}
 
 {{< publication title="AdaMoE: Token-Adaptive Routing with Null Experts for Mixture-of-Experts Language Models" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2406.13233" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Scalable ML" >}}
