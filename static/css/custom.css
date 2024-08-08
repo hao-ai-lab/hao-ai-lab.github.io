@@ -11,11 +11,3 @@
 .post-content a:hover {
     opacity: 75%;
 }
-
-.fab.fa-x-twitter{
-	font-family:sans-serif;
-}
-.fab.fa-x-twitter::before{
-	content:"𝕏";
-	font-size:1.2em;
-}
