@@ -1,3 +1,8 @@
+<head>
+    <!-- Include Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
 {{- /* theme-toggle is enabled */}}
 {{- if (not site.Params.disableThemeToggle) }}
 {{- /* theme is light */}}
@@ -111,7 +116,7 @@
                 {{- else if eq .Name "Twitter" }}
                   <!-- Replace the text with Font Awesome Twitter icon -->
                   <a href="{{ .URL | absLangURL }}" title="{{ .Title | default .Name }}">
-                    <i class="fab fa-twitter fa-lg"></i>
+                    <i class="fab fa-x-twitter fa-lg"></i>
                   </a>
                 {{- else }}
                   <a href="{{ .URL | absLangURL }}" title="{{ .Title | default .Name }} {{- cond $is_search (" (Alt + /)" | safeHTMLAttr) ("" | safeHTMLAttr ) }}"

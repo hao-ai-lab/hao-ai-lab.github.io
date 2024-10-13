@@ -25,6 +25,8 @@
             object-fit: cover; /* Ensures the image covers the area, cropping as necessary */
         }
     </style>
+    <!-- Include Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 
 <div class="lab-member">
@@ -33,7 +35,7 @@
     <p>{{ .Get "role" }}</p>
     <div class="social-links">
         {{ if .Get "twitter" }}
-        <a href="{{ .Get "twitter" }}"><i class="fab fa-twitter"></i></a>
+        <a href="{{ .Get "twitter" }}"><i class="fab fa-x-twitter"></i></a>
         {{ end }}
         {{ if .Get "academic" }}
         <a href="{{ .Get "academic" }}"><i class="fas fa-home"></i></a>

@@ -1,6 +1,6 @@
 {{ define "main" }}
   <h1>{{ .Title }}</h1>
-  
+
   <div class="section">
     <h2>Current Lab Members</h2>
     <div class="lab-members">
@@ -11,7 +11,7 @@
           <p>{{ .role }}</p>
           <div class="social-links">
             {{ if .social.twitter }}
-              <a href="{{ .social.twitter }}"><i class="fab fa-twitter"></i></a>
+              <a href="{{ .social.twitter }}"><i class="fab fa-x-twitter"></i></a>
             {{ end }}
             {{ if .social.academic }}
               <a href="{{ .social.academic }}"><i class="fas fa-user-graduate"></i></a>
