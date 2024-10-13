@@ -7,11 +7,19 @@ summary: publications
 
 ### 2024
 
+{{< publication title="Efficient LLM Scheduling by Learning to Rank" venue="NeurIPS 2024" paperLink="https://arxiv.org/pdf/2408.15792" codeLink="https://github.com/hao-ai-lab/vllm-ltr" award="" project="" data-topic="Selected, Large Language Models, Scalable ML" >}}
+Yichao Fu, Siqi Zhu, Runlong Su, Aurick Qiao, Ion Stoica, Hao Zhang
+{{< /publication >}}
+
+{{< publication title="MPC-Minimized Secure LLM Inference" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2408.03561" codeLink="" award="" project="" data-topic="Large Language Models, ML Security" >}}
+Deevashwer Rathee*, Dacheng Li*, Ion Stoica, Hao Zhang, Raluca Ada Popa
+{{< /publication >}}
+
 {{< publication title="Optimizing Speculative Decoding for Serving Large Language Models Using Goodput" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2406.14066" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Scalable ML, ML Systems" >}}
 Xiaoxuan Liu, Cade Daniel, Lanxiang Hu, Woosuk Kwon, Zhuohan Li, Xiangxi Mo, Alvin Cheung, Zhijie Deng, Ion Stoica, Hao Zhang
 {{< /publication >}}
 
-{{< publication title="AdaMoE: Token-Adaptive Routing with Null Experts for Mixture-of-Experts Language Models" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2406.13233" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Scalable ML" >}}
+{{< publication title="AdaMoE: Token-Adaptive Routing with Null Experts for Mixture-of-Experts Language Models" venue="EMNLP 2024" paperLink="https://arxiv.org/pdf/2406.13233" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Scalable ML" >}}
 Zihao Zeng, Yibo Miao, Hongcheng Gao, Hao Zhang, Zhijie Deng
 {{< /publication >}}
 
@@ -19,7 +27,7 @@ Zihao Zeng, Yibo Miao, Hongcheng Gao, Hao Zhang, Zhijie Deng
 Longfei Yun*, Yonghao Zhuang*, Yao Fu, Eric P Xing, Hao Zhang
 {{< /publication >}}
 
-{{< publication title="Megalodon: Efficient LLM Pretraining and Inference with Unlimited Context Length" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2404.08801" codeLink="https://github.com/XuezheMax/megalodon" award="" project="" data-topic="Selected, Large Language Models" >}}
+{{< publication title="Megalodon: Efficient LLM Pretraining and Inference with Unlimited Context Length" venue="NeurIPS 2024" paperLink="https://arxiv.org/pdf/2404.08801" codeLink="https://github.com/XuezheMax/megalodon" award="" project="" data-topic="Selected, Large Language Models" >}}
 Xuezhe Ma*, Xiaomeng Yang*, Wenhan Xiong, Beidi Chen, Lili Yu, Hao Zhang, Jonathan May, Luke Zettlemoyer, Omer Levy, Chunting Zhou*
 {{< /publication >}}
 

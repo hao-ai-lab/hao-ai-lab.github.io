@@ -1,5 +1,29 @@
 [
     {
+        "title": "Efficient LLM Scheduling by Learning to Rank",
+        "authors": "Yichao Fu, Siqi Zhu, Runlong Su, Aurick Qiao, Ion Stoica, Hao Zhang",
+        "venue": "NeurIPS 2024",
+        "pdf": "https://arxiv.org/pdf/2408.15792",
+        "code": "https://github.com/hao-ai-lab/vllm-ltr",
+        "presentation": "",
+        "award": "",
+        "project": "",
+        "tag": "Selected, Large Language Models, Scalable ML",
+        "date": "08/2024"
+    },
+    {
+        "title": "MPC-Minimized Secure LLM Inference",
+        "authors": "Deevashwer Rathee*, Dacheng Li*, Ion Stoica, Hao Zhang, Raluca Ada Popa",
+        "venue": "Preprint 2024",
+        "pdf": "https://arxiv.org/pdf/2408.03561",
+        "code": "",
+        "presentation": "",
+        "award": "",
+        "project": "",
+        "tag": "Large Language Models, ML Security",
+        "date": "08/2024"
+    },
+    {
         "title": "Optimizing Speculative Decoding for Serving Large Language Models Using Goodput",
         "authors": "Xiaoxuan Liu, Cade Daniel, Langxiang Hu, Woosuk Kwon, Zhuohan Li, Xiangxi Mo, Alvin Cheung, Zhijie Deng, Ion Stoica, Hao Zhang",
         "venue": "Preprint 2024",
@@ -14,7 +38,7 @@
     {
         "title": "AdaMoE: Token-Adaptive Routing with Null Experts for Mixture-of-Experts Language Models",
         "authors": "Zihao Zeng, Yibo Miao, Hongcheng Gao, Hao Zhang, Zhijie Deng",
-        "venue": "Preprint 2024",
+        "venue": "EMNLP 2024",
         "pdf": "https://arxiv.org/pdf/2406.13233",
         "code": "",
         "presentation": "",
@@ -38,7 +62,7 @@
     {
         "title": "Megalodon: Efficient LLM Pretraining and Inference with Unlimited Context Length",
         "authors": "Xuezhe Ma*, Xiaomeng Yang*, Wenhan Xiong, Beidi Chen, Lili Yu, Hao Zhang, Jonathan May, Luke Zettlemoyer, Omer Levy, Chunting Zhou*",
-        "venue": "Preprint 2024",
+        "venue": "NeurIPS 2024",
         "pdf": "https://arxiv.org/pdf/2404.08801",
         "code": "https://github.com/XuezheMax/megalodon",
         "presentation": "",

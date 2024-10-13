@@ -37,7 +37,10 @@ summary: people
 
 {{< lab_member name="Haoyang Yu" role="Undergrad" image="haoyang_yu.jpeg" academic="https://www.linkedin.com/in/haoyang-yu-8b1997257/">}}
 
+{{< lab_member name="Longfei Yun" role="Master's" image="longfei_yun.jpg" twitter="https://twitter.com/longfei_yu78793">}}
+
 {{< lab_member name="Siqi Zhu" role="Undergrad Intern" image="siqi_zhu.jpg" academic="https://github.com/zhusq20" twitter="https://x.com/Oliver65097212">}}
+
 {{< /lab_members_grid >}}
 
 ### Alumni
