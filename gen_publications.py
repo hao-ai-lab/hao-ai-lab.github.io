@@ -9,12 +9,15 @@ def convert_json_to_hugo(publications):
         year = publication["date"].split("/")[1]
         if publication["venue"]:
             venue_year = publication["venue"].split(" ")[-1]
-            if int(venue_year) > 2010:
-                year = venue_year
+            try:
+                if int(venue_year) > 2010:
+                    year = venue_year
+            except ValueError as e:
+                print(f"The publication {publication} has year {venue_year} wrong")
+                raise e
         publications_by_year[year].append(publication)
     # Sort years in descending order
     sorted_years = sorted(publications_by_year.keys(), reverse=True)
-    print(sorted_years)
     # Format publications for Hugo
     hugo_output = ""
     for year in sorted_years:

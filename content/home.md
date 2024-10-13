@@ -24,7 +24,7 @@ We also develop and maintain open-source models and systems to democratize the a
 <!-- 🎉 -->
 
 {{< newsEntry >}}
-🎉🎉 In 2024, We have 1 ICLR, 1 OSDI, 6 ICML, 1 ACL, 1 COLM papers. Kudos to our lab members for a productive year!
+🎉🎉 In 2024, We have 1 ICLR, 1 OSDI, 6 ICML, 1 ACL, 1 COLM papers, 1 EMNLP, and 2 NeurIPS papers. Kudos to our lab members for a productive year!
 {{< /newsEntry >}}
 
 {{< newsEntry >}}

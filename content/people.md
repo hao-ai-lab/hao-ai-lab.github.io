@@ -26,6 +26,7 @@ summary: people
 {{< lab_member name="Anze Xie" role="Master's" image="anze_xie.jpg" twitter="https://twitter.com/AnzeXie">}}
 
 {{< lab_member name="Longfei Yun" role="Master's" image="longfei_yun.jpg" twitter="https://twitter.com/longfei_yu78793">}}
+
 {{< /lab_members_grid >}}
 
 ### Alumni
