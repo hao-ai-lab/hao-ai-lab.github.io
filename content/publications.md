@@ -7,6 +7,10 @@ summary: publications
 
 ### 2024
 
+{{< publication title="GameArena: Evaluating LLM Reasoning through Live Computer Games" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2412.06394" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Evaluation" >}}
+Yichao Fu, Siqi Zhu, Runlong Su, Aurick Qiao, Ion Stoica, Hao Zhang
+{{< /publication >}}
+
 {{< publication title="Efficient LLM Scheduling by Learning to Rank" venue="NeurIPS 2024" paperLink="https://arxiv.org/pdf/2408.15792" codeLink="https://github.com/hao-ai-lab/vllm-ltr" award="" project="" data-topic="Selected, Large Language Models, Scalable ML" >}}
 Yichao Fu, Siqi Zhu, Runlong Su, Aurick Qiao, Ion Stoica, Hao Zhang
 {{< /publication >}}
