@@ -15,7 +15,7 @@ summary: people
 
 {{< lab_member name="Jiangfei Duan" role="Visiting PhD Student" image="jiangfei_duan.png" academic="https://jf-d.github.io/" twitter="https://x.com/jiangfeiduan">}}
 
-{{< lab_member name="Yichao Fu" role="PhD Student" image="llama_placeholder.png" academic="https://github.com/Viol2000" twitter="https://x.com/fuyichao123">}}
+{{< lab_member name="Yichao Fu" role="PhD Student" image="yichao_fu.jpg" academic="https://github.com/Viol2000" twitter="https://x.com/fuyichao123">}}
 
 {{< lab_member name="Lanxiang Hu" role="PhD Student" image="lanxiang_hu.jpg" academic="https://snyhlxde1.github.io/" twitter="https://twitter.com/Lanxiang_Hu" >}}
 
