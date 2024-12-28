@@ -6,6 +6,9 @@ summary: publications
 ---
 
 ### 2024
+{{< publication title="Specifications: The missing link to making the development of LLM systems an engineering discipline" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2412.05299" codeLink="" award="" project="" data-topic="Selected, Large Language Models, ML Systems" >}}
+Ion Stoica, Matei Zaharia, Joseph Gonzalez, Ken Goldberg, Koushik Sen, Hao Zhang, Anastasios N. Angelopoulos, Shishir G. Patil, Lingjiao Chen, Wei-Lin Chiang, Jared Q. Davis
+{{< /publication >}}
 
 {{< publication title="GameArena: Evaluating LLM Reasoning through Live Computer Games" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2412.06394" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Evaluation" >}}
 Lanxiang Hu*, Qiyu Li*, Anze Xie*, Nan Jiang, Ion Stoica, Haojian Jin, Hao Zhang

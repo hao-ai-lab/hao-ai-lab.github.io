@@ -24,6 +24,10 @@ We also develop and maintain open-source models and systems to democratize the a
 <!-- 🎉 -->
 
 {{< newsEntry >}}
+**12/2024**: We released the [FastVideo project](https://github.com/hao-ai-lab/FastVideo) with [FastHunyuan](https://huggingface.co/FastVideo/FastHunyuan) and [FastMochi](https://huggingface.co/FastVideo/FastMochi) models to accelerate video DiTs.
+{{< /newsEntry >}}
+
+{{< newsEntry >}}
 🎉🎉 In 2024, We have 1 ICLR, 1 OSDI, 6 ICML, 1 ACL, 1 COLM papers, 1 EMNLP, and 2 NeurIPS papers. Kudos to our lab members for a productive year!
 {{< /newsEntry >}}
 
