@@ -51,7 +51,7 @@ summary: people
 
 {{< lab_member name="Haoyang Yu" role="Undergrad Intern" image="haoyang_yu.jpeg" academic="https://www.linkedin.com/in/haoyang-yu-8b1997257/">}}
 
-{{< lab_member name="Yuxuan Zhang" role="Undergrad Intern" image="llama_placeholder.png" academic="https://yuxuan-zhang-dexter.github.io/">}}
+{{< lab_member name="Yuxuan Zhang" role="Undergrad Intern" image="yuxuan_zhang.jpg" academic="https://yuxuan-zhang-dexter.github.io/">}}
 
 {{< lab_member name="Siqi Zhu" role="Undergrad Intern" image="siqi_zhu.jpg" academic="https://github.com/zhusq20" twitter="https://x.com/Oliver65097212">}}
 
