@@ -27,6 +27,8 @@ summary: people
 
 {{< lab_member name="Minghang Deng" role="Master's" image="minghang_deng.jpg" academic="https://www.linkedin.com/in/minghang-deng">}}
 
+{{< lab_member name="Zheyu Fu" role="Master's" image="zheyu_fu.jpg" academic="https://www.linkedin.com/in/zheyu-fu-1b4667231/">}}
+
 {{< lab_member name="Sirui (Laurel) Li" role="Master's" image="sirui_li.jpg" academic="https://www.linkedin.com/in/sirui-li-gege0803/">}}
 
 {{< lab_member name="Ashwin Ramachandran" role="Master's" image="ashwin_ramachandran.jpg" academic="https://ashwinramachandran2002.github.io/">}}
@@ -44,8 +46,6 @@ summary: people
 {{< lab_member name="Yongqi Chen" role="Undergrad Intern" image="yongqi_chen.jpg" academic="https://www.linkedin.com/in/yongqi-chen-187342258/">}}
 
 {{< lab_member name="Hangliang Ding" role="Undergrad Intern" image="hangliang_ding.jpeg" academic="https://scholar.google.com/citations?user=LxPRowMAAAAJ&hl=en">}}
-
-{{< lab_member name="Zheyu Fu" role="Undergrad Intern" image="zheyu_fu.jpg" academic="https://www.linkedin.com/in/zheyu-fu-1b4667231/">}}
 
 {{< lab_member name="Jason Kong" role="Undergrad Intern" image="jason_kong.jpg" academic="https://www.jasonkongie.com/" twitter="https://x.com/JasonkongLLM">}}
 
