@@ -41,11 +41,11 @@ summary: people
 
 {{< lab_member name="Anze Xie" role="Research Intern" image="anze_xie.jpg" academic="https://www.linkedin.com/in/anze-xie-8174b5197/" twitter="https://twitter.com/AnzeXie">}}
 
-{{< lab_member name="Yongqi Chen" role="Undergrad Intern" image="llama_placeholder.png" academic="https://www.linkedin.com/in/yongqi-chen-187342258/">}}
+{{< lab_member name="Yongqi Chen" role="Undergrad Intern" image="yongqi_chen.jpg" academic="https://www.linkedin.com/in/yongqi-chen-187342258/">}}
 
 {{< lab_member name="Hangliang Ding" role="Undergrad Intern" image="hangliang_ding.jpeg" academic="https://scholar.google.com/citations?user=LxPRowMAAAAJ&hl=en">}}
 
-{{< lab_member name="Zheyu Fu" role="Undergrad Intern" image="llama_placeholder.png">}}
+{{< lab_member name="Zheyu Fu" role="Undergrad Intern" image="zheyu_fu.jpg" academic="https://www.linkedin.com/in/zheyu-fu-1b4667231/">}}
 
 {{< lab_member name="Jason Kong" role="Undergrad Intern" image="jason_kong.jpg" academic="https://www.jasonkongie.com/" twitter="https://x.com/JasonkongLLM">}}
 
