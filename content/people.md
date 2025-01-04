@@ -39,11 +39,11 @@ summary: people
 
 {{< lab_member name="Daniel Zhao" role="Master's" image="daniel_zhao.png" academic="https://astradzhao.github.io/" twitter="https://x.com/astradzhao">}}
 
+{{< lab_member name="Yongqi Chen" role="Research Intern" image="yongqi_chen.jpg" academic="https://www.linkedin.com/in/yongqi-chen-187342258/">}}
+
 {{< lab_member name="Tony Meng" role="Research Intern" image="tony_meng.jpeg" academic="https://tonyqm.github.io">}}
 
 {{< lab_member name="Anze Xie" role="Research Intern" image="anze_xie.jpg" academic="https://www.linkedin.com/in/anze-xie-8174b5197/" twitter="https://twitter.com/AnzeXie">}}
-
-{{< lab_member name="Yongqi Chen" role="Undergrad Intern" image="yongqi_chen.jpg" academic="https://www.linkedin.com/in/yongqi-chen-187342258/">}}
 
 {{< lab_member name="Hangliang Ding" role="Undergrad Intern" image="hangliang_ding.jpeg" academic="https://scholar.google.com/citations?user=LxPRowMAAAAJ&hl=en">}}
 
