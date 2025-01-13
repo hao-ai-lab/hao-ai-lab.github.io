@@ -36,7 +36,7 @@ As shown in Figure 1, a long request can block short requests and introduce seve
 
 In traditional computer systems, it is well-established that algorithms like shortest-job-first (SJF) and the preemptive version shortest-remaining-time-first (SRTF) minimize the average latency by prioritizing shorter tasks. However, SJF/SRTF are seldom implemented in LLM services due to the aforementioned challenge: they require requests to be ordered by their remaining generation lengths, which is traditionally considered impossible to predict in advance.
 
-However, our key insight is that implementing SJF/SRTF-like scheduling doesn't require exact length predictions - correctly ranking request lengths in advance is sufficient.
+Our key insight is that implementing SJF/SRTF-like scheduling doesn't require exact length predictions - correctly ranking request lengths in advance is sufficient.
 
 
 ## LLM Scheduling by Learning To Rank
