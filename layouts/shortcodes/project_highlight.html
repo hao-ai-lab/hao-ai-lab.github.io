@@ -1,0 +1,189 @@
+<section class="blog-carousel">
+    <div id="homeBlogCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        {{ $posts := where .Site.RegularPages "Section" "summary" }}
+        {{ range $index, $post := $posts }}
+        {{ if eq (mod $index 2) 0 }}
+        <div class="carousel-item {{ if eq $index 0 }}active{{ end }}">
+          <div class="row gx-4"> <!-- Add consistent spacing between items -->
+        {{ end }}
+            <div class="col-6"> <!-- Two cards per slide -->
+              <div class="card blog-card">
+                <!-- Image at the top -->
+                <img src="{{ $post.Params.cover.image }}" class="card-img-top blog-image" alt="{{ $post.Params.cover.alt }}">
+  
+                <!-- Card content -->
+                <div class="card-body">
+                  <h5 class="card-title blog-title">{{ $post.Title }}</h5>
+                  <p class="blog-date">{{ .Date | time.Format "January 2, 2006" }}</p>
+                  <button class="btn btn-primary blog-button" data-bs-toggle="modal" data-bs-target="#modal{{ $index }}">
+                    View Details
+                  </button>
+                </div>
+              </div>
+            </div>
+        {{ if eq (mod (add $index 1) 2) 0 }}
+          </div>
+        </div>
+        {{ end }}
+        {{ end }}
+        {{ if ne (mod (len $posts) 2) 0 }}
+          </div>
+        </div>
+        {{ end }}
+      </div>
+      <button class="carousel-control-prev custom-carousel-control" type="button" data-bs-target="#homeBlogCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next custom-carousel-control" type="button" data-bs-target="#homeBlogCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+      
+    </div>
+  </section>
+  
+  
+  
+  
+
+  {{ range $index, $post := $posts }}
+  <div class="modal fade" id="modal{{ $index }}" tabindex="-1" aria-labelledby="modalLabel{{ $index }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLabel{{ $index }}">{{ $post.Title }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img src="{{ $post.Params.cover.image }}" class="img-fluid mb-3" alt="{{ $post.Params.cover.alt }}">
+          <p class="blog-date">{{ .Date | time.Format "January 2, 2006" }}</p>
+          <div>{{ $post.Content | safeHTML }}</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a href="http://localhost:1313/blogs/{{ $post.Params.urlblog }}/" class="btn btn-primary">Read Full Post</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{ end }}
+  
+  
+  
+
+  
+
+  <style>
+        /* General styling for the blog cards */
+    .blog-card {
+      border: 1px solid #ddd; /* Light border for separation */
+      border-radius: 10px; /* Rounded corners */
+      box-shadow: 0 4px 8px rgba(95, 95, 95, 0.1); /* Subtle shadow */
+      overflow: hidden; /* Prevent content overflow */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column; /* Align content vertically */
+    }
+
+    .blog-card:hover {
+      transform: translateY(-5px); /* Slight lift on hover */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+    }
+
+    /* Styling for the images */
+    .blog-image {
+      height: 250px; /* Consistent image height */
+      object-fit: cover; /* Crop and center images */
+      border-bottom: 1px solid #ddd; /* Separate image from text */
+      width: 100%; /* Full width */
+    }
+
+    /* Card content spacing */
+    .card-body {
+      padding: 20px;
+      text-align: center; /* Center-align the text */
+    }
+
+    /* Title styling */
+    .blog-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #333; /* Darker text for better contrast */
+    }
+
+    /* Date styling */
+    .blog-date {
+      font-size: 14px;
+      color: #777; /* Muted color for the date */
+      margin-bottom: 15px;
+    }
+
+    /* Button styling */
+    .blog-button {
+      background-color: #007bff; /* Standard Bootstrap blue */
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    .blog-button:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+
+    /* Carousel controls */
+    .blog-carousel .carousel-control-prev,
+    .blog-carousel .carousel-control-next {
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Show controls only when hovering */
+    .blog-carousel:hover .carousel-control-prev,
+    .blog-carousel:hover .carousel-control-next,
+    .blog-carousel .carousel-control-prev:focus,
+    .blog-carousel .carousel-control-next:focus {
+      opacity: 1 !important; /* Ensure it remains visible after clicking */
+    }
+
+    /* Hide controls again when mouse leaves the carousel */
+    .blog-carousel:not(:hover) .carousel-control-prev,
+    .blog-carousel:not(:hover) .carousel-control-next {
+      opacity: 0;
+    }
+
+    /* Make arrows white */
+    .blog-carousel .carousel-control-prev-icon,
+    .blog-carousel .carousel-control-next-icon {
+      filter: invert(100%);
+    }
+
+
+    .carousel .card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .carousel .card-img-top {
+      object-fit: cover;
+      height: 200px;
+    }
+    .carousel .card-body {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+  </style>

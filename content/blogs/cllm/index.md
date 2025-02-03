@@ -13,7 +13,7 @@ draft = false
       name = "github"
       url = "https://github.com/hao-ai-lab/Consistency_LLM"
 [cover]
-      image = "img/objective_illustration_global.jpg"
+      image = "/img/objective_illustration_global.jpg"
       alt = "jacobi trajectory"
       caption = "An instance of Jacobi trajectory and an illustration of the global consistency loss learning objective."
 +++

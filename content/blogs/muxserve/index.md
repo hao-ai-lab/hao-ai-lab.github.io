@@ -6,7 +6,7 @@ author = "Jiangfei Duan, Runyu Lu, Haojie Duanmu, Xiuhong Li, Xingcheng Zhang, D
 ShowReadingTime = true
 draft = false
 [cover]
-      image = "img/muxserve_cover.gif"
+      image = "/img/muxserve_cover.gif"
       alt = "MuxServe"
       caption = "The workflow of serving 2 LLMs with flexible spatal-temporal multiplexing."
 +++

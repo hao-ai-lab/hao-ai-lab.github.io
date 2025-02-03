@@ -13,7 +13,7 @@ draft = false
       name = "github"
       url = "https://github.com/hao-ai-lab/vllm-ltr"
 [cover]
-      image = "img/llm-ltr-cover.jpg"
+      image = "/img/llm-ltr-cover.jpg"
       alt = "llm-ltr-cover"
 +++
 

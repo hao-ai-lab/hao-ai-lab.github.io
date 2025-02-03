@@ -1,0 +1,62 @@
+<section class="talks-carousel">
+  <div id="talksCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      {{ range $index, $talk := .Site.Data.talks }}
+      <div class="carousel-item {{ if eq $index 0 }}active{{ end }}">
+        <div class="card">
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ $talk.title }}</h5>
+            <div class="video-container">
+              <iframe 
+                width="100%" 
+                height="315" 
+                src="{{ $talk.url }}" 
+                title="{{ $talk.title }}" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+              </iframe>
+            </div>
+            <p class="card-text">{{ $talk.description }}</p>
+          </div>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+    <button class="carousel-control-prev" href="#talksCarousel" role="button" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" href="#talksCarousel" role="button" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</section>
+
+
+<style>
+.talks-carousel .carousel-control-prev,
+.talks-carousel .carousel-control-next {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent black */
+  border-radius: 50%; /* Make it circular */
+  width: 50px; /* Adjust size */
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.talks-carousel:hover .carousel-control-prev,
+.talks-carousel:hover .carousel-control-next {
+  opacity: 1;
+}
+
+.talks-carousel .carousel-control-prev-icon,
+.talks-carousel .carousel-control-next-icon {
+  filter: invert(100%); /* Make arrows white */
+}
+
+</style>
