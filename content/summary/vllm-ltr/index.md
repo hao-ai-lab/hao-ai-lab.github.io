@@ -6,6 +6,7 @@ author = "Yichao Fu, Siqi Zhu, Runlong Su, Aurick Qiao, Ion Stoica, Hao Zhang"
 ShowReadingTime = true
 urlblog = "vllm-ltr"
 draft = false
+type= "summary"
 [socialIcons]
     [[socialIcons.icon]]
       name = "twitter"

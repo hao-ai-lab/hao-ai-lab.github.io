@@ -5,6 +5,7 @@ authors = ["Jiangfei Duan", "Runyu Lu", "Haojie Duanmu", "Xiuhong Li", "Xingchen
 author = "Jiangfei Duan, Runyu Lu, Haojie Duanmu, Xiuhong Li, Xingcheng Zhang, Dahua Lin, Ion Stoica, Hao Zhang"
 ShowReadingTime = true
 draft = false
+type= "summary"
 
 urlblog = "muxserve"
 [cover]

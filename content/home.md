@@ -26,19 +26,19 @@ We also develop and maintain open-source models and systems to democratize the a
 &emsp;
 
 
-### **Project highlight**
+## **Project Highlight**
 {{< project_highlight >}}
 
 
 &emsp;
 
-### **Talks**
+## **Talks**
 
 {{< talks_section >}}
 
 
 &emsp;
 
-### **News**
+## **News**
 
 {{< news_timeline >}}

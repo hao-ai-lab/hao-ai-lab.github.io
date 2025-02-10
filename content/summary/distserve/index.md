@@ -6,6 +6,7 @@ author = "Yinmin Zhong, Junda Chen, Shengyu Liu, Yibo Zhu, Xin Jin, Hao Zhang"
 ShowReadingTime = true
 draft = false
 urlblog = "distserve"
+type= "summary"
 [cover]
     image = "/img/distserve_anime-crop.gif"
     alt = "DistServe"

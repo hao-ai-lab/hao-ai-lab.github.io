@@ -6,6 +6,7 @@ author = "Siqi Kou*, Lanxiang Hu*, Zhezhi He, Zhijie Deng, Hao Zhang"
 ShowReadingTime = true
 draft = false 
 urlblog = "cllm"
+type= "summary"
 [socialIcons]
     [[socialIcons.icon]]
       name = "twitter"
