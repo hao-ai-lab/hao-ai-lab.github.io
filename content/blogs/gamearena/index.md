@@ -5,7 +5,7 @@ authors = ["Game Arena Team"]
 author = "Game Arena Team"
 ShowReadingTime = true
 draft = false
-redirect_url = "https://lmgame.org/blog/ai_space_escape"
+redirect_url = "https://lmgame.org/#/blog/ai_space_escape"
 [cover]
       image = "img/gamearena/cover.jpg"
       alt = "ai_space_escape"
