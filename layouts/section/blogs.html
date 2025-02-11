@@ -26,7 +26,7 @@
     {{- end -}}
     <div class="post-details">
       {{- if .Params.redirect_url -}}
-        <h2><a href="{{ .Params.redirect_url }}">{{ .Title }}</a></h2>
+        <h2><a href="{{ .Params.redirect_url }}" style="color: black !important;">{{ .Title }}</a></h2>
       {{- else -}}
         <h2><a href="{{ .Permalink }}" style="color: black !important;">{{ .Title }}</a></h2>
       {{- end -}}
