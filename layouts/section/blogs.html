@@ -14,7 +14,7 @@
 </header>
 {{- end -}}
 
-{{- $pages := where .Site.RegularPages "Type" "in" (slice "summary") -}}
+{{- $pages := where .Site.RegularPages "Type" "in" (slice "blogs") -}}
 {{- $paginator := .Paginate $pages -}}
 <div class="posts-list">
   {{- range $paginator.Pages -}}

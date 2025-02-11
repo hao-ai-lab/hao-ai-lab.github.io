@@ -14,29 +14,85 @@
 </header>
 {{- end -}}
 
-{{- $pages := where .Site.RegularPages "Type" "in" (slice "summary") -}}
-{{- $paginator := .Paginate $pages -}}
-<div class="posts-list">
+<!-- Add CSS inside the template -->
+<style>
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Three posts per row */
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .post-preview {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+    padding: 15px;
+  }
+
+  .post-preview:hover {
+    transform: translateY(-5px);
+  }
+
+  .post-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .post-details {
+    padding: 15px;
+  }
+
+  .post-details h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .post-details p {
+    font-size: 1rem;
+    color: #555;
+  }
+
+  @media (max-width: 1024px) {
+    .posts-grid {
+      grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
+    }
+  }
+
+  @media (max-width: 768px) {
+    .posts-grid {
+      grid-template-columns: repeat(1, 1fr); /* One column for small screens */
+    }
+  }
+</style>
+
+<!-- Updated layout for three-column grid -->
+<div class="posts-grid">
+  {{- $pages := where .Site.RegularPages "Type" "in" (slice "summary") -}}
+  {{- $paginator := .Paginate $pages -}}
   {{- range $paginator.Pages -}}
   <article class="post-preview">
-    {{- with .Params.cover.image -}} <!-- Updated path to access cover image -->
+    {{- with .Params.cover.image -}}
     <div class="post-image">
-      <img src="{{ . | absURL }}" alt="{{ $.Params.cover.alt }}"> <!-- Use absURL for proper path resolution -->
+      <img src="{{ . | absURL }}" alt="{{ $.Params.cover.alt }}">
     </div>
     {{- end -}}
     <div class="post-details">
       <h2><a href="{{ .Permalink }}" style="color: black !important;">{{ .Title }}</a></h2>
       <time datetime="{{ .Date }}">{{ .Date.Format "January 2, 2006" }}</time>
-      {{- if .Params.author -}} <!-- Check for single author -->
+      {{- if .Params.author -}}
       <p class="post-author"> {{ .Params.author }}</p>
-      {{- else if .Params.authors -}} <!-- Check for multiple authors -->
+      {{- else if .Params.authors -}}
       <p class="post-author"> {{ delimit .Params.authors ", " }}</p>
-      <p style="text-align: justify;">{{ .Summary | markdownify }}</p>
       {{- end -}}
     </div>
   </article>
   {{- end -}}
 </div>
+
 {{- if gt $paginator.TotalPages 1 -}}
 <footer class="pagination-footer">
   {{ template "_internal/pagination.html" . }}
