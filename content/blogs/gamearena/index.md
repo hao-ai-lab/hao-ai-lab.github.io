@@ -7,7 +7,7 @@ ShowReadingTime = true
 draft = false
 redirect_url = "https://lmgame.org/blog/ai_space_escape"
 [cover]
-      image = "img/objective_illustration_global.jpg"
-      alt = "jacobi trajectory"
-      caption = "An instance of Jacobi trajectory and an illustration of the global consistency loss learning objective."
+      image = "img/gamearena/cover.jpg"
+      alt = "ai_space_escape"
+      caption = "We developed a live Roblox game, AI Space Escape, powered by state-of-the-art large language models (LLMs), offering a unique experience to reason with AI."
 +++
