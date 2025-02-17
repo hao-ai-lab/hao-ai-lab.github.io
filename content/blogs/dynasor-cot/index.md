@@ -43,14 +43,14 @@ LLMs with extended Chain-of-Thought (CoT) reasoning, such as DeepSeek-R1 and Ope
 One major source of this inefficiency stems from our observation that LLMs hesitate, a phenomenon we call *self-doubt*: models often reach the correct answer early but engage in extended verification behaviors such as double-checking, reassessment, re-verification, and so on. Such self-doubt patterns can lead to significantly increased token consumption. For instance, Figure 3 compares the traditional Qwen-7B model with a reasoning Deepseek-distilled Qwen-7B model on a simple question. While the traditional model reaches its answer in 180 tokens, the reasoning model expends 1K tokens on iterative verification steps but already got the correct answer at token 340.
 {{< /justify >}}
 
-{{< image src="img/example-hesitation.png" alt="hesitation" width="90%" title="Figure 3: An example answer from reasoning model (Deepseek-distilled Qwen-2.5 7B) vs traditional model (Qwen-2.5 7B) on one of the problem in MATH500 dataset.">}}
+{{< image src="img/example-hesitation.png" alt="hesitation" width="100%" title="Figure 3: An example answer from reasoning model (Deepseek-distilled Qwen-2.5 7B) vs traditional model (Qwen-2.5 7B) on one of the problem in MATH500 dataset.">}}
 
 {{< justify >}}
 To systematically investigate this phenomenon, we developed a "Probe-In-The-Middle" technique (or "Probe" for short) that extracts the model's intermediate thinking by appending specific prompts such as "Oh, I suddenly got the answer to the whole problem, Final Answer: boxed\{". Figure 4 shows the analysis of the accuracy comparing directly asking vs probing the model. Taking AMC23 as an example, reasoning models frequently arrive at correct answers early (median: 830 tokens), but continue generating unnecessary tokens due to self-doubt (median: 2.7K tokens). This self-doubt phenomenon significantly impacts token efficiency, as models continue reasoning despite having internal confidence in their answers. Our key insight is that LLMs exhibit detectable levels of certainty during their reasoning process, which can be leveraged to determine effective stopping points.
 {{< /justify >}}
 
 
-{{< image src="img/r1_amc_standard_1.png" alt="token-deprivation" width="90%" title="Figure 4: DeepSeek R1 performance on AMC23 and AIME24 (lowest to highest scores over 10 attempts) at varying token budgets. (Left) Standard reasoning with late answer outputs. (Right) Early answer extraction using Probe-In-The-Middle technique, demonstrating equivalent accuracy with 50% token reduction.">}}
+{{< image src="img/r1_amc_standard_1.png" alt="token-deprivation" width="100%" title="Figure 4: DeepSeek R1 performance on AMC23 and AIME24 (lowest to highest scores over 10 attempts) at varying token budgets. (Left) Standard reasoning with late answer outputs. (Right) Early answer extraction using Probe-In-The-Middle technique, demonstrating equivalent accuracy with 50% token reduction. The intuition from these heatmaps is that greener regions at the same token budget indicate earlier arrival at correct answers - the notably greener right panels suggest the model actually knows the answers much earlier than shown in standard reasoning.">}}
 
 
 
@@ -118,7 +118,11 @@ Dynasor is a system optimized for LLM reasoning algorithms, built upon the Certa
 ### Higher Token Efficiency with Dynasor-CoT
 
 {{< justify >}}
-We evaluate our certainty-based early termination method Dynasor-CoT against baseline uniform token allocation across multiple scales of distilled DeepSeek models (7B, 14B, and 32B) on mathematical reasoning benchmarks AIME24 and AMC23, and MATH500. Unlike the baseline approach that uniformly increases token budgets, our method enables early termination by monitoring model certainty at various intervals. As illustrated in Figure 6, we evaluate variable probing intervals (32, 64, and so on) represented by distinct colored lines, with a maximum token budget of 16K. For each interval, we vary the early termination parameter N (the required number of consecutive consistent answers), generating different points along each line. All configurations achieve significant token savings, with our approach reducing token usage by up to 29\% while maintaining comparable accuracy to the baseline. For fair comparison, appropriate accuracy thresholds were calibrated to model scale - with 32B models evaluated against stricter thresholds above QwQ levels and reduced thresholds for smaller models - while setting higher targets for simpler tasks where greater accuracy is achievable. For the 10\% of problems where our method achieves the highest token reduction, we observe savings of 34\% on AIME and 53\% on MATH500. This extends further for the top 1\% of problems, where we achieve even more substantial reductions of 53\% on AIME and 81\% on MATH500. These results, particularly the substantial token savings on certain problems (up to 81\% reduction), demonstrate our method's ability to adapt token allocation to different problem types. This variable performance shows the advantage of our dynamic approach over fixed token budgets, as problems vary in their token requirements for reaching solutions.
+We evaluate our certainty-based early termination method Dynasor-CoT against baseline uniform token allocation across multiple scales of distilled DeepSeek models (7B, 14B, and 32B) on mathematical reasoning benchmarks AIME24 and AMC23, and MATH500. Unlike the baseline approach that uniformly increases token budgets, our method enables early termination by monitoring model certainty at various intervals. As illustrated in Figure 6, we evaluate variable probing intervals (32, 64, and so on) represented by distinct colored lines, with a maximum token budget of 16K. For each interval, we vary the early termination parameter N (the required number of consecutive consistent answers), generating different points along each line. All configurations achieve significant token savings, with our approach reducing token usage by up to 29\% while maintaining comparable accuracy to the baseline. For fair comparison, appropriate accuracy thresholds were calibrated to model scale - with 32B models evaluated against stricter thresholds above QwQ levels and reduced thresholds for smaller models - while setting higher targets for simpler tasks where greater accuracy is achievable. 
+{{< /justify >}}
+
+{{< justify >}}
+For the 10\% of problems where our method achieves the highest token reduction, we observe savings of 34\% on AIME and 53\% on MATH500. This extends further for the top 1\% of problems, where we achieve even more substantial reductions of 53\% on AIME and 81\% on MATH500. These results, particularly the substantial token savings on certain problems (up to 81\% reduction), demonstrate our method's ability to adapt token allocation to different problem types. This variable performance shows the advantage of our dynamic approach over fixed token budgets, as problems vary in their token requirements for reaching solutions.
 {{< /justify >}}
 
 {{< image src="img/token_deprivation_comparison_01.jpg" alt="result-main" width="100%" title="Figure 7: Comparing Dynasor-CoT Performance Across Model Scales and Datasets">}}
@@ -129,12 +133,6 @@ To validate scalability, we extended our experiments to the larger DeepSeek-R1 m
 
 {{< image src="img/token_deprivation_comparison_r1_01.jpg" alt="result-r1" width="100%" title="Figure 8: Applying Dynasor-CoT on DeepSeek-R1">}}
 
-{{< justify >}}
-We conduct ablation studies across MATH500, AIME24, and AMC23 using DeepSeek Distill 32B to evaluate our framework's components. Our analysis compares four configurations: (1) baseline (uniform token budget), (2) baseline + probing, (3) our certainty-based early exit without post-generation validation, and (4) our full Dynasor-CoT framework. Results (Figure 9) demonstrate that both the basic probe implementation and the version without validation achieve lower token efficiency compared to our complete framework across all settings.
-{{< /justify >}}
-
-
-{{< image src="img/ablation_study_dynasor_cot_01.jpg" alt="result-r1" width="100%" title="Figure 9: Effectiveness of Components using DeepSeek Distill 32B on mathematic datasets">}}
 
 
 ## Get started
