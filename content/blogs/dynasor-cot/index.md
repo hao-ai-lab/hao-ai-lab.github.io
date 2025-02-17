@@ -36,13 +36,13 @@ The method is **plug-and-play, requiring no model modifications or training**, b
 ## Self-Doubt in Reasoning LLMs
 
 {{< justify >}}
-Recent advances in large language models (LLMs) with long Chain-of-Thought (CoT) reasoning capabilities, such as DeepSeek-R1 and OpenAI o1/o3, have demonstrated remarkable performance on complex tasks (e.g., math and code). However, compared to previous LLMs, these models exhibit markedly lower token efficiency—requiring more tokens to achieve comparable accuracy—as shown in Figure 2.
+LLMs with extended Chain-of-Thought (CoT) reasoning, such as DeepSeek-R1 and OpenAI o1/o3, excel at complex math and code. However, they exhibit markedly *lower token efficiency* -- requiring more tokens to achieve the same accuracy as earlier models -- as shown in Figure 2.
 {{< /justify >}}
 
 {{< image src="img/accuracy_vs_tokens_01.jpg" alt="efficiency_curve" width="40%" title="Figure 2: The token efficiency curve for the traditional model is much steeper than reasoning model.">}}
 
 {{< justify >}}
-One major source of this inefficiency stems from our observation that LLMs hesitate, a phenomenon we call self-doubt: models often reach the correct answer early but engage in extended verification behaviors such as double-checking, reassessment, re-verification, and so on. Such self-doubt patterns can lead to significantly increased token consumption. For instance, Figure 3 compares the traditional Qwen-7B model with a reasoning Deepseek-distilled Qwen-7B model on a simple question. While the traditional model reaches its answer in 180 tokens, the reasoning model expends 1K tokens on iterative verification steps but already got the correct answer at token 340.
+One major source of this inefficiency stems from our observation that LLMs hesitate, a phenomenon we call *self-doubt*: models often reach the correct answer early but engage in extended verification behaviors such as double-checking, reassessment, re-verification, and so on. Such self-doubt patterns can lead to significantly increased token consumption. For instance, Figure 3 compares the traditional Qwen-7B model with a reasoning Deepseek-distilled Qwen-7B model on a simple question. While the traditional model reaches its answer in 180 tokens, the reasoning model expends 1K tokens on iterative verification steps but already got the correct answer at token 340.
 {{< /justify >}}
 
 {{< image src="img/example-hesitation.png" alt="hesitation" width="70%" title="Figure 3: An example answer from reasoning model (Deepseek-distilled Qwen-2.5 7B) vs traditional model (Qwen-2.5 7B) on one of the problem in MATH500 dataset.">}}
