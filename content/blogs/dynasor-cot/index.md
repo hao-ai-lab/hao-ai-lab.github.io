@@ -22,7 +22,11 @@ draft = false
 
 {{< justify >}}
 
-**TL;DR:** Reasoning models often exhibit poor token efficiency, with self-doubt appearing as one significant factor --- models frequently spend excessive tokens verifying already-correct answers. Using our Probe-In-The-Middle technique to analyze model states during reasoning, we propose **Dynasor-CoT**, a certainty-based approach for dynamic reasoning termination. The method is completely training-free and plug-and-play, requiring no model modifications or fine-tuning. We efficiently achieves up to 29\% token reduction while maintaining accuracy across mathematical reasoning tasks like AMC23, AIME24, and MATH500. Try our [demo](https://e4d417385887b7e801.gradio.live) now!
+**TL;DR:** We observe reasoning models often exhibit poor token efficiency: they waste many tokens second-guessing themselves. We develop **Dynasor-CoT**, a certainty-based approach for dynamically allocating inference compute for reasoning models. 
+The intuition is that ....
+The method is **plug-and-play, requiring no model modifications or training**, but slashes token usage by up to 29% without sacrificing accuracy on benchmarks like AMC23, AIME24, and MATH500. 
+
+Try our [demo](https://e4d417385887b7e801.gradio.live) now!
 
 {{< /justify >}}
 
