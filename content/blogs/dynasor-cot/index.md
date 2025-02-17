@@ -1,6 +1,6 @@
 +++
 title = "Reasoning Without Hesitating: More Efficient Chain-of-Thought Through Certainty Probing"
-date = 2000-02-16T12:00:00-08:00
+date = 2025-02-16T12:00:00-08:00
 authors = ["Yichao Fu", "Junda Chen", "Yonghao Zhuang", "Zheyu Fu", "Ion Stoica", "Hao Zhang"]
 author = "Yichao Fu, Junda Chen, Yonghao Zhuang, Zheyu Fu, Ion Stoica, Hao Zhang"
 ShowReadingTime = true
@@ -26,7 +26,7 @@ draft = false
 The intuition is that ....
 The method is **plug-and-play, requiring no model modifications or training**, but slashes token usage by up to 29% without sacrificing accuracy on benchmarks like AMC23, AIME24, and MATH500. 
 
-Try our [demo](https://e4d417385887b7e801.gradio.live) now!
+🚀👉Try our [demo](https://e4d417385887b7e801.gradio.live) now!
 
 {{< /justify >}}
 
