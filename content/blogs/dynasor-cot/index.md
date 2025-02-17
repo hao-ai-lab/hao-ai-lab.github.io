@@ -22,7 +22,7 @@ draft = false
 
 {{< justify >}}
 
-**TL;DR:** We observe reasoning models often exhibit poor token efficiency: they waste many tokens second-guessing themselves. We develop **Dynasor-CoT**, a certainty-based approach for dynamically allocating inference compute for reasoning models. The intuition is that by probing reasoning models at intermediate steps, we can identify and early terminate problems where they maintain consistently high certainty in their answers. The method is **plug-and-play, requiring no model modifications or training**, but matches baseline accuracy while reducing token consumption by up to 29% on benchmarks like AMC23, AIME24, and MATH500.
+**TL;DR:** We observe reasoning models often exhibit poor token efficiency: they waste many tokens second-guessing themselves. We develop **Dynasor-CoT**, a certainty-based approach for dynamically allocating inference compute for reasoning models. The intuition is that by probing reasoning models at intermediate steps, we can identify and early terminate problems where they maintain consistently high certainty in their answers. The method is **plug-and-play, requiring no model modifications or training**, but matches baseline accuracy on benchmarks like AMC23, AIME24, and MATH500 while reducing token consumption by 29% dataset-wide and up to 81% for single problems.
 
 🚀👉Try our [demo](https://e4d417385887b7e801.gradio.live) now!
 
