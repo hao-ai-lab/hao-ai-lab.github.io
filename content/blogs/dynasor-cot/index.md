@@ -22,9 +22,7 @@ draft = false
 
 {{< justify >}}
 
-**TL;DR:** We observe reasoning models often exhibit poor token efficiency: they waste many tokens second-guessing themselves. We develop **Dynasor-CoT**, a certainty-based approach for dynamically allocating inference compute for reasoning models. 
-The intuition is that ....
-The method is **plug-and-play, requiring no model modifications or training**, but slashes token usage by up to 29% without sacrificing accuracy on benchmarks like AMC23, AIME24, and MATH500. 
+**TL;DR:** We observe reasoning models often exhibit poor token efficiency: they waste many tokens second-guessing themselves. We develop **Dynasor-CoT**, a certainty-based approach for dynamically allocating inference compute for reasoning models. The intuition is that by probing reasoning models at intermediate steps, we can identify and early terminate problems where they maintain consistently high certainty in their answers. The method is **plug-and-play, requiring no model modifications or training**, but slashes token usage by up to 29% without sacrificing accuracy on benchmarks like AMC23, AIME24, and MATH500. 
 
 🚀👉Try our [demo](https://e4d417385887b7e801.gradio.live) now!
 
@@ -45,14 +43,14 @@ LLMs with extended Chain-of-Thought (CoT) reasoning, such as DeepSeek-R1 and Ope
 One major source of this inefficiency stems from our observation that LLMs hesitate, a phenomenon we call *self-doubt*: models often reach the correct answer early but engage in extended verification behaviors such as double-checking, reassessment, re-verification, and so on. Such self-doubt patterns can lead to significantly increased token consumption. For instance, Figure 3 compares the traditional Qwen-7B model with a reasoning Deepseek-distilled Qwen-7B model on a simple question. While the traditional model reaches its answer in 180 tokens, the reasoning model expends 1K tokens on iterative verification steps but already got the correct answer at token 340.
 {{< /justify >}}
 
-{{< image src="img/example-hesitation.png" alt="hesitation" width="70%" title="Figure 3: An example answer from reasoning model (Deepseek-distilled Qwen-2.5 7B) vs traditional model (Qwen-2.5 7B) on one of the problem in MATH500 dataset.">}}
+{{< image src="img/example-hesitation.png" alt="hesitation" width="90%" title="Figure 3: An example answer from reasoning model (Deepseek-distilled Qwen-2.5 7B) vs traditional model (Qwen-2.5 7B) on one of the problem in MATH500 dataset.">}}
 
 {{< justify >}}
 To systematically investigate this phenomenon, we developed a "Probe-In-The-Middle" technique (or "Probe" for short) that extracts the model's intermediate thinking by appending specific prompts such as "Oh, I suddenly got the answer to the whole problem, Final Answer: boxed\{". Figure 4 shows the analysis of the accuracy comparing directly asking vs probing the model. Taking AMC23 as an example, reasoning models frequently arrive at correct answers early (median: 830 tokens), but continue generating unnecessary tokens due to self-doubt (median: 2.7K tokens). This self-doubt phenomenon significantly impacts token efficiency, as models continue reasoning despite having internal confidence in their answers. Our key insight is that LLMs exhibit detectable levels of certainty during their reasoning process, which can be leveraged to determine effective stopping points.
 {{< /justify >}}
 
 
-{{< image src="img/r1_amc_standard_1.png" alt="token-deprivation" width="70%" title="Figure 4: DeepSeek R1 performance on AMC23 and AIME24 (lowest to highest scores over 10 attempts) at varying token budgets. (Left) Standard reasoning with late answer outputs. (Right) Early answer extraction using Probe-In-The-Middle technique, demonstrating equivalent accuracy with 50% token reduction.">}}
+{{< image src="img/r1_amc_standard_1.png" alt="token-deprivation" width="90%" title="Figure 4: DeepSeek R1 performance on AMC23 and AIME24 (lowest to highest scores over 10 attempts) at varying token budgets. (Left) Standard reasoning with late answer outputs. (Right) Early answer extraction using Probe-In-The-Middle technique, demonstrating equivalent accuracy with 50% token reduction.">}}
 
 
 
