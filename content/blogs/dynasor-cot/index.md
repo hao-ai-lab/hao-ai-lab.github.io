@@ -18,7 +18,7 @@ draft = false
       caption = "Illustration of Dynasor-CoT"
 +++
 
-{{< socialBadges arxiv-index="2412.20993" github="hao-ai-lab/Dynasor" demo="https://e4d417385887b7e801.gradio.live/">}}
+{{< socialBadges arxiv-index="2412.20993" github="hao-ai-lab/Dynasor" demo="https://hao-ai-lab.github.io/demo/dynasor-cot">}}
 
 {{< justify >}}
 
@@ -28,7 +28,7 @@ draft = false
 
 {{< /justify >}}
 
-{{< image src="img/dynasor-cot-demo.gif" alt="dynasor-cot-acc-demo" width="120%" title="Figure 1: [Demo link](https://e4d417385887b7e801.gradio.live) of DeepSeek-R1-Distill-Qwen-7B achieving a $\sim 5.7 \times$ speedup compared to the baseline when using Dynasor-CoT on MATH500">}}
+{{< image src="img/dynasor-cot-demo.gif" alt="dynasor-cot-acc-demo" width="120%" title="Figure 1: [Demo link](https://hao-ai-lab.github.io/demo/dynasor-cot) of DeepSeek-R1-Distill-Qwen-7B achieving a $\sim 5.7 \times$ speedup compared to the baseline when using Dynasor-CoT on MATH500">}}
 
 
 ## Self-Doubt in Reasoning LLMs
