@@ -18,7 +18,7 @@ draft = false
       caption = "Illustration of Dynasor-CoT"
 +++
 
-{{< socialBadges arxiv-index="2412.20993" github="hao-ai-lab/Dynasor" >}}
+{{< socialBadges arxiv-index="2412.20993" github="hao-ai-lab/Dynasor" demo="https://e4d417385887b7e801.gradio.live/">}}
 
 {{< justify >}}
 
@@ -28,7 +28,7 @@ draft = false
 
 {{< /justify >}}
 
-{{< image src="img/dynasor-cot-demo.gif" alt="dynasor-cot-acc-demo" width="120%" title="Figure 1: [Demo link](https://e4d417385887b7e801.gradio.live) of DeepSeek-R1-Distill-Qwen-7B achieving a $\sim 4.3 \times$ speedup compared to the baseline when using Dynasor-CoT on MATH500">}}
+{{< image src="img/dynasor-cot-demo.gif" alt="dynasor-cot-acc-demo" width="120%" title="Figure 1: [Demo link](https://e4d417385887b7e801.gradio.live) of DeepSeek-R1-Distill-Qwen-7B achieving a $\sim 5.7 \times$ speedup compared to the baseline when using Dynasor-CoT on MATH500">}}
 
 
 ## Self-Doubt in Reasoning LLMs
@@ -121,17 +121,19 @@ Dynasor is a system optimized for LLM reasoning algorithms, built upon the Certa
 We evaluate our certainty-based early termination method Dynasor-CoT against baseline uniform token allocation across multiple scales of distilled DeepSeek models (7B, 14B, and 32B) on mathematical reasoning benchmarks AIME24 and AMC23, and MATH500. Unlike the baseline approach that uniformly increases token budgets, our method enables early termination by monitoring model certainty at various intervals. As illustrated in Figure 6, we evaluate variable probing intervals (32, 64, and so on) represented by distinct colored lines, with a maximum token budget of 16K. For each interval, we vary the early termination parameter N (the required number of consecutive consistent answers), generating different points along each line. All configurations achieve significant token savings, with our approach reducing token usage by up to 29\% while maintaining comparable accuracy to the baseline. For fair comparison, appropriate accuracy thresholds were calibrated to model scale - with 32B models evaluated against stricter thresholds above QwQ levels and reduced thresholds for smaller models - while setting higher targets for simpler tasks where greater accuracy is achievable. 
 {{< /justify >}}
 
+{{< image src="img/token_deprivation_comparison_01.jpg" alt="result-main" width="100%" title="Figure 7: Comparing Dynasor-CoT Performance Across Model Scales and Datasets">}}
+
+
 {{< justify >}}
 For the 10\% of problems where our method achieves the highest token reduction, we observe savings of 34\% on AIME and 53\% on MATH500. This extends further for the top 1\% of problems, where we achieve even more substantial reductions of 53\% on AIME and 81\% on MATH500. These results, particularly the substantial token savings on certain problems (up to 81\% reduction), demonstrate our method's ability to adapt token allocation to different problem types. This variable performance shows the advantage of our dynamic approach over fixed token budgets, as problems vary in their token requirements for reaching solutions.
 {{< /justify >}}
 
-{{< image src="img/token_deprivation_comparison_01.jpg" alt="result-main" width="100%" title="Figure 7: Comparing Dynasor-CoT Performance Across Model Scales and Datasets">}}
+{{< image src="img/token_deprivation_comparison_r1_01.jpg" alt="result-r1" width="100%" title="Figure 8: Applying Dynasor-CoT on DeepSeek-R1">}}
 
 {{< justify >}}
 To validate scalability, we extended our experiments to the larger DeepSeek-R1 model on AIME and AMC datasets (Figure 8). The results align with our findings from smaller distill models, demonstrating consistent efficiency gains: DeepSeek-R1 achieves 12\% token savings on AIME problems and 24\% on AMC problems while maintaining baseline accuracy levels.
 {{< /justify >}}
 
-{{< image src="img/token_deprivation_comparison_r1_01.jpg" alt="result-r1" width="100%" title="Figure 8: Applying Dynasor-CoT on DeepSeek-R1">}}
 
 
 
