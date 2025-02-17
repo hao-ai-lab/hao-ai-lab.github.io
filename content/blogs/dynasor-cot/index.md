@@ -63,7 +63,7 @@ To address self-doubt, we propose Dynasor-CoT, a training-free, least intrusive,
 
 
 {{< justify >}}
-We present an efficient reasoning framework Dynasor-CoT for early termination that enhances token-to-accuracy efficiency in long CoT LLM reasoning through three key mechanisms: answer extraction by probe, certainty assessment, and post-generation validation. Figure 5 shows an example of our methods.
+Dynasor-CoT improves *token-to-accuracy* efficiency in long CoT LLM reasoning through three key mechanisms: answer extraction by probe, certainty assessment, and post-generation validation. Figure 5 shows an example of our methods.
 {{< /justify >}}
 
 
