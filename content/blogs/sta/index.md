@@ -23,8 +23,12 @@ draft = false
 
 {{< justify >}}
 **TL;DR:** Video generation with DiTs is **painfully slow** -- [HunyuanVideo](https://github.com/Tencent/HunyuanVideo) takes 16 minutes to generate just a 5-second video on an H100 with FlashAttention3. Our sliding tile attention (STA) slashes this to **5 minutes** with **zero quality loss, no extra training required**.
-Can you spot the difference between videos from the original HunyuanVideo and our accelerated inference? We'd love to hear what you think!
+Specifically, STA accelerates attention alone by **2.8–17x** over FlashAttention-2 and **1.6–10x** over FlashAttention-3. 
+With STA and other optimizations, our solution boosts end-to-end generation speed by **2.98×** compared to the FA3 full attention baseline, without quality loss or the need for training. Enabling finetuning unlocks even greater speedups!
+
+Can you spot the difference between videos from the original HunyuanVideo and our accelerated inference? 👉Try out kernel in our [FastVideo project](https://github.com/hao-ai-lab/FastVideo) project and we'd love to hear what you think!
 {{< /justify >}}
+
 {{<youtube JydYUZ9oix4>}}
 
 
