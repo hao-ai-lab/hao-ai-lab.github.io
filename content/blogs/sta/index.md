@@ -150,11 +150,9 @@ Since early sampling steps are crucial for global structure, we retain full atte
 STA accelerates attention by exploiting redundancy in 3D full attention. Another approach to speeding up video generation focuses on caching, leveraging redundancy across diffusion steps. We demonstrate that STA is **compatible** to [TeaCache](https://github.com/ali-vilab/TeaCache), a state-of-the-art diffusion acceleration technique based on caching. Together, our solution brings **3x** speedup, reducing DiT inference time from 945 seconds to **317** seconds with no quality loss. 
 
 
-We evaluate our method on 200 randomly selected prompts from the MovieGen Bench. Below, we provide additional qualitative comparisons between the original Hunyuan model and our 3× speedup solution. The embedded webpage below is scrollable.
-
-{{< rawhtml >}}
-<iframe src="https://fast-video.github.io/" width="100%" height="600px" style="border:none;"></iframe>
-{{< /rawhtml >}}
+We evaluate our method on 200 randomly selected prompts from the MovieGen Bench. Below, we provide additional **uncherry-picked** qualitative comparisons between the original Hunyuan model and our 3× speedup solution.
+{{<youtube MG1qKa_F0QU>}}
+More results can be found [here](https://fast-video.github.io/).
 
 
 ## Training with STA Unlocks Greater Speedup
