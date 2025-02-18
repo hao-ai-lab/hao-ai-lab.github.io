@@ -21,15 +21,12 @@ draft = false
 {{< socialBadges arxiv-index="2502.04507" github="https://github.com/hao-ai-lab/FastVideo" >}}
 
 {{< justify >}}
-
-**TL;DR:** Video generation is **painfully slow**—HunyuanVideo takes 16 minutes to generate a 5-second video on an H100 GPU. We cut this down to **5 minutes** without sacrificing quality, all without training.
-
-**Abstract:**  The bottleneck? Attention. It accounts for 13 of the 16 minutes required for video generation. We observe that attention scores in video diffusion models are highly localized in 3D space, with different heads needing different window sizes. This makes sliding window attention (SWA) an attractive alternative to retain full attention's expressiveness while reducing computational cost. However, 3D SWA is GPU-unfriendly and fails to translate FLOP savings into real speedups. We introduce **Sliding Tile Attention (STA)**, the first higher-order local attention with *efficient hardware implementation*.  Unlike SWA, STA operates tile-by-tile with a novel hardware-aware sliding window design. STA accelerates attention by **2.8–17×** over FlashAttention-2 (FA2) and **1.6–10×** over FlashAttention-3 (FA3). We design a calibration stategy to determine the optimal window size for each attention head. With STA and other optimizations, our solution boosts end-to-end generation speed by **2.98×** compared to the FA3 full attention baseline, without quality loss or the need for training.
-
-Can you guess which of the videos below are from the original HunyuanVideo, and which of them are from our accelerated infernece solutions？ 
-
-
+**TL;DR:** Video generation with DiTs is **painfully slow** -- HunyuanVideo takes 16 minutes to generate just a 5-second video on an H100. Our sliding tile attention (STA) slashes this to **5 minutes** with **zero quality loss, no extra training required**.
+Can you spot the difference between videos from the original HunyuanVideo and our accelerated inference? We'd love to hear what you think!
 {{< /justify >}}
+
+[//]: # (The bottleneck? Attention. It accounts for 13 of the 16 minutes required for video generation. We observe that attention scores in video diffusion models are highly localized in 3D space, with different heads needing different window sizes. This makes sliding window attention &#40;SWA&#41; an attractive alternative to retain full attention's expressiveness while reducing computational cost. However, 3D SWA is GPU-unfriendly and fails to translate FLOP savings into real speedups. We introduce **Sliding Tile Attention &#40;STA&#41;**, the first higher-order local attention with *efficient hardware implementation*.  Unlike SWA, STA operates tile-by-tile with a novel hardware-aware sliding window design. STA accelerates attention by **2.8–17×** over FlashAttention-2 &#40;FA2&#41; and **1.6–10×** over FlashAttention-3 &#40;FA3&#41;. We design a calibration stategy to determine the optimal window size for each attention head. With STA and other optimizations, our solution boosts end-to-end generation speed by **2.98×** compared to the FA3 full attention baseline, without quality loss or the need for training.)
+[//]: # (Can you guess which of the videos below are from the original HunyuanVideo, and which of them are from our accelerated infernece solutions？ )
 
 
 
@@ -37,14 +34,19 @@ Can you guess which of the videos below are from the original HunyuanVideo, and 
 
 {{< justify >}}
 
-State-of-the-art Video DiTs use 3D full attention to model relationships across tokens, allowing each token to attend to any other token across spatial and temporal dimensions. However, modern video models generate an extremely large number of tokens. For instance, in HunyuanVideo, a 5-second 720P video corresponds to 115K tokens. The problem worsens as video resolution or duration increases. Assuming a video of shape (L, L, L) (where temporal and spatial dimensions are equal for simplicity), a slight increase in L leads to a cubic growth in the number of tokens. Since attention has a quadratic complexity in sequence length, this rapid expansion makes attention the primary computational bottleneck. As illustrated in Figure 1 (a), attention computation dominates the overall inference cost.
+State-of-the-art Video DiTs rely on 3D full attention to capture spatial and temporal relationships, allowing each token to attend to every other token across spatial and temporal dimensions. However, modern video models generate an enormous number of tokens -- HunyuanVideo, for instance, produces 115K tokens for just a 5-second 720p clip. The challenge worsens with higher resolution or longer duration: for a video of shape (L, L, L) (assuming equal temporal and spatial dimensions), even a small increase in L causes a cubic explosion in token count. Since attention scales quadratically, this rapidly makes it the main computational bottleneck. As shown in Figure 1(a), attention overwhelmingly dominates inference cost.
 
 {{< /justify >}}
 
 {{< image src="img/attn_latancy.png" alt="Attn Latency" width="70%" title="Figure 1: (a) Generating a 5s 720P clip in Hunyuan involves processing 115K tokens, making attention the dominant cost. (b) Attention latency comparison: existing methods fail to translate FLOP reduction into wall-clock speedup; STA is hardware-efficient and achieves proportional speedup with sparsity">}}
 
 {{< justify >}}
-We hypothesize that significant redundancy exists in the 3D full attention pattern, which, if leveraged effectively, can greatly accelerate inference. To test this, we visualize the attention scores of HunyuanVideo in Figure 2 (left). The results reveal a strong 3D locality pattern: queries tend to focus their attention on spatially and temporally nearby keys. To quantify this effect, we compute attention recall—-the fraction of total attention scores concentrated within a local window. As shown in Figure 2 (middle), despite being trained with full 3D attention, HunyuanVideo exhibits strong locality: a local window covering only 15.52% of the total space captures 70% of the total attention score. Interestingly, while different attention heads show varying degrees of locality, their bevarious are generally static across different prompts. In Figure 2 (right), we evaluate 10 different prompts and compute the standard deviation of attention recall across prompts for each head. The results show consistently low variance, indicating that the locality pattern for each head remains stable.
+We hypothesize that 3D full attention contains significant redundancy, which, if efficiently leveraged, could greatly accelerate inference. 
+To test this, we visualize HunyuanVideo's attention scores in Figure 2 (left) and uncover a strong 3D locality pattern: queries tend to focus primarily on spatially and temporally nearby keys. 
+To quantify this, we compute attention recall -- the fraction of total attention scores concentrated within a local window. As shown in Figure 2 (middle), despite being trained with full 3D attention, 
+HunyuanVideo exhibits strong locality: a small local window (just 15.52% of the total space) captures 70% of the total attention. 
+
+[//]: # (Interestingly, while different attention heads show varying degrees of locality, their bevarious are generally static across different prompts. In Figure 2 &#40;right&#41;, we evaluate 10 different prompts and compute the standard deviation of attention recall across prompts for each head. The results show consistently low variance, indicating that the locality pattern for each head remains stable.)
 
 
 {{< /justify >}}
@@ -53,26 +55,40 @@ We hypothesize that significant redundancy exists in the 3D full attention patte
 
 
 {{< justify >}}
-The analysis above suggests a clear strategy to make attention more efficient: replacing full 3D attention with localized attention in video generation models. This approach, known as sliding window attention (SWA), has been widely explored in natural language processing for 1D sequences. However, the challenge is far from solved—-there is no efficient 2D or 3D implementation of SWA! As shown in Figure 1 (right), existing sliding window implementations like CLEAR and NATTEN fail to convert FLOP reductions into actual speedups, due to their limited hardware utilization. We argue that higher-order sliding window attentino is inherrently imcompatible to FlashAttention (FA) and unfriendly to GPU, and we will give our arguments below.
+Our analysis points to a  seemingly obvious solution: replace full 3D attention with localized attention to speed up video generation. 
+A natural approach is Sliding Window Attention (SWA), widely used in 1D sequences for NLP. However, we find that **SWA completely breaks in 2D and 3D**! Despite its promise, there is no efficient implementation for 3D video DiTs.
 
+Worse yet, as shown in Figure 1 (right), existing SWA methods like CLEAR and NATTEN reduce FLOPs but fail to deliver real speedups -- strangled by poor hardware utilization. 
+Why? Because higher-order sliding window attention is fundamentally incompatible with modern FlashAttention (FA) and brutally inefficient on GPUs. In the next section, we expose exactly why traditional SWA falls apart -- and how we break past its limits.
 {{< /justify >}}
 
 
 ## Inefficiency of Sliding Window Attention
 {{< justify >}}
-To understand why SWA is imcompatible with FlashAttention, one key concept to grasp is  FA's **block-by-block** computation pattern. FA splits the input sequence (Q, K, V) into small blocks, typically of size (128, 64). We assume square block size in this blog for simplicity. Instead of processing tokens individually, FA loads an entire block of Q, K, and V into GPU SRAM, performs the necessary computations, and writes back only the output matrix O to HBM—without storing intermediate values like attention masks or scores. As shown in Figure 3, we can think of FA as splitting the attention map into smaller blocks, where a single block is the minimum computation unit of attention. GPUs are essentially large matrix multiplication machines—they don’t handle scalar or even vector operations efficiently -- they like *block-by-block* computation, not *token-by-token* computation.
+To understand why SWA is incompatible with FlashAttention (FA), we first need to review FA's **block-by-block** computation pattern. 
+Instead of processing tokens individually, FA splits the input sequence (Q, K, V) into small blocks -- typically (128, 64) -- and processes them efficiently on the GPU. For simplicity, we assume square blocks in this discussion.
+FA loads an entire block of Q, K, and V into GPU SRAM, performs all necessary computations, and writes back only the output matrix O to HBM -- avoiding storing intermediate values like attention masks or scores.
+As illustrated in Figure 3, FA effectively tiles the attention map into smaller blocks, making each block the fundamental unit of computation.
+Why does this matter? First, this avoids materializing large intermediate tensors hence saves a lot of memory. Second, GPUs are built for matrix multiplications. They don't handle scalar or even vector operations efficiently; they thrive on block-by-block computation, not token-by-token processing.
 {{< /justify >}}
 
 {{< image src="img/attn_map.png" alt="Attn Map" width="100%" title="Figure 3. The attention map of NATTEN, Tiled NATTEN, and STA. We plot with an image size 24×24 and a 12×12 local window. The tile size is set to 4×4. Note that we mainly use STA in 3D scenarios for video generation in this paper, but for better illustration, we present the 2D scenario in this plot.">}}
 
 {{< justify >}}
-Implementing 2D/3D SWA with FlashAttention requires defining its attention mask. Based on how the mask is applied within a block, we categorize attention blocks into three types: dense (with all
-attention scores retained), empty (mask out all values), and mixed (with some scores removed). Dense and empty blocks are efficient: dense blocks are highly efficient, while empty blocks can be skipped entirely.
+Implementing 2D/3D SWA with FlashAttention comes down to one major challenge: defining its attention mask. Depending on how the mask is applied, we categorize attention blocks into three types:
 
-However, mixed blocks are problematic because they introduce extra computation steps: 1. Compute the entire block. 2. Compute the mask for this block. 3. Apply the mask to filter out unwanted attention scores. This masking process introduces significant overhead for two reasons. First, Since a block is the minimum computation unit, FA must compute the entire block before masking out parts of it—wasting compute. Second, the intra-block mask’s value depends on the user-defined attention pattern and the block’s location within the attention map. This mask calculation is GPU-unfriendly and cannot be precomputed (precomputing mask would lead to quadratic memory overhead). For reference, even a simple causal mask in FlexAttention introduces a 15% overhead. In 3D SWA, which has a far more complex masking pattern, the overhead can exceed the cost of computing the block itself.
+* **Dense blocks**: with all attention scores retained (highly efficient ✅), 
+* **Empty blocks**: – mask out all values (can be skipped entirely ✅), 
+* **Mixed blocks** – retain some scores while masking others (a nightmare for efficiency ❌).
 
-That is why higher-order SWA is unfriendly to GPUs -- they produce too many mixed blocks! We plot the attention map of NATTEN in Figure 3 (a), an improved sliding window variant that shift window centers at image and video boundaries to ensure each query attends to a constant number of keys. In NATTEN, each query attends to a local window centered around it, resulting in different queries attending to distinct key groups. This lack of shared attention key groups is the root cause of irregularities in SWA’s attention map, creating mixed blocks. To mitigate this issue, Tiled NATTEN attempts to reorder inputs to increase the number of dense blocks (Figure 3(b)). However, a significant portion of blocks still remain mixed.
+While dense and empty blocks work well with FA, mixed blocks introduce significant computational overhead due to the following issues:
 
+* **Wasted computation**: Since a block is the minimum compute unit, FA must compute the entire block before applying the mask, leading to unnecessary work.
+* **GPU-unfriendly masking**: The intra-block mask depends on both the user-defined attention pattern and the block’s location within the attention map. Worse, it cannot be precomputed—doing so would cause quadratic memory overhead. Even in FlexAttention, a simple causal mask adds 15% overhead—in 3D SWA, masking overhead can exceed the cost of computing the block itself!
+That is why higher-order SWA is inherently GPU-unfriendly -- it produce too many mixed blocks! 
+
+To illustrate, we analyze NATTEN in Figure 3(a), a refined SWA variant that shifts window centers at image/video boundaries to ensure each query attends to a fixed number of keys. However, this leads to queries attending to distinct key groups, disrupting uniformity in the attention map and creating a flood of mixed blocks.
+To mitigate this, Tiled NATTEN reorders inputs to increase the number of dense blocks (Figure 3(b)). Yet, a significant portion of blocks remain mixed, making SWA fundamentally inefficient for GPUs.
 
 {{< /justify >}}
 
@@ -99,14 +115,19 @@ The video below demonstrates how STA works and how it differs from SWA. For bett
 {{< justify >}}
  STA can be efficiently implemented with FlexAttention, which provides enough functionality to skip all empty blocks and avoid adding unnecessary *intra-block* mask on the dense blocks. We can further optimize the sparse attention masks by *disaggregating* the *inter-block* mask logic from the compute kernels. Thus, we implement our attention kernels based on ThunderKittens and FlashAttention3 . 
  
+## Kernel-level Optimizations for STA
+
  Our implementation split the threadblock into compute warpgroups and data warpgroups, and the inter-block mask is completely managed by the data warpgroups. Each compute warpgroup is responsible for calculating one query block, which always resides in the SRAM (Split-Q). The data warpgroup is responsible for asynchronously loading the KV blocks from HBM to SRAM. For each block of query, the data warpgroup needs to decide which key and value blocks the query block will attend to in STA and only load those blocks. Since the data warpgroups are asynchronous, the overhead of calculating the inter-block mask in STA and deciding which data to load can be hidden with overlapping. On the other hand, the compute worker is completely oblivious of the sparse attention pattern. It performs attention computation with the key value blocks in shared memory loaded by data workers, and once all data is consumed in the circular cache, the computation is finished.
 
 {{< /justify >}}
 {{< image src="img/kernel_speed.png" alt="Kernel Speed" width="90%" title="Table 1. Forward speed of sparse attention kernels in a setup aligned with HunyuanVideo's inference configuration (bf16, 720P, 5s, 115.2K seq len, dhead = 128, # heads = 24). Config controls the window size of each sparse attention.">}}
 
+### Kernel Performance
 We report our kernel performance in Table 1. The results show that existing local attention methods struggle with efficiency. For example, while CLEAR reduces FLOPs to 15.65, it actually slows down inference by 14%. NATTEN also falls short—despite achieving 91% sparsity, its basic version is 15% slower than full attention, and even the optimized tiled variant in FlexAttention only speeds things up by 1.27×. Among current options, Swin is the only kernel with a memory utilization factor (MFU) above 40% and kernel efficiency above 60%, but it sacrifices flexibility in the attention mechanism. But Swin is not a strictly local attention variant, and we will show in the next section that applying swin the video generation models significantly degrades performance. 
 
-In contrast, when tested in FlexAttention, STA improves MFU from 8.20% to 41.03% compared to Tiled NATTEN. With our further kernel optimizations, STA achieves a 10.45× speedup over full attention. Even at 58.33% sparsity, it still delivers 2.37× faster processing. This means STA can handle larger attention windows while still outperforming NATTEN. To our knowledge, STA is the first method to combine efficient 3D sparse attention with real-world speed improvements.
+In contrast, when tested in FlexAttention, **STA improves MFU from 8.20% to 41.03% compared to Tiled NATTEN**. 
+With further kernel optimizations, STA achieves a **10.45×** speedup over full attention. Even at 58.33% sparsity, it still delivers 2.37× faster processing. 
+This means STA can handle larger attention windows while still outperforming NATTEN. To our knowledge, **STA is the first method to combine efficient 3D sparse attention with real-world speed improvements**.
 
 ## Window Size Calibration Enables Training-free Speedup
 As shown ealier in Figure 2, video diffusion models exhibit strong 3D locality and head specialization. While different attention heads capture information at different scales, their locality patterns remain consistent across prompts. This allows us to search for an optimal window size per head using a small set of prompts and generalize the results to others. Specifically, for each (s, l, h) tuple—where s is the inference step index, l is the layer index, and h is the head index—we determine the best attention mask.
@@ -128,11 +149,22 @@ STA accelerates attention by exploiting redundancy in 3D full attention. Another
 
 
 
-## Before We Finish...
+## Final Thoughts
 {{< justify >}}
-It might seem surprising that there was no efficient 2D/3D sliding window attention before STA. After all, sliding window attention is a fundamental algorithm—widely used in 1D contexts. Why hasn’t an efficient 2D/3D implementation existed until now?
 
-To make you believe this claim, consider the Swin Transformer. The authors recognized that sliding window attention lacked an efficient 2D implementation. Their solution? Simply avoid it. Instead of true sliding windows, Swin uses non-overlapping and static window partitions. However, this prevents queries and keys from attending across window boundaries, breaking the 3D locality crucial for video tasks. Since Swin is used in a pretraining setup, this limitation is addressed by using different window partitions across different layers and force the model to learn such pattern. However, in training-free or fine-tuning scenarios like ours, Swin performs suboptimally. Their proposed solution win won the Marr Prize at ICCV 2021. 
+[//]: # (It might seem surprising that there was no efficient 2D/3D sliding window attention before STA. After all, sliding window attention is a fundamental algorithm—widely used in 1D contexts. Why hasn’t an efficient 2D/3D implementation existed until now?)
+
+[//]: # (To make you believe this claim, consider the Swin Transformer. The authors recognized that sliding window attention lacked an efficient 2D implementation. Their solution? Simply avoid it. Instead of true sliding windows, Swin uses non-overlapping and static window partitions. However, this prevents queries and keys from attending across window boundaries, breaking the 3D locality crucial for video tasks. Since Swin is used in a pretraining setup, this limitation is addressed by using different window partitions across different layers and force the model to learn such pattern. However, in training-free or fine-tuning scenarios like ours, Swin performs suboptimally. Their proposed solution win won the Marr Prize at ICCV 2021. )
+
+
+It might seem surprising that efficient 2D/3D sliding window attention did not exist before STA -- after all, it’s a fundamental concept and widely used in 1D contexts. So why has no one cracked the kernels for 2D/3D until now?
+
+Retrospectively, let’s take a look at the Swin Transformer. The authors faced the same challenge: efficient 2D sliding window attention kernels were nontrivial to implement. 
+Their solution? Avoid it altogether. Instead of true sliding windows, Swin uses non-overlapping, static window partitions, sidestepping the efficiency issue but at the cost of breaking cross-window attention, which is crucial for video tasks.
+Of course, Swin gets away with this because it's used in a pretraining setup -- the model compensates for the limitation by learning to stitch information across layers with shifting windows. 
+That’s fine when you have the luxury of pretraining, but in training-free or fine-tuning scenarios like ours, it just doesn't work as well.
+
+So, if nothing else, we take comfort in knowing that solving this problem was never supposed to be easy—but that just makes the progress even more exciting!
 
 {{< /justify >}}
 
@@ -145,10 +177,11 @@ To make you believe this claim, consider the Swin Transformer. The authors recog
 {{< /justify >}}
 ## Conclusion 
 
-This work makes the following contributions: (1) We identify and quantify 3D locality and head specialization in stateof-the-art video DiTs, revealing substantial redundancy in full 3D attention. (2) We introduce Sliding Tile Attention, a tile-based sliding window attention mechanism. Our optimized kernel achieves minimum overhead compared to
-FlashAttention 3 with an MFU of 58.79%. (3) STA accelerates attention by > 10× and end-to-end video generation by up to 3.53× with no or minimum quality loss.
+*We believe STA’s potential extends far beyond accelerating video diffusion models.* It can be applied in pretraining and generalized to other high-order data. 
+Locality is a universal property across almost all data modalities. We hope STA inspires new, more efficient models across various domains. 
 
-*We believe STA’s potential extends far beyond accelerating video diffusion models.* It can be applied in pretraining and generalized to other high-order data. Locality is a universal property across almost all data modalities. We hope STA inspires new, more efficient models across various domains.
+🚀👉 Please see [our paper](https://arxiv.org/pdf/2502.04507) for more details. We also invite you to try out our kernel in our [FastVideo project](https://github.com/hao-ai-lab/FastVideo)!
+
 ## Acknowledgements
 
 This work is greatly motivated by FlexAtteniton and NATEN. Our implementation is based on ThunderKitten's H100 attention kernel. We thank Yichao Fu, Junda Chen, and Lanxiang Hu for their feedback on this blog. 
