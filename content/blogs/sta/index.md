@@ -157,45 +157,64 @@ We evaluate our method on 200 randomly selected prompts from the MovieGen Bench.
 {{< /rawhtml >}}
 
 
-## Train with STA Unlocks Greater Speedup
+## Training with STA Unlocks Greater Speedup
 
 Beyond searching for the optimal sparse mask per attention head, we can use a fixed window and fine-tune STA to maximize performance while maintaining high sparsity. Since STA follows the *3D locality* property, this adaptation can be learned efficiently with minimal training overhead. In our experiments, fine-tuning took just 8 hours on 8 H100 GPUs—negligible compared to the cost of pretraining video diffusion models. Although each attention layer operates on a restricted local window, the receptive field expands through stacked transformer layers, allowing the Diffusion Transformer to generate globally coherent videos.
 
-Fine-tuning leverages three key loss terms:
+[//]: # (Fine-tuning leverages three key loss terms:)
 
-1. **Attention Distillation Loss**: This directly supervises STA’s intermediate attention patterns to match the original dense attention teacher:
+[//]: # ()
+[//]: # (1. **Attention Distillation Loss**: This directly supervises STA’s intermediate attention patterns to match the original dense attention teacher:)
 
-   $$
-   \mathcal{L}_{\text{attn}} = \frac{1}{N} \sum_{i=1}^{N} \| f_{\phi}^{(i)}(x_t, t, c) - f_{\psi}^{(i)}(x_t, t, c) \|_2^2
-   $$
+[//]: # ()
+[//]: # (   $$)
 
-   where $ f_{\phi}^{(i)} $ and $ f_{\psi}^{(i)} $ represent the intermediate attention outputs from STA and the original dense attention teacher, respectively.
+[//]: # (   \mathcal{L}_{\text{attn}} = \frac{1}{N} \sum_{i=1}^{N} \| f_{\phi}^{&#40;i&#41;}&#40;x_t, t, c&#41; - f_{\psi}^{&#40;i&#41;}&#40;x_t, t, c&#41; \|_2^2)
 
-2. **Final Layer Loss**: This aligns the final student and teacher attention outputs:
+[//]: # (   $$)
 
-   $$
-   \mathcal{L}_{\text{final}} = \| f_{\phi}(x_t, t, c) - f_{\psi}(x_t, t, c) \|_2^2
-   $$
+[//]: # ()
+[//]: # (   where $ f_{\phi}^{&#40;i&#41;} $ and $ f_{\psi}^{&#40;i&#41;} $ represent the intermediate attention outputs from STA and the original dense attention teacher, respectively.)
 
-3. **Data Loss**: Following the flow matching formulation, we introduce a loss term that ensures the generated representation stays close to the original VAE latent:
+[//]: # ()
+[//]: # (2. **Final Layer Loss**: This aligns the final student and teacher attention outputs:)
 
-   $$
-   \mathcal{L}_{\text{data}} = \| (f - x_0) - f_{\phi}(x_t, t, c) \|_2^2
-   $$
+[//]: # ()
+[//]: # (   $$)
 
-   where $x_0$  is the VAE latent of the input frame, and $ x_t $ is the noised latent at diffusion step $ t $.
+[//]: # (   \mathcal{L}_{\text{final}} = \| f_{\phi}&#40;x_t, t, c&#41; - f_{\psi}&#40;x_t, t, c&#41; \|_2^2)
 
-The final optimization objective combines these losses:
+[//]: # (   $$)
 
-   $$
-   \min_{\phi} \mathbb{E}_{x \sim p(x), c \sim \mathcal{N}(0,1), t} [\alpha \mathcal{L}_{\text{data}} + \beta \mathcal{L}_{\text{final}} + \gamma \mathcal{L}_{\text{attn}}].
-   $$
+[//]: # ()
+[//]: # (3. **Data Loss**: Following the flow matching formulation, we introduce a loss term that ensures the generated representation stays close to the original VAE latent:)
+
+[//]: # ()
+[//]: # (   $$)
+
+[//]: # (   \mathcal{L}_{\text{data}} = \| &#40;f - x_0&#41; - f_{\phi}&#40;x_t, t, c&#41; \|_2^2)
+
+[//]: # (   $$)
+
+[//]: # ()
+[//]: # (   where $x_0$  is the VAE latent of the input frame, and $ x_t $ is the noised latent at diffusion step $ t $.)
+
+[//]: # ()
+[//]: # (The final optimization objective combines these losses:)
+
+[//]: # ()
+[//]: # (   $$)
+
+[//]: # (   \min_{\phi} \mathbb{E}_{x \sim p&#40;x&#41;, c \sim \mathcal{N}&#40;0,1&#41;, t} [\alpha \mathcal{L}_{\text{data}} + \beta \mathcal{L}_{\text{final}} + \gamma \mathcal{L}_{\text{attn}}].)
+
+[//]: # (   $$)
 
 
-{{< image src="img/vbench.png" alt="Kernel Speed" width="90%" title="Table 2. Performance on VBench across different sparse attention patterns. STA achieves both high-quality video generation and significant speedup, while CLEAR and Tiled NATTEN suffer from efficiency issues and Swin suffers from quality degradation.">}}
+[//]: # ({{< image src="img/vbench.png" alt="Kernel Speed" width="90%" title="Table 2. Performance on VBench across different sparse attention patterns. STA achieves both high-quality video generation and significant speedup, while CLEAR and Tiled NATTEN suffer from efficiency issues and Swin suffers from quality degradation.">}})
 
-This fine-tuning step allows STA to efficiently recover video quality while unlocking greater speedup. We use [VBench](https://github.com/Vchitect/VBench) for a quantatatie evaluation of STA. We first examine the impact of directly replacing full attention with sparse attention, without tuning, to evaluate how well each algorithm approximates full 3D attention. In Table 2, CLEAR and Tiled NATTEN retain reasonable video quality (VBench scores of 82.37% and 82.68%, respectively) compared to full attention (82.71%). However, despite sparsifying attention, these methods paradoxically increase end-to-end inference latency. [Swin](https://arxiv.org/abs/2103.14030) presents the opposite challenge: while it achieves moderate speedup (1.24×–1.90×), its rigid, nonoverlapping window partitions prevent local queries and keys from attending to each other if they fall into separate windows, violating the 3D locality property. This results in degraded video quality, and crucially, fine-tuning with Swin attention not only fails to recover performance but further lowers the VBench score. In contrast, STA addresses both
-quality and efficiency limitations. With a window configuration of wt=(18,24,24), it achieves 91.00% attention sparsity, yielding a 5.76× FLOPs reduction and a 3.53× actual latency reduction.2 Importantly, this efficiency gain comes with minimal quality tradeoff: STA maintains an 80.58% VBench score in the training-free setting and improves to 82.62% with fine-tuning.
+[//]: # ([//]: # &#40;This fine-tuning step allows STA to efficiently recover video quality while unlocking greater speedup. We use [VBench]&#40;https://github.com/Vchitect/VBench&#41; for a quantatatie evaluation of STA. We first examine the impact of directly replacing full attention with sparse attention, without tuning, to evaluate how well each algorithm approximates full 3D attention. In Table 2, CLEAR and Tiled NATTEN retain reasonable video quality &#40;VBench scores of 82.37% and 82.68%, respectively&#41; compared to full attention &#40;82.71%&#41;. However, despite sparsifying attention, these methods paradoxically increase end-to-end inference latency. [Swin]&#40;https://arxiv.org/abs/2103.14030&#41; presents the opposite challenge: while it achieves moderate speedup &#40;1.24×–1.90×&#41;, its rigid, nonoverlapping window partitions prevent local queries and keys from attending to each other if they fall into separate windows, violating the 3D locality property. This results in degraded video quality, and crucially, fine-tuning with Swin attention not only fails to recover performance but further lowers the VBench score. In contrast, STA addresses both&#41; quality and efficiency limitations. )
+For example, with a very sparse window configuration of wt=(18,24,24), it achieves 91.00% attention sparsity, yielding a 5.76× FLOPs reduction and a 3.53× actual latency reduction.
+Importantly, this efficiency gain comes with minimal quality tradeoff: STA maintains an 80.58% [VBench score](https://github.com/Vchitect/VBench) in the training-free setting and improves to 82.62% with fine-tuning.
 
 
 ## Final Thoughts
@@ -217,7 +236,7 @@ So, if nothing else, we take comfort in knowing that solving this problem was ne
 
 {{< /justify >}}
 
-{{< image src="img/swin.png" alt="Swin" width="50%" title="Figure 4. An illustration of the shifted window approach for computing self-attention in the Swin Transformer.">}}
+{{< image src="img/swin.png" alt="Swin" width="90%" title="Figure 4. An illustration of the shifted window approach for computing self-attention in the Swin Transformer.">}}
 
 {{< justify >}}
 
