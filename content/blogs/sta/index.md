@@ -1,6 +1,6 @@
 +++
 title = "Fast Video Generation with Sliding Tile Attention"
-date = 2025-02-11T12:00:00-08:00
+date = 2025-02-17T12:00:00-08:00
 authors = ["Peiyuan Zhang", "Yongqi Chen", "Runlong Su", "Hangliang Ding", "Ion Stoica", "Zhengzhong Liu", "Hao Zhang"]
 author = "Peiyuan Zhang, Yongqi Chen*, Runlong Su*, Hangliang Ding, Ion Stoica, Zhengzhong Liu, Hao Zhang"
 ShowReadingTime = true
