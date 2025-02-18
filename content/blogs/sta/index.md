@@ -29,7 +29,7 @@ With STA and other optimizations, our solution boosts end-to-end generation spee
 Can you spot the difference between videos from the original HunyuanVideo and our accelerated inference? 👉Try out kernel in our [FastVideo project](https://github.com/hao-ai-lab/FastVideo) project and we'd love to hear what you think!
 {{< /justify >}}
 
-{{<youtube ZoQY2g4g5kc>}}
+{{<youtube Cjur2htVuSk>}}
 
 
 [//]: # (The bottleneck? Attention. It accounts for 13 of the 16 minutes required for video generation. We observe that attention scores in video diffusion models are highly localized in 3D space, with different heads needing different window sizes. This makes sliding window attention &#40;SWA&#41; an attractive alternative to retain full attention's expressiveness while reducing computational cost. However, 3D SWA is GPU-unfriendly and fails to translate FLOP savings into real speedups. We introduce **Sliding Tile Attention &#40;STA&#41;**, the first higher-order local attention with *efficient hardware implementation*.  Unlike SWA, STA operates tile-by-tile with a novel hardware-aware sliding window design. STA accelerates attention by **2.8–17×** over FlashAttention-2 &#40;FA2&#41; and **1.6–10×** over FlashAttention-3 &#40;FA3&#41;. We design a calibration stategy to determine the optimal window size for each attention head. With STA and other optimizations, our solution boosts end-to-end generation speed by **2.98×** compared to the FA3 full attention baseline, without quality loss or the need for training.)
