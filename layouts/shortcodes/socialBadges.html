@@ -3,10 +3,17 @@
         <a href="https://arxiv.org/abs/{{ .Get "arxiv-index" }}" target="_blank" rel="noopener noreferrer">
           <img src="https://img.shields.io/badge/arXiv-{{ .Get "arxiv-index" }}-white.svg?style=social" style="transform: scale(1.5);">
         </a>
-    {{ end }} 
+    {{ end }}
+    
     {{ if .Get "github" }}
         <a href="https://github.com/{{ .Get "github" }}" target="_blank" rel="noopener noreferrer">
           <img src="https://img.shields.io/github/stars/{{ .Get "github" }}?style=social" style="transform: scale(1.5);">
+        </a>
+    {{ end }}
+    
+    {{ if .Get "demo" }}
+        <a href="{{ .Get "demo" }}" target="_blank" rel="noopener noreferrer">
+          <img src="https://img.shields.io/badge/🎮%20demo-try%20it-green.svg?style=social" style="transform: scale(1.5);">
         </a>
     {{ end }}
 </div>

@@ -10,8 +10,7 @@ summary: people
 {{< lab_members_grid >}}
 {{< lab_member name="Hao Zhang" role="Assistant Professor" image="hao_zhang.png" academic="https://cseweb.ucsd.edu/~haozhang/" twitter="https://twitter.com/haozhangml" >}}
 
-{{< lab_member name="Junda Chen" role="PhD Student (Rotation)" image="junda_chen.jpg" academic="https://github.com/GindaChen" twitter="https://twitter.com/Junda_Chen_" >}}
-<!-- {{< lab_member name="Junda Chen" role="PhD Student (Rotation)" image="junda_chen.jpg" academic="https://github.com/GindaChen" twitter="https://twitter.com/Junda_Chen_" linkedin="https://www.linkedin.com/in/junda-chen/">}} -->
+{{< lab_member name="Junda Chen" role="PhD Student" image="junda_chen.jpg" academic="https://github.com/GindaChen" twitter="https://twitter.com/Junda_Chen_" >}}
 
 {{< lab_member name="Jiangfei Duan" role="Visiting PhD Student" image="jiangfei_duan.png" academic="https://jf-d.github.io/" twitter="https://x.com/jiangfeiduan">}}
 
@@ -19,7 +18,7 @@ summary: people
 
 {{< lab_member name="Lanxiang Hu" role="PhD Student" image="lanxiang_hu.jpg" academic="https://snyhlxde1.github.io/" twitter="https://twitter.com/Lanxiang_Hu" >}}
 
-{{< lab_member name="Will Lin" role="PhD Student (Rotation)" image="will_lin.png" academic="https://github.com/SolitaryThinker" twitter="https://x.com/wlsaidhi">}}
+{{< lab_member name="Will Lin" role="PhD Student" image="will_lin.png" academic="https://github.com/SolitaryThinker" twitter="https://x.com/wlsaidhi">}}
 
 {{< lab_member name="Peiyuan Zhang" role="PhD Student" image="peiyuan_zhang.png" academic="https://veiled-texture-20c.notion.site/Peiyuan-Zhang-ab24b48621c9491db767a76df860873a" twitter="https://x.com/py_z001?s=21&t=8b6Ok2N1qcsERbvXX588qA">}}
 
