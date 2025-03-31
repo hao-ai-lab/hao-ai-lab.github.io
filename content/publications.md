@@ -10,8 +10,12 @@ summary: publications
 Ion Stoica, Matei Zaharia, Joseph Gonzalez, Ken Goldberg, Koushik Sen, Hao Zhang, Anastasios N. Angelopoulos, Shishir G. Patil, Lingjiao Chen, Wei-Lin Chiang, Jared Q. Davis
 {{< /publication >}}
 
-{{< publication title="GameArena: Evaluating LLM Reasoning through Live Computer Games" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2412.06394" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Evaluation" >}}
+{{< publication title="GameArena: Evaluating LLM Reasoning through Live Computer Games" venue="ICLR 2025" paperLink="https://arxiv.org/pdf/2412.06394" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Evaluation" >}}
 Lanxiang Hu*, Qiyu Li*, Anze Xie*, Nan Jiang, Ion Stoica, Haojian Jin, Hao Zhang
+{{< /publication >}}
+
+{{< publication title="Scaling Long Context Training Data by Long-Distance Referrals" venue="ICLR 2025" paperLink="https://openreview.net/pdf?id=tePFpDgyqg" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Scalable ML" >}}
+Yonghao Zhuang*, Lanxiang Hu*, Longfei Yun, Souvik Kundu, Zhengzhong Liu, Eric P. Xing, Hao Zhang
 {{< /publication >}}
 
 {{< publication title="Efficient LLM Scheduling by Learning to Rank" venue="NeurIPS 2024" paperLink="https://arxiv.org/pdf/2408.15792" codeLink="https://github.com/hao-ai-lab/vllm-ltr" award="" project="" data-topic="Selected, Large Language Models, Scalable ML" >}}

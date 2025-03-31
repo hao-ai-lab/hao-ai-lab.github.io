@@ -1,77 +1,169 @@
-<section class="talks-carousel">
-  <div id="talksCarousel" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-      {{ range $index, $talk := .Site.Data.talks }}
-      <div class="carousel-item {{ if eq $index 0 }}active{{ end }}">
-        <div class="card">
-          <div class="card-body text-center">
-            <h5 class="card-title">{{ $talk.title }}</h5>
-            <div class="video-container">
-              <iframe 
-                width="100%" 
-                height="315" 
-                src="{{ $talk.url }}" 
-                title="{{ $talk.title }}" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-              </iframe>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Talks Carousel</title>
+  <style>
+    
+    .talks-carousel {
+      position: relative;
+      margin-bottom: 60px;
+    }
+    
+    .carousel {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .carousel-inner {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+    
+    .carousel-item {
+      flex: 0 0 100%;
+      display: none;
+    }
+    
+    .carousel-item.active {
+      display: block;
+    }
+    
+    .carousel-control-prev,
+    .carousel-control-next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 12px;
+      text-decoration: none;
+    }
+    
+    .carousel-control-prev {
+      left: 15px;
+    }
+    
+    .carousel-control-next {
+      right: 15px;
+    }
+    
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      display: block;
+      width: 24px;
+      height: 24px;
+      margin-bottom: 4px;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+    }
+    
+    .carousel-control-prev-icon {
+      background-image: url("data:image/svg+xml;charset=UTF8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'><path d='M3.5 0l-4 4 4 4 1.5-1.5L1.5 4 5 1.5z'/></svg>");
+    }
+    
+    .carousel-control-next-icon {
+      background-image: url("data:image/svg+xml;charset=UTF8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'><path d='M4.5 0L3 1.5 5.5 4 3 6.5 4.5 8l4-4z'/></svg>");
+    }
+    
+    .card {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      margin: 0 auto;
+      max-width: 800px;
+    }
+    
+    .card-body {
+      text-align: center;
+    }
+    
+    .card-title {
+      margin-bottom: 15px;
+      font-size: 1.5em;
+      color: #333;
+    }
+    
+    .video-container {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <section class="talks-carousel">
+    <div id="talksCarousel" class="carousel">
+      <div class="carousel-inner">
+        {{ range $index, $talk := .Site.Data.talks }}
+        <div class="carousel-item{{ if eq $index 0 }} active{{ end }}">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">{{ $talk.title }}</h4>
+              <div class="video-container">
+                <iframe 
+                  width="100%" 
+                  height="400" 
+                  src="{{ $talk.url }}" 
+                  title="{{ $talk.title }}" 
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowfullscreen>
+                </iframe>
+              </div>
+              <p class="card-text">{{ $talk.description }}</p>
             </div>
-            <p class="card-text">{{ $talk.description }}</p>
           </div>
         </div>
+        {{ end }}
       </div>
-      {{ end }}
+      <!-- Now the controls show both icon and text -->
+      <button class="carousel-control-prev" onclick="prevSlide()">
+        <span class="carousel-control-prev-icon"></span>
+        <span>Previous</span>
+      </button>
+      <button class="carousel-control-next" onclick="nextSlide()">
+        <span class="carousel-control-next-icon"></span>
+        <span>Next</span>
+      </button>
     </div>
-    <button class="carousel-control-prev" href="#talksCarousel" role="button" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" href="#talksCarousel" role="button" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
-  </div>
-</section>
+  </section>
 
+  <script>
+    (function(){
+      const carousel = document.getElementById("talksCarousel");
+      const items = carousel.querySelectorAll(".carousel-item");
+      let currentSlide = 0;
 
-<style>
-.talks-carousel .carousel-control-prev,
-.talks-carousel .carousel-control-next {
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-  background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent black */
-  border-radius: 50%; /* Make it circular */
-  width: 50px; /* Adjust size */
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+      function showSlide(index) {
+        if (index < 0) index = items.length - 1;
+        if (index >= items.length) index = 0;
+        items[currentSlide].classList.remove("active");
+        items[index].classList.add("active");
+        currentSlide = index;
+      }
 
-.talks-carousel:hover .carousel-control-prev,
-.talks-carousel:hover .carousel-control-next {
-  opacity: 1;
-}
+      window.prevSlide = function() {
+        showSlide(currentSlide - 1);
+      };
 
+      window.nextSlide = function() {
+        showSlide(currentSlide + 1);
+      };
 
-.talks-carousel .carousel-control-prev-icon,
-.talks-carousel .carousel-control-next-icon {
-  filter: invert(100%); /* Make arrows white */
-}
-
-.talks-carousel .card {
-  background-color: #f5f5f5; /* Light gray background */
-  border-radius: 10px; /* Optional: Rounded corners */
-  padding: 20px; /* Add some spacing inside */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Soft shadow */
-}
-
-
-
-section {
-  margin-bottom: 60px;
-}
-
-
-</style>
+      // auto-cycle
+      setInterval(() => nextSlide(), 5000);
+    })();
+  </script>
+</body>
+</html>

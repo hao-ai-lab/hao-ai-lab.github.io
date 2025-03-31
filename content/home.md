@@ -1,4 +1,3 @@
-
 ---
 title: ""
 layout: "home"
@@ -20,7 +19,6 @@ We also develop and maintain open-source models and systems to democratize the a
 
 
 {{< /justify >}}
-
 
 
 &emsp;
