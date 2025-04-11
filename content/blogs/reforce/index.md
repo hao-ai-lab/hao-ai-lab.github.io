@@ -1,6 +1,6 @@
 +++
 title = "ReFoRCE: A Text-to-SQL Agent with Self-Refinement, Format Restriction, and Column Exploration"
-date = 2025-04-10T12:00:00-08:00
+date = 2025-04-11T12:00:00-08:00
 authors = ["Minghang Deng", "Ashwin Ramachandran", "Canwen Xu", "Lanxiang Hu", "Zhewei Yao", "Anupam Datta", "Hao Zhang"]
 author = "Minghang Deng, Ashwin Ramachandran, Canwen Xu, Lanxiang Hu, Zhewei Yao, Anupam Datta, Hao Zhang"
 ShowReadingTime = true
@@ -16,7 +16,7 @@ draft = false
 
 {{< justify >}}
 
-**TL;DR:** TL;DR: We present **ReFoRCE**, a Text-to-SQL agent that leads the [Spider 2.0 leaderboard—the most challenging Text-to-SQL benchmark](https://spider2-sql.github.io/) where even advanced models like GPT-4o score around 10%. ReFoRCE tackles real-world deployment issues such as massive schemas, SQL dialect diversity, and complex queries. It uses **table compression** to handle long contexts, **format restriction** for accurate SQL generation, and iterative **column exploration** for better schema understanding. A **self-refinement** pipeline with **self-consistency** and parallel **voting** further boosts performance, achieving state-of-the-art scores of **31.26** on Spider 2.0-Snow and **30.35** on Spider 2.0-Lite.
+**TL;DR:** We present **ReFoRCE**, a Text-to-SQL agent that leads the [Spider 2.0 leaderboard—the most challenging Text-to-SQL benchmark](https://spider2-sql.github.io/) where even advanced models like GPT-4o score around 10%. ReFoRCE tackles real-world deployment issues such as massive schemas, SQL dialect diversity, and complex queries. It uses **table compression** to handle long contexts, **format restriction** for accurate SQL generation, and iterative **column exploration** for better schema understanding. A **self-refinement** pipeline with **self-consistency** and parallel **voting** further boosts performance, achieving state-of-the-art scores of **31.26** on Spider 2.0-Snow and **30.35** on Spider 2.0-Lite.
 {{< /justify >}}
 
 {{< two_images src1="img/spider2-snow.png" src2="img/spider2-lite.png" alt1="spider2-snow" alt2="spider2-lite" width1="50%" width2="50%" title="Figure 1: Latest leaderboard screenshots for Spider2-Snow and Spider2-Lite.">}}
