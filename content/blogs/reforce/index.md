@@ -1,6 +1,6 @@
 +++
 title = "ReFoRCE: A Text-to-SQL Agent with Self-Refinement, Format Restriction, and Column Exploration"
-date = 2025-04-11T12:00:00-08:00
+date = 2025-04-10T12:00:00-08:00
 authors = ["Minghang Deng", "Ashwin Ramachandran", "Canwen Xu", "Lanxiang Hu", "Zhewei Yao", "Anupam Datta", "Hao Zhang"]
 author = "Minghang Deng, Ashwin Ramachandran, Canwen Xu, Lanxiang Hu, Zhewei Yao, Anupam Datta, Hao Zhang"
 ShowReadingTime = true
