@@ -13,11 +13,10 @@ draft = false
 
 {{< socialBadges arxiv-index="2502.00675" github="hao-ai-lab/ReFoRCE">}}
 
-[Spider 2.0 Leaderboard](https://spider2-sql.github.io/)
 
 {{< justify >}}
 
-**TL;DR:** TL;DR: We present **ReFoRCE**, a Text-to-SQL agent that leads the Spider 2.0 leaderboard—the most challenging Text-to-SQL benchmark where even advanced models like GPT-4o score around 10%. ReFoRCE tackles real-world deployment issues such as massive schemas, SQL dialect diversity, and complex queries. It uses **table compression** to handle long contexts, **format restriction** for accurate SQL generation, and iterative **column exploration** for better schema understanding. A **self-refinement** pipeline with **self-consistency** and parallel **voting** further boosts performance, achieving state-of-the-art scores of **31.26** on Spider 2.0-Snow and **30.35** on Spider 2.0-Lite.
+**TL;DR:** TL;DR: We present **ReFoRCE**, a Text-to-SQL agent that leads the [Spider 2.0 leaderboard—the most challenging Text-to-SQL benchmark](https://spider2-sql.github.io/) where even advanced models like GPT-4o score around 10%. ReFoRCE tackles real-world deployment issues such as massive schemas, SQL dialect diversity, and complex queries. It uses **table compression** to handle long contexts, **format restriction** for accurate SQL generation, and iterative **column exploration** for better schema understanding. A **self-refinement** pipeline with **self-consistency** and parallel **voting** further boosts performance, achieving state-of-the-art scores of **31.26** on Spider 2.0-Snow and **30.35** on Spider 2.0-Lite.
 {{< /justify >}}
 
 {{< two_images src1="img/spider2-snow.png" src2="img/spider2-lite.png" alt1="spider2-snow" alt2="spider2-lite" width1="50%" width2="50%" title="Figure 1: Latest leaderboard screenshots for Spider2-Snow and Spider2-Lite.">}}
@@ -25,9 +24,10 @@ draft = false
 ## Background: Toy-Level vs. Enterprise-Grade Text-to-SQL Tasks
 
 {{< justify >}}
-Text-to-SQL systems have made querying structured data more accessible through natural language, but transitioning from toy-level datasets to enterprise-grade applications reveals major challenges. Snowflake and Databricks both recognize Text-to-SQL as a "holy grail" problem in the database and machine learning communities, and each is actively working to address these challenges to deliver exceptional services to their customers. 
+Text-to-SQL systems have made querying structured data more accessible through natural language, but transitioning from toy-level datasets to enterprise-grade applications reveals major challenges. For example, leading companies like Snowflake recognize Text-to-SQL as a "holy grail" problem in today's database+ML community, and are actively working to address these challenges to deliver exceptional services to their customers. 
 
-Early benchmarks like [Spider 1.0](https://yale-lily.github.io/spider) and [BIRD](https://bird-bench.github.io/) provided valuable starting points, but they fall short in complexity—featuring relatively small schemas and limited SQL functionality, with minimal support for external knowledge or diverse SQL dialects. In contrast, [**Spider 2.0**](https://spider2-sql.github.io/) and its variants (Spider 2.0-lite and Spider 2.0-snow) introduce realistic enterprise scenarios, with more databases, SQL queries, function use, SQL dialects, and external knowledge. Despite their importance, performance on Spider 2.0 remains capped at ~25%, underscoring the need for systems that can handle ambiguous queries, long contexts, and dialect-specific reasoning in real-world environments.
+Early benchmarks like [Spider 1.0](https://yale-lily.github.io/spider) and [BIRD](https://bird-bench.github.io/) provided valuable starting points, but they fall short in complexity—featuring relatively small schemas and limited SQL functionality, with minimal support for external knowledge or diverse SQL dialects. In contrast, [**Spider 2.0**](https://spider2-sql.github.io/) and its variants (Spider 2.0-lite and Spider 2.0-snow) introduce realistic enterprise scenarios, with more databases, SQL queries, function use, SQL dialects, and external knowledge. 
+The following table compares the latest Spider 2.0 with existing benchmarks side-by-side. Despite their importance, performance on Spider 2.0 remains capped at ~25%, underscoring the need for systems that can handle ambiguous queries, long contexts, and dialect-specific reasoning in real-world environments. 
 {{< /justify >}}
 
 {{< center >}}
@@ -115,7 +115,7 @@ Spider 2.0 incorporates multiple SQL dialects, nested columns, external knowledg
 
 ### Limitations of Current Method
 {{< justify >}}
-Realistic Text-to-SQL challenges demand agentic methods that enable LLMs to dynamically interact with databases by leveraging tools, executing commands, and planning actions. Such approaches tackle tasks ranging from planning and reasoning to advanced code generation, as evidenced by frameworks like [Spider-Agent](https://arxiv.org/abs/2411.07763) built on the ReAct paradigm for Spider 2.0. However, code agents often struggle to maintain control in long-context scenarios, frequently requiring iterative corrections for syntax errors, data types, and function selection. Moreover, current Text-to-SQL methods face difficulties handling multiple dialects, nested columns, and complex data types in the Spider 2.0 dataset.
+Realistic Text-to-SQL challenges demand agentic methods that enable LLMs to dynamically interact with databases by leveraging tools, executing commands, and planning actions. Such approaches tackle tasks ranging from planning and reasoning to advanced code generation, as evidenced by frameworks like [Spider-Agent](https://arxiv.org/abs/2411.07763) built on the ReAct paradigm for Spider 2.0. However, code agents often struggle to maintain control in long-context scenarios, as illustrated in Figure 2, frequently requiring iterative corrections for syntax errors, data types, and function selection. Moreover, current Text-to-SQL methods face difficulties handling multiple dialects, nested columns, and complex data types in the Spider 2.0 dataset.
 {{< /justify >}}
 
 {{< image src="img/example_spider_agent.png" alt="spider_agent" width="120%" title="Figure 2: A base case for Spider Agent: improperly handling nested columns without self-refinement.">}}
@@ -266,7 +266,7 @@ For more details, please see [our paper](https://arxiv.org/abs/2502.00675). We a
 
 ## Acknowledgements
 {{< justify >}}
-This work is jointly developed with Snowflake AI Research Team.
+This work is jointly developed with [Snowflake AI Research Team](https://www.snowflake.com/en/product/ai/ai-research/).
 {{< /justify >}}
 
 ## Citation
