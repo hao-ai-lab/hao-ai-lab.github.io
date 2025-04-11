@@ -1,6 +1,6 @@
 +++
 title = "ReFoRCE: A Text-to-SQL Agent with Self-Refinement, Format Restriction, and Column Exploration"
-date = 2025-04-07T12:00:00-08:00
+date = 2025-04-10T12:00:00-08:00
 authors = ["Minghang Deng", "Ashwin Ramachandran", "Canwen Xu", "Lanxiang Hu", "Zhewei Yao", "Anupam Datta", "Hao Zhang"]
 author = "Minghang Deng, Ashwin Ramachandran, Canwen Xu, Lanxiang Hu, Zhewei Yao, Anupam Datta, Hao Zhang"
 ShowReadingTime = true
@@ -11,12 +11,16 @@ draft = false
       caption = "An instance of the ReFoRCE workflow operates as follows: upon receiving a question, it generates the expected answer format, systematically explores relevant tables and columns, engages in self-refinement, and ultimately decides on a final answer once self-consistency is achieved."
 +++
 
-{{< socialBadges arxiv-index="2502.00675" github="hao-ai-lab/ReFoRCE" >}}
+{{< socialBadges arxiv-index="2502.00675" github="hao-ai-lab/ReFoRCE">}}
+
+[Spider 2.0 Leaderboard](https://spider2-sql.github.io/)
 
 {{< justify >}}
 
 **TL;DR:** TL;DR: We present **ReFoRCE**, a Text-to-SQL agent that leads the Spider 2.0 leaderboard—the most challenging Text-to-SQL benchmark where even advanced models like GPT-4o score around 10%. ReFoRCE tackles real-world deployment issues such as massive schemas, SQL dialect diversity, and complex queries. It uses **table compression** to handle long contexts, **format restriction** for accurate SQL generation, and iterative **column exploration** for better schema understanding. A **self-refinement** pipeline with **self-consistency** and parallel **voting** further boosts performance, achieving state-of-the-art scores of **31.26** on Spider 2.0-Snow and **30.35** on Spider 2.0-Lite.
 {{< /justify >}}
+
+{{< two_images src1="img/spider2-snow.png" src2="img/spider2-lite.png" alt1="spider2-snow" alt2="spider2-lite" width1="50%" width2="50%" title="Figure 1: Latest leaderboard screenshots for Spider2-Snow and Spider2-Lite.">}}
 
 ## Background: Toy-Level vs. Enterprise-Grade Text-to-SQL Tasks
 
@@ -114,7 +118,7 @@ Spider 2.0 incorporates multiple SQL dialects, nested columns, external knowledg
 Realistic Text-to-SQL challenges demand agentic methods that enable LLMs to dynamically interact with databases by leveraging tools, executing commands, and planning actions. Such approaches tackle tasks ranging from planning and reasoning to advanced code generation, as evidenced by frameworks like [Spider-Agent](https://arxiv.org/abs/2411.07763) built on the ReAct paradigm for Spider 2.0. However, code agents often struggle to maintain control in long-context scenarios, frequently requiring iterative corrections for syntax errors, data types, and function selection. Moreover, current Text-to-SQL methods face difficulties handling multiple dialects, nested columns, and complex data types in the Spider 2.0 dataset.
 {{< /justify >}}
 
-{{< image src="img/example_spider_agent.png" alt="spider_agent" width="120%" title="Figure 1: A base case for Spider Agent: improperly handling nested columns without self-refinement.">}}
+{{< image src="img/example_spider_agent.png" alt="spider_agent" width="120%" title="Figure 2: A base case for Spider Agent: improperly handling nested columns without self-refinement.">}}
 
 ## ReFoRCE
 
@@ -124,7 +128,7 @@ Realistic Text-to-SQL challenges demand agentic methods that enable LLMs to dyna
 ReFoRCE offers a robust solution to the unpredictability and lack of reliability in ReAct agents by introducing a structured and controlled workflow. By breaking down tasks into manageable subtasks, employing self-refinement, and utilizing format restriction and column exploration, ReFoRCE significantly enhances the agent's ability to identify and address challenging examples. The integration of parallelization and a voting mechanism further improves the reliability of the outcomes. ReFoRCE’s flexibility and ease of integration with various database systems make it a versatile and scalable solution. This methodology provides a high level of consistency and reliability, even when faced with difficult datasets.
 {{< /justify >}}
 
-{{< image src="img/cover_reforce.png" alt="cover_reforce" width="130%" title="Figure 2: An overview of the Self-Refinement Agent with Format Restriction and Column Exploration (ReFoRCE) workflow. (a) Table compression to address long-context limitations; (b) Format restriction to ensure accurate answer formatting; (c) Iterative column exploration for improved schema understanding; (d) Self-refinement pipeline comprising parallelized workflows with voting mechanisms.">}}
+{{< image src="img/cover_reforce.png" alt="cover_reforce" width="130%" title="Figure 3: An overview of the Self-Refinement Agent with Format Restriction and Column Exploration (ReFoRCE) workflow. (a) Table compression to address long-context limitations; (b) Format restriction to ensure accurate answer formatting; (c) Iterative column exploration for improved schema understanding; (d) Self-refinement pipeline comprising parallelized workflows with voting mechanisms.">}}
 
 ### Table Information Compression
 
@@ -245,19 +249,24 @@ We evaluate our approach using the Spider 2.0 dataset, which includes two subset
 {{< /center >}}
 
 {{< justify >}}
-*Spider 2.0-Snow and Spider 2.0-Lite Leaderboards, March 2025.*
+*Spider 2.0-Snow and Spider 2.0-Lite Leaderboards, April 2025.*
 {{< /justify >}}
 
 ### Case Study
 {{< justify >}}
-Here is an example where ReFoRCE succeeds. The question is the same as in Figure 1, where Spider Agent struggles with handling nested columns in the Snowflake dialect. ReFoRCE first produces the expected answer format, titled "System,Most_Frequent_License". Compared to Spider Agent's answer, "System,LICENSENAME,LICENSECOUNT", ReFoRCE's output aligns better with the question description. During the column exploration stage, ReFoRCE receives SQL execution feedback starting with simpler queries and progressing to more complex ones. Even if there are errors, it can self-correct to avoid the issues seen in Spider Agent's output. After gaining sufficient knowledge about the database, ReFoRCE generates the final answer and verifies the executed results through its self-refinement and self-consistency workflow.
+Here is an example where ReFoRCE succeeds. The question is the same as in Figure 2, where Spider Agent struggles with handling nested columns in the Snowflake dialect. ReFoRCE first produces the expected answer format, titled "System,Most_Frequent_License". Compared to Spider Agent's answer, "System,LICENSENAME,LICENSECOUNT", ReFoRCE's output aligns better with the question description. During the column exploration stage, ReFoRCE receives SQL execution feedback starting with simpler queries and progressing to more complex ones. Even if there are errors, it can self-correct to avoid the issues seen in Spider Agent's output. After gaining sufficient knowledge about the database, ReFoRCE generates the final answer and verifies the executed results through its self-refinement and self-consistency workflow.
 {{< /justify >}}
 
-{{< image src="img/example_reforce.png" alt="reforce" width="120%" title="Figure 3: A successful case for ReFoRCE.">}}
+{{< image src="img/example_reforce.png" alt="reforce" width="120%" title="Figure 4: A successful case for ReFoRCE.">}}
 
 ## Get started
 {{< justify >}}
 For more details, please see [our paper](https://arxiv.org/abs/2502.00675). We also invite you to explore [our codebase](https://github.com/hao-ai-lab/ReFoRCE)!
+{{< /justify >}}
+
+## Acknowledgements
+{{< justify >}}
+This work is jointly developed with Snowflake AI Research Team.
 {{< /justify >}}
 
 ## Citation
