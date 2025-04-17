@@ -25,8 +25,8 @@ summary: people
 {{< lab_member name="Peiyuan Zhang" role="PhD Student" image="peiyuan_zhang.png" academic="https://veiled-texture-20c.notion.site/Peiyuan-Zhang-ab24b48621c9491db767a76df860873a" twitter="https://x.com/py_z001?s=21&t=8b6Ok2N1qcsERbvXX588qA">}}
 
 {{< lab_member name="Minghang Deng" role="Master's" image="minghang_deng.jpg" academic="https://www.linkedin.com/in/minghang-deng">}}
-
-{{< lab_member name="Humaira Firdowse" role="Master's" image="humaira_mohammed.jpg" academic="https://github.com/humairafirdowse">}}
+<!-- 
+{{< lab_member name="Humaira Firdowse" role="Master's" image="humaira_mohammed.jpg" academic="https://github.com/humairafirdowse">}} -->
 
 {{< lab_member name="Zheyu Fu" role="Master's" image="zheyu_fu.jpg" academic="https://www.linkedin.com/in/zheyu-fu-1b4667231/">}}
 
@@ -39,14 +39,14 @@ summary: people
 {{< lab_member name="Daniel Zhao" role="Master's" image="daniel_zhao.png" academic="https://astradzhao.github.io/" twitter="https://x.com/astradzhao">}}
 
 {{< lab_member name="Yongqi Chen" role="Research Intern" image="yongqi_chen.jpg" academic="https://www.linkedin.com/in/yongqi-chen-187342258/">}}
-
-{{< lab_member name="Wei Zhou" role="Research Intern" image="wei_zhou.jpg" academic="https://www.linkedin.com/in/wei-zhou3/">}}
+<!-- 
+{{< lab_member name="Wei Zhou" role="Research Intern" image="wei_zhou.jpg" academic="https://www.linkedin.com/in/wei-zhou3/">}} -->
 
 {{< lab_member name="Hangliang Ding" role="Undergrad Intern" image="hangliang_ding.jpeg" academic="https://scholar.google.com/citations?user=LxPRowMAAAAJ&hl=en">}}
 
 {{< lab_member name="Jason Kong" role="Undergrad Intern" image="jason_kong.jpg" academic="https://www.jasonkongie.com/" twitter="https://x.com/JasonkongLLM">}}
 
-{{< lab_member name="Jonathan Nitisastro" role="Undergrad Intern" image="jonathan_nitisastro.jpg" academic="https://www.linkedin.com/in/jonathan-nitisastro-ba781b193/">}}
+<!-- {{< lab_member name="Jonathan Nitisastro" role="Undergrad Intern" image="jonathan_nitisastro.jpg" academic="https://www.linkedin.com/in/jonathan-nitisastro-ba781b193/">}} -->
 
 {{< lab_member name="Haoyang Yu" role="Undergrad Intern" image="haoyang_yu.jpeg" academic="https://www.linkedin.com/in/haoyang-yu-8b1997257/">}}
 

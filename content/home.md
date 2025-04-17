@@ -51,7 +51,7 @@ We also develop and maintain open-source models and systems to democratize the a
 {{< /newsEntry >}}
 
 
-&emsp;
+<!-- &emsp;
 
 
 ## **Project Highlight**
@@ -62,4 +62,16 @@ We also develop and maintain open-source models and systems to democratize the a
 
 ## **Talks**
 
-{{< talks_section >}}
+{{< talks_section >}} -->
+
+
+
+&emsp;
+
+### **Hao AI Lab is sponsored by:** 
+{{< sponsor_grid >}}
+  {{< sponsor image="nvidia.png" link="https://www.nvidia.com" >}}
+  {{< sponsor image="HDSI.png" link="https://datascience.ucsd.edu/" >}}
+  {{< sponsor image="snow.png" link="https://www.snowflake.com/en/" >}}
+  {{< sponsor image="google.png" link="https://www.google.com" width="100" height="100">}}
+{{< /sponsor_grid >}}
