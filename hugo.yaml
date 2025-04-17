@@ -1,0 +1,72 @@
+bseURL: 'https://aa0c-2603-8001-8d00-409c-4986-7e58-f887-434d.ngrok-free.app'
+languageCode: en-us
+title: 'Hao AI Lab @ UCSD'
+theme: 'PaperMod'
+
+googleAnalytics: 'G-T4DXGLCH1D'
+
+
+# Setup build timeout of hugo (in seconds)
+# FIXME: This is a workaround for rendering differnet sizes of the gif images.
+timeout: 90 # seconds
+
+
+markup:
+  goldmark:
+    extensions:
+      passthrough:
+        delimiters:
+          block:
+          - - \[
+            - \]
+          - - $$
+            - $$
+          inline:
+          - - $
+            - $
+        enable: true
+params:
+  env: production
+  math: true
+  label:
+    icon: "img/HAOAILAB_trimmed.jpg"
+  assets:
+    css:
+      - "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+  
+menu:
+  main:
+    - identifier: Home
+      name: Home
+      url: /home/
+      weight: 10
+    - identifier: Blogs
+      name: Blogs
+      url: /blogs/
+      weight: 30
+    - identifier: Projects
+      name: Projects 
+      url: /projects/  
+      weight: 40  
+    - identifier: Talks
+      name: Talks
+      url: /talks/
+      weight: 45
+    - identifier: People
+      name: People
+      url: /people/
+      weight: 50
+    - identifier: Publications
+      name: Publications
+      url: /publications/
+      weight: 60
+    - identifier: Contact
+      name: Contact
+      url: /contact/
+      weight: 70    
+    - name: "Twitter"
+      url: "https://twitter.com/haoailab"
+      weight: 100
+    - name: "GitHub"
+      url: "https://github.com/hao-ai-lab"
+      weight: 120
