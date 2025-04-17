@@ -166,6 +166,10 @@
     }
     .modal-title {
       color: #333;
+      
+    }
+    #modalTitle {
+      font-size: 25px;
     }
     #modalContent {
       color: #333;
@@ -296,7 +300,7 @@
       document.getElementById("modalImage").alt = data.alt;
       document.getElementById("modalDate").innerText = data.date;
       document.getElementById("modalContent").innerHTML = data.content;
-      console.log(data.url);
+      // console.log(data.url);
       document.getElementById("readFullPost").href = data.url;
     }
     
