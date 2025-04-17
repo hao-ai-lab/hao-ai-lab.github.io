@@ -4,6 +4,12 @@ layout: "people"
 url: "/people/"
 summary: people
 ---
+# People
+
+<!-- {{< image src="/img/group-photos/thanksgiving-dinner-2024-orig.jpg" alt="Lab Group Photo" title="Hao AI Lab members enjoying Italian food in La Jolla Cove during Thanksgiving" width="70%" >}} -->
+
+{{< image src="/img/group-photos/thanksgiving-dinner-2024-gpt.jpg" alt="Lab Group Photo" title="Hao AI Lab members enjoying Italian food in La Jolla Cove during Thanksgiving" width="70%" >}}
+
 
 ### Lab Members
 
