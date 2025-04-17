@@ -85,3 +85,7 @@
 .post-content a:hover {
     opacity: 75%;
 }
+
+.project-title h5 {
+    font-size: 25px;
+}

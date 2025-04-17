@@ -3,72 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Blog Carousel</title>
+  <title>Project Highlights</title>
   <style>
-    /* Carousel & Blog Card Styles (existing) */
-    .blog-carousel {
-      position: relative;
+    /* Project Grid Styles */
+    .project-highlights {
       margin-bottom: 60px;
     }
-    .carousel {
-      position: relative;
-      overflow: hidden;
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+      margin-bottom: 30px;
     }
-    .carousel-inner {
-      display: flex;
-      transition: transform 0.5s ease;
-    }
-    .carousel-item {
-      flex: 0 0 100%;
-      display: none;
-    }
-    .carousel-item.active {
-      display: block;
-    }
-    /* Carousel controls */
-    .blog-carousel-control-prev,
-    .blog-carousel-control-next {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background-color: rgba(0, 0, 0, 0.5);
-      border: none;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      cursor: pointer;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 12px;
-      text-decoration: none;
-    }
-    .blog-carousel-control-prev {
-      left: 15px;
-    }
-    .blog-carousel-control-next {
-      right: 15px;
-    }
-    .blog-carousel-control-prev-icon,
-    .blog-carousel-control-next-icon {
-      display: block;
-      width: 24px;
-      height: 24px;
-      margin-bottom: 4px;
-      background-size: 100% 100%;
-      background-repeat: no-repeat;
-    }
-    .blog-carousel-control-prev-icon {
-      background-image: url("data:image/svg+xml;charset=UTF8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'><path d='M3.5 0l-4 4 4 4 1.5-1.5L1.5 4 5 1.5z'/></svg>");
-    }
-    .blog-carousel-control-next-icon {
-      background-image: url("data:image/svg+xml;charset=UTF8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'><path d='M4.5 0L3 1.5 5.5 4 3 6.5 4.5 8l4-4z'/></svg>");
-    }
-    /* Blog card styling */
-    .blog-card {
+    /* Project card styling */
+    .project-card {
       border: 1px solid #ddd;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(95, 95, 95, 0.1);
@@ -76,33 +24,43 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       display: flex;
       flex-direction: column;
+      height: 100%;
+      background-color: #fff;
     }
-    .blog-card:hover {
+    .project-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
-    .blog-image {
-      height: 350px;
+    .project-image {
+      height: 200px;
       object-fit: cover;
       border-bottom: 1px solid #ddd;
       width: 100%;
     }
     .card-body {
-      padding: 20px;
+      padding: 5px 5px 15px 5px;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      margin-top: 0;
     }
-    .blog-title {
-      font-size: 18px;
+    /* More specific selector to override theme styles */
+    .project-card .card-body .project-title {
+      font-size: 25px;
       font-weight: bold;
-      margin-bottom: 10px;
+      margin: 10px;
       color: #333;
+      display: block;
+      width: 90%;
     }
-    .blog-date {
-      font-size: 14px;
+    
+    .project-date {
+      font-size: 12px;
       color: #777;
       margin-bottom: 15px;
     }
-    .blog-button {
+    .project-button {
       background-color: #007bff;
       border: none;
       border-radius: 5px;
@@ -111,8 +69,44 @@
       transition: background-color 0.3s ease;
       cursor: pointer;
       color: #fff;
+      margin-top: auto;
+      width: 50%;
+      align-self: center;
+      
     }
-    .blog-button:hover {
+    .project-button:hover {
+      background-color: #0056b3;
+    }
+    .more-button-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .more-button {
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      padding: 12px 30px;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+      color: #fff !important;
+      text-decoration: none !important;
+      display: inline-block;
+    }
+    .more-button:hover,
+    .more-button:visited,
+    .more-button:active {
+      /* background-color: #0056b3; */
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+
+    #readFullPost{
+      text-decoration: none !important;
+      color: #fff !important;
+    }
+
+    .more-button:hover {
       background-color: #0056b3;
     }
 
@@ -142,6 +136,7 @@
       border-radius: 5px;
       box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
       animation: fadeIn 0.3s;
+      color: #333;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-50px); }
@@ -155,12 +150,28 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background-color: #fff;
+      color: #333;
+    }
+    .modal-body {
+      background-color: #fff;
+      color: #333;
     }
     .modal-footer {
       border-top: 1px solid #dee2e6;
       display: flex;
       justify-content: flex-end;
       gap: 10px;
+      background-color: #fff;
+    }
+    .modal-title {
+      color: #333;
+    }
+    #modalContent {
+      color: #333;
+    }
+    #modalDate {
+      color: #777;
     }
     /* Minimal button styles to mimic Bootstrap */
     .btn {
@@ -201,44 +212,43 @@
       line-height: 1;
       cursor: pointer;
     }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .project-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
   {{/* Define the blog posts (assumes they are in the "summary" section) */}}
   {{ $posts := where .Site.RegularPages "Section" "summary" }}
 
-  <!-- Carousel with one blog item per slide -->
-  <section class="blog-carousel">
-    <div id="blogCarousel" class="carousel">
-      <div class="carousel-inner">
-        {{ range $index, $post := $posts }}
-        <div class="carousel-item{{ if eq $index 0 }} active{{ end }}">
-          <div class="card blog-card">
-            <img src="{{ $post.Params.cover.image }}" class="card-img-top blog-image" alt="{{ $post.Params.cover.alt }}" />
-            <div class="card-body">
-              <h5 class="card-title blog-title">{{ $post.Title }}</h5>
-              <p class="blog-date">{{ $post.Date | time.Format "January 2, 2006" }}</p>
-              <!-- Clicking this button opens the modal for this blog post -->
-              <button class="blog-button" onclick="openModal({{ $index }})">
-                View Details
-              </button>
-            </div>
-          </div>
+  <!-- Project Highlights Grid -->
+  <section class="project-highlights">
+    <div class="project-grid">
+      {{ range $index, $post := first 4 $posts }}
+      <div class="project-card">
+        <img src="{{ $post.Params.cover.image }}" class="project-image" alt="{{ $post.Params.cover.alt }}" />
+        <div class="card-body">
+          <h5 class="project-title">{{ $post.Title }}</h5>
+          <p class="project-date">{{ $post.Date | time.Format "January 2, 2006" }}</p>
+          <button class="project-button" onclick="openModal({{ $index }})">
+            View Details
+          </button>
         </div>
-        {{ end }}
       </div>
-      <button class="blog-carousel-control-prev" onclick="goToPrevSlide()">
-        <span class="blog-carousel-control-prev-icon"></span>
-        <span>Previous</span>
-      </button>
-      <button class="blog-carousel-control-next" onclick="goToNextSlide()">
-        <span class="blog-carousel-control-next-icon"></span>
-        <span>Next</span>
-      </button>
+      {{ end }}
+    </div>
+    
+    <!-- More Projects Button -->
+    <div class="more-button-container">
+      <a href="/projects/" class="more-button">View All Projects</a>
     </div>
   </section>
 
-  <!-- Single Modal for Blog Details with internal navigation -->
+  <!-- Single Modal for Project Details -->
   <div class="modal fade" id="blogModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -248,12 +258,10 @@
         </div>
         <div class="modal-body">
           <img id="modalImage" src="" class="img-fluid mb-3" alt="" style="width:100%; height:auto;"/>
-          <p class="blog-date" id="modalDate"></p>
+          <p class="project-date" id="modalDate"></p>
           <div id="modalContent"></div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="modalPrev()">Previous</button>
-          <button type="button" class="btn btn-secondary" onclick="modalNext()">Next</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           <a id="readFullPost" href="#" class="btn btn-primary">Read Full Post</a>
         </div>
@@ -264,15 +272,15 @@
   <!-- Pass blog data to JavaScript -->
   <script>
     var blogData = [
-    {{ range $index, $post := $posts }}
+    {{ range $index, $post := first 4 $posts }}
       {
         "title": "{{ $post.Title | safeJS }}",
         "image": "{{ $post.Params.cover.image }}",
         "alt": "{{ $post.Params.cover.alt | safeJS }}",
         "date": "{{ $post.Date | time.Format "January 2, 2006" }}",
         "content": `{{ $post.Content | safeJS }}`,
-        "url": "http://localhost:1313/blogs/{{ $post.Params.urlblog }}/"
-      }{{ if not (eq (add $index 1) (len $posts)) }},{{ end }}
+        "url": "{{ $post.RelPermalink | absURL }}"
+      }{{ if not (eq (add $index 1) (len (first 4 $posts))) }},{{ end }}
     {{ end }}
     ];
     var currentIndex = 0;
@@ -288,15 +296,8 @@
       document.getElementById("modalImage").alt = data.alt;
       document.getElementById("modalDate").innerText = data.date;
       document.getElementById("modalContent").innerHTML = data.content;
+      console.log(data.url);
       document.getElementById("readFullPost").href = data.url;
-    }
-    function modalPrev() {
-      currentIndex = (currentIndex - 1 + blogData.length) % blogData.length;
-      updateModalContent();
-    }
-    function modalNext() {
-      currentIndex = (currentIndex + 1) % blogData.length;
-      updateModalContent();
     }
     
     /* Modal display functions */
@@ -314,30 +315,6 @@
         el.addEventListener("click", closeModal);
       });
     });
-  </script>
-
-  <!-- Carousel JavaScript -->
-  <script>
-    (function(){
-      const blogCarouselEl = document.getElementById("blogCarousel");
-      const slideElements = blogCarouselEl.querySelectorAll(".carousel-item");
-      let activeSlideIndex = 0;
-      function displaySlide(newIndex) {
-        if (newIndex < 0) newIndex = slideElements.length - 1;
-        if (newIndex >= slideElements.length) newIndex = 0;
-        slideElements[activeSlideIndex].classList.remove("active");
-        slideElements[newIndex].classList.add("active");
-        activeSlideIndex = newIndex;
-      }
-      window.goToPrevSlide = function() {
-        displaySlide(activeSlideIndex - 1);
-      };
-      window.goToNextSlide = function() {
-        displaySlide(activeSlideIndex + 1);
-      };
-      // auto-cycle
-      setInterval(() => goToNextSlide(), 5000);
-    })();
   </script>
 </body>
 </html>
