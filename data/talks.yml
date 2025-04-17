@@ -1,3 +1,11 @@
+- title: "Talk at Faster LLM Inference Seminar @ Weizmann Institute of Science 02/2025"
+  url: "https://www.youtube.com/embed/znd7o-EBSKU?si=ao755-0iUItpYAG6"
+  description: "Efficiently Serving Reasoning Programs with Certaindex"
+
+- title: "Talk at PyTorch Webinar 10/2024"
+  url: "https://www.youtube.com/embed/Bh-jlh5vlF0?si=Q5tV_LCluBG386pk"
+  description: "DistServe: disaggregating prefill & decoding for LLM inference"
+
 - title: "Talk at NSF Open-Source Generative AI (OSGAI) Workshop 03/2024"
   url: "https://www.youtube.com/embed/7njmta3SlxE"
   description: "Chatbot Arena (UCSD / LMSys)"

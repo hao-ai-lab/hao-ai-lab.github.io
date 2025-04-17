@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!-- Immediately redirect using meta refresh -->
+    <meta http-equiv="refresh" content="0; url={{ .Params.redirectURL }}">
+    <!-- Optional: Set a canonical link to the destination -->
+    <link rel="canonical" href="{{ .Params.redirectURL }}">
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>
+      Redirecting to <a href="{{ .Params.redirectURL }}">{{ .Params.redirectURL }}</a>...
+    </p>
+  </body>
+</html>
