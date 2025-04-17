@@ -1,0 +1,30 @@
+/* 
+ * Custom Override Styles
+ * This file contains custom CSS overrides for the PaperMod theme.
+ * These styles are loaded last in the CSS hierarchy to ensure they override theme defaults.
+ * 
+ * For more information about the CSS override system, see the README.md in this directory.
+ * 
+ * Usage:
+ * - Override theme variables in :root
+ * - Add custom styles that should take precedence over theme styles
+ */
+
+/* Override theme variables */
+:root {
+    --main-width: 1200px;  /* Adjust this value to your desired width */
+}
+
+.post-content a {
+    text-decoration: underline;
+    color: blue;
+}
+
+.post-content a:hover {
+    opacity: 100%;
+    transition: opacity 200ms;
+}
+
+.post-content a:hover {
+    opacity: 75%;
+}
