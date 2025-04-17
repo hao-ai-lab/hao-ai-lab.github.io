@@ -21,10 +21,10 @@ We also develop and maintain open-source models and systems to democratize the a
 {{< /justify >}}
 
 
-&emsp;
+<!-- &emsp; -->
 
 
-## **Project Highlight**
+<!-- ## **Project Highlight**
 {{< project_highlight >}}
 
 
@@ -32,7 +32,7 @@ We also develop and maintain open-source models and systems to democratize the a
 
 ## **Talks**
 
-{{< talks_section >}}
+{{< talks_section >}} -->
 
 
 &emsp;
