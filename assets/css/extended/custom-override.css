@@ -1,0 +1,91 @@
+/* 
+ * Custom Override Styles
+ * This file contains custom CSS overrides for the PaperMod theme.
+ * These styles are loaded last in the CSS hierarchy to ensure they override theme defaults.
+ * 
+ * For more information about the CSS override system, see the README.md in this directory.
+ * 
+ * Usage:
+ * - Override theme variables in :root
+ * - Add custom styles that should take precedence over theme styles
+ */
+
+/* Override theme variables */
+:root {
+    --main-width: 1200px;  /* Adjust this value to your desired width */
+}
+
+/* Blog grid layout */
+
+.posts-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap);
+    margin: 0;
+}
+
+.post-preview {
+    margin: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.post-preview .post-image {
+    margin-bottom: var(--gap);
+}
+
+.post-preview .post-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: var(--radius);
+}
+
+.post-preview .post-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.post-preview .post-details h2 {
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.post-preview .post-details time {
+    color: var(--secondary);
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.post-preview .post-details .post-author {
+    color: var(--secondary);
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+
+@media screen and (max-width: 768px) {
+    .posts-list {
+        grid-template-columns: 1fr;
+    }
+} */
+
+.post-content a {
+    text-decoration: underline;
+    color: blue;
+}
+
+.post-content a:hover {
+    opacity: 100%;
+    transition: opacity 200ms;
+}
+
+.post-content a:hover {
+    opacity: 75%;
+}
+
+.project-title h5 {
+    font-size: 25px;
+}

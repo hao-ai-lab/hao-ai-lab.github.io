@@ -1,0 +1,28 @@
+<!-- layouts/shortcodes/sponsor-grid.html -->
+<div class="sponsor-grid">
+    {{ .Inner }}
+</div>
+
+<style>
+.sponsor-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem; /* Increased gap between items */
+}
+
+.sponsor-logo {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0.5rem; /* Additional spacing around each logo */
+}
+
+.sponsor-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Makes all logos fit within the same box without distortion */
+}
+</style>
