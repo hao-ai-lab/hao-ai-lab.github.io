@@ -56,6 +56,31 @@
   color: rgba(65, 67, 102, 0.931);
 }
 
+/* .marker-highlight {
+  background: linear-gradient(120deg, rgba(232, 232, 232, 0.94), rgba(245, 249, 250, 0.3));
+  padding: 0.1em 0.2em;
+  border-radius: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .marker-highlight {
+    background: linear-gradient(120deg, rgba(255, 255, 0, 0.3), rgba(255, 255, 0, 0.3));
+  }
+} */
+
+
+/* .char-animation {
+    --index: 0;
+    --total: 10;
+    --duration: 1s;
+    
+    animation-delay: calc(
+        sin((var(--index) / var(--total)) * 90deg) *
+        var(--duration)
+    );
+} */
+
+
 /* Mobile responsive styles */
 @media screen and (max-width: 768px) {
   .quote-block {
@@ -133,9 +158,9 @@
         <img src="/img/logos/ucsd-hao-ai-lab-logo-long.day.png" alt="Hao AI Lab @ UCSD" id="landing-logo-img">
     </div>
 
-    <div class="quote-block fancy">
+    <div class="quote-block fancy ">
         <!-- {{ .Inner }} -->
-        Welcome to the UCSD Hao AI Lab website! We are passionate about designing strong, efficient, and secure machine learning models and algorithms, and in building scalable, practical distributed systems that can support real-world machine learning workloads.
+        Welcome to the UCSD Hao AI Lab website! We are passionate about designing <span class="marker-highlight">strong, efficient, and secure machine learning models and algorithms</span>, and in building scalable, practical distributed systems that can support real-world machine learning workloads.
         We also develop and maintain open-source models and systems to democratize the access of large models. We are affiliated with the <a href="https://mlsys-ucsd.org/">UCSD ML System Group</a> and <a href="https://ucsd-nlp.github.io/">UCSD NLP Group</a>.
         
     </div>
