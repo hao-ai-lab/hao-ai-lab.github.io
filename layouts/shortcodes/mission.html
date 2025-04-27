@@ -135,11 +135,23 @@
         /* margin-bottom: 0.5em; */
     }
 }
+
+
+body:not(.dark) #night-logo {
+    vertical-align: middle;
+    display: none;
+}
+
+body.dark #day-logo {
+    display: none;
+}
 </style>
 
 <div>
     <div style="display: flex; align-items: center; justify-content: center; gap: 1em;">
-        <img src="/img/logos/ucsd-hao-ai-lab-logo-long.day.png" alt="Hao AI Lab @ UCSD" id="landing-logo-img">
+        <img id="day-logo" src="/img/logos/ucsd-hao-ai-lab-logo-long.day.png" alt="Hao AI Lab @ UCSD" id="landing-logo-img">
+
+        <img id="night-logo" src="/img/logos/ucsd-hao-ai-lab-logo-long.night.png" alt="Hao AI Lab @ UCSD" id="landing-logo-img">
     </div>
 
     <div class="quote-block">
