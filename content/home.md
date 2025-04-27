@@ -4,21 +4,26 @@ layout: "home"
 type: "home"
 url: "/home/"
 summary: "home page for Hao Lab @ UCSD"
-cover:
-  image: img/ucsd-hao-ai-lab.jpg
-  alt: "Hao AI Lab @ UCSD"
-  caption: "Hao AI Lab @ UCSD"
+# cover:
+#   # image: img/ucsd-hao-ai-lab.night.jpg
+#   image: img/HAOAILAB_LOGO.jpg
+#   alt: "Hao AI Lab @ UCSD"
+#   caption: "Hao AI Lab @ UCSD"
+#   height: 100
 ---
 
 
-{{< justify >}}
+<!-- {{< image src="/img/HAOAILAB_LOGO.jpg" alt="Lab Group Photo" title="Hao AI Lab @ UCSD" width="50%" >}} -->
 
 
+
+{{< mission >}}
 Welcome to the UCSD Hao AI Lab website! We are passionate about designing strong, efficient, and secure machine learning models and algorithms, and in building scalable, practical distributed systems that can support real-world machine learning workloads.
-We also develop and maintain open-source models and systems to democratize the access of large models. We are affiliated with the [UCSD ML System Group](https://mlsys-ucsd.org/) and [UCSD NLP Group](https://ucsd-nlp.github.io/).
+We also develop and maintain open-source models and systems to democratize the access of large models. We are affiliated with the <a href="https://mlsys-ucsd.org/">UCSD ML System Group</a> and <a href="https://ucsd-nlp.github.io/">UCSD NLP Group</a>.
+{{< /mission >}}
 
 
-{{< /justify >}}
+
 
 
 ## News 
@@ -30,6 +35,17 @@ We also develop and maintain open-source models and systems to democratize the a
 <!-- {{< newsEntry >}}
 **03/2025**: Our research paper [DistServe](blogs/distserve) is adopted by [NVIDIA Dynamo](https://nvidianews.nvidia.com/news/nvidia-dynamo-open-source-library-accelerates-and-scales-ai-reasoning-models) and highlighed in [GTC'25](https://www.youtube.com/live/_waPvOwL9Z8?t=3246&si=g2KdQwVv40Olc8gU)!
 {{< /newsEntry >}} -->
+
+### 2025
+{{< newsEntry >}}
+**04/2025**: NVIDIA gave us a DGX B200! See [our recent post](https://x.com/haoailab/status/1914402516420440072) here. 
+{{< /newsEntry >}}
+
+
+{{< newsEntry >}}
+**03/2025**: Our research paper [DistServe](blogs/distserve) is adopted by [NVIDIA Dynamo](https://nvidianews.nvidia.com/news/nvidia-dynamo-open-source-library-accelerates-and-scales-ai-reasoning-models) and highlighed in [GTC'25](https://www.youtube.com/live/_waPvOwL9Z8?t=3246&si=g2KdQwVv40Olc8gU)!
+{{< /newsEntry >}}
+
 
 
 ### 2024

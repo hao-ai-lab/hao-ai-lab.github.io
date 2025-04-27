@@ -12,8 +12,8 @@
 
 /* Override theme variables */
 :root {
-    --main-width: 1200px;  /* Adjust this value to your desired width */
-    --nav-width: 1200px;
+    --main-width: 876px;  /* Adjust this value to your desired width */
+    --nav-width: 876px;
 }
 
 /* Blog grid layout */
