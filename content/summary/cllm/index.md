@@ -1,5 +1,6 @@
 +++
-title = "Consistency Large Language Models: A Family of Efficient Parallel Decoders"
+title = "CLLM"
+description = "Consistency Large Language Models: A Family of Efficient Parallel Decoders"
 date = 2024-05-06T12:00:00-08:00
 authors = ["Siqi Kou*", "Lanxiang Hu*", "Zhezhi He", "Zhijie Deng", "Hao Zhang"]
 author = "Siqi Kou*, Lanxiang Hu*, Zhezhi He, Zhijie Deng, Hao Zhang"

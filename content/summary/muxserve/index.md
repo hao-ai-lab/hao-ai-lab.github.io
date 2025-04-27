@@ -1,12 +1,12 @@
 +++
-title = "MuxServe: Flexible Spatial-Temporal Multiplexing for Multiple LLM Serving"
+title = "MuxServe"
 date = 2024-05-20T12:00:00-08:00
 authors = ["Jiangfei Duan", "Runyu Lu", "Haojie Duanmu", "Xiuhong Li", "Xingcheng Zhang", "Dahua Lin", "Ion Stoica", "Hao Zhang"]
 author = "Jiangfei Duan, Runyu Lu, Haojie Duanmu, Xiuhong Li, Xingcheng Zhang, Dahua Lin, Ion Stoica, Hao Zhang"
 ShowReadingTime = true
 draft = false
 type= "summary"
-
+description = "Serving Multiple LLMs with Flexible Spatial-Temporal Multiplexing"
 urlblog = "muxserve"
 [cover]
       image = "/img/muxserve_cover.gif"

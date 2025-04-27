@@ -1,5 +1,6 @@
 +++
-title = "Efficient LLM Scheduling by Learning to Rank"
+title = "vLLM-LTR"
+description = "Efficient LLM Scheduling by Learning to Rank"
 date = 2025-01-13T12:00:00-08:00
 authors = ["Yichao Fu", "Siqi Zhu", "Runlong Su", "Aurick Qiao", "Ion Stoica", "Hao Zhang"]
 author = "Yichao Fu, Siqi Zhu, Runlong Su, Aurick Qiao, Ion Stoica, Hao Zhang"

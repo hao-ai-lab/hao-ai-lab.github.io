@@ -1,10 +1,11 @@
 +++
-title = "Fast Video Generation with Sliding Tile Attention"
+title = "Fast Video"
 date = 2025-02-18T11:00:00-08:00
 authors = ["Peiyuan Zhang", "Yongqi Chen", "Runlong Su", "Hangliang Ding", "Ion Stoica", "Zhengzhong Liu", "Hao Zhang"]
 author = "Peiyuan Zhang, Yongqi Chen*, Runlong Su*, Hangliang Ding, Ion Stoica, Zhengzhong Liu, Hao Zhang"
 ShowReadingTime = true
 draft = false
+description = "Make Video Generation Faster"
 [socialIcons]
     [[socialIcons.icon]]
       name = "twitter"

@@ -1,5 +1,6 @@
 +++
-title = "Throughput is Not All You Need: Maximizing Goodput in LLM Serving using Prefill-Decode Disaggregation"
+title = "DistServe"
+description = "Maximizing Goodput in LLM Serving using Prefill-Decode Disaggregation"
 date = 2024-03-17T12:00:00-08:00
 authors = ["Yinmin Zhong", "Junda Chen", "Shengyu Liu", "Yibo Zhu", "Xin Jin", "Hao Zhang"]
 author = "Yinmin Zhong, Junda Chen, Shengyu Liu, Yibo Zhu, Xin Jin, Hao Zhang"

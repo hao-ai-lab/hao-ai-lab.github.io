@@ -18,7 +18,7 @@
 <style>
   .posts-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Three posts per row */
+    grid-template-columns: repeat(1, 1fr); /* Three posts per row */
     gap: 20px;
     padding: 20px;
   }
@@ -58,7 +58,7 @@
 
   @media (max-width: 1024px) {
     .posts-grid {
-      grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
+      grid-template-columns: repeat(1, 1fr); /* Two columns for medium screens */
     }
   }
 
@@ -92,12 +92,15 @@
     {{- end -}}
     <div class="post-details">
       <h2><a href="{{ .Permalink }}" style="color: black !important;">{{ .Title }}</a></h2>
-      <time datetime="{{ .Date }}">{{ .Date.Format "January 2, 2006" }}</time>
-      {{- if .Params.author -}}
+      <!-- <time datetime="{{ .Date }}">{{ .Date.Format "January 2, 2006" }}</time> -->
+      <!-- {{- if .Params.author -}}
       <p class="post-author"> {{ .Params.author }}</p>
       {{- else if .Params.authors -}}
       <p class="post-author"> {{ delimit .Params.authors ", " }}</p>
-      {{- end -}}
+      {{- end -}} -->
+    {{- if .Params.description -}}
+    <p class="post-description">{{ .Params.description }}</p>
+    {{- end -}}
     </div>
   </article>
   {{- end -}}
