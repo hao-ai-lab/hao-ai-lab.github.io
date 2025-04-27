@@ -18,8 +18,8 @@ summary: "home page for Hao Lab @ UCSD"
 
 
 {{< mission >}}
-Welcome to the UCSD Hao AI Lab website! We are passionate about designing strong, efficient, and secure machine learning models and algorithms, and in building scalable, practical distributed systems that can support real-world machine learning workloads.
-We also develop and maintain open-source models and systems to democratize the access of large models. We are affiliated with the <a href="https://mlsys-ucsd.org/">UCSD ML System Group</a> and <a href="https://ucsd-nlp.github.io/">UCSD NLP Group</a>.
+<!-- Welcome to the UCSD Hao AI Lab website! We are passionate about designing strong, efficient, and secure machine learning models and algorithms, and in building scalable, practical distributed systems that can support real-world machine learning workloads.
+We also develop and maintain open-source models and systems to democratize the access of large models. We are affiliated with the <a href="https://mlsys-ucsd.org/">UCSD ML System Group</a> and <a href="https://ucsd-nlp.github.io/">UCSD NLP Group</a>. -->
 {{< /mission >}}
 
 
