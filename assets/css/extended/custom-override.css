@@ -16,6 +16,10 @@
     --nav-width: 876px;
 }
 
+.nav{
+    margin-top: 10px;
+}
+
 /* Blog grid layout */
 
 .posts-list {

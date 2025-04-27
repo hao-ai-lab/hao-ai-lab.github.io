@@ -1,14 +1,12 @@
-
 <style>
-
 .quote-block {
   position: relative;
   padding: 2em;
-  /* border: 1px solid #ccc; */
   max-width: 736px;
+  min-width: 280px;
   margin: 0 auto;
   margin-top: 0em;
-  margin-bottom: 5em;
+  margin-bottom: 3em;
 }
 
 .quote-block::before {
@@ -34,7 +32,6 @@
   font-size: 1.2em;
   line-height: 1.6;
   color: #333;
-  /* background: #f9f9f9; */
 }
 
 .quote-block.fancy::before,
@@ -42,34 +39,101 @@
   position: absolute;
   font-size: 6em;
   font-family: Georgia, serif;
-  pointer-events: none; /* prevent interaction */
+  pointer-events: none;
 }
 
 .quote-block.fancy::before {
   content: "“";
   top: -0.2em;
   left: -0.2em;
-  color: rgba(65, 67, 102, 0.931); /* subtle transparent quotes */
+  color: rgba(65, 67, 102, 0.931);
 }
 
 .quote-block.fancy::after {
   content: "”";
   bottom: -0.4em;
   right: -0.2em;
-  color: rgba(65, 67, 102, 0.931); /* subtle transparent quotes */
+  color: rgba(65, 67, 102, 0.931);
 }
 
+/* Mobile responsive styles */
+@media screen and (max-width: 768px) {
+  .quote-block {
+    padding: 1.5em;
+    margin-bottom: 2em;
+  }
+
+  .quote-block.fancy {
+    padding: 2em;
+    font-size: 1.1em;
+  }
+
+  .quote-block.fancy::before,
+  .quote-block.fancy::after {
+    font-size: 4em;
+  }
+
+  .quote-block.fancy::before {
+    top: -0.1em;
+    left: -0.1em;
+  }
+
+  .quote-block.fancy::after {
+    bottom: -0.3em;
+    right: -0.1em;
+  }
+}
+
+/* Small mobile devices */
+@media screen and (max-width: 480px) {
+  .quote-block {
+    padding: 1.2em;
+    margin-bottom: 1.5em;
+  }
+
+  .quote-block.fancy {
+    padding: 1.5em;
+    font-size: 1em;
+  }
+
+  .quote-block.fancy::before,
+  .quote-block.fancy::after {
+    font-size: 3em;
+  }
+}
+
+#landing-logo-img {
+    width: 60%;
+    min-width: 120px;
+    margin-top: 3em;
+    margin-bottom: 3em;
+}
+
+/* Mobile responsive styles */
+@media screen and (max-width: 768px) {
+    #landing-logo-img {
+        width: 80%;
+        margin-top: 2em;
+        margin-bottom: 2em;
+    }
+}
+
+/* Small mobile devices */
+@media screen and (max-width: 480px) {
+    #landing-logo-img {
+        width: 90%;
+        /* margin-top: 0.5em; */
+        /* margin-bottom: 0.5em; */
+    }
+}
 </style>
 
 <div>
     <div style="display: flex; align-items: center; justify-content: center; gap: 1em;">
-        <img src="/img/logos/ucsd-hao-ai-lab-logo-long.day.png" alt="Hao AI Lab @ UCSD" style="width: 60%; min-width: 80px; margin-top: 3em; margin-bottom: 3em;">
-        
+        <img src="/img/logos/ucsd-hao-ai-lab-logo-long.day.png" alt="Hao AI Lab @ UCSD" id="landing-logo-img">
     </div>
-
 
     <div class="quote-block fancy">
         {{ .Inner }}
     </div>
-
 </div>
