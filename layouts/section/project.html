@@ -2,7 +2,7 @@
 
 {{- if (and site.Params.profileMode.enabled .IsHome) -}}
 {{- partial "index_profile.html" . -}}
-{{- else }}{{/* if not profileMode */}}
+{{- else }}
 
 {{- if not .IsHome | and .Title -}}
 <header class="page-header">
@@ -14,101 +14,63 @@
 </header>
 {{- end -}}
 
-<!-- Add CSS inside the template -->
 <style>
-  .posts-grid {
+  .projects-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Three posts per row */
-    gap: 20px;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
   }
 
-  .post-preview {
+  .project-card {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    padding: 1.5rem;
     transition: transform 0.2s ease-in-out;
-    padding: 15px;
   }
 
-  .post-preview:hover {
+  .project-card:hover {
     transform: translateY(-5px);
   }
 
-  .post-image img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  .post-details {
-    padding: 15px;
-  }
-
-  .post-details h2 {
+  .project-title {
     font-size: 1.5rem;
-    margin-bottom: 10px;
+    margin-bottom: 1rem;
+    color: #333;
   }
 
-  .post-details p {
-    font-size: 1rem;
-    color: #555;
-  }
-
-  @media (max-width: 1024px) {
-    .posts-grid {
-      grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
-    }
+  .project-description {
+    color: #666;
+    line-height: 1.6;
   }
 
   @media (max-width: 768px) {
-    .posts-grid {
-      grid-template-columns: repeat(1, 1fr); /* One column for small screens */
-    }
-  }
-  
-  /* Project-specific responsive title */
-  @media (max-width: 360px) {
-    .post-details h2 {
-      font-size: 1.2rem; /* Smaller font size for very small screens */
-    }
-    .post-details p {
-      font-size: 0.6rem; /* Smaller font size for very small screens */
+    .projects-grid {
+      grid-template-columns: 1fr;
+      padding: 1rem;
     }
   }
 </style>
 
-<!-- Updated layout for three-column grid -->
-<div class="posts-grid">
-  {{- $pages := where .Site.RegularPages "Type" "in" (slice "summary") -}}
-  {{- $paginator := .Paginate $pages -}}
-  {{- range $paginator.Pages -}}
-  <article class="post-preview">
-    {{- with .Params.cover.image -}}
-    <div class="post-image">
-      <img src="{{ . | absURL }}" alt="{{ $.Params.cover.alt }}">
-    </div>
-    {{- end -}}
-    <div class="post-details">
-      <h2><a href="{{ .Permalink }}" style="color: black !important;">{{ .Title }}</a></h2>
-      <time datetime="{{ .Date }}">{{ .Date.Format "January 2, 2006" }}</time>
-      {{- if .Params.author -}}
-      <p class="post-author"> {{ .Params.author }}</p>
-      {{- else if .Params.authors -}}
-      <p class="post-author"> {{ delimit .Params.authors ", " }}</p>
+<div class="projects-grid">
+  {{- $pages := where .Site.RegularPages "Section" "projects" -}}
+  {{- range $pages -}}
+  <article class="project-card">
+    <h2 class="project-title">
+      <a href="{{ .Params.link }}" style="color: inherit; text-decoration: none;">{{ .Title }}</a>
+    </h2>
+    <div class="project-description">
+      {{- if .Description -}}
+        {{ .Description | markdownify }}
+      {{- else -}}
+        {{ .Summary | plainify | truncate 160 }}
       {{- end -}}
     </div>
   </article>
   {{- end -}}
 </div>
 
-{{- if gt $paginator.TotalPages 1 -}}
-<footer class="pagination-footer">
-  {{ template "_internal/pagination.html" . }}
-</footer>
-{{- end -}}
+{{- end }}
 
-{{- end }}{{/* end profileMode */}}
-
-{{- end }}{{/* end main */}}
+{{- end }}
