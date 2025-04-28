@@ -1,31 +1,52 @@
 <!-- layouts/shortcodes/sponsor.html -->
 
 <div class="sponsor-item">
-    <div class="sponsor-logo-light">
+    <div class="sponsor-logo">
         <a href="{{ .Get "link" }}" target="_blank">
-            <img src="/img/sponsor/{{ .Get "imageDay" }}" alt="Sponsor Logo" />
-        </a>
-    </div>
-    <div class="sponsor-logo-dark">
-        <a href="{{ .Get "link" }}" target="_blank">
-            <img src="/img/sponsor/{{ .Get "imageNight" }}" alt="Sponsor Logo" />
+            <img src="/img/sponsor/{{ .Get "imageDay" }}" alt="Sponsor Logo" class="light-mode-logo" />
+            <img src="/img/sponsor/{{ .Get "imageNight" }}" alt="Sponsor Logo" class="dark-mode-logo" />
         </a>
     </div>
 </div>
 
-
 <style>
-body.dark .sponsor-logo-light {
-    vertical-align: middle;
-    display: none;
-}
-
-body:not(.dark) .sponsor-logo-dark {
-    display: none;
-}
-
 .sponsor-item {
-  flex: 0 0 35%; /* shrink=0 grow=0 basis=48% */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
+.sponsor-logo {
+    width: 100%;
+    max-width: 200px;
+}
+
+.sponsor-logo img {
+    width: 100%;
+    height: auto;
+    transition: opacity 0.3s ease;
+}
+
+/* Dark mode handling */
+body.dark .light-mode-logo {
+    display: none;
+}
+
+body:not(.dark) .dark-mode-logo {
+    display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sponsor-logo {
+        max-width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sponsor-logo {
+        max-width: 120px;
+    }
+}
 </style>

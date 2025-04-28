@@ -96,8 +96,8 @@ We also develop and maintain open-source models and systems to democratize the a
 ### Sponsors
 Hao AI Lab is sponsored by HDSI, NVIDIA, Snowflake, and Google. We are grateful for their support!
 {{< sponsor_grid >}}
-  {{< sponsor imageDay="nvidia.png" imageNight="nvidia-dark.png" link="https://www.nvidia.com" >}}
   {{< sponsor imageDay="HDSI.png" imageNight="HDSI-dark.png" link="https://datascience.ucsd.edu/" >}}
+  {{< sponsor imageDay="nvidia.png" imageNight="nvidia-dark.png" link="https://www.nvidia.com" >}}
+  {{< sponsor imageDay="google.png" imageNight="google-dark.png" link="https://www.google.com">}}
   {{< sponsor imageDay="snow.png" imageNight="snow-dark.png" link="https://www.snowflake.com/en/" >}}
-  {{< sponsor imageDay="google.png" imageNight="google-dark.png" link="https://www.google.com" width="100" height="100">}}
 {{< /sponsor_grid >}}
