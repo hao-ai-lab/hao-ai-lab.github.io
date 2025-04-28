@@ -1,7 +1,12 @@
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 <link rel="stylesheet" href="/css/custom.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+
+
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -42,6 +47,22 @@
 
 {{- /* Styles */}}
 
+{{- /* 
+ * CSS Bundling Process
+ * 
+ * 1. Core Theme CSS (loaded first):
+ *    - theme-vars.css: Theme variables and colors
+ *    - reset.css: CSS reset
+ *    - common/*.css: Common styles
+ *    - chroma-styles.css & chroma-mod.css: Code highlighting
+ *    - zmedia.css: Media queries
+ * 
+ * 2. Extended CSS (loaded last):
+ *    - All files in assets/css/extended/
+ *    - These styles override theme defaults
+ *    - See assets/css/extended/README.md for more info
+ */}}
+
 {{- /* includes */}}
 {{- $includes := slice }}
 {{- $includes = $includes | append (" " | resources.FromString "assets/css/includes-blank.css")}}
@@ -67,8 +88,15 @@
 {{- $core := (slice $theme_vars $reset $common $chroma_styles $chroma_mod $includes_all $media) | resources.Concat "assets/css/core.css" | resources.Minify }}
 {{- $extended := (resources.Match "css/extended/*.css") | resources.Concat "assets/css/extended.css" | resources.Minify }}
 
-{{- /* bundle all required css */}}
-{{- /* Add extended css after theme style */ -}}
+{{- /* 
+ * Final CSS Bundle
+ * Combines all CSS in the correct order:
+ * 1. license_css (theme license)
+ * 2. core (theme core styles)
+ * 3. extended (custom overrides)
+ * 
+ * This ensures custom styles in extended/ take precedence
+ */}}
 {{- $stylesheet := (slice $license_css $core $extended) | resources.Concat "assets/css/stylesheet.css"  }}
 
 {{- if not site.Params.assets.disableFingerprinting }}

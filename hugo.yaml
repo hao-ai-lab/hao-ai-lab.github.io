@@ -1,4 +1,4 @@
-bseURL: 'http://hao-ai-lab.github.io'
+bseURL: 'https://aa0c-2603-8001-8d00-409c-4986-7e58-f887-434d.ngrok-free.app'
 languageCode: en-us
 title: 'Hao AI Lab @ UCSD'
 theme: 'PaperMod'
@@ -44,6 +44,14 @@ menu:
       name: Blogs
       url: /blogs/
       weight: 30
+    - identifier: Projects
+      name: Projects 
+      url: /projects/  
+      weight: 40  
+    - identifier: Talks
+      name: Talks
+      url: /talks/
+      weight: 45
     - identifier: People
       name: People
       url: /people/
@@ -55,7 +63,7 @@ menu:
     - identifier: Contact
       name: Contact
       url: /contact/
-      weight: 70
+      weight: 70    
     - name: "Twitter"
       url: "https://twitter.com/haoailab"
       weight: 100

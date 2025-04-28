@@ -1,7 +1,13 @@
 
 
-<div style="text-align: justify; margin-bottom: 10px;">
+<!-- <div style="text-align: justify; margin-bottom: 10px;">
     {{ .Inner | markdownify }}
 </div>
+ -->
 
+
+ <div class="news-entry">
+    <div class="news-date">{{ .Get "date" }}</div>
+    <div class="news-text">{{ .Inner | markdownify }}</div>
+</div>
 

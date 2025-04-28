@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project Highlights</title>
+  <style>
+    /* Project Grid Styles */
+    .project-highlights {
+      margin-bottom: 60px;
+    }
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    /* Project card styling */
+    .project-card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(95, 95, 95, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background-color: #fff;
+    }
+    .project-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .project-image {
+      height: 200px;
+      object-fit: cover;
+      border-bottom: 1px solid #ddd;
+      width: 100%;
+    }
+    .card-body {
+      padding: 5px 5px 15px 5px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      margin-top: 0;
+    }
+    /* More specific selector to override theme styles */
+    .project-card .card-body .project-title {
+      font-size: 25px;
+      font-weight: bold;
+      margin: 10px;
+      color: #333;
+      display: block;
+      width: 90%;
+    }
+    
+    .project-date {
+      font-size: 12px;
+      color: #777;
+      margin-bottom: 15px;
+    }
+    .project-button {
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+      color: #fff;
+      margin-top: auto;
+      width: 50%;
+      align-self: center;
+      
+    }
+    .project-button:hover {
+      background-color: #0056b3;
+    }
+    .more-button-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .more-button {
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      padding: 12px 30px;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+      color: #fff !important;
+      text-decoration: none !important;
+      display: inline-block;
+    }
+    .more-button:hover,
+    .more-button:visited,
+    .more-button:active {
+      /* background-color: #0056b3; */
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+
+    #readFullPost{
+      text-decoration: none !important;
+      color: #fff !important;
+    }
+
+    .more-button:hover {
+      background-color: #0056b3;
+    }
+
+    /* --- Custom Modal & Button Styles (replacing Bootstrap) --- */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1050;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal.show {
+      display: block;
+    }
+    .modal-dialog {
+      position: relative;
+      margin: 10% auto;
+      max-width: 800px;
+    }
+    .modal-content {
+      background-color: #fff;
+      border: 1px solid #888;
+      border-radius: 5px;
+      box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.3s;
+      color: #333;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header, .modal-body, .modal-footer {
+      padding: 1rem;
+    }
+    .modal-header {
+      border-bottom: 1px solid #dee2e6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #fff;
+      color: #333;
+    }
+    .modal-body {
+      background-color: #fff;
+      color: #333;
+    }
+    .modal-footer {
+      border-top: 1px solid #dee2e6;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background-color: #fff;
+    }
+    .modal-title {
+      color: #333;
+      
+    }
+    #modalTitle {
+      font-size: 25px;
+    }
+    #modalContent {
+      color: #333;
+    }
+    #modalDate {
+      color: #777;
+    }
+    /* Minimal button styles to mimic Bootstrap */
+    .btn {
+      display: inline-block;
+      font-weight: 400;
+      text-align: center;
+      vertical-align: middle;
+      padding: 0.375rem 0.75rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      border: 1px solid transparent;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-primary {
+      color: #fff;
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+    }
+    .btn-secondary {
+      color: #fff;
+      background-color: #6c757d;
+      border-color: #6c757d;
+    }
+    .btn-secondary:hover {
+      background-color: #5a6268;
+      border-color: #545b62;
+    }
+    .btn-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .project-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  {{/* Define the blog posts (assumes they are in the "summary" section) */}}
+  {{ $posts := where .Site.RegularPages "Section" "summary" }}
+
+  <!-- Project Highlights Grid -->
+  <section class="project-highlights">
+    <div class="project-grid">
+      {{ range $index, $post := first 4 $posts }}
+      <div class="project-card">
+        <img src="{{ $post.Params.cover.image }}" class="project-image" alt="{{ $post.Params.cover.alt }}" />
+        <div class="card-body">
+          <h5 class="project-title">{{ $post.Title }}</h5>
+          <p class="project-date">{{ $post.Date | time.Format "January 2, 2006" }}</p>
+          <button class="project-button" onclick="openModal({{ $index }})">
+            View Details
+          </button>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+    
+    <!-- More Projects Button -->
+    <div class="more-button-container">
+      <a href="/projects/" class="more-button">View All Projects</a>
+    </div>
+  </section>
+
+  <!-- Single Modal for Project Details -->
+  <div class="modal fade" id="blogModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <img id="modalImage" src="" class="img-fluid mb-3" alt="" style="width:100%; height:auto;"/>
+          <p class="project-date" id="modalDate"></p>
+          <div id="modalContent"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a id="readFullPost" href="#" class="btn btn-primary">Read Full Post</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pass blog data to JavaScript -->
+  <script>
+    var blogData = [
+    {{ range $index, $post := first 4 $posts }}
+      {
+        "title": "{{ $post.Title | safeJS }}",
+        "image": "{{ $post.Params.cover.image }}",
+        "alt": "{{ $post.Params.cover.alt | safeJS }}",
+        "date": "{{ $post.Date | time.Format "January 2, 2006" }}",
+        "content": `{{ $post.Content | safeJS }}`,
+        "url": "{{ $post.RelPermalink | absURL }}"
+      }{{ if not (eq (add $index 1) (len (first 4 $posts))) }},{{ end }}
+    {{ end }}
+    ];
+    var currentIndex = 0;
+    function openModal(index) {
+      currentIndex = index;
+      updateModalContent();
+      showModal();
+    }
+    function updateModalContent() {
+      var data = blogData[currentIndex];
+      document.getElementById("modalTitle").innerText = data.title;
+      document.getElementById("modalImage").src = data.image;
+      document.getElementById("modalImage").alt = data.alt;
+      document.getElementById("modalDate").innerText = data.date;
+      document.getElementById("modalContent").innerHTML = data.content;
+      // console.log(data.url);
+      document.getElementById("readFullPost").href = data.url;
+    }
+    
+    /* Modal display functions */
+    function showModal() {
+      document.getElementById("blogModal").classList.add("show");
+    }
+    function closeModal() {
+      document.getElementById("blogModal").classList.remove("show");
+    }
+    
+    // Attach close event to elements with data-bs-dismiss attribute
+    document.addEventListener("DOMContentLoaded", function() {
+      var closeElements = document.querySelectorAll('[data-bs-dismiss="modal"]');
+      closeElements.forEach(function(el) {
+        el.addEventListener("click", closeModal);
+      });
+    });
+  </script>
+</body>
+</html>

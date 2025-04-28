@@ -1,12 +1,12 @@
 +++
 title = "Throughput is Not All You Need: Maximizing Goodput in LLM Serving using Prefill-Decode Disaggregation"
 date = 2024-03-17T12:00:00-08:00
-authors = ["Yinmin Zhong", "Junda Chen", "Shengyu Liu", "Yibo Zhu", "Xin Jin", "Hao Zhang"]
-author = "Yinmin Zhong, Junda Chen, Shengyu Liu, Yibo Zhu, Xin Jin, Hao Zhang"
+authors = ["Junda Chen", "Yinmin Zhong", "Shengyu Liu", "Yibo Zhu", "Xin Jin", "Hao Zhang"]
+author = "Junda Chen, Yinmin Zhong, Shengyu Liu, Yibo Zhu, Xin Jin, Hao Zhang"
 ShowReadingTime = true
 draft = false
 [cover]
-    image = "img/distserve_anime-crop.gif"
+    image = "/img/distserve_anime-crop.gif"
     alt = "DistServe"
     caption = "A request going through an LLM serving engine with disaggregated prefill and decode"
 

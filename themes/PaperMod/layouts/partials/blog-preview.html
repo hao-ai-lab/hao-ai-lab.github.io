@@ -1,0 +1,9 @@
+<div class="blog-preview card">
+    <img src="{{ .Params.cover.image }}" class="card-img-top" alt="{{ .Params.cover.alt }}">
+    <div class="card-body">
+      <h5 class="card-title">{{ .Title }}</h5>
+      <p class="card-text">{{ .Params.summary | default "No summary available." }}</p>
+      <a href="{{ .Permalink }}" class="btn btn-primary">Read More</a>
+    </div>
+  </div>
+  

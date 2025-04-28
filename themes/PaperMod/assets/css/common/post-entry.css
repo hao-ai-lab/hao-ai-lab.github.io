@@ -98,8 +98,14 @@
 .entry-cover img {
     border-radius: var(--radius);
     pointer-events: none;
-    width: 100%;
+    /* width: 100%; */
     height: auto;
+    width: auto;
+    max-height: 500px;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+    justify-content: space-between;
 }
 
 .entry-cover a {

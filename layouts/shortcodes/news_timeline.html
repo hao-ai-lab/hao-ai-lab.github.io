@@ -1,0 +1,203 @@
+<div class="timeline-container" id="newsTimeline">
+    <div class="timeline-wrapper">
+      {{ range $index, $news := .Site.Data.news }}
+      <div class="timeline-item {{ if modBool $index 2 }}top{{ else }}bottom{{ end }}">
+        <div class="timeline-content">
+          <span class="timeline-date">{{ $news.date }}</span>
+          <p>{{ $news.content | markdownify }}</p>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+  </div>
+  
+  <!-- JavaScript for Drag-to-Scroll -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const timeline = document.getElementById("newsTimeline");
+      timeline.scrollLeft = 0;
+      let isDown = false;
+      let startX;
+      let scrollLeft;
+  
+      timeline.addEventListener("mousedown", (e) => {
+        isDown = true;
+        timeline.classList.add("active");
+        startX = e.pageX - timeline.offsetLeft;
+        scrollLeft = timeline.scrollLeft;
+      });
+  
+      timeline.addEventListener("mouseleave", () => {
+        isDown = false;
+        timeline.classList.remove("active");
+      });
+  
+      timeline.addEventListener("mouseup", () => {
+        isDown = false;
+        timeline.classList.remove("active");
+      });
+  
+      timeline.addEventListener("mousemove", (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - timeline.offsetLeft;
+        const walk = (x - startX) * 2; // Adjust scrolling speed
+        timeline.scrollLeft = Math.max(0, scrollLeft - walk); // Prevent overscrolling left
+        });
+
+  
+      // Enable touch scroll on mobile
+      let touchStartX;
+      let touchScrollLeft;
+  
+      timeline.addEventListener("touchstart", (e) => {
+        touchStartX = e.touches[0].pageX;
+        touchScrollLeft = timeline.scrollLeft;
+      });
+  
+      timeline.addEventListener("touchmove", (e) => {
+        const touchMoveX = e.touches[0].pageX;
+        const walk = (touchMoveX - touchStartX) * 2;
+        timeline.scrollLeft = touchScrollLeft - walk;
+      });
+    });
+  </script>
+  
+
+
+<style>
+    /* Timeline Container (Scrollable) */
+    .timeline-container {
+    width: 100%;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden; /* Prevent vertical overflow */
+    white-space: nowrap;
+    justify-content: center;
+    padding: 2rem 0;
+    cursor: grab;
+    user-select: none;
+    }
+
+    /* Dragging Effect */
+    .timeline-container.active {
+    cursor: grabbing;
+    }
+
+    /* Hide Scrollbar */
+    .timeline-container::-webkit-scrollbar {
+    height: 5px;
+    }
+
+    .timeline-container::-webkit-scrollbar-thumb {
+    background: #007bff;
+    border-radius: 10px;
+    }
+
+
+    /* Timeline Wrapper */
+    .timeline-wrapper {
+        display: flex;
+        position: relative;
+        width: max-content; /* Automatically adjusts to fit all items */
+        align-items: center;
+        gap: 2rem; /* Spacing between items */
+        padding-bottom: 2rem;
+        padding-top: 2rem;
+        padding-left: 2rem; /* Adds space at the start of the timeline */
+        overflow: visible; /* Ensures no item is cut off */
+        }
+
+
+
+    /* Timeline Items */
+    .timeline-item {
+    position: relative;
+    width: 250px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    }
+
+    /* Timeline Line */
+    .timeline-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #007bff;
+    z-index: -1;
+    }
+
+    /* Timeline Dots
+    .timeline-item::before {
+    content: "";
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: #007bff;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    } */
+
+    /* Alternating Positions */
+    .timeline-item.top {
+    transform: translateY(-50px);
+    }
+
+    .timeline-item.bottom {
+    transform: translateY(50px);
+    }
+
+    /* Timeline Content */
+    .timeline-content {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 220px; /* Adjust width for better fit */
+    max-width: 240px; /* Prevents content from being too wide */
+    word-wrap: break-word; /* Ensures long words wrap properly */
+    text-align: center; /* Centers text inside the box */
+    overflow: hidden; /* Prevents text overflow */
+    white-space: normal; /* Allows text wrapping */
+    }
+
+    /* Ensure the date is centered and doesn't break layout */
+    .timeline-date {
+    font-weight: bold;
+    color: #007bff;
+    display: block;
+    margin-bottom: 5px;
+    }
+
+    @media (max-width: 768px) {
+        .timeline-content {
+            width: 180px;
+            max-width: 200px;
+            font-size: 0.9rem; /* Reduce text size on smaller screens */
+        }
+
+        .timeline-item {
+            width: 200px; /* Ensure the timeline items don't shrink too much */
+        }
+        }
+
+
+
+    /* Scrollbar Styling */
+    .timeline-container::-webkit-scrollbar {
+    height: 5px;
+    }
+
+    .timeline-container::-webkit-scrollbar-thumb {
+    background: #007bff;
+    border-radius: 10px;
+    }
+
+
+</style>
+

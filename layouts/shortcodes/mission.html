@@ -1,0 +1,182 @@
+<style>
+
+
+/* 
+  Day: #2D4366
+  Night: #4ecdc4 
+*/
+
+:root {
+  --quote-border-color: #2D4366;
+}
+
+
+:root .dark{
+  --quote-border-color: #4ecdc4;
+}
+
+.quote-block {
+  position: relative;
+  padding: 3em;
+  max-width: 736px;
+  min-width: 280px;
+  margin: 0 auto;
+  margin-top: 0em;
+  margin-bottom: 3em;
+  font-family: Georgia, serif;
+  font-size: 1.2em;
+  line-height: 1.6;
+  border: 1px solid transparent;
+}
+
+.quote-block::before,
+.quote-block::after {
+  position: absolute;
+  width: 40px;
+  height: 30px;
+  border: 8px solid;
+  border-color: var(--quote-border-color);
+}
+
+.quote-block::before {
+  content: "";
+  top: 2em;
+  left: 1em;
+  border-right: none;
+  border-bottom: none;
+}
+
+@media screen and (max-width: 768px) {
+  .quote-block::before {
+    top: 1em;
+  }
+}
+
+.quote-block::after {
+  content: "";
+  bottom: 2em;
+  right: 1em;
+  border-left: none;
+  border-top: none;
+}
+
+/* .marker-highlight {
+  background: linear-gradient(120deg, rgba(232, 232, 232, 0.94), rgba(245, 249, 250, 0.3));
+  padding: 0.1em 0.2em;
+  border-radius: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .marker-highlight {
+    background: linear-gradient(120deg, rgba(255, 255, 0, 0.3), rgba(255, 255, 0, 0.3));
+  }
+} */
+
+
+/* .char-animation {
+    --index: 0;
+    --total: 10;
+    --duration: 1s;
+    
+    animation-delay: calc(
+        sin((var(--index) / var(--total)) * 90deg) *
+        var(--duration)
+    );
+} */
+
+
+/* Mobile responsive styles */
+@media screen and (max-width: 768px) {
+  .quote-block {
+    padding: 2em;
+    margin-bottom: 2em;
+    font-size: 1.1em;
+  }
+
+  .quote-block::before,
+  .quote-block::after {
+    width: 15px;
+    height: 15px;
+    border-width: 4px;
+  }
+}
+
+/* Small mobile devices */
+@media screen and (max-width: 480px) {
+  .quote-block {
+    padding: 1.5em;
+    margin-bottom: 1.5em;
+    font-size: 1em;
+  }
+
+  .quote-block::before,
+  .quote-block::after {
+    width: 12px;
+    height: 12px;
+    border-width: 3px;
+  }
+}
+
+#landing-logo-img {
+    width: 60%;
+    min-width: 120px;
+    margin-top: 3em;
+    margin-bottom: 3em;
+}
+
+/* Mobile responsive styles */
+@media screen and (max-width: 768px) {
+    #landing-logo-img {
+        width: 80%;
+        margin-top: 2em;
+        margin-bottom: 2em;
+    }
+}
+
+/* Small mobile devices */
+@media screen and (max-width: 480px) {
+    #landing-logo-img {
+        width: 90%;
+        /* margin-top: 0.5em; */
+        /* margin-bottom: 0.5em; */
+    }
+}
+
+
+.landing-big-logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+    margin-top: 3em;
+    margin-bottom: 3em;
+}
+
+.landing-big-logo {
+    width: 100%;
+    max-width: 500px;
+}
+
+body:not(.dark) #night-logo {
+    vertical-align: middle;
+    display: none;
+}
+
+body.dark #day-logo {
+    display: none;
+}
+</style>
+
+<div>
+    <div class="landing-big-logo-container">
+        <img class="landing-big-logo" id="day-logo" src="/img/logos/ucsd-hao-ai-lab-logo-long.day.png" alt="Hao AI Lab @ UCSD" id="landing-logo-img">
+
+        <img class="landing-big-logo" id="night-logo" src="/img/logos/ucsd-hao-ai-lab-logo-long.night.png" alt="Hao AI Lab @ UCSD" id="landing-logo-img">
+    </div>
+
+    <div class="quote-block">
+        <!-- {{ .Inner }} -->
+        Welcome to the UCSD Hao AI Lab website! We are passionate about designing <span class="marker-highlight">strong, efficient, and secure machine learning models and algorithms</span>, and in building scalable, practical distributed systems that can support real-world machine learning workloads.
+        We also develop and maintain open-source models and systems to democratize the access of large models. We are affiliated with the <a href="https://mlsys-ucsd.org/">UCSD ML System Group</a> and <a href="https://ucsd-nlp.github.io/">UCSD NLP Group</a>.
+    </div>
+</div>

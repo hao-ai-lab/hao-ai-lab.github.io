@@ -1,0 +1,52 @@
+<!-- layouts/shortcodes/sponsor.html -->
+
+<div class="sponsor-item">
+    <div class="sponsor-logo">
+        <a href="{{ .Get "link" }}" target="_blank">
+            <img src="/img/sponsor/{{ .Get "imageDay" }}" alt="Sponsor Logo" class="light-mode-logo" />
+            <img src="/img/sponsor/{{ .Get "imageNight" }}" alt="Sponsor Logo" class="dark-mode-logo" />
+        </a>
+    </div>
+</div>
+
+<style>
+.sponsor-item {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sponsor-logo {
+    width: 100%;
+    max-width: 200px;
+}
+
+.sponsor-logo img {
+    width: 100%;
+    height: auto;
+    transition: opacity 0.3s ease;
+}
+
+/* Dark mode handling */
+body.dark .light-mode-logo {
+    display: none;
+}
+
+body:not(.dark) .dark-mode-logo {
+    display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sponsor-logo {
+        max-width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sponsor-logo {
+        max-width: 120px;
+    }
+}
+</style>

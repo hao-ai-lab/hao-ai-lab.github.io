@@ -1,0 +1,39 @@
+- title: "Talk at Faster LLM Inference Seminar @ Weizmann Institute of Science 02/2025"
+  url: "https://www.youtube.com/embed/znd7o-EBSKU?si=ao755-0iUItpYAG6"
+  description: "Efficiently Serving Reasoning Programs with Certaindex"
+
+- title: "Talk at PyTorch Webinar 10/2024"
+  url: "https://www.youtube.com/embed/Bh-jlh5vlF0?si=Q5tV_LCluBG386pk"
+  description: "DistServe: disaggregating prefill & decoding for LLM inference"
+
+- title: "Talk at NSF Open-Source Generative AI (OSGAI) Workshop 03/2024"
+  url: "https://www.youtube.com/embed/7njmta3SlxE"
+  description: "Chatbot Arena (UCSD / LMSys)"
+
+- title: "Talk at PKU Alumni Association of Northern California (PKUAANC) 02/2024"
+  url: "https://www.youtube.com/embed/i02jaFA5tV4"
+  description: ""
+
+- title: "Tutorial at ODSC West 11/2023"
+  url: "https://www.youtube.com/embed/DtUIospAXig"
+  description: "Finetuning, Serving, and Evaluating LLMs in the Wild"
+
+- title: "Talk at I-X Seminar Series at Imperial College London 10/2023"
+  url: "https://www.youtube.com/embed/6FsLFnYh33w"
+  description: "I-X Seminar: How to train your Vicuna – finetuning & evaluating LLMs in the wild."
+
+- title: "Talk at Generative AI Summit, ODSC 07/2023"
+  url: "https://www.youtube.com/embed/yJ0ywuG_yv4"
+  description: "Generative AI Summit 2023 - Stage 2"
+
+- title: "Talk at 1st CASL Workshop, MBZUAI 10/2022"
+  url: "https://www.youtube.com/embed/NqFDJf9qlHo"
+  description: "THE AI QUORUM"
+
+- title: "Talk at Ray Summit 08/2022"
+  url: "https://www.youtube.com/embed/HRo90WL4Znc"
+  description: "Alpa - Simple large model training and inference on Ray"
+
+- title: "Tutorial at AAAI 2021 01/2021"
+  url: "https://www.youtube.com/embed/Ondvdsr5h9M"
+  description: "AAAI 2021 Tutorial: Simplifying and Automating Parallel ML via a Programmable and Composable System"
