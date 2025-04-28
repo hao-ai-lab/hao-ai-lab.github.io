@@ -19,7 +19,7 @@ summary: "home page for Hao Lab @ UCSD"
 
 {{< mission >}}
 <!-- Welcome to the UCSD Hao AI Lab website! We are passionate about designing strong, efficient, and secure machine learning models and algorithms, and in building scalable, practical distributed systems that can support real-world machine learning workloads.
-We also develop and maintain open-source models and systems to democratize the access of large models. We are affiliated with the <a href="https://mlsys-ucsd.org/">UCSD ML System Group</a> and <a href="https://ucsd-nlp.github.io/">UCSD NLP Group</a>. -->
+We also develop and maintain open-source models, evaluations, and systems to democratize the access of large models. We are affiliated with the <a href="https://mlsys-ucsd.org/">UCSD ML System Group</a> and <a href="https://ucsd-nlp.github.io/">UCSD NLP Group</a>. -->
 {{< /mission >}}
 
 
@@ -33,7 +33,7 @@ We also develop and maintain open-source models and systems to democratize the a
 <!-- <div class="news-year">2025</div> -->
 
 {{< newsEntry date="2025/04" >}}
-NVIDIA gave us a DGX B200! See [our recent post](https://x.com/haoailab/status/1914402516420440072) here.
+NVIDIA gifted us a DGX B200! See [our recent post](https://x.com/haoailab/status/1914402516420440072) here.
 {{< /newsEntry >}}
 
 
@@ -90,7 +90,7 @@ Hao officially joined UCSD!
 &emsp;
 
 ### Sponsors
-Hao AI Lab is sponsored by HDSI, NVIDIA, Snowflake, and Google. We are grateful for their support!
+Hao AI Lab is sponsored by HDSI, NVIDIA, Google, and Snowflake. We are grateful for their support!
 {{< sponsor_grid >}}
   {{< sponsor imageDay="HDSI.png" imageNight="HDSI-dark.png" link="https://datascience.ucsd.edu/" >}}
   {{< sponsor imageDay="nvidia.png" imageNight="nvidia-dark.png" link="https://www.nvidia.com" >}}

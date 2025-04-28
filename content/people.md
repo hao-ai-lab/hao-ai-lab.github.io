@@ -18,13 +18,11 @@ summary: people
 
 {{< lab_member name="Junda Chen" role="PhD Student" image="junda_chen.jpg" academic="https://github.com/GindaChen" twitter="https://twitter.com/Junda_Chen_" >}}
 
-{{< lab_member name="Jiangfei Duan" role="Visiting PhD Student" image="jiangfei_duan.png" academic="https://jf-d.github.io/" twitter="https://x.com/jiangfeiduan">}}
-
 {{< lab_member name="Yichao Fu" role="PhD Student" image="yichao_fu.jpg" academic="https://github.com/Viol2000" twitter="https://x.com/fuyichao123">}}
 
 {{< lab_member name="Lanxiang Hu" role="PhD Student" image="lanxiang_hu.jpg" academic="https://snyhlxde1.github.io/" twitter="https://twitter.com/Lanxiang_Hu" >}}
 
-{{< lab_member name="Mingjia Huo (Rotation)" role="PhD Student" image="mingjia_huo.jpg" academic="https://mignonjia.github.io/">}}
+{{< lab_member name="Mingjia Huo" role="PhD Student (rotation)" image="mingjia_huo.jpg" academic="https://mignonjia.github.io/">}}
 
 {{< lab_member name="Will Lin" role="PhD Student" image="will_lin.png" academic="https://github.com/SolitaryThinker" twitter="https://x.com/wlsaidhi">}}
 
@@ -58,13 +56,15 @@ summary: people
 
 {{< lab_member name="Yuxuan Zhang" role="Undergrad Intern" image="yuxuan_zhang.jpg" academic="https://yuxuan-zhang-dexter.github.io/">}}
 
-{{< lab_member name="Siqi Zhu" role="Undergrad Intern" image="siqi_zhu.jpg" academic="https://github.com/zhusq20" twitter="https://x.com/Oliver65097212">}}
-
 {{< /lab_members_grid >}}
 
 ### Alumni
 {{< alumni >}}
-{{< alumni_entry name="Zhongdongming Dai" description="Master's at UCSD, now software engineer at NVIDIA." homepage="https://www.linkedin.com/in/andy-dai-says-hi/">}}
+
+
+{{< alumni_entry name="Siqi Zhu" description="Undergrad Intern, now Incoming PhD Student at UIUC." homepage="https://github.com/zhusq20">}}
+{{< alumni_entry name="Jiangfei Duan" description="Visiting PhD Student, now research scientist at Alibaba Qwen Team." homepage="https://jf-d.github.io/">}}
+{{< alumni_entry name="Zhongdongming Dai" description="Master's, now software engineer at NVIDIA." homepage="https://www.linkedin.com/in/andy-dai-says-hi/">}}
 {{< alumni_entry name="Hexu Zhao" description="Undergrad Intern, now PhD Student at NYU." homepage="https://github.com/TarzanZhao">}}
 {{< alumni_entry name="Runyu Lu" description="Undergrad Intern, now PhD Student at UMich." homepage="https://lry89757.github.io/">}}
 {{< alumni_entry name="Dacheng Li" description="Master's, now PhD Student at UC Berkeley." homepage="https://dachengli1.github.io/">}}
