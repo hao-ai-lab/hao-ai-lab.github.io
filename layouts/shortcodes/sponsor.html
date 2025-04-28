@@ -1,9 +1,27 @@
 <!-- layouts/shortcodes/sponsor.html -->
 
-<div class="sponsor-logo">
-    <a href="{{ .Get "link" }}" target="_blank">
-        <img src="/img/sponsor/{{ .Get "image" }}" alt="Sponsor Logo" />
-    </a>
+<style>
+body.dark .sponsor-logo-light {
+    vertical-align: middle;
+    display: none;
+}
+
+body:not(.dark) .sponsor-logo-dark {
+    display: none;
+}
+
+
+</style>
+
+<div>
+    <div class="sponsor-logo-light">
+        <a href="{{ .Get "link" }}" target="_blank">
+            <img src="/img/sponsor/{{ .Get "imageDay" }}" alt="Sponsor Logo" />
+        </a>
+    </div>
+    <div class="sponsor-logo-dark">
+        <a href="{{ .Get "link" }}" target="_blank">
+            <img src="/img/sponsor/{{ .Get "imageNight" }}" alt="Sponsor Logo" />
+        </a>
+    </div>
 </div>
-
-
