@@ -1,8 +1,8 @@
 +++
 title = "Dynasor: More Efficient Chain-of-Thought Through Certainty Probing"
 date = 2025-02-16T12:00:00-08:00
-authors = ["Yichao Fu", "Junda Chen", "Yonghao Zhuang", "Zheyu Fu", "Ion Stoica", "Hao Zhang"]
-author = "Yichao Fu, Junda Chen, Yonghao Zhuang, Zheyu Fu, Ion Stoica, Hao Zhang"
+authors = ["Yichao Fu*", "Junda Chen*", "Yonghao Zhuang", "Zheyu Fu", "Ion Stoica", "Hao Zhang"]
+author = "Yichao Fu*, Junda Chen*, Yonghao Zhuang, Zheyu Fu, Ion Stoica, Hao Zhang"
 ShowReadingTime = true
 draft = false
 [socialIcons]

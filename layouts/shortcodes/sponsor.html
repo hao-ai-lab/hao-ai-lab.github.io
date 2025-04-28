@@ -1,19 +1,6 @@
 <!-- layouts/shortcodes/sponsor.html -->
 
-<style>
-body.dark .sponsor-logo-light {
-    vertical-align: middle;
-    display: none;
-}
-
-body:not(.dark) .sponsor-logo-dark {
-    display: none;
-}
-
-
-</style>
-
-<div>
+<div class="sponsor-item">
     <div class="sponsor-logo-light">
         <a href="{{ .Get "link" }}" target="_blank">
             <img src="/img/sponsor/{{ .Get "imageDay" }}" alt="Sponsor Logo" />
@@ -25,3 +12,20 @@ body:not(.dark) .sponsor-logo-dark {
         </a>
     </div>
 </div>
+
+
+<style>
+body.dark .sponsor-logo-light {
+    vertical-align: middle;
+    display: none;
+}
+
+body:not(.dark) .sponsor-logo-dark {
+    display: none;
+}
+
+.sponsor-item {
+  flex: 0 0 35%; /* shrink=0 grow=0 basis=48% */
+}
+
+</style>
