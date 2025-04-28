@@ -1,0 +1,58 @@
+<div class="news-section">
+    {{ .Inner }}
+</div>
+
+<style>
+.news-section {
+    margin: 2rem 0;
+}
+
+.news-year {
+    margin: 2rem 0 1rem 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.news-entry {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    align-items: start;
+}
+
+.news-date {
+    text-align: right;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.news-text {
+    text-align: left;
+}
+
+/* For entries without dates (like the celebration message) */
+.news-entry:has(.news-text:only-child) {
+    grid-template-columns: 1fr;
+}
+
+.news-entry:has(.news-text:only-child) .news-text {
+    text-align: left;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .news-entry {
+        grid-template-columns: 120px 1fr;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .news-entry {
+        grid-template-columns: 100px 1fr;
+        gap: 0.5rem;
+    }
+}
+</style> 
