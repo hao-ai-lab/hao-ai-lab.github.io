@@ -42,6 +42,8 @@ summary: people
 
 {{< lab_member name="Daniel Zhao" role="Master's" image="daniel_zhao.png" academic="https://astradzhao.github.io/" twitter="https://x.com/astradzhao">}}
 
+{{< lab_member name="Yiming Zhao" role="Master's" image="yiming_zhao.png" academic="https://www.linkedin.com/in/yiming-zhao-zym2002/" twitter="https://x.com/YimingBob">}}
+
 {{< lab_member name="Yongqi Chen" role="Research Intern" image="yongqi_chen.jpg" academic="https://www.linkedin.com/in/yongqi-chen-187342258/">}}
 <!-- 
 {{< lab_member name="Wei Zhou" role="Research Intern" image="wei_zhou.jpg" academic="https://www.linkedin.com/in/wei-zhou3/">}} -->
