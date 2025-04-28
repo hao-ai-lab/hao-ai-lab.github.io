@@ -8,6 +8,8 @@ ShowReadingTime = true
 draft = false 
 urlblog = "cllm"
 type= "summary"
+arxiv = "2403.00835"
+github = "hao-ai-lab/Consistency_LLM"
 [socialIcons]
     [[socialIcons.icon]]
       name = "twitter"

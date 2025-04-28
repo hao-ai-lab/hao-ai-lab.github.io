@@ -18,7 +18,7 @@
 <style>
   .posts-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Three posts per row */
+    grid-template-columns: repeat(1, 1fr); /* Three posts per row */
     gap: 20px;
     padding: 20px;
   }
@@ -35,9 +35,6 @@
 
   .post-preview:hover {
     transform: translateY(-5px);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    transition: box-shadow 0.3s ease-in-out;
-    transition: transform 0.3s ease-in-out;
   }
 
   .post-image img {
@@ -48,7 +45,6 @@
 
   .post-details {
     padding: 15px;
-    flex-direction: row;
   }
 
   .post-details h2 {
@@ -63,7 +59,7 @@
 
   @media (max-width: 1024px) {
     .posts-grid {
-      grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
+      grid-template-columns: repeat(1, 1fr); /* Two columns for medium screens */
     }
   }
 
@@ -89,32 +85,23 @@
   {{- $pages := where .Site.RegularPages "Type" "in" (slice "summary") -}}
   {{- $paginator := .Paginate $pages -}}
   {{- range $paginator.Pages -}}
-  <article class="post-preview" {{ if .Params.github }}onclick="window.open('https://github.com/{{ .Params.github }}', '_blank')" style="cursor: pointer;"{{ end }}>
+  <article class="post-preview">
     {{- with .Params.cover.image -}}
-    <!-- <div class="post-image">
+    <div class="post-image">
       <img src="{{ . | absURL }}" alt="{{ $.Params.cover.alt }}">
-    </div> -->
+    </div>
     {{- end -}}
     <div class="post-details">
-      <div>
-        <h2><a href="{{ .Permalink }}" style="color: black !important;">{{ .Title }}</a></h2>
-      </div>
-
-      <!-- Social Badges: TODO: should have included the template -->
-      {{ if .Params.github }}
-      <div style="padding-left: 0px; padding-top: 5px; padding-bottom: 5px;">
-        <a href="https://github.com/{{ .Params.github }}" target="_blank" rel="noopener noreferrer">
-          <img src="https://img.shields.io/github/stars/{{ .Params.github }}?style=social" style="transform: scale(1);">
-        </a>
-      </div>
-      {{ end }}  
-    
-      {{- if .Params.description -}}
-      <div>
-        <p class="post-description">{{ .Params.description }}</p>
-      </div>
-      {{- end -}}
-    
+      <h2><a href="{{ .Permalink }}" style="color: black !important;">{{ .Title }}</a></h2>
+      <!-- <time datetime="{{ .Date }}">{{ .Date.Format "January 2, 2006" }}</time> -->
+      <!-- {{- if .Params.author -}}
+      <p class="post-author"> {{ .Params.author }}</p>
+      {{- else if .Params.authors -}}
+      <p class="post-author"> {{ delimit .Params.authors ", " }}</p>
+      {{- end -}} -->
+    {{- if .Params.description -}}
+    <p class="post-description">{{ .Params.description }}</p>
+    {{- end -}}
     </div>
   </article>
   {{- end -}}

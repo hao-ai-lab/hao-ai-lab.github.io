@@ -6,6 +6,8 @@ author = "Peiyuan Zhang, Yongqi Chen*, Runlong Su*, Hangliang Ding, Ion Stoica, 
 ShowReadingTime = true
 draft = false
 description = "Make Video Generation Faster"
+arxiv = "2502.04507"
+github = "hao-ai-lab/FastVideo"
 [socialIcons]
     [[socialIcons.icon]]
       name = "twitter"

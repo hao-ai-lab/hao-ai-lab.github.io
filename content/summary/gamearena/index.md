@@ -7,6 +7,8 @@ author = "Game Arena Team"
 ShowReadingTime = true
 draft = false
 urlblog = "dynasor-cot"
+arxiv = "2412.06394"
+github = "lmgame-org"
 type= "summary"
 [socialIcons]
     [[socialIcons.icon]]

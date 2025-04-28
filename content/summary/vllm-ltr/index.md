@@ -8,6 +8,9 @@ ShowReadingTime = true
 urlblog = "vllm-ltr"
 draft = false
 type= "summary"
+arxiv = "2408.15792"
+github = "hao-ai-lab/vllm-ltr"
+
 [socialIcons]
     [[socialIcons.icon]]
       name = "twitter"

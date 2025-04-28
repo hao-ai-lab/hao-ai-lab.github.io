@@ -7,6 +7,9 @@ ShowReadingTime = true
 draft = false
 urlblog = "dynasor-cot"
 type= "summary"
+arxiv = "2412.20993"
+github = "hao-ai-lab/Dynasor"
+demo = "https://hao-ai-lab.github.io/demo/dynasor-cot"
 description = "Making Reasoning Models More Token-Efficient"
 [socialIcons]
     [[socialIcons.icon]]

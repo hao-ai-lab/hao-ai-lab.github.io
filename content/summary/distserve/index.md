@@ -8,6 +8,8 @@ ShowReadingTime = true
 draft = false
 urlblog = "distserve"
 type= "summary"
+arxiv = "2401.09670"
+github = "LLMServe/DistServe"
 [cover]
     image = "/img/distserve_anime-crop.gif"
     alt = "DistServe"

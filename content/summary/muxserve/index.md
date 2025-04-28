@@ -8,6 +8,8 @@ draft = false
 type= "summary"
 description = "Serving Multiple LLMs with Flexible Spatial-Temporal Multiplexing"
 urlblog = "muxserve"
+arxiv = "2404.02015"
+github = "hao-ai-lab/MuxServe"
 [cover]
       image = "/img/muxserve_cover.gif"
       alt = "MuxServe"
