@@ -63,7 +63,7 @@ summary: people
 
 
 {{< alumni_entry name="Siqi Zhu" description="Undergrad Intern, now Incoming PhD Student at UIUC." homepage="https://github.com/zhusq20">}}
-{{< alumni_entry name="Jiangfei Duan" description="Visiting PhD Student, now research scientist at Alibaba Qwen Team." homepage="https://jf-d.github.io/">}}
+{{< alumni_entry name="Jiangfei Duan" description="Visiting PhD Student." homepage="https://jf-d.github.io/">}}
 {{< alumni_entry name="Zhongdongming Dai" description="Master's, now software engineer at NVIDIA." homepage="https://www.linkedin.com/in/andy-dai-says-hi/">}}
 {{< alumni_entry name="Hexu Zhao" description="Undergrad Intern, now PhD Student at NYU." homepage="https://github.com/TarzanZhao">}}
 {{< alumni_entry name="Runyu Lu" description="Undergrad Intern, now PhD Student at UMich." homepage="https://lry89757.github.io/">}}
