@@ -29,8 +29,8 @@ summary: people
 {{< lab_member name="Peiyuan Zhang" role="PhD Student" image="peiyuan_zhang.png" academic="https://veiled-texture-20c.notion.site/Peiyuan-Zhang-ab24b48621c9491db767a76df860873a" twitter="https://x.com/py_z001?s=21&t=8b6Ok2N1qcsERbvXX588qA">}}
 
 {{< lab_member name="Minghang Deng" role="Master's" image="minghang_deng.jpg" academic="https://www.linkedin.com/in/minghang-deng">}}
-<!-- 
-{{< lab_member name="Humaira Firdowse" role="Master's" image="humaira_mohammed.jpg" academic="https://github.com/humairafirdowse">}} -->
+
+{{< lab_member name="Humaira Firdowse" role="Master's" image="humaira_mohammed.jpg" academic="https://github.com/humairafirdowse">}}
 
 {{< lab_member name="Zheyu Fu" role="Master's" image="zheyu_fu.jpg" academic="https://www.linkedin.com/in/zheyu-fu-1b4667231/">}}
 
@@ -63,7 +63,7 @@ summary: people
 ### Alumni
 {{< alumni >}}
 
-
+{{< alumni_entry name="Anze Xie" description="Master's, now at LLM360" homepage="https://anzexie.github.io/">}}
 {{< alumni_entry name="Siqi Zhu" description="Undergrad Intern, now Incoming PhD Student at UIUC." homepage="https://github.com/zhusq20">}}
 {{< alumni_entry name="Jiangfei Duan" description="Visiting PhD Student." homepage="https://jf-d.github.io/">}}
 {{< alumni_entry name="Zhongdongming Dai" description="Master's, now software engineer at NVIDIA." homepage="https://www.linkedin.com/in/andy-dai-says-hi/">}}
