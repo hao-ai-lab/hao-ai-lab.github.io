@@ -46,10 +46,12 @@ The entire video generation ecosystem currently underserves all following groups
 - **Model Authors** focus on quality through larger models and novel architectures, often at the expense of performance and integration simplicity. Without significant effort, it is difficult for new models to benefit from existing optimization techniques.
 
 **No current framework adequately serves any of these groups.** This fragmentation forces painful tradeoffs - users sacrifice performance for model variety, researchers waste effort reimplementing the same techniques across models, and model authors struggle to easily integrate performance improvements without breaking their architectures.
+
 {{< /justify >}}
 
-
 ## Why Current Frameworks Fail
+
+To demonstrate these structural problems concretely, let's examine how existing frameworks fail to serve the needs of all three groups and finally how FastVideo solves these challenges. 
 
 {{< technical_note >}}
 When accelerating video generation across multiple GPUs, there are three key model parallelism strategies to understand:
@@ -320,15 +322,7 @@ class NewDiT(BaseDiT):
 
 ```
 
-This approach empowers researchers to experiment with novel attention algorithms by simply adding new backend implementations. When they create a new backend (like implementing a more efficient sparse attention kernel), they can:
-
-1. Define it once in the attention backends system
-2. Benchmark it against existing backends on multiple models
-3. Provide immediate performance benefits to all models in the ecosystem
-
-For example, the same Sliding Tile Attention backend that provides 3× speedups is automatically available to any model using FastVideo's attention system, eliminating the need to fork and modify multiple codebases.
-
-### For Model Authors and Finetuned weights.
+### For Model Authors
 1. **Clean separation** between model architecture and execution strategy
 
 ```python
@@ -402,21 +396,20 @@ FastVideo V1 eliminates the need for users to understand complex parallelization
 
 FastVideo V1 addresses these structural issues with a unified, modular framework designed from the ground up for both performance and extensibility.
 
-To demonstrate these structural problems concretely, let's examine how existing frameworks fail to serve the needs of all three groups and finally how FastVideo solves these challenges. 
 {{< /justify >}}
 
 ## Performance and Results
 
 {{< justify >}}
 In our benchmarks, FastVideo V1 consistently outperforms existing frameworks:
-
+<!-- 
 | Model | Resolution | Frames | FastVideo V1 | Diffusers | Speedup |
 |-------|------------|--------|--------------|-----------|---------|
 | FastHunyuan | 512×512 | 16 | 24s | 68s | 2.8× |
 | CogVideo | 256×256 | 16 | 19s | 62s | 3.3× |
 | AnimateDiff | 512×512 | 16 | 32s | 85s | 2.7× |
 
-*Benchmarks performed on 4× NVIDIA A100 GPUs*
+*Benchmarks performed on 4× NVIDIA A100 GPUs* -->
 
 To make FastVideo accessible to different workflows, we provide:
 - A Python SDK for direct integration
