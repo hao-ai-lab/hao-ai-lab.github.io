@@ -63,12 +63,12 @@ summary: people
 ### Alumni
 {{< alumni >}}
 
-{{< alumni_entry name="Anze Xie" description="Master's, now at LLM360" homepage="https://anzexie.github.io/">}}
-{{< alumni_entry name="Siqi Zhu" description="Undergrad Intern, now Incoming PhD Student at UIUC." homepage="https://github.com/zhusq20">}}
-{{< alumni_entry name="Jiangfei Duan" description="Visiting PhD Student." homepage="https://jf-d.github.io/">}}
-{{< alumni_entry name="Zhongdongming Dai" description="Master's, now software engineer at NVIDIA." homepage="https://www.linkedin.com/in/andy-dai-says-hi/">}}
-{{< alumni_entry name="Hexu Zhao" description="Undergrad Intern, now PhD Student at NYU." homepage="https://github.com/TarzanZhao">}}
-{{< alumni_entry name="Runyu Lu" description="Undergrad Intern, now PhD Student at UMich." homepage="https://lry89757.github.io/">}}
-{{< alumni_entry name="Dacheng Li" description="Master's, now PhD Student at UC Berkeley." homepage="https://dachengli1.github.io/">}}
-{{< alumni_entry name="Yonghao Zhuang" description="Undergrad Intern, now PhD Student at CMU." homepage="https://zyhowell.github.io/">}}
+{{< alumni_entry name="Anze Xie" description="Master's, now at MBZUAI IFM LLM360 Team" homepage="https://anzexie.github.io/">}}
+{{< alumni_entry name="Siqi Zhu" description="Undergrad Intern, now incoming PhD Student at UIUC" homepage="https://github.com/zhusq20">}}
+{{< alumni_entry name="Jiangfei Duan" description="Visiting PhD Student" homepage="https://jf-d.github.io/">}}
+{{< alumni_entry name="Zhongdongming Dai" description="Master's, now software engineer at NVIDIA" homepage="https://www.linkedin.com/in/andy-dai-says-hi/">}}
+{{< alumni_entry name="Hexu Zhao" description="Undergrad Intern, now PhD Student at NYU" homepage="https://github.com/TarzanZhao">}}
+{{< alumni_entry name="Runyu Lu" description="Undergrad Intern, now PhD Student at UMich" homepage="https://lry89757.github.io/">}}
+{{< alumni_entry name="Dacheng Li" description="Master's, now PhD Student at UC Berkeley" homepage="https://dachengli1.github.io/">}}
+{{< alumni_entry name="Yonghao Zhuang" description="Undergrad Intern, now PhD Student at CMU" homepage="https://zyhowell.github.io/">}}
 {{< /alumni >}}
