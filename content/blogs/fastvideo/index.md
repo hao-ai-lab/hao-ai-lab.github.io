@@ -197,6 +197,7 @@ video = generator.generate_video("a beautiful sunset over mountains")
 ```
 
 {{< /case_study >}}
+
 {{< justify >}}
 
 2. **Automatic parallelism and optimization** across multiple GPUs without requiring technical knowledge or configuration.
@@ -273,11 +274,13 @@ video = generator.generate_video(
 
 ### For Researchers 
 1. A **modular architecture** that separates model logic from execution strategy
+{{< /justify >}}
 
 ```python
 # add pipeline stuff here
 ```
 
+{{< justify >}}
 2. **Unified attention backends** that can be reused across multiple models
 
 Researchers face a significant challenge: implementing the same optimization technique (like a faster attention algorithm) across multiple video models requires duplicating work for each model architecture. FastVideo solves this with a pluggable attention system where:
@@ -288,6 +291,9 @@ Researchers face a significant challenge: implementing the same optimization tec
 - Benchmarking becomes standardized across different backend implementations
 
 The code below demonstrates how a model author can leverage multiple attention backends without changing their model architecture:
+{{< /justify >}}
+
+{{< case_study >}}
 
 ```python
 # FastVideo - Modular architecture with pluggable attention backends
@@ -322,51 +328,54 @@ class NewDiT(BaseDiT):
 
 ```
 
+{{< /case_study >}}
+
 ### For Model Authors
 1. **Clean separation** between model architecture and execution strategy
 
+Similar to LLM inference frameworks like vLLM and SGLang, FastVideo provides a clean separation between model layer definition and implementation. Model authors can define their architecture using FastVideo's optimized components like `QKVParallelLinear`, `LocalAttention`, and `get_rope` without worrying about parallelization and implementation details. This approach allows new models to automatically inherit all performance optimizations without any additional implementation work, as shown in the simplified example below:
+
+{{< case_study >}}
 ```python
-# FastVideo - Clean separation of model and execution
+# FastVideo - Clean separation of model architecture and execution strategy
 from fastvideo.v1.models import register_model
-from fastvideo.v1.pipeline import ComposedPipelineBase
+from fastvideo.v1.layers.linear import QKVParallelLinear
+from fastvideo.v1.attention import LocalAttention
+from fastvideo.v1.layers.rotary_embedding import get_rope
 
-# Define model without worrying about parallelism
-class MyCustomModel(nn.Module):
-    def __init__(self):
+# Define model with FastVideo optimized components
+class CustomEncoderModel(nn.Module):
+    def __init__(self, hidden_size=1024, num_heads=16, head_dim=64):
         super().__init__()
-        self.encoder = ...
-        self.decoder = ...
+        # Use FastVideo's optimized layers
+        self.qkv_proj = QKVParallelLinear(
+            hidden_size=hidden_size,
+            head_size=head_dim,
+            total_num_heads=num_heads,
+            total_num_kv_heads=num_heads
+        )
+        self.rotary_emb = get_rope(
+            head_dim, 
+            rotary_dim=head_dim,
+            max_position=8192
+        )
+        self.attn = LocalAttention(
+            num_heads=num_heads // get_tensor_model_parallel_world_size(),
+            head_dim=head_dim,
+            num_kv_heads=num_heads // get_tensor_model_parallel_world_size(),
+            causal=True
+        )
     
-    def forward(self, x):
-        # Model-specific logic
-        return self.decoder(self.encoder(x))
-
-# Register model without execution details
-register_model("MyNewModel", MyCustomModel)
-
-# Execution strategy is applied separately
-generator = VideoGenerator.from_pretrained("MyNewModel", num_gpus=4)
+    def forward(self, positions, hidden_states):
+        # Simple model logic, actual implementation called depends on user configuration and available optimizations
+        qkv, _ = self.qkv_proj(hidden_states)
+        q, k, v = qkv.split([self.q_size, self.kv_size, self.kv_size], dim=-1)
+        q, k = self.rotary_emb(positions, q, k)
+        return self.attn(q, k, v)
 ```
+{{< /case_study >}}
 
-2. **Automatic inheritance** of optimizations without additional implementation work
-
-```python
-# FastVideo - Automatic optimization inheritance
-from fastvideo import VideoGenerator
-from my_custom_model import MyModelClass
-
-# Custom model automatically gets all FastVideo optimizations
-generator = VideoGenerator(
-    model_class=MyModelClass,
-    model_weights="path/to/weights.safetensors",
-    num_gpus=4
-)
-
-# Generated with optimized attention and parallelism
-video = generator.generate_video("futuristic cityscape")
-```
-
-3. **Simplified integration** of new models into the ecosystem
+2. **Diffusion pipeline abstraction** splits the large forward pipeline into functional and reusable `Pipeline Stages`, avoiding duplicated code and allows pipeline level optimizations to be shared between models.
 
 ```python
 # FastVideo - Easy model integration
@@ -385,8 +394,9 @@ class MyPipeline(ComposedPipelineBase):
         # Add only custom stages as needed
         self.add_stage("my_custom_stage", MyCustomStage())
 ```
+{{< justify >}}
 
-4. **Pipeline and Model Config Abstraction** allows authors to upload the best default configurations of their weights to give users best results out-of-the-box without requiring bash scripts or READMEs.
+3. **Pipeline and Model Config Abstraction** allows authors to upload the best default configurations of their weights to give users best results out-of-the-box without requiring bash scripts or READMEs.
 
 
 FastVideo V1 eliminates the need for users to understand complex parallelization strategies while still achieving 3× faster generation speeds. By automatically handling distribution across GPUs, it makes high-performance video generation accessible to everyone.
