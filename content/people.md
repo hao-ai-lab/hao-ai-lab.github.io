@@ -63,6 +63,7 @@ summary: people
 ### Alumni
 {{< alumni >}}
 
+{{< alumni_entry name="Anze Xie" description="Undergrad Intern, now PhD Student at UChciago" homepage="https://www.nanjiangwill.com/">}}
 {{< alumni_entry name="Anze Xie" description="Master's, now at MBZUAI IFM LLM360 Team" homepage="https://anzexie.github.io/">}}
 {{< alumni_entry name="Siqi Zhu" description="Undergrad Intern, now incoming PhD Student at UIUC" homepage="https://github.com/zhusq20">}}
 {{< alumni_entry name="Jiangfei Duan" description="Visiting PhD Student" homepage="https://jf-d.github.io/">}}
