@@ -17,73 +17,61 @@ draft = false
 {{< socialBadges github="hao-ai-lab/FastVideo" >}}
 
 {{< justify >}}
-**TL;DR:** FastVideo V1 is a **unified framework** for accelerating video generation, offering **3× faster** speeds without quality compromise while providing a clean, consistent API across models for seamless multi-GPU video generation.
 
-Multi-GPU inference in FastVideo V1 is simple:
+FastVideo v1 offers new APIs for accelerating video generation. In this release, FastVideo is able to generate videos up to 3x faster than alternative solutions, and provides a clean and consistent API across a wide variety of popular video models.
+
+Modern open-source video generation models such as [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main) have reached impressive levels of quality, creating videos comparable to closed-source models.
+
+However, it is well known that using these models for creative work still remains highly impractical. Creating a few seconds of high-quality video can take **15+ minutes** even on high-end H100 GPUs using existing video generation tools. As a result, there are a significant number of research teams developing cutting edge techniques to accelerate these models, such as Sliding Tile Attention, SageAttention, and TeaCache.
+
+In FastVideo v1, we aim to provide a framework to unify the work across the video generation ecosystem to provide highly accessible and performant video generation.
+
+FastVideo v1 offers:
+- A a simple, consistent API that's easy to use and integrate
+- A collection of model performance optimizations and techniques that can be composed with each other
+- A clean and articulate way for model creators to define and distribute video generation models to end users
+
+With all of these combined, FastVideo is able to perform high quality video generation up to 5x faster than existing systems.
+
+{{< /justify >}}
+
+## Quick Start
+
+Requirements:
+- NVIDIA GPU with CUDA 12.4
+- Python 3.10-3.12
+
 ```python
-# Automatically shards model and applies tensor parallelism and sequence parallelism
-generator = VideoGenerator.from_pretrained("FastVideo/FastHunyuan", num_gpus=4)
-
-# Automatically defaults to the optimal parameters for the selected model
-video = generator.generate_video("a person walking in a forest")
+pip install fastvideo
 ```
 
-👉 Try FastVideo in our [GitHub repository](https://github.com/hao-ai-lab/FastVideo)!
-{{< /justify >}}
+```python
+def main():
+    generator = VideoGenerator.from_pretrained("Wan-AI/Wan2.1-T2V-14B-Diffusers", num_gpus=1)
 
-## The Video Generation Ecosystem is Broken
+    video = generator.generate_video("a person walking in a forest")
 
-{{< justify >}}
-Video generation models have reached impressive levels of quality, but at enormous computational cost. Creating just a few seconds of high-quality video can take **15+ minutes** even on high-end H100 GPUs, making iterative creative work virtually impossible on larger models.
+if __name__ == '__main__':
+    main()
+```
 
-Behind this performance problem lies a deeper structural issue in how video generation frameworks are built, hindering both users and researchers. 
 
-The video generation ecosystem currently inadequately serves three key groups:
+## Features
 
-- **Users** (artists, creators, developers) want access to diverse video models with fast performance through a simple, consistent API that's easy to use and integrate
-- **Researchers** develop performance and efficiency improvements that must be manually integrated into each model separately, creating duplicated effort and code across the ecosystem
-- **Model Authors** focus on quality through larger models and novel architectures, often at the expense of performance and integration simplicity. Without significant effort, it's difficult for new models to benefit from existing optimization techniques
-
-**No current framework adequately serves any of these groups.** This fragmentation forces painful tradeoffs - users sacrifice performance for model variety, researchers waste effort reimplementing the same techniques across models, and model authors struggle to easily integrate performance improvements without breaking their architectures.
-{{< /justify >}}
-
-## FastVideo V1: A Unified Solution
-
-FastVideo V1 addresses these challenges with a clean, modular architecture designed from the ground up for both performance and extensibility. Below, we explore FastVideo's key features and how they benefit different stakeholders in the video generation ecosystem.
+ Below, we explore FastVideo's key features.
 
 ### Simple, Unified Python API with Multi-GPU Support
 
 {{< justify >}}
 A streamlined Python API with built-in multi-GPU support eliminates the need for complex command-line tools or bash scripts. When `num_gpus > 1`, the best parallelism strategy is automatically applied without requiring `torchrun` or `accelerate` commands through bash scripts or CLI.
 
-This API also allows users to easily integrate FastVideo into their applications. For an example, see our [Gradio example]().
-{{< /justify >}}
+This API also allows users to easily integrate FastVideo into their applications. For an example, see our [Gradio example](https://github.com/hao-ai-lab/FastVideo/tree/main/fastvideo/v1/examples/inference/gradio).
 
-{{< case_study >}}
-```python
-# FastVideo - Simple Python API. All configuration and optimizations are handled automatically
-from fastvideo import VideoGenerator
-
-def main():
-    # if num_gpus > 1, parallelism is automatically handled
-    generator = VideoGenerator.from_pretrained("FastVideo/FastHunyuan-diffusers", num_gpus=4)
-
-    # output is automatically saved to outputs/
-    video = generator.generate_video("a beautiful sunset over mountains")
-
-if __name__ == '__main__':
-    main()
-```
-{{< /case_study >}}
-
-### Intelligent Default Configurations
-
-{{< justify >}}
 FastVideo automatically applies optimal configurations based on the model. With just a HuggingFace model string, it configures all pipeline components for high-quality output without manual tuning.
 
-For advanced users who need fine-grained control, FastVideo provides access to all pipeline components through a comprehensive API. This config can be examined, modified, and to `VideoGenerator.from_pretrained()` to customize any aspect of the pipeline.
+For advanced users who need fine-grained control, FastVideo provides access to all pipeline components through a comprehensive API. This config can be examined, modified, and passed to `VideoGenerator.from_pretrained()` to customize any aspect of the pipeline.
 
-Both initialization parameters (model loading, component configuration) and sampling parameters (inference steps, guidance scale, dimensions) can be customized while keeping optimal defaults for everything else. Model authors and developers can contribute configurations for new or fine-tuned models to our repository, making their models accessible with optimal settings for all FastVideo users.
+Both initialization parameters (model loading, component configuration) and sampling parameters (inference steps, guidance scale, dimensions) can be customized while keeping optimal defaults for everything else. Model authors and developers can contribute configurations for new or fine-tuned models to our repository, making their models immediately accessible with optimal settings for all FastVideo users.
 
 Here's how it works in practice:
 {{< /justify >}}
@@ -92,34 +80,44 @@ Here's how it works in practice:
 ```python
 from fastvideo import VideoGenerator, SamplingParam, PipelineConfig
 
-config = PipelineConfig.from_pretrained("FastVideo/FastHunyuan-diffusers")
+def main():
 
-# can adjust any paramters
-config.num_gpus = 4
-config.vae_config.vae_precision = "fp32"
+    config = PipelineConfig.from_pretrained("Wan-AI/Wan2.1-T2V-14B-Diffusers")
 
-# Override default configurations while keeping optimal defaults for other settings
-generator = VideoGenerator.from_pretrained(
-    "FastVideo/FastHunyuan-diffusers",
-    pipeline_config=config
-)
+    # Can adjust any parameters
+    config.num_gpus = 4
+    config.vae_config.vae_precision = "fp32"
 
-# Fine-tune specific parameters while maintaining optimal defaults
-param = SamplingParam(
-    "FastVideo/FastHunyuan-diffusers", # Other arguments will be set to best defaults
-    num_inference_steps=30,  # Higher quality
-    guidance_scale=7.5,      # Stronger guidance
-    width=1024,              # Higher resolution
-    height=576
-)
+    # Override default configurations while keeping optimal defaults for other settings
+    generator = VideoGenerator.from_pretrained(
+        "Wan-AI/Wan2.1-T2V-14B-Diffusers",
+        pipeline_config=config
+    )
 
-# Performance optimizations still applied automatically
-video = generator.generate_video(
-    "detailed landscape with mountains and a lake",
-    sampling_param=param
-)
+    # Fine-tune specific parameters while maintaining optimal defaults
+    param = SamplingParam(
+        "FastVideo/FastHunyuan-diffusers",  # Other arguments will be set to best defaults
+    )
+    param = SamplingParam.from_pretrained("FastVideo/FastHunyuan-diffusers")
+
+    param.num_inference_steps=30 # higher quality
+    param.guidance_scale=7.5 # stronger guidance
+    param.width=1024  # Higher resolution
+    param.height=576
+
+    # Performance optimizations are still applied automatically. 
+    # Users can also directly override any field of sampling_param using kwargs
+    video = generator.generate_video(
+        "detailed landscape with mountains and a lake",
+        sampling_param=param,
+        num_inference_steps=35  # will override param.num_inference_steps
+    )
+
+if __name__ == '__main__':
+    main()
 ```
 {{< /case_study >}}
+
 
 ### Modular Architecture with Clean Separation
 
@@ -187,7 +185,7 @@ class MyCustomPipeline(ComposedPipelineBase):
         )
         self.add_stage(
             stage_name="prompt_encoding_stage",
-            stage=CLIPTextEncodingStage(
+            stage=TextEncodingStage(
                 text_encoder=self.get_module("text_encoder"),
                 tokenizer=self.get_module("tokenizer")
             )
@@ -211,7 +209,7 @@ class MyCustomPipeline(ComposedPipelineBase):
 ## Performance and Results
 
 {{< justify >}}
-In our benchmarks, FastVideo V1 consistently outperforms existing frameworks:
+<!-- In our benchmarks, FastVideo V1 consistently outperforms existing frameworks: -->
 <!-- 
 | Model | Resolution | Frames | FastVideo V1 | Diffusers | Speedup |
 |-------|------------|--------|--------------|-----------|---------|
@@ -221,10 +219,10 @@ In our benchmarks, FastVideo V1 consistently outperforms existing frameworks:
 
 *Benchmarks performed on 4× NVIDIA A100 GPUs* -->
 
-To make FastVideo accessible to different workflows, we provide:
+<!-- To make FastVideo accessible to different workflows, we provide:
 - A Python SDK for direct integration
 - A Gradio interface for code-free experimentation 
-- A ComfyUI integration for node-based workflows
+- A ComfyUI integration for node-based workflows -->
 {{< /justify >}}
 
 ## Getting Started
