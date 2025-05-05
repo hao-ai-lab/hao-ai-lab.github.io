@@ -1,8 +1,8 @@
 +++
 title = "FastVideo: A Unified Framework for Accelerated Video Generation"
 date = 2025-04-24T11:00:00-08:00
-authors = ["Will Lin", "Peiyuan Zhang", "Wei Zhou", "Kevin Lin", "Yongqi Chen", "Runlong Su", "Hangliang Ding", "Wenting Zhang", "You Zhou", "Cody Yu", "Richard Liaw", "Hao Zhang"]
-author = "Will Lin, Peiyuan Zhang, Wei Zhou, Kevin Lin, Yongqi Chen, Runlong Su, Hangliang Ding, Wenting Zhang, You Zhou, Cody Yu, Richard Liaw, Hao Zhang"
+authors = ["Will Lin", "Peiyuan Zhang", "Kevin Lin", "Wei Zhou", "Yongqi Chen", "You Zhou", "Wenting Zhang",  "Cody Yu", "Richard Liaw", "Hao Zhang"]
+author = "Will Lin, Peiyuan Zhang, Kevin Lin, Wei Zhou, Yongqi Chen, You Zhou, Wenting Zhang, Cody Yu, Richard Liaw, Hao Zhang"
 ShowReadingTime = true
 draft = false
 [socialIcons]
@@ -232,8 +232,8 @@ To try FastVideo, visit our [GitHub repository](https://github.com/hao-ai-lab/Fa
 
 For those interested in technical details:
 - [Sliding Tile Attention blog post](https://hao-ai-lab.github.io/blogs/sta/)
-- [Developer documentation](https://github.com/hao-ai-lab/FastVideo/tree/main/docs)
-- [Model compatibility guide](https://github.com/hao-ai-lab/FastVideo/#supported-models)
+- [Developer documentation](https://hao-ai-lab.github.io/FastVideo/contributing/overview.html)
+<!-- - [Model compatibility guide](https://github.com/hao-ai-lab/FastVideo/#supported-models) -->
 
 We welcome your feedback on FastVideo V1. Share your results and experiences on Twitter or GitHub to help guide our continued development.
 {{< /justify >}}
@@ -241,7 +241,7 @@ We welcome your feedback on FastVideo V1. Share your results and experiences on 
 ## Acknowledgements
 
 {{< justify >}}
-FastVideo builds on contributions from many researchers and engineers. We're particularly grateful to the teams behind FlashAttention, NATTEN, and ThunderKittens for their pioneering work in attention optimization.
+FastVideo builds on contributions from many researchers and engineers. We're particularly grateful to the following teams we learned and reused code from: [PCM](https://github.com/G-U-N/Phased-Consistency-Model), [diffusers](https://github.com/huggingface/diffusers), [OpenSoraPlan](https://github.com/PKU-YuanGroup/Open-Sora-Plan), [xDiT](https://github.com/xdit-project/xDiT), [vLLM](https://github.com/vllm-project/vllm), [SGLang](https://github.com/sgl-project/sglang), [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main).
 
-We also thank our early testers and community members who provided invaluable feedback throughout the development process.
+We also thank our early testers and community members who provided invaluable feedback throughout the development process, in particular, Jiao Dong provided valuable feedback as the first public adopter of v1.
 {{< /justify >}}
