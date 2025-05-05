@@ -1,8 +1,8 @@
 +++
 title = "FastVideo: A Unified Framework for Accelerated Video Generation"
 date = 2025-04-24T11:00:00-08:00
-authors = ["Will Lin", "Peiyuan Zhang", "Kevin Lin", "Wei Zhou", "Yongqi Chen", "You Zhou", "Wenting Zhang",  "Cody Yu", "Richard Liaw", "Hao Zhang"]
-author = "Will Lin, Peiyuan Zhang, Kevin Lin, Wei Zhou, Yongqi Chen, You Zhou, Wenting Zhang, Cody Yu, Richard Liaw, Hao Zhang"
+authors = ["Will Lin", "Peiyuan Zhang", "FastVideo Team", "Cody Yu", "Richard Liaw", "Hao Zhang"]
+author = "Will Lin, Peiyuan Zhang, FastVideo Team, Cody Yu, Richard Liaw, Hao Zhang"
 ShowReadingTime = true
 draft = false
 [socialIcons]
@@ -238,10 +238,20 @@ For those interested in technical details:
 We welcome your feedback on FastVideo V1. Share your results and experiences on Twitter or GitHub to help guide our continued development.
 {{< /justify >}}
 
-## Acknowledgements
 
+## Acknowledgements
 {{< justify >}}
 FastVideo builds on contributions from many researchers and engineers. We're particularly grateful to the following teams we learned and reused code from: [PCM](https://github.com/G-U-N/Phased-Consistency-Model), [diffusers](https://github.com/huggingface/diffusers), [OpenSoraPlan](https://github.com/PKU-YuanGroup/Open-Sora-Plan), [xDiT](https://github.com/xdit-project/xDiT), [vLLM](https://github.com/vllm-project/vllm), [SGLang](https://github.com/sgl-project/sglang), [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main).
 
 We also thank our early testers and community members who provided invaluable feedback throughout the development process, in particular, Jiao Dong provided valuable feedback as the first public adopter of v1.
+
+### FastVideo Team
+Here we want to acknowledge everyone on the FastVideo Team who contributed to FastVideo V1:
+- Yongqi Chen: Added STA to Wan
+- Kevin Lin: Worked on CI/CD and Tests
+- Zihang He: Working on adding StepVideo
+- Wei Zhou: Adding Pipeline and Model Configs, Wan2.1
+- You Zhou: Worked on CD
+- Wenting Zhang: Worked on ComfyUI integration
+
 {{< /justify >}}
