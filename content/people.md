@@ -60,6 +60,8 @@ summary: people
 
 {{< lab_member name="Yuxuan Zhang" role="Undergrad Intern" image="yuxuan_zhang.jpg" academic="https://yuxuan-zhang-dexter.github.io/">}}
 
+{{< lab_member name="Jerry Xu" role="Undergrad Intern" image="jerry_xu.jpg" academic="https://www.linkedin.com/in/jerry-xu-a8a905217/">}}
+
 {{< /lab_members_grid >}}
 
 ### Alumni
