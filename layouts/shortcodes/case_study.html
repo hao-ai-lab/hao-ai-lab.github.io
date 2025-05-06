@@ -5,12 +5,35 @@
             <line x1="9" y1="3" x2="9" y2="21"></line>
             <line x1="15" y1="12" x2="3" y2="12"></line>
         </svg>
-        <span>Example</span>
+        <span>{{ if .Get "title" }}{{ .Get "title" }}{{ else }}Example{{ end }}</span>
     </div>
-    <div class="case-study-content">
-        {{ .Inner | markdownify }}
+    <div class="case-study-tabs">
+        {{ $.Scratch.Set "tabNames" (.Get "tabs") }}
+        {{ if not (.Get "tabs") }}
+            {{ $.Scratch.Set "tabNames" "Example" }}
+        {{ end }}
+        {{ $tabsSlice := split ($.Scratch.Get "tabNames") "," }}
+        {{ $tabContents := split .Inner "<!--tab-->" }}
+        
+        <div class="tabs-header">
+            {{ range $index, $tab := $tabsSlice }}
+                <button class="tab-button{{ if eq $index 0 }} active{{ end }}" 
+                        data-tab="tab-{{ $index }}-{{ $.Ordinal }}">
+                    {{ $tab | strings.TrimSpace }}
+                </button>
+            {{ end }}
+        </div>
+        
+        <div class="tabs-content">
+            {{ range $index, $content := $tabContents }}
+                <div class="tab-pane{{ if eq $index 0 }} active{{ end }}" 
+                     id="tab-{{ $index }}-{{ $.Ordinal }}">
+                    {{ $content | markdownify }}
+                </div>
+            {{ end }}
+        </div>
     </div>
-</div> 
+</div>
 
 <style>
 .case-study {
@@ -34,18 +57,65 @@
     color: #e65100;
 }
 
-.case-study-content {
+.tabs-header {
+    display: flex;
+    border-bottom: 1px solid rgba(255, 152, 0, 0.3);
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.tab-button {
+    background-color: rgba(255, 152, 0, 0.1);
+    border: 1px solid rgba(255, 152, 0, 0.3);
+    border-bottom: 2px solid transparent;
+    border-radius: 4px 4px 0 0;
+    padding: 0.5rem 1.1rem;
+    margin-right: 0.5rem;
+    margin-bottom: -1px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #888;
+    transition: all 0.2s ease;
+    min-width: 150px;
+    text-align: center;
+}
+
+.tab-button:hover {
+    color: #e65100;
+    background-color: rgba(255, 152, 0, 0.15);
+}
+
+.tab-button.active {
+    color: #e65100;
+    background-color: rgba(255, 152, 0, 0.2);
+    border-bottom: 2px solid #e65100;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.case-study-content, .tab-pane {
     font-size: 0.95rem;
     line-height: 1.5;
 }
 
 .case-study-content strong,
-.case-study-content b {
+.case-study-content b,
+.tab-pane strong,
+.tab-pane b {
     font-weight: 700;
 }
 
 .case-study-content ul,
-.case-study-content ol {
+.case-study-content ol,
+.tab-pane ul,
+.tab-pane ol {
     padding-left: 1.5rem;
     margin: 0.5rem 0;
 }
@@ -59,5 +129,55 @@
     .case-study-header, .case-icon {
         color: #ffb74d;
     }
+    
+    .tab-button {
+        background-color: rgba(255, 152, 0, 0.15);
+        border-color: rgba(255, 152, 0, 0.4);
+        color: #aaa;
+    }
+    
+    .tab-button.active {
+        color: #ffb74d;
+        background-color: rgba(255, 152, 0, 0.25);
+        border-bottom: 2px solid #ffb74d;
+    }
+    
+    .tab-button:hover {
+        color: #ffb74d;
+        background-color: rgba(255, 152, 0, 0.2);
+    }
 }
-</style> 
+</style>
+
+<script>
+(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Get the tab ID from the button's data attribute
+                const tabId = this.getAttribute('data-tab');
+                
+                // Find the button's parent tabs container
+                const tabsContainer = this.closest('.case-study-tabs');
+                
+                // Remove active class from all buttons and panes in this container
+                tabsContainer.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                tabsContainer.querySelectorAll('.tab-pane').forEach(pane => {
+                    pane.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Add active class to corresponding tab pane
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    });
+})();
+</script> 

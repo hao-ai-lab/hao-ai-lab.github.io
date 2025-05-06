@@ -1,8 +1,8 @@
 +++
 title = "FastVideo: A Unified Framework for Accelerated Video Generation"
 date = 2025-04-24T11:00:00-08:00
-authors = ["Will Lin", "Peiyuan Zhang", "FastVideo Team", "Cody Yu", "Richard Liaw", "Hao Zhang"]
-author = "Will Lin, Peiyuan Zhang, FastVideo Team, Cody Yu, Richard Liaw, Hao Zhang"
+authors = ["FastVideo Team"]
+author = "FastVideo Team"
 ShowReadingTime = true
 draft = false
 [socialIcons]
@@ -86,7 +86,7 @@ Both initialization parameters (model loading, component configuration) and samp
 Here's how it works in practice:
 {{< /justify >}}
 
-{{< case_study >}}
+{{< case_study title="May exnample" tabs="Tab1,Tab2" >}}
 ```python
 from fastvideo import VideoGenerator, SamplingParam, PipelineConfig
 
@@ -125,6 +125,14 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+```
+<!--tab-->
+
+Testtest 
+```python
+weeeee
+```
 ```
 {{< /case_study >}}
 
@@ -256,12 +264,13 @@ FastVideo builds on contributions from many researchers and engineers. We're par
 We also thank our early testers and community members who provided invaluable feedback throughout the development process, in particular, Jiao Dong provided valuable feedback as the first public adopter of v1.
 
 ### FastVideo Team
-Here we want to acknowledge everyone on the FastVideo Team who contributed to FastVideo V1:
+Here we want to acknowledge everyone on the FastVideo Team (alphabetical order) who contributed to FastVideo V1:
 - Yongqi Chen: Added STA to Wan
 - Kevin Lin: Worked on CI/CD and Tests
 - Zihang He: Working on adding StepVideo
 - Wei Zhou: Adding Pipeline and Model Configs, Wan2.1
 - You Zhou: Worked on CD
 - Wenting Zhang: Worked on ComfyUI integration
+Will Lin", "Peiyuan Zhang", "FastVideo Team", "Cody Yu", "Richard Liaw", "Hao Zhang"]
 
 {{< /justify >}}
