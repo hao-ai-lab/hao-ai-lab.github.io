@@ -65,31 +65,53 @@
 }
 
 .tab-button {
-    background-color: rgba(255, 152, 0, 0.1);
+    background-color: rgba(255, 152, 0, 0.05);
     border: 1px solid rgba(255, 152, 0, 0.3);
     border-bottom: 2px solid transparent;
     border-radius: 4px 4px 0 0;
-    padding: 0.5rem 1.1rem;
+    padding: 0.3rem 0.9rem;
     margin-right: 0.5rem;
     margin-bottom: -1px;
     cursor: pointer;
     font-weight: 600;
     font-size: 1rem;
-    color: #888;
+    color: #777;
     transition: all 0.2s ease;
     min-width: 150px;
     text-align: center;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.tab-button::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background-color: rgba(255, 152, 0, 0.3);
+    transition: height 0.2s ease;
 }
 
 .tab-button:hover {
     color: #e65100;
-    background-color: rgba(255, 152, 0, 0.15);
+    background-color: rgba(255, 152, 0, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 -3px 7px rgba(0, 0, 0, 0.1);
+}
+
+.tab-button:hover::after {
+    height: 3px;
 }
 
 .tab-button.active {
     color: #e65100;
-    background-color: rgba(255, 152, 0, 0.2);
-    border-bottom: 2px solid #e65100;
+    background-color: rgba(255, 152, 0, 0.3);
+    border-bottom: 3px solid #e65100;
+    transform: translateY(0);
+    z-index: 1;
+    font-weight: 700;
 }
 
 .tab-pane {
@@ -131,20 +153,27 @@
     }
     
     .tab-button {
-        background-color: rgba(255, 152, 0, 0.15);
+        background-color: rgba(255, 152, 0, 0.1);
         border-color: rgba(255, 152, 0, 0.4);
-        color: #aaa;
+        color: #999;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    .tab-button::after {
+        background-color: rgba(255, 152, 0, 0.4);
     }
     
     .tab-button.active {
-        color: #ffb74d;
-        background-color: rgba(255, 152, 0, 0.25);
-        border-bottom: 2px solid #ffb74d;
+        color: #ff9800;
+        background-color: rgba(255, 152, 0, 0.35);
+        border-bottom: 3px solid #ff9800;
+        font-weight: 700;
     }
     
     .tab-button:hover {
-        color: #ffb74d;
-        background-color: rgba(255, 152, 0, 0.2);
+        color: #ff9800;
+        background-color: rgba(255, 152, 0, 0.25);
+        box-shadow: 0 -3px 7px rgba(0, 0, 0, 0.25);
     }
 }
 </style>
