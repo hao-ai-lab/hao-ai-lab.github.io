@@ -12,7 +12,15 @@ draft = false
     [[socialIcons.icon]]
       name = "github"
       url = "https://github.com/hao-ai-lab/FastVideo"
+[cover]
+    image = "img/logo.jpg"
+    alt = "FastVideo Logo"
+    caption = "A logo of the FastVideo project"
+    hidden = true
+
 +++
+
+{{< image src="img/logo.jpg" alt="fastvideo logo" width="100%" >}}
 
 {{< socialBadges github="hao-ai-lab/FastVideo" >}}
 
