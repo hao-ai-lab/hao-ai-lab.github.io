@@ -54,8 +54,10 @@ pip install fastvideo
 ```
 
 ```python
+from fastvideo import VideoGenerator
+
 def main():
-    generator = VideoGenerator.from_pretrained("Wan-AI/Wan2.1-T2V-14B-Diffusers", num_gpus=1)
+    generator = VideoGenerator.from_pretrained("Wan-AI/Wan2.1-T2V-1.3B-Diffusers", num_gpus=1)
 
     video = generator.generate_video("a person walking in a forest")
 
@@ -73,7 +75,7 @@ if __name__ == '__main__':
 {{< justify >}}
 A streamlined Python API with built-in multi-GPU support eliminates the need for complex command-line tools or bash scripts. When `num_gpus > 1`, the best parallelism strategy is automatically applied without requiring `torchrun` or `accelerate` commands through bash scripts or CLI.
 
-This API also allows users to easily integrate FastVideo into their applications. For an example, see our [Gradio example](https://github.com/hao-ai-lab/FastVideo/tree/main/fastvideo/v1/examples/inference/gradio).
+This API also allows users to easily integrate FastVideo into their applications. For an example, see our [Gradio example](https://github.com/hao-ai-lab/FastVideo/tree/main/fastvideo/examples/inference/gradio).
 
 FastVideo automatically applies optimal configurations based on the model. With just a HuggingFace model string, it configures all pipeline components for high-quality output without manual tuning.
 
