@@ -13,7 +13,7 @@ draft = false
       name = "github"
       url = "https://github.com/hao-ai-lab/FastVideo"
 [cover]
-    image = "img/perf.png"
+    image = "/img/cover_fastvideo_v1.png"
     alt = "FastVideo Logo"
     caption = "A logo of the FastVideo project"
     hidden = true
