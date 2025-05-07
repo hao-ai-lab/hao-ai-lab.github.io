@@ -1,0 +1,65 @@
+<div class="technical-note">
+    <div class="technical-note-header">
+        <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="16" x2="12" y2="12" />
+            <line x1="12" y1="8" x2="12.01" y2="8" />
+        </svg>
+        <span>Technical Background</span>
+    </div>
+    <div class="technical-note-content">
+        {{ .Inner | markdownify }}
+    </div>
+</div> 
+
+<style>
+.technical-note {
+    background-color: rgba(0, 123, 255, 0.05);
+    border-left: 4px solid rgba(0, 123, 255, 0.7);
+    border-radius: 4px;
+    margin: 1.5rem 0;
+    padding: 1rem;
+}
+
+.technical-note-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    color: #0056b3;
+}
+
+.info-icon {
+    margin-right: 0.5rem;
+    color: #0056b3;
+}
+
+.technical-note-content {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.technical-note-content strong,
+.technical-note-content b {
+    font-weight: 700;
+}
+
+.technical-note-content ul,
+.technical-note-content ol {
+    padding-left: 1.5rem;
+    margin: 0.5rem 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .technical-note {
+        background-color: rgba(0, 123, 255, 0.1);
+        border-left: 4px solid rgba(0, 123, 255, 0.6);
+    }
+    
+    .technical-note-header, .info-icon {
+        color: #4d9aff;
+    }
+}
+
+
+</style>
