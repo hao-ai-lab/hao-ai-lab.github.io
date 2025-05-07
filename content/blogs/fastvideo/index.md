@@ -30,7 +30,7 @@ FastVideo V1 offers new APIs for accelerating video generation. In this release,
 
 Modern open-source video generation models such as [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main) have reached impressive levels of quality, creating videos comparable to closed-source models.
 
-However, it is well known that using these models for creative work still remains highly impractical. Creating a few seconds of high-quality video can take **15+ minutes** even on high-end H100 GPUs using existing video generation tools. As a result, there are a significant number of research teams developing cutting edge techniques to accelerate these models, such as Sliding Tile Attention, SageAttention, and TeaCache.
+However, it is well known that using these models for creative work still remains highly impractical. Creating a few seconds of high-quality video can take **15+ minutes** even on high-end H100 GPUs using existing video generation tools. As a result, there are a significant number of research teams developing cutting edge techniques to accelerate these models, such as Sliding Tile Attention, SageAttention, TeaCache, and many more.
 
 In FastVideo V1, we aim to provide a framework to unify the work across the video generation ecosystem to provide highly accessible and performant video generation.
 
@@ -54,7 +54,7 @@ We recommend using Conda or virtualenv.
 ```python
 pip install fastvideo
 ```
-
+Create a Python file `generate_video.py` and copy the following:
 ```python
 from fastvideo import VideoGenerator
 
@@ -65,6 +65,10 @@ def main():
 
 if __name__ == '__main__':
     main()
+```
+Then simply:
+```bash 
+python generate_video.py
 ```
 
 
@@ -85,10 +89,13 @@ For advanced users who need fine-grained control, FastVideo provides access to a
 
 Both initialization parameters (model loading, component configuration) and sampling parameters (inference steps, guidance scale, dimensions) can be customized while keeping optimal defaults for everything else. Model authors and developers can contribute configurations for new or fine-tuned models to our repository, making their models immediately accessible with optimal settings for all FastVideo users.
 
-Here's how it works in practice:
+Here's how it works in practice and how APIs from other popular video generation frameworks look like:
+
+Try clicking on the Tabs!
+
 {{< /justify >}}
 
-{{< case_study title="May exnample" tabs="FastVideo,Diffusers,xDiT" >}}
+{{< case_study title="Generating Videos: FastVideo vs Diffusers vs xDiT" tabs="FastVideo,Diffusers,xDiT" >}}
 In this example, we show case how `PipelineConfig` is used to configure the pipeline initialization parameters and how `SamplingParam` is used to configure the generation time parameters:
 
 ```python
@@ -127,7 +134,7 @@ if __name__ == '__main__':
     main()
 ```
 <!--tab-->
-HuggingFace's [Diffusers](https://github.com/huggingface/diffusers) library has become a standard for diffusion models, but its architecture is limited to only data parallelism and requires launching processing from CLI using `accelerate` or `torchrun`. 
+HuggingFace's [Diffusers](https://github.com/huggingface/diffusers) library has become a standard for diffusion models, but its architecture is limited to **only data parallelism** and requires launching processes from the CLI using `accelerate` or `torchrun`. 
 
 How to use data parallelism in Diffusers:
 (Taken from Diffusers example [here](https://huggingface.co/docs/diffusers/en/training/distributed_inference#-accelerate))
