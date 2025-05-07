@@ -26,15 +26,15 @@ draft = false
 
 {{< justify >}}
 
-FastVideo v1 offers new APIs for accelerating video generation. In this release, FastVideo is able to generate videos up to 3x faster than alternative solutions, and provides a clean and consistent API across a wide variety of popular video models.
+FastVideo V1 offers new APIs for accelerating video generation. In this release, FastVideo is able to generate videos up to 3x faster than alternative solutions, and provides a clean and consistent API across a wide variety of popular video models.
 
 Modern open-source video generation models such as [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main) have reached impressive levels of quality, creating videos comparable to closed-source models.
 
 However, it is well known that using these models for creative work still remains highly impractical. Creating a few seconds of high-quality video can take **15+ minutes** even on high-end H100 GPUs using existing video generation tools. As a result, there are a significant number of research teams developing cutting edge techniques to accelerate these models, such as Sliding Tile Attention, SageAttention, and TeaCache.
 
-In FastVideo v1, we aim to provide a framework to unify the work across the video generation ecosystem to provide highly accessible and performant video generation.
+In FastVideo V1, we aim to provide a framework to unify the work across the video generation ecosystem to provide highly accessible and performant video generation.
 
-FastVideo v1 offers:
+FastVideo V1 offers:
 - A a simple, consistent API that's easy to use and integrate
 - A collection of model performance optimizations and techniques that can be composed with each other
 - A clean and articulate way for model creators to define and distribute video generation models to end users
@@ -48,6 +48,8 @@ With all of these combined, FastVideo is able to perform high quality video gene
 Requirements:
 - NVIDIA GPU with CUDA 12.4
 - Python 3.10-3.12
+
+We recommend using Conda or virtualenv.
 
 ```python
 pip install fastvideo
@@ -68,7 +70,7 @@ if __name__ == '__main__':
 
 ## Features
 
- Below, we explore FastVideo's key features.
+Below, we explore FastVideo's key features.
 
 ### Simple, Unified Python API with Multi-GPU Support
 
@@ -87,29 +89,27 @@ Here's how it works in practice:
 {{< /justify >}}
 
 {{< case_study title="May exnample" tabs="FastVideo,Diffusers,xDiT" >}}
+In this example, we show case how `PipelineConfig` is used to configure the pipeline initialization parameters and how `SamplingParam` is used to configure the generation time parameters:
+
 ```python
 from fastvideo import VideoGenerator, SamplingParam, PipelineConfig
 
 def main():
-
-    config = PipelineConfig.from_pretrained("Wan-AI/Wan2.1-T2V-14B-Diffusers")
+    # config for initialization
+    model_name = "Wan-AI/Wan2.1-T2V-1.3B-Diffusers"
+    config = PipelineConfig.from_pretrained(model_name)
 
     # Can adjust any parameters
-    config.num_gpus = 4
+    config.num_gpus = 2 # how many GPUS to parallelize generation
     config.vae_config.vae_precision = "fp32"
 
     # Override default configurations while keeping optimal defaults for other settings
-    generator = VideoGenerator.from_pretrained(
-        "Wan-AI/Wan2.1-T2V-14B-Diffusers",
-        pipeline_config=config
-    )
+    generator = VideoGenerator.from_pretrained(model_name, pipeline_config=config)
 
-    # Fine-tune specific parameters while maintaining optimal defaults
-    param = SamplingParam(
-        "FastVideo/FastHunyuan-diffusers",  # Other arguments will be set to best defaults
-    )
-    param = SamplingParam.from_pretrained("FastVideo/FastHunyuan-diffusers")
+    # Other arguments will be set to best defaults
+    param = SamplingParam(model_name)
 
+    # Fine-tune specific sampling parameters while maintaining optimal defaults
     param.num_inference_steps=30 # higher quality
     param.guidance_scale=7.5 # stronger guidance
     param.width=1024  # Higher resolution
@@ -118,24 +118,26 @@ def main():
     # Performance optimizations are still applied automatically. 
     # Users can also directly override any field of sampling_param using kwargs
     video = generator.generate_video(
-        "detailed landscape with mountains and a lake",
+        "fox in the forest close-up quickly turned its head to the left",
         sampling_param=param,
         num_inference_steps=35  # will override param.num_inference_steps
     )
 
 if __name__ == '__main__':
     main()
-
 ```
 <!--tab-->
-HuggingFace's [Diffusers](https://github.com/huggingface/diffusers) library has become a standard for diffusion models, but its architecture creates significant problems for all three stakeholder groups. Let's examine how:
+HuggingFace's [Diffusers](https://github.com/huggingface/diffusers) library has become a standard for diffusion models, but its architecture is limited to only data parallelism and requires launching processing from CLI using `accelerate` or `torchrun`. 
+
+How to use data parallelism in Diffusers:
+(Taken from Diffusers example [here](https://huggingface.co/docs/diffusers/en/training/distributed_inference#-accelerate))
+
 ```python
 # Diffusers with Accelerate: Requires CLI command and only helps for batch processing
 import torch
 from accelerate import PartialState
 from diffusers import DiffusionPipeline
 
-# First, create a script file
 pipeline = DiffusionPipeline.from_pretrained(
     "stable-diffusion-v1-5/stable-diffusion-v1-5", torch_dtype=torch.float16, use_safetensors=True
 )
@@ -144,17 +146,19 @@ pipeline.to(distributed_state.device)
 
 # This only distributes DIFFERENT prompts to DIFFERENT GPUs
 # It cannot accelerate a single video generation
-with distributed_state.split_between_processes(
-    ["a dog running", "a cat jumping", "a bird flying", "a fish swimming"]
-) as prompt:
+with distributed_state.split_between_processes(["a dog", "a cat"]) as prompt:
     result = pipeline(prompt).images[0]
     result.save(f"result_{distributed_state.process_index}.png")
 ```
-Then finally launch from command line:
+Then finally, launch from command line using `accelerate`:
 ```bash
-$ accelerate launch run_distributed.py --num_processes=4
+$ accelerate launch run_distributed.py --num_processes=2
 ```
+
 <!--tab-->
+
+[xDiT](https://github.com/xdit-project/xDiT) (also known as xFusers) improves upon Diffusers by supporting tensor and sequence parallelism for the diffusion model. However, its API still requires `torchrun` and complicated bash scripts to configure and launch. Below is the primary [example script](https://github.com/xdit-project/xDiT/blob/main/examples/run.sh) from xDiT:
+
 ```bash
 set -x
 
@@ -228,7 +232,7 @@ $COMPILE_FLAG \
 $QUANTIZE_FLAG \
 $CACHE_ARGS \
 ```
-After configuring the script, run with:
+After configuring the above script, run with:
 ```bash
 bash examples/run.sh
 ```
