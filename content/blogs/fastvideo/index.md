@@ -21,6 +21,7 @@ draft = false
 +++
 
 {{< image src="img/logo.jpg" alt="fastvideo logo" width="100%" >}}
+{{< image src="img/perf.png" alt="fastvideo logo" width="100%" >}}
 
 {{< socialBadges github="hao-ai-lab/FastVideo" >}}
 
