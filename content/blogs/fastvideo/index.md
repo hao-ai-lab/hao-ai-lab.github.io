@@ -13,10 +13,10 @@ draft = false
       name = "github"
       url = "https://github.com/hao-ai-lab/FastVideo"
 [cover]
-    image = "img/logo.jpg"
+    image = "img/perf.png"
     alt = "FastVideo Logo"
     caption = "A logo of the FastVideo project"
-    hidden = true
+    hidden = false
 
 +++
 
@@ -36,11 +36,11 @@ However, it is well known that using these models for creative work still remain
 In FastVideo V1, we aim to provide a framework to unify the work across the video generation ecosystem to provide highly accessible and performant video generation.
 
 FastVideo V1 offers:
-- A a simple, consistent API that's easy to use and integrate
+- A simple, consistent API that's easy to use and integrate
 - A collection of model performance optimizations and techniques that can be composed with each other
 - A clean and articulate way for model creators to define and distribute video generation models to end users
 
-With all of these combined, FastVideo is able to perform high quality video generation up to 5x faster than existing systems.
+With all of these combined, FastVideo is able to perform high quality video generation up to 3x faster than existing systems.
 
 {{< /justify >}}
 
@@ -97,7 +97,7 @@ Try clicking on the Tabs!
 {{< /justify >}}
 
 {{< case_study title="Generating Videos: FastVideo vs Diffusers vs xDiT" tabs="FastVideo,Diffusers,xDiT" >}}
-In this example, we show case how `PipelineConfig` is used to configure the pipeline initialization parameters and how `SamplingParam` is used to configure the generation time parameters:
+In this example, we showcase how `PipelineConfig` is used to configure the pipeline initialization parameters and how `SamplingParam` is used to configure the generation time parameters:
 
 ```python
 from fastvideo import VideoGenerator, SamplingParam, PipelineConfig
@@ -372,7 +372,7 @@ EntryClass = WanPipeline
 ```
 
 <!--tab-->
-In Diffusers and many other repositories, the entire pipeline is redefined for each model. In the following example from [Diffusers Wan2.1](), we've heavily pruned the pipeline code to only the `forward()` method. The original file is almost 600 lines long, and this is repeated for each supported type (I2V, V2V, etc...)
+In Diffusers and many other repositories, the entire pipeline is redefined for each model. In the following example from [Diffusers Wan2.1](), we've heavily pruned the pipeline code to only the `forward()` method. The original file is almost 600 lines long, and this is repeated for each supported type (I2V, V2V, etc.)
 
 ```python
 class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
