@@ -16,8 +16,7 @@ draft = false
     image = "img/perf.png"
     alt = "FastVideo Logo"
     caption = "A logo of the FastVideo project"
-    hidden = false
-
+    hidden = true
 +++
 
 {{< image src="img/logo.jpg" alt="fastvideo logo" width="100%" >}}
@@ -115,7 +114,7 @@ def main():
     generator = VideoGenerator.from_pretrained(model_name, pipeline_config=config)
 
     # Other arguments will be set to best defaults
-    param = SamplingParam(model_name)
+    param = SamplingParam.from_pretrained(model_name)
 
     # Fine-tune specific sampling parameters while maintaining optimal defaults
     param.num_inference_steps=30 # higher quality
