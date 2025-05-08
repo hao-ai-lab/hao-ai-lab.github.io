@@ -24,7 +24,6 @@ draft = false
 
 {{< socialBadges github="hao-ai-lab/FastVideo" >}}
 
-{{< justify >}}
 
 FastVideo V1 offers new APIs for accelerating video generation. In this release, FastVideo is able to generate videos up to 3x faster than alternative solutions, and provides a clean and consistent API across a wide variety of popular video models.
 
@@ -41,7 +40,6 @@ FastVideo V1 offers:
 
 With all of these combined, FastVideo is able to perform high quality video generation up to 3x faster than existing systems.
 
-{{< /justify >}}
 
 ## Quick Start
 
@@ -78,7 +76,6 @@ Below, we explore FastVideo's key features.
 
 ### Simple, Unified Python API with Multi-GPU Support
 
-{{< justify >}}
 A streamlined Python API with built-in multi-GPU support eliminates the need for complex command-line tools or bash scripts. When `num_gpus > 1`, the best parallelism strategy is automatically applied without requiring `torchrun` or `accelerate` commands through bash scripts or CLI.
 
 This API also allows users to easily integrate FastVideo into their applications. For an example, see our [Gradio example](https://github.com/hao-ai-lab/FastVideo/tree/main/fastvideo/examples/inference/gradio).
@@ -93,7 +90,6 @@ Here's how it works in practice and how APIs from other popular video generation
 
 Try clicking on the Tabs!
 
-{{< /justify >}}
 
 {{< case_study title="Generating Videos: FastVideo vs Diffusers vs xDiT" tabs="FastVideo,Diffusers,xDiT" >}}
 In this example, we showcase how `PipelineConfig` is used to configure the pipeline initialization parameters and how `SamplingParam` is used to configure the generation time parameters:
@@ -249,13 +245,11 @@ bash examples/run.sh
 
 ### Modular Architecture with Clean Separation
 
-{{< justify >}}
 FastVideo provides clear separation between model architecture and implementation, similar to modern LLM inference frameworks.
 
 This allows model authors to leverage FastVideo's distributed processing, optimized components, and parallelism strategies without rewriting their core model logic. With FastVideo's clean architecture, researchers can implement a new optimization once and have it benefit all compatible models in the ecosystem.
 
 The following snippet demonstrates how a new model might be implemented with FastVideo's components:
-{{< /justify >}}
 
 {{< case_study title="Defining New Models" tabs="FastVideo" >}}
 ```python
@@ -297,9 +291,7 @@ class CustomEncoderModel(nn.Module):
 
 ### ComposablePipeline and PipelineStage Abstraction
 
-{{< justify >}}
 FastVideo splits the diffusion pipeline into functional and reusable stages, avoiding code duplication and enabling pipeline-level optimizations. This modular approach lets developers easily customize specific parts of the generation process while reusing standard components.
-{{< /justify >}}
 
 {{< case_study title="Diffusion Pipelines: FastVideo vs Diffusers" tabs="FastVideo,Diffusers" >}}
 Each of these `Stage` in FastVideo can be reused by other pipelines or composed for other purposes such as training or distillation (coming soon!)
@@ -554,13 +546,10 @@ class WanPipeline(DiffusionPipeline, WanLoraLoaderMixin):
 ## Performance and Results
 
 {{< image src="img/perf.png" alt="fastvideo performance comparison" width="100%" >}}
-{{< justify >}}
 Our benchmarks demonstrate that FastVideo significantly outperforms the official Wan2.1 implementation. Testing across multiple GPU configurations shows up to 3x faster video generation while maintaining the same output quality. Model loading time is reduced by up to 7x, dramatically improving startup experience. These performance gains come from transparently switching to SageAttention kernels for attention and enabling Teacache optimization.
-{{< /justify >}}
 
 ## Getting Started
 
-{{< justify >}}
 To try FastVideo, visit our [GitHub repository](https://github.com/hao-ai-lab/FastVideo). Our documentation provides comprehensive guidance for installation, configuration, and integration.
 
 For those interested in technical details:
@@ -569,14 +558,15 @@ For those interested in technical details:
 <!-- - [Model compatibility guide](https://github.com/hao-ai-lab/FastVideo/#supported-models) -->
 
 We welcome your feedback on FastVideo V1. Share your results and experiences on Twitter or GitHub to help guide our continued development.
-{{< /justify >}}
 
 
 ## Acknowledgements
-{{< justify >}}
-FastVideo builds on contributions from many researchers and engineers. We're particularly grateful to the following teams we learned and reused code from: [PCM](https://github.com/G-U-N/Phased-Consistency-Model), [diffusers](https://github.com/huggingface/diffusers), [OpenSoraPlan](https://github.com/PKU-YuanGroup/Open-Sora-Plan), [xDiT](https://github.com/xdit-project/xDiT), [vLLM](https://github.com/vllm-project/vllm), [SGLang](https://github.com/sgl-project/sglang), [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main).
+FastVideo builds on contributions from many researchers and engineers. We're particularly grateful to the following teams and projects we learned and reused code from: [PCM](https://github.com/G-U-N/Phased-Consistency-Model), [diffusers](https://github.com/huggingface/diffusers), [OpenSoraPlan](https://github.com/PKU-YuanGroup/Open-Sora-Plan), [xDiT](https://github.com/xdit-project/xDiT), [vLLM](https://github.com/vllm-project/vllm), [SGLang](https://github.com/sgl-project/sglang), [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main).
+
+The developement of FastVideo V1 was generously supported by [Anyscale](https://www.anyscale.com/).
 
 We also thank our early testers and community members who provided invaluable feedback throughout the development process, in particular, Jiao Dong provided valuable feedback as the first public adopter of V1.
+
 
 ### FastVideo Team
 Here we want to acknowledge everyone on the FastVideo Team who contributed to FastVideo V1:
@@ -590,5 +580,3 @@ Here we want to acknowledge everyone on the FastVideo Team who contributed to Fa
 - Cody Yu: Helped design V1 architecture
 - Richard Liaw: Helped design API and advised the project
 - Hao Zhang: Advised entire project
-
-{{< /justify >}}
