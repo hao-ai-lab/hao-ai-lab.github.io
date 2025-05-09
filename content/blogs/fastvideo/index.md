@@ -19,24 +19,22 @@ draft = false
     hidden = true
 +++
 
-{{< image src="img/logo.jpg" alt="fastvideo logo" width="100%" >}}
-{{< image src="img/perf.png" alt="fastvideo logo" width="100%" >}}
 
 {{< socialBadges github="hao-ai-lab/FastVideo" >}}
 
 
-FastVideo V1 offers new APIs for accelerating video generation. In this release, FastVideo is able to generate videos up to 3x faster than alternative solutions, and provides a clean and consistent API across a wide variety of popular video models.
+**TL;DR:** We are announcing [FastVideo V1](https://github.com/hao-ai-lab/FastVideo), a unified framework that accelerates video generation. This new version of FastVideo features a clean, consistent API that works across popular video models, making it easier for developers to author new models, incorprate system- or kernel-level optimizations, and use advanced video generation capabilities in their applications. For example, FastVideo V1 seamlessly integrates [SageAttention](https://arxiv.org/abs/2410.02367) and [Teacache](https://arxiv.org/pdf/2411.19108) and is able to provide 3x speedup while maintaining quality.
 
-Modern open-source video generation models such as [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main) have reached impressive levels of quality, creating videos comparable to closed-source models.
+{{< image src="img/perf.png" alt="fastvideo logo" width="100%" >}}
 
-However, it is well known that using these models for creative work still remains highly impractical. Creating a few seconds of high-quality video can take **15+ minutes** even on high-end H100 GPUs using existing video generation tools. As a result, there are a significant number of research teams developing cutting edge techniques to accelerate these models, such as Sliding Tile Attention, SageAttention, TeaCache, and many more.
+## What's New
 
-In FastVideo V1, we aim to provide a framework to unify the work across the video generation ecosystem to provide highly accessible and performant video generation.
+Modern open-source video generation models such as [HunyuanVideo](https://github.com/Tencent/HunyuanVideo) and [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main) have reached impressive levels of quality, creating videos comparable to closed-source models. However, it is well known that using these models for creative work still remains highly impractical. Creating a few seconds of high-quality video can take **15+ minutes** even on high-end H100 GPUs using existing video generation tools. As a result, there are a significant number of research teams developing cutting edge techniques to accelerate these models, such as [Sliding Tile Attention](https://arxiv.org/pdf/2502.04507), [SageAttention](https://arxiv.org/abs/2410.02367), [TeaCache](https://arxiv.org/pdf/2411.19108), and many more.
 
-FastVideo V1 offers:
-- A simple, consistent API that's easy to use and integrate
-- A collection of model performance optimizations and techniques that can be composed with each other
-- A clean and articulate way for model creators to define and distribute video generation models to end users
+In FastVideo V1, we aim to provide a platform to unify the work across the video generation ecosystem to provide highly accessible and performant video generation. FastVideo V1 offers:
+1. A simple, consistent API that's easy to use and integrate
+2. A collection of model performance optimizations and techniques that can be composed with each other
+3. A clean and articulate way for model creators to define and distribute video generation models to end users
 
 With all of these combined, FastVideo is able to perform high quality video generation up to 3x faster than existing systems.
 
@@ -68,27 +66,20 @@ Then simply:
 ```bash 
 python generate_video.py
 ```
+We next explore key features along with this release.
 
-
-## Features
-
-Below, we explore FastVideo's key features.
-
-### Simple, Unified Python API with Multi-GPU Support
+## Simple, Unified Python API with Multi-GPU Support
 
 A streamlined Python API with built-in multi-GPU support eliminates the need for complex command-line tools or bash scripts. When `num_gpus > 1`, the best parallelism strategy is automatically applied without requiring `torchrun` or `accelerate` commands through bash scripts or CLI.
-
 This API also allows users to easily integrate FastVideo into their applications. For an example, see our [Gradio example](https://github.com/hao-ai-lab/FastVideo/tree/main/fastvideo/examples/inference/gradio).
-
 FastVideo automatically applies optimal configurations based on the model. With just a HuggingFace model string, it configures all pipeline components for high-quality output without manual tuning.
 
 For advanced users who need fine-grained control, FastVideo provides access to all pipeline components through a comprehensive API. This config can be examined, modified, and passed to `VideoGenerator.from_pretrained()` to customize any aspect of the pipeline.
 
 Both initialization parameters (model loading, component configuration) and sampling parameters (inference steps, guidance scale, dimensions) can be customized while keeping optimal defaults for everything else. Model authors and developers can contribute configurations for new or fine-tuned models to our repository, making their models immediately accessible with optimal settings for all FastVideo users.
+Below is how it works in practice and how APIs from other popular video generation frameworks look like. 
 
-Here's how it works in practice and how APIs from other popular video generation frameworks look like:
-
-Try clicking on the Tabs!
+Try clicking on the Tabs to see the comparison:
 
 
 {{< case_study title="Generating Videos: FastVideo vs Diffusers vs xDiT" tabs="FastVideo,Diffusers,xDiT" >}}
@@ -245,9 +236,7 @@ bash examples/run.sh
 
 ### Modular Architecture with Clean Separation
 
-FastVideo provides clear separation between model architecture and implementation, similar to modern LLM inference frameworks.
-
-This allows model authors to leverage FastVideo's distributed processing, optimized components, and parallelism strategies without rewriting their core model logic. With FastVideo's clean architecture, researchers can implement a new optimization once and have it benefit all compatible models in the ecosystem.
+FastVideo provides clear separation between model architecture and implementation, similar to modern LLM inference frameworks. This allows model authors to leverage FastVideo's distributed processing, optimized components, and parallelism strategies without rewriting their core model logic. With FastVideo's clean architecture, researchers can implement a new optimization once and have it benefit all compatible models in the ecosystem.
 
 The following snippet demonstrates how a new model might be implemented with FastVideo's components:
 
@@ -291,7 +280,7 @@ class CustomEncoderModel(nn.Module):
 
 ### ComposablePipeline and PipelineStage Abstraction
 
-FastVideo splits the diffusion pipeline into functional and reusable stages, avoiding code duplication and enabling pipeline-level optimizations. This modular approach lets developers easily customize specific parts of the generation process while reusing standard components.
+FastVideo splits the diffusion pipeline into *functional and reusable* stages, avoiding code duplication and enabling pipeline-level optimizations. This modular approach lets developers easily customize specific parts of the generation process while reusing standard components.
 
 {{< case_study title="Diffusion Pipelines: FastVideo vs Diffusers" tabs="FastVideo,Diffusers" >}}
 Each of these `Stage` in FastVideo can be reused by other pipelines or composed for other purposes such as training or distillation (coming soon!)
@@ -561,9 +550,7 @@ We welcome your feedback on FastVideo V1. Share your results and experiences on 
 
 
 ## Acknowledgements
-FastVideo builds on contributions from many researchers and engineers. We're particularly grateful to the following teams and projects we learned and reused code from: [PCM](https://github.com/G-U-N/Phased-Consistency-Model), [diffusers](https://github.com/huggingface/diffusers), [OpenSoraPlan](https://github.com/PKU-YuanGroup/Open-Sora-Plan), [xDiT](https://github.com/xdit-project/xDiT), [vLLM](https://github.com/vllm-project/vllm), [SGLang](https://github.com/sgl-project/sglang), [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main).
-
-The developement of FastVideo V1 was generously supported by [Anyscale](https://www.anyscale.com/).
+FastVideo builds on contributions from many researchers and engineers. We're particularly grateful to the following teams and projects we learned and reused code from: [PCM](https://github.com/G-U-N/Phased-Consistency-Model), [diffusers](https://github.com/huggingface/diffusers), [OpenSoraPlan](https://github.com/PKU-YuanGroup/Open-Sora-Plan), [xDiT](https://github.com/xdit-project/xDiT), [vLLM](https://github.com/vllm-project/vllm), [SGLang](https://github.com/sgl-project/sglang), [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main). The developement of FastVideo V1 was partially supported by [Anyscale](https://www.anyscale.com/) and [MBZUAI](https://ifm.mbzuai.ac.ae/).
 
 We also thank our early testers and community members who provided invaluable feedback throughout the development process, in particular, Jiao Dong provided valuable feedback as the first public adopter of V1.
 

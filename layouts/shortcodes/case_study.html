@@ -19,7 +19,7 @@
             {{ range $index, $tab := $tabsSlice }}
                 <button class="tab-button{{ if eq $index 0 }} active{{ end }}" 
                         data-tab="tab-{{ $index }}-{{ $.Ordinal }}">
-                    {{ $tab | strings.TrimSpace }}
+                    {{ $tab }}
                 </button>
             {{ end }}
         </div>
