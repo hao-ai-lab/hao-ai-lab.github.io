@@ -228,15 +228,13 @@ bash examples/run.sh
 
 {{< /case_study >}}
 
-When `num_gpus > 1`, the best parallelism strategy is automatically applied without requiring `torchrun` or `accelerate` commands through bash scripts or CLI.
-This API also allows users to easily integrate FastVideo into their applications. For an example, see our [Gradio example](https://github.com/hao-ai-lab/FastVideo/tree/main/examples/inference/gradio).
-FastVideo automatically applies optimal configurations based on the model. With just a HuggingFace model string, it configures all pipeline components for high-quality output without manual tuning.
+When `num_gpus > 1`, FastVideo automatically applies the optimal parallelism strategy without requiring `torchrun` or `accelerate` commands. This streamlined API makes it easy to integrate FastVideo into applications, as demonstrated in our [Gradio example](https://github.com/hao-ai-lab/FastVideo/tree/main/examples/inference/gradio).
 
-For advanced users who need fine-grained control, FastVideo provides access to all pipeline components through a comprehensive API. This config can be examined, modified, and passed to `VideoGenerator.from_pretrained()` to customize any aspect of the pipeline.
+With just a HuggingFace model identifier, FastVideo configures all pipeline components for high-quality output. For advanced users needing fine-grained control, our comprehensive API provides access to all pipeline components through customizable configuration objects that can be passed to `VideoGenerator.from_pretrained()`.
 
-Both initialization parameters (model loading, component configuration) and sampling parameters (inference steps, guidance scale, dimensions) can be customized while keeping optimal defaults for everything else. Model authors and developers can contribute configurations for new or fine-tuned models to our repository, making their models immediately accessible with optimal settings for all FastVideo users.
-Below is how it works in practice and how APIs from other popular video generation frameworks look like. 
+Users can adjust both initialization parameters (model loading, precision) and sampling parameters (inference steps, guidance scale, dimensions) while maintaining optimal defaults for everything else. Model authors can contribute configurations for their models to our repository, making them immediately accessible with optimal settings.
 
+In our roadmap, we plan to extend FastVideo V1 with training and distillation support, leveraging the same modular architecture and configuration system.
 
 ### Modular Architecture with Clean Separation
 
