@@ -23,7 +23,7 @@ draft = false
 {{< socialBadges github="hao-ai-lab/FastVideo" >}}
 
 
-**TL;DR:** We are announcing [FastVideo V1](https://github.com/hao-ai-lab/FastVideo), a unified framework that accelerates video generation. This new version of FastVideo features a clean, consistent API that works across popular video models, making it easier for developers to author new models, and incorprate system- or kernel-level optimizations. For example, FastVideo V1 is able to provide 3x speedup for inference while maintaining quality by seamlessly integrating [SageAttention](https://arxiv.org/abs/2410.02367) and [Teacache](https://arxiv.org/pdf/2411.19108).
+**TL;DR:** We are announcing [FastVideo V1](https://github.com/hao-ai-lab/FastVideo), a unified framework that accelerates video generation. This new version of FastVideo features a clean, consistent API that works across popular video models, making it easier for developers to author new models, and incorporate system- or kernel-level optimizations. For example, FastVideo V1 is able to provide 3x speedup for inference while maintaining quality by seamlessly integrating [SageAttention](https://arxiv.org/abs/2410.02367) and [Teacache](https://arxiv.org/pdf/2411.19108).
 
 {{< image src="img/perf.png" alt="fastvideo logo" width="100%" >}}
 
