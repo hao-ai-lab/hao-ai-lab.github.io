@@ -23,20 +23,30 @@ draft = false
 {{< socialBadges github="hao-ai-lab/FastVideo" >}}
 
 
-**TL;DR:** We are announcing [FastVideo V1](https://github.com/hao-ai-lab/FastVideo), a unified framework that accelerates video generation. This new version of FastVideo features a clean, consistent API that works across popular video models, making it easier for developers to author new models, and incorporate system- or kernel-level optimizations. For example, FastVideo V1 is able to provide 3x speedup for inference while maintaining quality by seamlessly integrating [SageAttention](https://arxiv.org/abs/2410.02367) and [Teacache](https://arxiv.org/pdf/2411.19108).
+**TL;DR:** We are announcing [FastVideo V1](https://github.com/hao-ai-lab/FastVideo), a unified framework that accelerates video generation. This new version features a clean, consistent API that works across popular video models, making it easier for developers to author new models and incorporate system - or kernel - level optimizations. For example, FastVideo V1 provides 3x speedup for inference while maintaining quality by seamlessly integrating [SageAttention](https://arxiv.org/abs/2410.02367) and [Teacache](https://arxiv.org/pdf/2411.19108).
 
 {{< image src="img/perf.png" alt="fastvideo logo" width="100%" >}}
 
 ## What's New
 
-Modern open-source video generation models such as [HunyuanVideo](https://github.com/Tencent/HunyuanVideo) and [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main) have reached impressive levels of quality, creating videos comparable to closed-source models. However, it is well known that using these models for creative work still remains highly impractical. Creating a few seconds of high-quality video can take **15+ minutes** even on high-end H100 GPUs using existing video generation tools. As a result, there are a significant number of research teams developing cutting edge techniques to accelerate these models, such as [Sliding Tile Attention](https://arxiv.org/pdf/2502.04507), [SageAttention](https://arxiv.org/abs/2410.02367), [TeaCache](https://arxiv.org/pdf/2411.19108), and many more.
+Modern open-source video generation models such as [HunyuanVideo](https://github.com/Tencent/HunyuanVideo) and [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main) have reached impressive levels of quality, creating videos comparable to closed-source models. However, it is well known that using these models for creative work still remains highly impractical. Creating a few seconds of high-quality video can take **15+ minutes** even on high-end H100 GPUs using existing video generation tools such as Diffusers -- and multi-GPU setups are complex if not outright impossible. As a result, there are a significant number of research teams developing cutting edge techniques to accelerate these models, such as [Sliding Tile Attention](https://arxiv.org/pdf/2502.04507), [SageAttention](https://arxiv.org/abs/2410.02367), [TeaCache](https://arxiv.org/pdf/2411.19108), [xDIT](https://github.com/xdit-project/xDiT) and many more.
 
 In FastVideo V1, we aim to provide a platform to unify the work across the video generation ecosystem to provide highly accessible and performant video generation. FastVideo V1 offers:
 1. A simple, consistent API that's easy to use and integrate
 2. A collection of model performance optimizations and techniques that can be composed with each other
 3. A clean and articulate way for model creators to define and distribute video generation models to end users
 
-With all of these combined, FastVideo is able to perform high quality video generation up to 3x faster than existing systems.
+If you're a Diffusers user struggling with the 15+ minute generation times and complex multi-GPU setups, FastVideo offers a simpler alternative for state-of-the-art models like Wan2.1. You're likely familiar with these challenges:
+
+{{< table title="Diffusers challenges and how FastVideo addresses them." >}}
+| **Diffusers Challenge** | **FastVideo Solution** |
+|------------|-----------|
+| 15+ minute generation times on a single GPU | 2x-3x acceleration for supported models with the same quality |
+| Complex bash scripts needed for multi-GPU use | Simple `num_gpus=N` parameter handles everything |
+| Large memory overhead during generation | Memory-efficient attention and sharding optimizations |
+| Long model loading times | Up to 7x faster model loading |
+
+{{</ table >}}
 
 
 ## Quick Start
@@ -62,10 +72,12 @@ def main():
 if __name__ == '__main__':
     main()
 ```
-Then simply:
+
+Run without any special commands:
 ```bash 
-python generate_video.py
+python generate_video.py  # No torchrun or accelerate necessary
 ```
+
 We next explore key features along with this release.
 
 ## Simple, Unified Python API with Multi-GPU Support
@@ -546,11 +558,20 @@ For those interested in technical details:
 - [Developer documentation](https://hao-ai-lab.github.io/FastVideo/contributing/overview.html)
 <!-- - [Model compatibility guide](https://github.com/hao-ai-lab/FastVideo/#supported-models) -->
 
-We welcome your feedback on FastVideo V1. Share your results and experiences on Twitter or GitHub to help guide our continued development.
+Join our [Slack Community](https://join.slack.com/t/fastvideo/shared_invite/zt-2zf6ru791-sRwI9lPIUJQq1mIeB_yjJg) and/or [Discord community](https://discord.gg/JA7cksDz86) to share your experiences, get help, and influence the future direction of the project!
 
+## What's Next for FastVideo?
+
+We're actively working on expanding FastVideo's capabilities in three key areas. We'd love to hear which of these matters most to you:
+
+1. **More model support**: Which video generation models would you like to see optimized next?
+2. **Training and fine-tuning**: Are you interested in accelerated training for your own custom models?
+3. **Framework integrations**: Would you like to see FastVideo in ComfyUI, A1111, or other application frameworks?
+
+If you're currently using Diffusers for video generation with one of our supported models, we'd be especially interested in hearing about your experience migrating to FastVideo. What kind of speedups are you seeing? Have you encountered any issues?
 
 ## Acknowledgements
-FastVideo builds on contributions from many researchers and engineers. We're particularly grateful to the following teams and projects we learned and reused code from: [PCM](https://github.com/G-U-N/Phased-Consistency-Model), [diffusers](https://github.com/huggingface/diffusers), [OpenSoraPlan](https://github.com/PKU-YuanGroup/Open-Sora-Plan), [xDiT](https://github.com/xdit-project/xDiT), [vLLM](https://github.com/vllm-project/vllm), [SGLang](https://github.com/sgl-project/sglang), [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main). The developement of FastVideo V1 was partially supported by [Anyscale](https://www.anyscale.com/) and [MBZUAI](https://ifm.mbzuai.ac.ae/).
+FastVideo builds on contributions from many researchers and engineers. We're particularly grateful to the following teams and projects we learned and reused code from: [PCM](https://github.com/G-U-N/Phased-Consistency-Model), [diffusers](https://github.com/huggingface/diffusers), [OpenSoraPlan](https://github.com/PKU-YuanGroup/Open-Sora-Plan), [xDiT](https://github.com/xdit-project/xDiT), [vLLM](https://github.com/vllm-project/vllm), [SGLang](https://github.com/sgl-project/sglang), [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main). The development of FastVideo V1 was partially supported by [Anyscale](https://www.anyscale.com/) and [MBZUAI](https://ifm.mbzuai.ac.ae/).
 
 We also thank our early testers and community members who provided invaluable feedback throughout the development process, in particular, Jiao Dong provided valuable feedback as the first public adopter of V1.
 
