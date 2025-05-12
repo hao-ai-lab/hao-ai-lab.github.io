@@ -23,7 +23,7 @@ draft = false
 {{< socialBadges github="hao-ai-lab/FastVideo" >}}
 
 
-**TL;DR:** We are announcing [FastVideo V1](https://github.com/hao-ai-lab/FastVideo), a unified framework that accelerates video generation. If you're a Diffusers user struggling with the 15+ minute generation times and complex multi-GPU setups, FastVideo offers a simpler alternative for state-of-the-art models like Wan2.1. This new version features a clean, consistent API that works across popular video models, making it easier for developers to author new models and incorporate system-level optimizations. FastVideo V1 provides 3x speedup for inference while maintaining quality by seamlessly integrating [SageAttention](https://arxiv.org/abs/2410.02367) and [Teacache](https://arxiv.org/pdf/2411.19108).
+**TL;DR:** We are announcing [FastVideo V1](https://github.com/hao-ai-lab/FastVideo), a unified framework that accelerates video generation. This new version features a clean, consistent API that works across popular video models, making it easier for developers to author new models and incorporate system - or kernel - level optimizations. For example, FastVideo V1 provides 3x speedup for inference while maintaining quality by seamlessly integrating [SageAttention](https://arxiv.org/abs/2410.02367) and [Teacache](https://arxiv.org/pdf/2411.19108).
 
 {{< image src="img/perf.png" alt="fastvideo logo" width="100%" >}}
 
@@ -36,15 +36,17 @@ In FastVideo V1, we aim to provide a platform to unify the work across the video
 2. A collection of model performance optimizations and techniques that can be composed with each other
 3. A clean and articulate way for model creators to define and distribute video generation models to end users
 
-If you're already using Diffusers for video generation, you're likely familiar with these challenges:
+If you're a Diffusers user struggling with the 15+ minute generation times and complex multi-GPU setups, FastVideo offers a simpler alternative for state-of-the-art models like Wan2.1. You're likely familiar with these challenges:
 
-| Diffusers Challenge | FastVideo Solution |
+{{< table title="Diffusers challenges and how FastVideo addresses them." >}}
+| **Diffusers Challenge** | **FastVideo Solution** |
 |------------|-----------|
 | 15+ minute generation times on a single GPU | 2x-3x acceleration for supported models with the same quality |
 | Complex bash scripts needed for multi-GPU use | Simple `num_gpus=N` parameter handles everything |
 | Large memory overhead during generation | Memory-efficient attention and sharding optimizations |
 | Long model loading times | Up to 7x faster model loading |
 
+{{</ table >}}
 
 
 ## Quick Start
