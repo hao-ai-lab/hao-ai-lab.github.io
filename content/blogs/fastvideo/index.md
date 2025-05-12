@@ -573,16 +573,16 @@ If you're currently using Diffusers for video generation with one of our support
 ## Acknowledgements
 FastVideo builds on contributions from many researchers and engineers. We're particularly grateful to the following teams and projects we learned and reused code from: [PCM](https://github.com/G-U-N/Phased-Consistency-Model), [diffusers](https://github.com/huggingface/diffusers), [OpenSoraPlan](https://github.com/PKU-YuanGroup/Open-Sora-Plan), [xDiT](https://github.com/xdit-project/xDiT), [vLLM](https://github.com/vllm-project/vllm), [SGLang](https://github.com/sgl-project/sglang), [Wan2.1](https://github.com/Wan-Video/Wan2.1/tree/main). The development of FastVideo V1 was partially supported by [Anyscale](https://www.anyscale.com/) and [MBZUAI](https://ifm.mbzuai.ac.ae/).
 
-We also thank our early testers and community members who provided invaluable feedback throughout the development process, in particular, Jiao Dong provided valuable feedback as the first public adopter of V1.
+We also thank our early testers and community members who provided invaluable feedback throughout the development process, in particular, Jiao Dong and Yusuf Ozuysal provided invaluable feedback.
 
 
 ### FastVideo Team
 Here we want to acknowledge everyone on the FastVideo Team who contributed to FastVideo V1:
 - Will Lin and Peiyuan Zhang: Project lead and architect
 - Wei Zhou: Added Pipeline and Model Configs; Wan2.1 Pipeline; Torch compile
-- Kevin Lin: Worked on CI/CD and Tests
+- Kevin Lin: Worked on CI/CD, Tests, ComfyUI integration and CLI
 - Yongqi Chen: Added STA support to Wan2.1
-- Zihang He: Working on adding StepVideo
+- Zihang He: Added StepVideo Pipeline
 - You Zhou: Worked on CD
 - Wenting Zhang: Worked on ComfyUI integration
 - Cody Yu: Helped design V1 architecture
