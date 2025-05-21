@@ -114,7 +114,7 @@ Specifically,
 1. A video of size $(L, L, L)$ is divided into non-overlapping tiles of size $(T, T, T)$. Assuming Flash Attention's block size is $(B, B)$, T should satisfy the condition  $B = T^3$.
 2. Tokens within each tile are **flattend consecutively**. The window size should also be integer multiple of the tile size.
 3. The attention window **moves tile-by-tile** with a step size of $(T, T, T)$. For each local window, the central query tiles attend to keys within the window. 
-4. This results in only dense and mixed blocks in the attention map, completely eliminating inefficient mixed blocks, as shown in Figure 3 (c).
+4. This results in only dense and empty blocks in the attention map, completely eliminating inefficient mixed blocks, as shown in Figure 3 (c).
 {{< /justify >}}
 
 The video below demonstrates how STA works. For better illustration, we use a 2D scenario. In this example, we apply STA to a 10×10 image with (2,2) tiles and a (6,6) window.
