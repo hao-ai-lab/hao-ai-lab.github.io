@@ -44,6 +44,8 @@ summary: people
 
 {{< lab_member name="Yiming Zhao" role="Master's" image="yiming_zhao.png" academic="https://www.linkedin.com/in/yiming-zhao-zym2002/" twitter="https://x.com/YimingBob">}}
 
+{{< lab_member name="Mathew Luo" role="Master's" image="mathew_luo.jpg" academic="https://www.linkedin.com/in/mathewluo/" >}}
+
 {{< lab_member name="Yuhsiang Shao" role="Master's" image="yuhsiang_shao.jpg" academic="https://www.linkedin.com/in/yu-hsiang-shao-1b33251b6/" twitter="https://x.com/KyleShao2K">}}
 
 {{< lab_member name="Yongqi Chen" role="Research Intern" image="yongqi_chen.jpg" academic="https://brianchen1129.github.io/">}}
