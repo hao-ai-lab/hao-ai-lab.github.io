@@ -52,8 +52,6 @@ summary: people
 <!-- 
 {{< lab_member name="Wei Zhou" role="Research Intern" image="wei_zhou.jpg" academic="https://www.linkedin.com/in/wei-zhou3/">}} -->
 
-{{< lab_member name="Hangliang Ding" role="Undergrad Intern" image="hangliang_ding.jpeg" academic="https://scholar.google.com/citations?user=LxPRowMAAAAJ&hl=en">}}
-
 {{< lab_member name="Jason Kong" role="Undergrad Intern" image="jason_kong.jpg" academic="https://www.jasonkongie.com/" twitter="https://x.com/JasonkongLLM">}}
 
 <!-- {{< lab_member name="Jonathan Nitisastro" role="Undergrad Intern" image="jonathan_nitisastro.jpg" academic="https://www.linkedin.com/in/jonathan-nitisastro-ba781b193/">}} -->
@@ -72,6 +70,7 @@ summary: people
 {{< alumni_entry name="Nan Jiang" description="Undergrad Intern, now PhD Student at UChicago" homepage="https://www.nanjiangwill.com/">}}
 {{< alumni_entry name="Anze Xie" description="Master's, now at MBZUAI IFM LLM360 Team" homepage="https://anzexie.github.io/">}}
 {{< alumni_entry name="Siqi Zhu" description="Undergrad Intern, now incoming PhD Student at UIUC" homepage="https://github.com/zhusq20">}}
+{{< alumni_entry name="Hangliang Ding" description="Undergrad Intern, now researcher at Bytedance" homepage="https://foreverpiano.github.io/">}}
 {{< alumni_entry name="Jiangfei Duan" description="Visiting PhD Student" homepage="https://jf-d.github.io/">}}
 {{< alumni_entry name="Zhongdongming Dai" description="Master's, now software engineer at NVIDIA" homepage="https://www.linkedin.com/in/andy-dai-says-hi/">}}
 {{< alumni_entry name="Hexu Zhao" description="Undergrad Intern, now PhD Student at NYU" homepage="https://github.com/TarzanZhao">}}
