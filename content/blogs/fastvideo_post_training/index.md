@@ -27,38 +27,35 @@ draft = false
 
 {{<youtube AvCBPBf2o4M>}}
 
-## The FastWan Series
-
 
 ### How Fast is FastWan?
 {{< image src="img/fastwan.png" alt="denoising speedup" width="100%" >}}
 
 Below, we demonstrate how each module accelerates the DiT denoising time (without text encoder and vae) on a single H200 GPU. 
 
-{{< center >}}
+{{< table title="Table 2: DiT denoising time comparisons of different methods. All numbers can be reproduced with this [script](https://github.com/hao-ai-lab/FastVideo/blob/main/scripts/inference/v1_inference_wan_VSA_DMD.sh)." >}}
 
-| Modules | Wan 2.2 5B 720P | Wan2.1 14B 720P | Wan2.1 1.3B 480P | 
-|:-------:|:---------------:|:----------------:|:----------------:|
-| FA2 | 157.21s | 1746.5s | 95.21s |  
-| FA2 + DMD | 4.67s | 52s | 2.88s |  
-| FA3+DMD | 3.65s | 37.87s | 2.14s | 
-| FA3 + DMD + torch compile | 2.64s | 29.5s | 1.49s | 
-| VSA + DMD + torch compile | -- | 13s | 0.98s | 
+|             Modules              | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P | 
+|:-------------------------:|:---------------:|:----------------:|:----------------:|
+|             **FA2**          |     157.21s     |      1746.5s      |       95.21s      |  
+|         **FA2 + DMD**         |      4.67s      |        52s        |       2.88s       |  
+|          **FA3+DMD**          |      3.65s      |       37.87s      |       2.14s       | 
+| **FA3 + DMD + torch compile** |      2.64s      |       29.5s       |       1.49s       | 
+| **VSA + DMD + torch compile** |      --           |        13s       |       0.98s       | 
 
-{{< /center >}} 
+{{</ table >}}
 
-
-All numbers can be reproduced with this [script](https://github.com/hao-ai-lab/FastVideo/blob/main/scripts/inference/v1_inference_wan_VSA_DMD.sh)
 
 ### Online Demo using FastVideo
-Try the FastWan demo [here](https://fastwan.fastvideo.org/)
-Our demo is served on 16 H200s generously provided by [GMI Cloud](https://www.gmicloud.ai/).
+
+
+🚀🚀👉 Try our [demo](https://fastwan.fastvideo.org/) now! Our demo is served on 16 H200s generously provided by [GMI Cloud](https://www.gmicloud.ai/).
 
 {{< image src="img/demo.png" alt="screenshot of demo" width="100%" >}}
 
 
 ### Try FastWan Locally!
-FastWan is runnable on a wide range of hardware with [FastVideo](https://github.com/hao-ai-lab/FastVideo). 
+FastWan is runnable on a wide range of hardware including Nvidia H100, H200, 4090, and Apple Sicicon. Check out  [FastVideo](https://github.com/hao-ai-lab/FastVideo/tree/main?tab=readme-ov-file#key-features) to get started.
 
 <!-- We list below the VRAM needed for the 1.3B and 5B models under variable resolution. 
 
