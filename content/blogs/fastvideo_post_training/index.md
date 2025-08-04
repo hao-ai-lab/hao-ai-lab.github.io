@@ -35,7 +35,7 @@ draft = false
 
 Below, we demonstrate how each module accelerates the DiT denoising time (without text encoder and vae) on a single H200 GPU. 
 
-<div style="text-align: center; margin: 1rem 0;">
+{{< center >}}
 
 |                           | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P | 
 |:-------------------------:|:---------------:|:----------------:|:----------------:|
@@ -45,7 +45,7 @@ Below, we demonstrate how each module accelerates the DiT denoising time (withou
 | FA3 + DMD + torch compile |      2.64s      |       29.5s       |       1.49s       | 
 | VSA + DMD + torch compile |      --           |        13s       |       0.98s       | 
 
-</div> 
+{{< /center >}} 
 
 
 All numbers can be reproduced with this [script](https://github.com/hao-ai-lab/FastVideo/blob/main/scripts/inference/v1_inference_wan_VSA_DMD.sh)
