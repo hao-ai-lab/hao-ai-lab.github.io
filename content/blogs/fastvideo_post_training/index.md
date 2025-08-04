@@ -44,11 +44,11 @@ For FastWan2.2-TI2V-5B-FullAttn, since its sequence length is short and doesn't 
 Compared to FA2 alone, we demonstrate how each module accelerates the DiT denoising time.
 |                           | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P |   |
 |:-------------------------:|:---------------:|:----------------:|:----------------:|---|
-|          FA2 only         |     157.21s     |      1746.5      |       95.21      |   |
-|         FA2 + DMD         |      4.67s      |        52        |       2.88       |   |
-|          FA3+DMD          |      3.65s      |       37.87      |       2.14       |   |
-| FA3 + DMD + torch compile |      2.64s      |       29.5       |       1.49       |   |
-| VSA + DMD + torch compile |                 |        13s       |       0.98       |   |
+|             FA2          |     157.21s     |      1746.5s      |       95.21s      |   |
+|         FA2 + DMD         |      4.67s      |        52s        |       2.88s       |   |
+|          FA3+DMD          |      3.65s      |       37.87s      |       2.14s       |   |
+| FA3 + DMD + torch compile |      2.64s      |       29.5s       |       1.49s       |   |
+| VSA + DMD + torch compile |                 |        13ss       |       0.98s       |   |
 
 ### Online Demo using FastVideo
 Try the FastWan demo [here]()!
