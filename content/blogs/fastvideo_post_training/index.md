@@ -59,7 +59,7 @@ FastWan is runnable on a wide range of hardware with [FastVideo](https://github.
 #### FastWan2.2-TI2V-5B -->
 
 
-## Sparse Distillation: Making Video Generation Go Blurrrr
+## Sparse Distillation: Making Video Generation Go Brrrr
 Video diffusion models are incredibly powerful, but they've long been held back by two major bottlenecks: 
 1. The huge number of denoising steps needed to generate a video. 
 2. The quadratic cost of attention when handling long sequences — which are unavoidable for high-resolution videos. Taking Wan2.2-14B as an example, the models run for 50 diffusion steps, and generating just a 5-second 720P video involves processing over 100K tokens. Even worse, attention operations can eat up more than 85% of total inference time.
