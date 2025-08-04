@@ -1,6 +1,6 @@
 +++
 title = "FastWan: Generating a 5-Second Video in 5 Seconds via Sparse Distillation"
-date = 2025-08-01T11:00:00-08:00
+date = 2025-08-04T11:00:00-08:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
 ShowReadingTime = true
@@ -13,7 +13,7 @@ draft = false
       name = "github"
       url = "https://github.com/hao-ai-lab/FastVideo"
 [cover]
-    image = "/img/fastwan.png"
+    image = "/img/fastwan/fastwan-teaser.gif"
     alt = "Denoising speedup of FastWan"
     caption = "A gif of a graph showing FastWan achieving 72.8x speedup for denoising"
     hidden = true
