@@ -22,7 +22,7 @@ draft = false
 
 {{< socialBadges github="hao-ai-lab/FastVideo" arxiv-index="2505.13389" demo="https://fastwan.fastvideo.org/" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-38u6p1jqe-yDI1QJOCEnbtkLoaI5bjZQ" discord="https://discord.gg/Dm8F2peD3e" huggingface="https://huggingface.co/FastVideo" >}}
 
-**TL;DR:** We introduce **FastWan**, a family of video generation models, trained via a new recipe we term as “sparse distillation”, to achieve near-realtime video generation. FastWan matches Wan in video quality but is blazingly faster: 50x speedup on diffusion time and **15x end-to-end speedup**. FastWan2.1-1.3B can generate a 5-second 480P video in **12 seconds** on a single RTX 4090 and **near real time** on a single H200. FastWan2.2-5B can generate a 5-second 720P video in 16 seconds on a single H200. All resources — model weights, training recipe, and dataset — are released under the Apache-2.0 license.
+**TL;DR:** We introduce **FastWan**, a family of video generation models, trained via a new recipe we term as “sparse distillation”, to achieve near-realtime video generation. FastWan matches Wan in video quality but is blazingly faster: 50x speedup on diffusion time and **15x end-to-end speedup**. FastWan2.1-1.3B can generate a 5-second 480P video in **12 seconds** on a single RTX 4090 and **near real time** on a single H200. FastWan2.2-5B-FullAttn can generate a 5-second 720P video in 16 seconds on a single H200. All resources — model weights, training recipe, and dataset — are released under the Apache-2.0 license.
 
 
 {{<youtube AvCBPBf2o4M>}}
@@ -34,13 +34,21 @@ With this blog, we are releasing the following models and their recipes:
 |:-------------------------------------------------------------------------------------------:	|:---------------------------------------------------------------------------------------------------------------:	|:--------------------------------------------------------------------------------------------------------:	|
 | [FastWan2.1-T2V-1.3B](https://huggingface.co/FastVideo/FastWan2.1-T2V-1.3B-Diffusers)       	|    [Recipe](https://github.com/hao-ai-lab/FastVideo/tree/main/examples/distill/Wan2.1-T2V/Wan-Syn-Data-480P)    	| [FastVideo Synthetic Wan2.1 480P](https://huggingface.co/datasets/FastVideo/Wan-Syn_77x448x832_600k)     	|
 | [FastWan2.1-T2V-14B-Preview](https://huggingface.co/FastVideo/FastWan2.1-T2V-14B-Diffusers) 	|                                                   Coming soon!                                                  	|   [FastVideo Synthetic Wan2.1 720P](https://huggingface.co/datasets/FastVideo/Wan-Syn_77x768x1280_250k)  	|
-| [FastWan2.2-TI2V-5B-Full (Full Attn)](https://huggingface.co/FastVideo/FastWan2.2-TI2V-5B-Full-Diffusers)         	| [Recipe](https://github.com/hao-ai-lab/FastVideo/tree/main/examples/distill/Wan2.2-TI2V-5B-Full-Diffusers/Data-free) 	| [FastVideo Synthetic Wan2.2 720P](https://huggingface.co/datasets/FastVideo/Wan2.2-Syn-121x704x1280_32k) 	|
+| [FastWan2.2-TI2V-5B-FullAttn](https://huggingface.co/FastVideo/FastWan2.2-TI2V-5B-Diffusers)         	| [Recipe](https://github.com/hao-ai-lab/FastVideo/tree/main/examples/distill/Wan2.2-TI2V-5B-Diffusers-FullAttn/Data-free) 	| [FastVideo Synthetic Wan2.2 720P](https://huggingface.co/datasets/FastVideo/Wan2.2-Syn-121x704x1280_32k) 	|
 
 
-We are actively working on applying sparse distillation to 14B models for both Wan2.1 and Wan2.2 and will be releasing those checkpoints over the following weeks. Follow our progress at our [Github](https://github.com/hao-ai-lab/FastVideo), [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-38u6p1jqe-yDI1QJOCEnbtkLoaI5bjZQ) and [Discord](https://discord.gg/Dm8F2peD3e)!
+For FastWan2.2-TI2V-5B-FullAttn, since its sequence length is short and doesn't benefit much from VSA, we only apply DMD with full attention. We are actively working on applying sparse distillation to 14B models for both Wan2.1 and Wan2.2 and will be releasing those checkpoints over the following weeks. Follow our progress at our [Github](https://github.com/hao-ai-lab/FastVideo), [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-38u6p1jqe-yDI1QJOCEnbtkLoaI5bjZQ) and [Discord](https://discord.gg/Dm8F2peD3e)!
 
 ### How Fast is FastWan?
 {{< image src="img/fastwan.png" alt="denoising speedup" width="100%" >}}
+Compared to FA2 alone, we demonstrate how each module accelerates the DiT denoising time.
+|                           | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P |   |
+|:-------------------------:|:---------------:|:----------------:|:----------------:|---|
+|          FA2 only         |     157.21s     |      1746.5      |       95.21      |   |
+|         FA2 + DMD         |      4.67s      |        52        |       2.88       |   |
+|          FA3+DMD          |      3.65s      |       37.87      |       2.14       |   |
+| FA3 + DMD + torch compile |      2.64s      |       29.5       |       1.49       |   |
+| VSA + DMD + torch compile |                 |        13s       |       0.98       |   |
 
 ### Online Demo using FastVideo
 Try the FastWan demo [here]()!
@@ -62,9 +70,13 @@ FastWan is runnable on a wide range of hardware with [FastVideo](https://github.
 ## Sparse Distillation: Making Video Generation Go Brrrr
 Video diffusion models are incredibly powerful, but they've long been held back by two major bottlenecks: 
 1. The huge number of denoising steps needed to generate a video. 
-2. The quadratic cost of attention when handling long sequences — which are unavoidable for high-resolution videos. Taking Wan2.2-14B as an example, the models run for 50 diffusion steps, and generating just a 5-second 720P video involves processing over 100K tokens. Even worse, attention operations can eat up more than 85% of total inference time.
+2. The quadratic cost of attention when handling long sequences — which are unavoidable for high-resolution videos. Taking Wan2.1-14B as an example, the models run for 50 diffusion steps, and generating just a 5-second 720P video involves processing over 80K tokens. Even worse, attention operations can eat up more than 85% of total inference time.
 
+<<<<<<< HEAD
+Sparse distillation is our core innovation in FastWan2.1 — the first method to **jointly train sparse attention and denoising step distillation in a unified framework**. At its heart, sparse distillation answers a fundamental question: *Can we retain the speedups from sparse attention while applying extreme diffusion compression (e.g., 3 steps instead of 50)?* Prior work says no — and in the following sections we show why that answer changes with Video Sparse Attention (VSA). 
+=======
 Sparse distillation is our core innovation in FastWan — the first method to **jointly train sparse attention and denoising step distillation in a unified framework**. At its heart, sparse distillation answers a fundamental question: *Can we retain the speedups from sparse attention while applying extreme diffusion compression (e.g., 3 steps instead of 50)?* Prior work says no — and in the following sections we show why that answer changes with Video Sparse Attention (VSA). 
+>>>>>>> 969b5d9136d5021acf3334fc8dbc9d9aae7e4ef4
 
 ### Why Existing Sparse Attention Fails Under Distillation
 Most prior sparse attention methods (e.g., [STA](https://arxiv.org/pdf/2502.04507), [SVG](https://svg-project.github.io/)) rely on redundancy in multi-step denoising to prune attention maps. They often sparsify only late-stage denoising steps and retain full attention in early steps. However, when distillation compresses 50 steps into 1–4 steps, there’s no “later stage” to sparsify — and the redundancy they depend on vanishes. As a result, these sparse patterns no longer hold up. Our preliminary experiments confirm that existing sparse attention schemes degrade sharply under sub-10 step setups. This is a critical limitation. While sparse attention alone can yield up to 3× speedup, distillation offers more than 20× gains. We argue that to make sparse attention truly effective and production-ready, it must be compatible with training and distillation.
@@ -86,7 +98,7 @@ The core idea of sparse distillation is to teach a few-step and sparse student m
 2. a real score network (frozen, full attention).
 3. a fake score network (trainable, full attention).
 
-All three components are initialized with Wan2.2. During training, the sparse-distilled student takes a noisy video input and performs one denoising step with VSA, producing the current output. This output is then noised again and passed to both the real and fake score functions, each of which performs one denoising step under full attention. The outputs from these two branches define the **real and fake score**, whose difference forms the **distribution matching gradient** that is backpropagated to improve the student. In parallel, the fake score model is updated via a diffusion loss on the student outputs.
+All three components are initialized with Wan2.1. During training, the sparse-distilled student takes a noisy video input and performs one denoising step with VSA, producing the current output. This output is then noised again and passed to both the real and fake score functions, each of which performs one denoising step under full attention. The outputs from these two branches define the **real and fake score**, whose difference forms the **distribution matching gradient** that is backpropagated to improve the student. In parallel, the fake score model is updated via a diffusion loss on the student outputs.
 Importantly, while the student model adopts **video sparse attention (VSA)** for efficiency, both the real and fake score functions remain full-attention to ensure high-fidelity supervision during training. This separation allows us to decouple runtime acceleration (in the student) from distillation quality (in the score estimators), making sparse attention compatible with aggressive step reduction. More broadly, since sparse attention is only applied to the student, it remains fully compatible with any distillation method, such as consistency distillation, progressive distillation, or GAN-based distillation loss.
 
 
