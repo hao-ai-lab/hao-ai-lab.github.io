@@ -39,7 +39,7 @@ With this blog, we are releasing the following models and their recipes:
 
 We are actively working on applying sparse distillation to 14B models for both Wan2.1 and Wan2.2 and will be releasing those checkpoints over the following weeks. Follow our progress at our [Github](https://github.com/hao-ai-lab/FastVideo), [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-38u6p1jqe-yDI1QJOCEnbtkLoaI5bjZQ) and [Discord](https://discord.gg/Dm8F2peD3e)!
 
-### How good is FastWan?
+### How Fast is FastWan?
 {{< image src="img/fastwan.png" alt="denoising speedup" width="100%" >}}
 
 ### Online Demo using FastVideo
