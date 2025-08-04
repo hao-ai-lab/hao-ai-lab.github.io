@@ -1,5 +1,5 @@
 +++
-title = "Introducing FastWAN: 15 Times Faster Video Generation With Sparse Distillation"
+title = "Introducing FastWan: 15 Times Faster Video Generation With Sparse Distillation"
 date = 2025-08-01T11:00:00-08:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -50,14 +50,16 @@ Our demo is served on 16 H200s generously provided by [GMI Cloud](https://www.gm
 
 
 ### Try FastWan Locally!
-FastWan is runnable on a wide range of hardware with [FastVideo](https://github.com/hao-ai-lab/FastVideo). We list below the VRAM needed for the 1.3B and 5B models under variable resolution. 
+FastWan is runnable on a wide range of hardware with [FastVideo](https://github.com/hao-ai-lab/FastVideo). 
+
+<!-- We list below the VRAM needed for the 1.3B and 5B models under variable resolution. 
 
 #### FastWan2.1-T2V-1.3B
 [VRAM v.s. Model size v.s. Resolution Table]
-#### FastWan2.2-TI2V-5B
+#### FastWan2.2-TI2V-5B -->
 
 
-## Sparse Distillation: Making Video Diffusion Models Go Brrr
+## Sparse Distillation: Making Video Generation Go Blurrrr
 Video diffusion models are incredibly powerful, but they've long been held back by two major bottlenecks: 
 1. The huge number of denoising steps needed to generate a video. 
 2. The quadratic cost of attention when handling long sequences — which are unavoidable for high-resolution videos. Taking Wan2.2-14B as an example, the models run for 50 diffusion steps, and generating just a 5-second 720P video involves processing over 100K tokens. Even worse, attention operations can eat up more than 85% of total inference time.
@@ -67,7 +69,7 @@ Sparse distillation is our core innovation in FastWan2.2 — the first method to
 ### Why Existing Sparse Attention Fails Under Distillation
 Most prior sparse attention methods (e.g., [STA](https://arxiv.org/pdf/2502.04507), [SVG](https://svg-project.github.io/)) rely on redundancy in multi-step denoising to prune attention maps. They often sparsify only late-stage denoising steps and retain full attention in early steps. However, when distillation compresses 50 steps into 1–4 steps, there’s no “later stage” to sparsify — and the redundancy they depend on vanishes. As a result, these sparse patterns no longer hold up. Our preliminary experiments confirm that existing sparse attention schemes degrade sharply under sub-10 step setups. This is a critical limitation. While sparse attention alone can yield up to 3× speedup, distillation offers more than 20× gains. We argue that to make sparse attention truly effective and production-ready, it must be compatible with training and distillation.
 
-### Why Video Sparse Attention is compatible with Distillation
+### Why Video Sparse Attention is Compatible With Distillation
 [Video Sparse Attention](https://arxiv.org/pdf/2505.13389) is a sparse attention kernel we developed that learns to dynamically identify important tokens in the sequence. Rather than relying on training-free techniques such as profiling or heuristics, VSA can directly replace [FlashAttention](https://github.com/Dao-AILab/flash-attention/tree/main) during training to learn data-dependent sparsity while minimizing quality degradation. During step-distillation, as the student model learns to denoise in fewer steps, VSA does not need to rely on redundancy in multi-step denoising to prune attention maps and can instead directly learn and adjust to new sparse patterns, allowing VSA to be fully compatible with distillation techniques. **To our knowledge, VSA is the first sparse attention mechanism to be fully compatible with distillation** (we even train VSA together with distillation)! We will be releasing a technical blog on VSA next week, so stay tuned!
 
 ### How Sparse Distillation Works
