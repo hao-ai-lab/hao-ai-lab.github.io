@@ -1,5 +1,5 @@
 +++
-title = "Introducing FastWan: 15 Times Faster Video Generation With Sparse Distillation"
+title = "Introducing FastWan: Denoising a 5-Second Video in 1 Second via Sparse Distillation"
 date = 2025-08-01T11:00:00-08:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -22,7 +22,7 @@ draft = false
 
 {{< socialBadges github="hao-ai-lab/FastVideo" arxiv-index="2505.13389" demo="https://fastwan.fastvideo.org/" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-38u6p1jqe-yDI1QJOCEnbtkLoaI5bjZQ" discord="https://discord.gg/Dm8F2peD3e" huggingface="https://huggingface.co/FastVideo" >}}
 
-**TL;DR:** We introduce **FastWan**, a family of video generation models, trained via a new recipe we term as “sparse distillation”, to achieve near-realtime video generation. FastWan matches Wan in video quality but is blazingly faster: 50x speedup on diffusion time and **15x end-to-end speedup**. FastWan2.1-1.3B can generate a 5-second 480P video in **12 seconds** on a single RTX 4090 and **near real time** on a single H200. FastWan2.2-5B-FullAttn can generate a 5-second 720P video in 16 seconds on a single H200. All resources — model weights, training recipe, and dataset — are released under the Apache-2.0 license.
+**TL;DR:** We introduce **FastWan**, a family of video generation models trained via a new recipe we term as “sparse distillation”. Powered by FastVideo, FastWan2.1-1.3B denoises a 5-second 480P video in **1 second** on a single H200 and **2.8 second** on a **single RTX 4090**. FastWan2.2-5B denoises a 5-second 720P video in **3 seconds** on a single H200. All resources — model weights, training recipe, and dataset — are released under the Apache-2.0 license.
 
 
 {{<youtube AvCBPBf2o4M>}}
@@ -34,21 +34,21 @@ With this blog, we are releasing the following models and their recipes:
 |:-------------------------------------------------------------------------------------------:	|:---------------------------------------------------------------------------------------------------------------:	|:--------------------------------------------------------------------------------------------------------:	|
 | [FastWan2.1-T2V-1.3B](https://huggingface.co/FastVideo/FastWan2.1-T2V-1.3B-Diffusers)       	|    [Recipe](https://github.com/hao-ai-lab/FastVideo/tree/main/examples/distill/Wan2.1-T2V/Wan-Syn-Data-480P)    	| [FastVideo Synthetic Wan2.1 480P](https://huggingface.co/datasets/FastVideo/Wan-Syn_77x448x832_600k)     	|
 | [FastWan2.1-T2V-14B-Preview](https://huggingface.co/FastVideo/FastWan2.1-T2V-14B-Diffusers) 	|                                                   Coming soon!                                                  	|   [FastVideo Synthetic Wan2.1 720P](https://huggingface.co/datasets/FastVideo/Wan-Syn_77x768x1280_250k)  	|
-| [FFastWan2.2-TI2V-5B-FullAttn-Diffusers](https://huggingface.co/FastVideo/FastWan2.2-TI2V-5B-FullAttn-Diffusers)         	| [Recipe](https://github.com/hao-ai-lab/FastVideo/tree/main/examples/distill/Wan2.2-TI2V-5B-Diffusers/Data-free) 	| [FastVideo Synthetic Wan2.2 720P](https://huggingface.co/datasets/FastVideo/Wan2.2-Syn-121x704x1280_32k) 	|
+| [FastWan2.2-TI2V-5B-FullAttn-Diffusers](https://huggingface.co/FastVideo/FastWan2.2-TI2V-5B-FullAttn-Diffusers)         	| [Recipe](https://github.com/hao-ai-lab/FastVideo/tree/main/examples/distill/Wan2.2-TI2V-5B-Diffusers/Data-free) 	| [FastVideo Synthetic Wan2.2 720P](https://huggingface.co/datasets/FastVideo/Wan2.2-Syn-121x704x1280_32k) 	|
 
 
-For FastWan2.2-TI2V-5B-FullAttn, since its sequence length is short and doesn't benefit much from VSA, we only apply DMD with full attention. We are actively working on applying sparse distillation to 14B models for both Wan2.1 and Wan2.2 and will be releasing those checkpoints over the following weeks. Follow our progress at our [Github](https://github.com/hao-ai-lab/FastVideo), [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-38u6p1jqe-yDI1QJOCEnbtkLoaI5bjZQ) and [Discord](https://discord.gg/Dm8F2peD3e)!
+For FastWan2.2-TI2V-5B-FullAttn, since its sequence length is short (~20K) and doesn't benefit much from VSA, we only apply DMD with full attention. We are actively working on applying sparse distillation to 14B models for both Wan2.1 and Wan2.2 and will be releasing those checkpoints over the following weeks. Follow our progress at our [Github](https://github.com/hao-ai-lab/FastVideo), [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-38u6p1jqe-yDI1QJOCEnbtkLoaI5bjZQ) and [Discord](https://discord.gg/Dm8F2peD3e)!
 
 ### How Fast is FastWan?
 {{< image src="img/fastwan.png" alt="denoising speedup" width="100%" >}}
-Compared to FA2 alone, we demonstrate how each module accelerates the DiT denoising time.
-|                           | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P |   |
-|:-------------------------:|:---------------:|:----------------:|:----------------:|---|
-|             FA2          |     157.21s     |      1746.5s      |       95.21s      |   |
-|         FA2 + DMD         |      4.67s      |        52s        |       2.88s       |   |
-|          FA3+DMD          |      3.65s      |       37.87s      |       2.14s       |   |
-| FA3 + DMD + torch compile |      2.64s      |       29.5s       |       1.49s       |   |
-| VSA + DMD + torch compile |                 |        13ss       |       0.98s       |   |
+We demonstrate how each module accelerates the DiT denoising time (without text encoder and vae) on a single H200 GPU. 
+|                           | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P | 
+|:-------------------------:|:---------------:|:----------------:|:----------------:|
+|             FA2          |     157.21s     |      1746.5s      |       95.21s      |  
+|         FA2 + DMD         |      4.67s      |        52s        |       2.88s       |  
+|          FA3+DMD          |      3.65s      |       37.87s      |       2.14s       | 
+| FA3 + DMD + torch compile |      2.64s      |       29.5s       |       1.49s       | 
+| VSA + DMD + torch compile |                 |        13s       |       0.98s       |  
 
 ### Online Demo using FastVideo
 Try the FastWan demo [here]()!
@@ -126,20 +126,19 @@ We thank [Anyscale](https://www.anyscale.com/), [MBZUAI](https://mbzuai.ac.ae/),
 If you use FastWan for your research, please cite our work:
 ```bibtex
 @software{fastvideo2024,
- title        = {FastVideo: A Unified Framework for Accelerated Video Generation},
- author       = {The FastVideo Team},
- url          = {https://github.com/hao-ai-lab/FastVideo},
- year         = {2024},
+  title        = {FastVideo: A Unified Framework for Accelerated Video Generation},
+  author       = {The FastVideo Team},
+  url          = {https://github.com/hao-ai-lab/FastVideo},
+  month        = apr,
+  year         = {2024},
 }
 
-@misc{zhang2025vsafastervideodiffusion,
-     title={VSA: Faster Video Diffusion with Trainable Sparse Attention},
-     author={Peiyuan Zhang and Haofeng Huang and Yongqi Chen and Will Lin and Zhengzhong Liu and Ion Stoica and Eric Xing and Hao Zhang},
-     year={2025},
-     eprint={2505.13389},
-     archivePrefix={arXiv},
-     primaryClass={cs.CV},
-     url={https://arxiv.org/abs/2505.13389},
+@article{zhang2025faster,
+  title={Faster video diffusion with trainable sparse attention},
+  author={Zhang, Peiyuan and Huang, Haofeng and Chen, Yongqi and Lin, Will and Liu, Zhengzhong and Stoica, Ion and Xing, Eric P and Zhang, Hao},
+  journal={arXiv e-prints},
+  pages={arXiv--2505},
+  year={2025}
 }
 ```
 
