@@ -127,6 +127,17 @@ We thank [Anyscale](https://www.anyscale.com/), [MBZUAI](https://mbzuai.ac.ae/),
 
 
 ## The Team
+Meet the team behind FastWan and FastVideo:
+- **Will Lin, Yongqi Chen, Peiyuan Zhang**: Co-Leads, Sparse Distillation Recipe, VSA, Training Pipeline, Distillation experiments
+- **Matthew Noto**: Implemented live serving Gradio demo, added Apple Silicon support
+- **Kevin Lin**: CI/CD, Tests, Comfyui, demo video and Animations
+- **Wei Zhou**: Added Wan2.1, Wan2.2
+- **Wenxuan Tan**: Add Lora inference and training support
+- **Jinzhe Pan**: Improve FastVideo architecture
+- **Richard Liaw**: Advisor
+- **Yusuf Ozuysal**: Advisor
+- **Hao Zhang**: Advisor
+
 ## Citation
 If you use FastWan for your research, please cite our work:
 ```bibtex
