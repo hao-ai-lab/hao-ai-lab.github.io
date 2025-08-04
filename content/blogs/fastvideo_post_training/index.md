@@ -1,5 +1,5 @@
 +++
-title = "FastWan: Denoising a 5-Second Video in 1 Second via Sparse Distillation"
+title = "FastWan: Generating a 5-Second Video in 5 Seconds via Sparse Distillation"
 date = 2025-08-01T11:00:00-08:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -22,7 +22,7 @@ draft = false
 
 {{< socialBadges github="hao-ai-lab/FastVideo" arxiv-index="2505.13389" demo="https://fastwan.fastvideo.org/" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-38u6p1jqe-yDI1QJOCEnbtkLoaI5bjZQ" discord="https://discord.gg/Dm8F2peD3e" huggingface="https://huggingface.co/FastVideo" >}}
 
-**TL;DR:** We introduce **FastWan**, a family of video generation models trained via a new recipe we term as “sparse distillation”. Powered by FastVideo, FastWan2.1-1.3B denoises a 5-second 480P video in **1 second** on a single H200 and **2.8 second** on a **single RTX 4090**. FastWan2.2-5B denoises a 5-second 720P video in **3 seconds** on a single H200. All resources — model weights, training recipe, and dataset — are released under the Apache-2.0 license.
+**TL;DR:** We introduce **FastWan**, a family of video generation models trained via a new recipe we term as “sparse distillation”. Powered by FastVideo, FastWan2.1-1.3B end2end generates a 5-second 480P video in **5 seconds** (denoising time 1 second) on a single H200 and **21 seconds** (denoising time 2.8 seconds) on a **single RTX 4090**. FastWan2.2-5B generates a 5-second 720P video in **16 seconds** on a single H200. All resources — model weights, training recipe, and dataset — are released under the Apache-2.0 license.
 
 
 {{<youtube AvCBPBf2o4M>}}
@@ -127,6 +127,17 @@ We thank [Anyscale](https://www.anyscale.com/), [MBZUAI](https://mbzuai.ac.ae/),
 
 
 ## The Team
+Meet the team behind FastWan and FastVideo:
+- **Will Lin, Yongqi Chen, Peiyuan Zhang**: Co-Leads, Sparse Distillation Recipe, VSA, Training Pipeline, Distillation experiments
+- **Matthew Noto**: Implemented live serving Gradio demo, added Apple Silicon support
+- **Kevin Lin**: CI/CD, Tests, Comfyui, demo video and Animations
+- **Wei Zhou**: Added Wan2.1, Wan2.2
+- **Wenxuan Tan**: Add Lora inference and training support
+- **Jinzhe Pan**: Improve FastVideo architecture
+- **Richard Liaw**: Advisor
+- **Yusuf Ozuysal**: Advisor
+- **Hao Zhang**: Advisor
+
 ## Citation
 If you use FastWan for your research, please cite our work:
 ```bibtex
