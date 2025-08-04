@@ -37,7 +37,7 @@ Below, we demonstrate how each module accelerates the DiT denoising time (withou
 
 {{< center >}}
 
-|                           | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P | 
+|             Modules              | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P | 
 |:-------------------------:|:---------------:|:----------------:|:----------------:|
 |             FA2          |     157.21s     |      1746.5s      |       95.21s      |  
 |         FA2 + DMD         |      4.67s      |        52s        |       2.88s       |  
