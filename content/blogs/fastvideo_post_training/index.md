@@ -1,5 +1,5 @@
 +++
-title = "Introducing FastWan: Denoising a 5-Second Video in 1 Second via Sparse Distillation"
+title = "FastWan: Denoising a 5-Second Video in 1 Second via Sparse Distillation"
 date = 2025-08-01T11:00:00-08:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -37,18 +37,21 @@ With this blog, we are releasing the following models and their recipes:
 | [FastWan2.2-TI2V-5B-FullAttn-Diffusers](https://huggingface.co/FastVideo/FastWan2.2-TI2V-5B-FullAttn-Diffusers)         	| [Recipe](https://github.com/hao-ai-lab/FastVideo/tree/main/examples/distill/Wan2.2-TI2V-5B-Diffusers/Data-free) 	| [FastVideo Synthetic Wan2.2 720P](https://huggingface.co/datasets/FastVideo/Wan2.2-Syn-121x704x1280_32k) 	|
 
 
-For FastWan2.2-TI2V-5B-FullAttn, since its sequence length is short (~20K) and doesn't benefit much from VSA, we only apply DMD with full attention. We are actively working on applying sparse distillation to 14B models for both Wan2.1 and Wan2.2 and will be releasing those checkpoints over the following weeks. Follow our progress at our [Github](https://github.com/hao-ai-lab/FastVideo), [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-38u6p1jqe-yDI1QJOCEnbtkLoaI5bjZQ) and [Discord](https://discord.gg/Dm8F2peD3e)!
+For FastWan2.2-TI2V-5B-FullAttn, since its sequence length is short (~20K), it does not benifit much from sparse attention. We only train it with DMD and full attention. We are actively working on applying sparse distillation to 14B models for both Wan2.1 and Wan2.2. Follow our progress at our [Github](https://github.com/hao-ai-lab/FastVideo), [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-38u6p1jqe-yDI1QJOCEnbtkLoaI5bjZQ) and [Discord](https://discord.gg/Dm8F2peD3e)!
 
 ### How Fast is FastWan?
 {{< image src="img/fastwan.png" alt="denoising speedup" width="100%" >}}
-We demonstrate how each module accelerates the DiT denoising time (without text encoder and vae) on a single H200 GPU. 
+
+Below, we demonstrate how each module accelerates the DiT denoising time (without text encoder and vae) on a single H200 GPU. 
 |                           | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P | 
 |:-------------------------:|:---------------:|:----------------:|:----------------:|
 |             FA2          |     157.21s     |      1746.5s      |       95.21s      |  
 |         FA2 + DMD         |      4.67s      |        52s        |       2.88s       |  
 |          FA3+DMD          |      3.65s      |       37.87s      |       2.14s       | 
 | FA3 + DMD + torch compile |      2.64s      |       29.5s       |       1.49s       | 
-| VSA + DMD + torch compile |                 |        13s       |       0.98s       |  
+| VSA + DMD + torch compile |      --           |        13s       |       0.98s       | 
+
+
 All numbers can be reproduced with this [script](https://github.com/hao-ai-lab/FastVideo/blob/main/scripts/inference/v1_inference_wan_VSA_DMD.sh)
 
 ### Online Demo using FastVideo
