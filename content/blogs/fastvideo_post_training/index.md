@@ -37,13 +37,13 @@ Below, we demonstrate how each module accelerates the DiT denoising time (withou
 
 {{< center >}}
 
-|             Modules              | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P | 
-|:-------------------------:|:---------------:|:----------------:|:----------------:|
-|             FA2          |     157.21s     |      1746.5s      |       95.21s      |  
-|         FA2 + DMD         |      4.67s      |        52s        |       2.88s       |  
-|          FA3+DMD          |      3.65s      |       37.87s      |       2.14s       | 
-| FA3 + DMD + torch compile |      2.64s      |       29.5s       |       1.49s       | 
-| VSA + DMD + torch compile |      --           |        13s       |       0.98s       | 
+| Modules | Wan 2.2 5B 720P | Wan2.1 14B 720P | Wan2.1 1.3B 480P | 
+|:-------:|:---------------:|:----------------:|:----------------:|
+| FA2 | 157.21s | 1746.5s | 95.21s |  
+| FA2 + DMD | 4.67s | 52s | 2.88s |  
+| FA3+DMD | 3.65s | 37.87s | 2.14s | 
+| FA3 + DMD + torch compile | 2.64s | 29.5s | 1.49s | 
+| VSA + DMD + torch compile | -- | 13s | 0.98s | 
 
 {{< /center >}} 
 
@@ -51,7 +51,7 @@ Below, we demonstrate how each module accelerates the DiT denoising time (withou
 All numbers can be reproduced with this [script](https://github.com/hao-ai-lab/FastVideo/blob/main/scripts/inference/v1_inference_wan_VSA_DMD.sh)
 
 ### Online Demo using FastVideo
-Try the FastWan demo [here]()!
+Try the FastWan demo [here](https://fastwan.fastvideo.org/)
 Our demo is served on 16 H200s generously provided by [GMI Cloud](https://www.gmicloud.ai/).
 
 {{< image src="img/demo.png" alt="screenshot of demo" width="100%" >}}
