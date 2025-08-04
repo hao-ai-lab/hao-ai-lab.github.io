@@ -30,11 +30,16 @@ draft = false
 ## The FastWan Series
 
 With this blog, we are releasing the following models and their recipes:
+
+{{< table title="Table 1: FastWan release assets." >}}
+
 |                                            Model                                            	|                                               Sparse Distillation                                               	|                                                  Dataset                                                 	|
 |:-------------------------------------------------------------------------------------------:	|:---------------------------------------------------------------------------------------------------------------:	|:--------------------------------------------------------------------------------------------------------:	|
 | [FastWan2.1-T2V-1.3B](https://huggingface.co/FastVideo/FastWan2.1-T2V-1.3B-Diffusers)       	|    [Recipe](https://github.com/hao-ai-lab/FastVideo/tree/main/examples/distill/Wan2.1-T2V/Wan-Syn-Data-480P)    	| [FastVideo Synthetic Wan2.1 480P](https://huggingface.co/datasets/FastVideo/Wan-Syn_77x448x832_600k)     	|
 | [FastWan2.1-T2V-14B-Preview](https://huggingface.co/FastVideo/FastWan2.1-T2V-14B-Diffusers) 	|                                                   Coming soon!                                                  	|   [FastVideo Synthetic Wan2.1 720P](https://huggingface.co/datasets/FastVideo/Wan-Syn_77x768x1280_250k)  	|
 | [FastWan2.2-TI2V-5B-FullAttn-Diffusers](https://huggingface.co/FastVideo/FastWan2.2-TI2V-5B-FullAttn-Diffusers)         	| [Recipe](https://github.com/hao-ai-lab/FastVideo/tree/main/examples/distill/Wan2.2-TI2V-5B-Diffusers/Data-free) 	| [FastVideo Synthetic Wan2.2 720P](https://huggingface.co/datasets/FastVideo/Wan2.2-Syn-121x704x1280_32k) 	|
+
+{{</ table >}}
 
 
 For FastWan2.2-TI2V-5B-FullAttn, since its sequence length is short (~20K), it does not benifit much from sparse attention. We only train it with DMD and full attention. We are actively working on applying sparse distillation to 14B models for both Wan2.1 and Wan2.2. Follow our progress at our [Github](https://github.com/hao-ai-lab/FastVideo), [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-38u6p1jqe-yDI1QJOCEnbtkLoaI5bjZQ) and [Discord](https://discord.gg/Dm8F2peD3e)!
@@ -44,30 +49,29 @@ For FastWan2.2-TI2V-5B-FullAttn, since its sequence length is short (~20K), it d
 
 Below, we demonstrate how each module accelerates the DiT denoising time (without text encoder and vae) on a single H200 GPU. 
 
-<div align="center">
+{{< table title="Table 2: DiT denoising time comparisons of different methods. All numbers can be reproduced with this [script](https://github.com/hao-ai-lab/FastVideo/blob/main/scripts/inference/v1_inference_wan_VSA_DMD.sh)." >}}
 
 |                           | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P | 
 |:-------------------------:|:---------------:|:----------------:|:----------------:|
-|             FA2          |     157.21s     |      1746.5s      |       95.21s      |  
-|         FA2 + DMD         |      4.67s      |        52s        |       2.88s       |  
-|          FA3+DMD          |      3.65s      |       37.87s      |       2.14s       | 
-| FA3 + DMD + torch compile |      2.64s      |       29.5s       |       1.49s       | 
-| VSA + DMD + torch compile |      --           |        13s       |       0.98s       | 
+|             **FA2**          |     157.21s     |      1746.5s      |       95.21s      |  
+|         **FA2 + DMD**         |      4.67s      |        52s        |       2.88s       |  
+|          **FA3+DMD**          |      3.65s      |       37.87s      |       2.14s       | 
+| **FA3 + DMD + torch compile** |      2.64s      |       29.5s       |       1.49s       | 
+| **VSA + DMD + torch compile** |      --           |        13s       |       0.98s       | 
 
-</div> 
+{{</ table >}}
 
-
-All numbers can be reproduced with this [script](https://github.com/hao-ai-lab/FastVideo/blob/main/scripts/inference/v1_inference_wan_VSA_DMD.sh)
 
 ### Online Demo using FastVideo
-Try the FastWan demo [here]()!
-Our demo is served on 16 H200s generously provided by [GMI Cloud](https://www.gmicloud.ai/).
+
+
+🚀🚀👉 Try our [demo](https://fastwan.fastvideo.org/) now! Our demo is served on 16 H200s generously provided by [GMI Cloud](https://www.gmicloud.ai/).
 
 {{< image src="img/demo.png" alt="screenshot of demo" width="100%" >}}
 
 
 ### Try FastWan Locally!
-FastWan is runnable on a wide range of hardware with [FastVideo](https://github.com/hao-ai-lab/FastVideo). 
+FastWan is runnable on a wide range of hardware including Nvidia H100, H200, 4090, and Apple Sicicon. Check out  [FastVideo](https://github.com/hao-ai-lab/FastVideo/tree/main?tab=readme-ov-file#key-features) to get started.
 
 <!-- We list below the VRAM needed for the 1.3B and 5B models under variable resolution. 
 
