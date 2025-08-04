@@ -43,6 +43,9 @@ For FastWan2.2-TI2V-5B-FullAttn, since its sequence length is short (~20K), it d
 {{< image src="img/fastwan.png" alt="denoising speedup" width="100%" >}}
 
 Below, we demonstrate how each module accelerates the DiT denoising time (without text encoder and vae) on a single H200 GPU. 
+
+<div align="center">
+
 |                           | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P | 
 |:-------------------------:|:---------------:|:----------------:|:----------------:|
 |             FA2          |     157.21s     |      1746.5s      |       95.21s      |  
@@ -50,6 +53,8 @@ Below, we demonstrate how each module accelerates the DiT denoising time (withou
 |          FA3+DMD          |      3.65s      |       37.87s      |       2.14s       | 
 | FA3 + DMD + torch compile |      2.64s      |       29.5s       |       1.49s       | 
 | VSA + DMD + torch compile |      --           |        13s       |       0.98s       | 
+
+</div> 
 
 
 All numbers can be reproduced with this [script](https://github.com/hao-ai-lab/FastVideo/blob/main/scripts/inference/v1_inference_wan_VSA_DMD.sh)
