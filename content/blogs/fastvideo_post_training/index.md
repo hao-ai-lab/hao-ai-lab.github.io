@@ -35,7 +35,7 @@ Below, we demonstrate how each module accelerates the DiT denoising time (withou
 
 {{< table title="Table 2: DiT denoising time comparisons of different methods. All numbers can be reproduced with this [script](https://github.com/hao-ai-lab/FastVideo/blob/main/scripts/inference/v1_inference_wan_VSA_DMD.sh)." >}}
 
-|                           | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P | 
+|             Modules              | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P | 
 |:-------------------------:|:---------------:|:----------------:|:----------------:|
 |             **FA2**          |     157.21s     |      1746.5s      |       95.21s      |  
 |         **FA2 + DMD**         |      4.67s      |        52s        |       2.88s       |  
