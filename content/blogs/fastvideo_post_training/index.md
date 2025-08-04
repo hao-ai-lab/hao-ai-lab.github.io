@@ -13,7 +13,7 @@ draft = false
       name = "github"
       url = "https://github.com/hao-ai-lab/FastVideo"
 [cover]
-    image = "/img/speed.gif"
+    image = "/img/fastwan.png"
     alt = "Denoising speedup of FastWan"
     caption = "A gif of a graph showing FastWan achieving 72.8x speedup for denoising"
     hidden = true
