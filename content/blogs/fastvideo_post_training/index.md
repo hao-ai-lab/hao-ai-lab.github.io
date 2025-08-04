@@ -1,5 +1,5 @@
 +++
-title = "FastWan: 15 Times Faster Video Generation With Sparse Distillation"
+title = "Introducing FastWAN: 15 Times Faster Video Generation With Sparse Distillation"
 date = 2025-08-01T11:00:00-08:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -13,16 +13,16 @@ draft = false
       name = "github"
       url = "https://github.com/hao-ai-lab/FastVideo"
 [cover]
-    image = "/img/cover_fastvideo_v1.png"
-    alt = "FastVideo Logo"
-    caption = "A logo of the FastVideo project"
+    image = "/img/speed.gif"
+    alt = "Denosing speedup of FastWan"
+    caption = "A gif of a graph showing FastWan achieving 72.8x speedup for denosing"
     hidden = true
 +++
 
 
 {{< socialBadges github="hao-ai-lab/FastVideo" >}}
 
-**TL;DR:** We introduce **FastWan**, a family of video generation models, trained via a new recipe we term as “sparse distillation”, to achieve near-realtime video generation. FastWan matches Wan in video quality but is blazingly faster: 50x speedup on diffusion time and **15x end-to-end speedup**: FastWan2.1-1.3B can generate a 5-second 480P video in near real time on a single H200 FastWan2.2 5B can generate a 5-second 720P video in 16 seconds on a single H100, and. All resources — [model weights](), [training recipe](), and [dataset]() — are released under the Apache-2.0 license.
+**TL;DR:** We introduce **FastWan**, a family of video generation models, trained via a new recipe we term as “sparse distillation”, to achieve near-realtime video generation. FastWan matches Wan in video quality but is blazingly faster: 50x speedup on diffusion time and **15x end-to-end speedup**: FastWan2.1-1.3B can generate a 5-second 480P video in **12 seconds** on a single RTX 4090 and **near real time** on a single H200. FastWan2.2-5B can generate a 5-second 720P video in 16 seconds on a single H100, and. All resources — [model weights](), [training recipe](), and [dataset]() — are released under the Apache-2.0 license.
 
 
 {{<youtube Lo80cheniEc>}}
@@ -139,7 +139,7 @@ If you use FastWan for your research, please cite our work:
 
 
 Ready to experience lightning-fast video generation? Check out our [documentation](https://hao-ai-lab.github.io/FastVideo/index.html) and [FastVideo](https://github.com/hao-ai-lab/FastVideo) to get started today.
- Available now with native support for ComfyUI, Apple Silicon, Windows WSL, and Gradio web interface!
+Available now with native support for ComfyUI, Apple Silicon, Windows WSL, and Gradio web interface!
 
 
 *The FastVideo team continues to push the boundaries of real-time video generation. Stay tuned for more exciting developments!*
