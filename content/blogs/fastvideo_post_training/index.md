@@ -25,7 +25,7 @@ draft = false
 **TL;DR:** We introduce **FastWan**, a family of video generation models, trained via a new recipe we term as “sparse distillation”, to achieve near-realtime video generation. FastWan matches Wan in video quality but is blazingly faster: 50x speedup on diffusion time and **15x end-to-end speedup**. FastWan2.1-1.3B can generate a 5-second 480P video in **12 seconds** on a single RTX 4090 and **near real time** on a single H200. FastWan2.2-5B can generate a 5-second 720P video in 16 seconds on a single H200. All resources — model weights, training recipe, and dataset — are released under the Apache-2.0 license.
 
 
-{{<youtube Lo80cheniEc>}}
+{{<youtube gQD6woeeMXA>}}
 
 ## The FastWan Series
 
