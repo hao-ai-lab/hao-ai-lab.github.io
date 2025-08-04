@@ -44,7 +44,7 @@ For FastWan2.2-TI2V-5B-FullAttn, since its sequence length is short (~20K), it d
 
 Below, we demonstrate how each module accelerates the DiT denoising time (without text encoder and vae) on a single H200 GPU. 
 
-<div class="table-center">
+<div style="text-align: center; margin: 1rem 0;">
 
 |                           | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P | 
 |:-------------------------:|:---------------:|:----------------:|:----------------:|

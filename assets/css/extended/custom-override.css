@@ -94,14 +94,3 @@
 .project-title h5 {
     font-size: 25px;
 }
-
-/* Table centering */
-.table-center {
-    display: flex;
-    justify-content: center;
-    margin: 1rem 0;
-}
-
-.table-center table {
-    margin: 0 auto;
-}
