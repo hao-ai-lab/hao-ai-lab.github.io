@@ -122,7 +122,7 @@ We perform sparse distillation for Wan2.1-T2V-1.3B on 64 H200 GPUs for 4k steps,
 
 
 ## Acknowledgement
-We thank [Anyscale](https://www.anyscale.com/), [MBZUAI](https://mbzuai.ac.ae/), and [GMI Cloud](https://www.gmicloud.ai/) for supporting the development and release of FastWan. We are especially grateful to the developers of the [Wan series](https://github.com/Wan-Video), whose work laid the foundation for our advancements. Our implementation of DMD distillation and Video Sparse Attention would not be possible without the effort from [ThunderKittens](https://github.com/HazyResearch/ThunderKittens), [Triton](https://github.com/triton-lang/triton), [DMD2](https://github.com/tianweiy/DMD2) and [CausalVid](https://github.com/tianweiy/CausVid).  
+We thank [Anyscale](https://www.anyscale.com/), [MBZUAI](https://mbzuai.ac.ae/), and [GMI Cloud](https://www.gmicloud.ai/) for supporting the development and release of FastWan. We are especially grateful to the developers of the [Wan series](https://github.com/Wan-Video), whose work laid the foundation for our advancements. Our implementation of DMD distillation and Video Sparse Attention would not be possible without the effort from [ThunderKittens](https://github.com/HazyResearch/ThunderKittens), [Triton](https://github.com/triton-lang/triton), [DMD2](https://github.com/tianweiy/DMD2) and [CausVid](https://github.com/tianweiy/CausVid).  
 
 
 
