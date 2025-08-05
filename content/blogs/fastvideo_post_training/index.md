@@ -1,6 +1,6 @@
 +++
 title = "FastWan: Generating a 5-Second Video in 5 Seconds via Sparse Distillation"
-date = 2025-08-01T11:00:00-08:00
+date = 2025-08-04T11:00:00-08:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
 ShowReadingTime = true
@@ -13,7 +13,7 @@ draft = false
       name = "github"
       url = "https://github.com/hao-ai-lab/FastVideo"
 [cover]
-    image = "/img/fastwan.png"
+    image = "/img/fastwan/fastwan-teaser.gif"
     alt = "Denoising speedup of FastWan"
     caption = "A gif of a graph showing FastWan achieving 72.8x speedup for denoising"
     hidden = true
@@ -33,7 +33,7 @@ draft = false
 
 Below, we demonstrate how each module accelerates the DiT denoising time (without text encoder and vae) on a single H200 GPU. 
 
-{{< table title="Table 2: DiT denoising time comparisons of different methods. All numbers can be reproduced with this [script](https://github.com/hao-ai-lab/FastVideo/blob/main/scripts/inference/v1_inference_wan_VSA_DMD.sh)." >}}
+{{< table title="Table 1: DiT denoising time comparisons of different methods. All numbers can be reproduced with this [script](https://github.com/hao-ai-lab/FastVideo/blob/main/scripts/inference/v1_inference_wan_VSA_DMD.sh)." >}}
 
 |             Modules              | Wan 2.2 5B 720P | Wan2.1 14B  720P | Wan2.1 1.3B 480P | 
 |:-------------------------:|:---------------:|:----------------:|:----------------:|
@@ -66,11 +66,15 @@ FastWan is runnable on a wide range of hardware including Nvidia H100, H200, 409
 ### Models and Recipes 
 
 With this blog, we are releasing the following models and their recipes:
+
+{{< table title="Table 2: FastWan release assets." >}}
+
 |                                            Model                                            	|                                               Sparse Distillation                                               	|                                                  Dataset                                                 	|
 |:-------------------------------------------------------------------------------------------:	|:---------------------------------------------------------------------------------------------------------------:	|:--------------------------------------------------------------------------------------------------------:	|
 | [FastWan2.1-T2V-1.3B](https://huggingface.co/FastVideo/FastWan2.1-T2V-1.3B-Diffusers)       	|    [Recipe](https://github.com/hao-ai-lab/FastVideo/tree/main/examples/distill/Wan2.1-T2V/Wan-Syn-Data-480P)    	| [FastVideo Synthetic Wan2.1 480P](https://huggingface.co/datasets/FastVideo/Wan-Syn_77x448x832_600k)     	|
 | [FastWan2.1-T2V-14B-Preview](https://huggingface.co/FastVideo/FastWan2.1-T2V-14B-Diffusers) 	|                                                   Coming soon!                                                  	|   [FastVideo Synthetic Wan2.1 720P](https://huggingface.co/datasets/FastVideo/Wan-Syn_77x768x1280_250k)  	|
 | [FastWan2.2-TI2V-5B-FullAttn-Diffusers](https://huggingface.co/FastVideo/FastWan2.2-TI2V-5B-FullAttn-Diffusers)         	| [Recipe](https://github.com/hao-ai-lab/FastVideo/tree/main/examples/distill/Wan2.2-TI2V-5B-Diffusers/Data-free) 	| [FastVideo Synthetic Wan2.2 720P](https://huggingface.co/datasets/FastVideo/Wan2.2-Syn-121x704x1280_32k) 	|
+{{</ table >}}
 
 
 For FastWan2.2-TI2V-5B-FullAttn, since its sequence length is short (~20K), it does not benifit much from sparse attention. We only train it with DMD and full attention. We are actively working on applying sparse distillation to 14B models for both Wan2.1 and Wan2.2. Follow our progress at our [Github](https://github.com/hao-ai-lab/FastVideo), [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-38u6p1jqe-yDI1QJOCEnbtkLoaI5bjZQ) and [Discord](https://discord.gg/Dm8F2peD3e)!
