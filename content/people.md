@@ -32,15 +32,11 @@ summary: people
 
 {{< lab_member name="Humaira Firdowse" role="Master's" image="humaira_mohammed.jpg" academic="https://github.com/humairafirdowse">}}
 
-{{< lab_member name="Zheyu Fu" role="Master's" image="zheyu_fu.jpg" academic="https://www.linkedin.com/in/zheyu-fu-1b4667231/">}}
-
 <!-- 
 {{< lab_member name="Ashwin Ramachandran" role="Master's" image="ashwin_ramachandran.jpg" academic="https://ashwinramachandran2002.github.io/">}}
 -->
 
 {{< lab_member name="Abhilash Shankarampeta" role="Master's" image="ABHILASH_SHANKARAMPETA.jpg" academic="https://abhilashreddys.github.io/" twitter="https://x.com/areddys53">}}
-
-{{< lab_member name="Runlong Su" role="Master's" image="runlong_su.jpg" academic="https://www.linkedin.com/in/runlong-su-b36126258/?originalSubdomain=hk" twitter="https://x.com/RunlongSu">}}
 
 <!-- 
 {{< lab_member name="Daniel Zhao" role="Master's" image="daniel_zhao.png" academic="https://astradzhao.github.io/" twitter="https://x.com/astradzhao">}}
@@ -78,6 +74,7 @@ summary: people
 ### Alumni
 {{< alumni >}}
 
+{{< alumni_entry name="Zheyu Fu" description="Master's, now software engineer at NVIDIA" homepage="https://www.linkedin.com/in/zheyu-fu-1b4667231/">}}
 {{< alumni_entry name="Runlong Su" description="Master's, now software engineer at Bytedance" homepage="https://www.linkedin.com/in/runlong-su-24132b317/">}}
 {{< alumni_entry name="Nan Jiang" description="Undergrad Intern, now PhD Student at UChicago" homepage="https://www.nanjiangwill.com/">}}
 {{< alumni_entry name="Anze Xie" description="Master's, now at MBZUAI IFM LLM360 Team" homepage="https://anzexie.github.io/">}}
