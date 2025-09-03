@@ -1,18 +1,21 @@
 <style>
   .badge-container {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;        /* keep items in a single row */
     gap: 60px;
     padding-left: 30px;
-    justify-content: flex-start; /* Align left by default */
+    justify-content: flex-start;
+    overflow-x: auto;         /* make it scrollable horizontally */
   }
 
   /* Mobile-friendly layout */
   @media (max-width: 600px) {
     .badge-container {
-      flex-direction: column;
-      gap: 20px;      /* Reduce spacing on small screens */
-      padding-left: 10px;
+      gap: 60px;
+      padding-left: 30px;
+    }
+    .badge-container a {
+      flex-shrink: 0;   /* 🚀 don't allow squeezing */
     }
   }
 </style>
