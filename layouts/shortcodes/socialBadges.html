@@ -1,5 +1,23 @@
-<div style="padding-left: 30px; display: flex !important; gap: 60px !important;">
-    
+<style>
+  .badge-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 60px;
+    padding-left: 30px;
+    justify-content: flex-start; /* Align left by default */
+  }
+
+  /* Mobile-friendly layout */
+  @media (max-width: 600px) {
+    .badge-container {
+      flex-direction: column;
+      gap: 20px;      /* Reduce spacing on small screens */
+      padding-left: 10px;
+    }
+  }
+</style>
+
+<div class="badge-container">
     {{ if .Get "github" }}
         <a href="https://github.com/{{ .Get "github" }}" target="_blank" rel="noopener noreferrer">
           <img src="https://img.shields.io/github/stars/{{ .Get "github" }}?style=social" style="transform: scale(1.5);">
@@ -14,19 +32,7 @@
     
     {{ if .Get "demo" }}
         <a href="{{ .Get "demo" }}" target="_blank" rel="noopener noreferrer">
-          <img src="https://img.shields.io/badge/🎮%20demo-try%20it-green.svg?style=social" style="transform: scale(1.5);">
-        </a>
-    {{ end }}
-
-    {{ if .Get "slack" }}
-        <a href="{{ .Get "slack" }}" target="_blank" rel="noopener noreferrer">
-          <img src="https://img.shields.io/badge/💬%20slack--green.svg?style=social" style="transform: scale(1.5);">
-        </a>
-    {{ end }}
-
-    {{ if .Get "discord" }}
-        <a href="{{ .Get "discord" }}" target="_blank" rel="noopener noreferrer">
-          <img src="https://img.shields.io/badge/💬%20discord--green.svg?style=social" style="transform: scale(1.5);">
+          <img src="https://img.shields.io/badge/🎮%20demo--green.svg?style=social" style="transform: scale(1.5);">
         </a>
     {{ end }}
 
@@ -34,5 +40,19 @@
         <a href="{{ .Get "huggingface" }}" target="_blank" rel="noopener noreferrer">
           <img src="https://img.shields.io/badge/🤗%20huggingface--green.svg?style=social" style="transform: scale(1.5);">
         </a>
+    {{ end }}
+
+    {{ if .Get "slack" }}
+      <a href="{{ .Get "slack" }}" target="_blank" rel="noopener noreferrer">
+        <img src="https://img.shields.io/badge/Slack--4A154B?style=social&logo=slack&logoColor=blue"
+            alt="Slack"
+            style="transform: scale(1.5);">
+      </a>
+    {{ end }}
+
+    {{ if .Get "discord" }}
+      <a href="{{ .Get "discord" }}" target="_blank" rel="noopener noreferrer">
+        <img src="https://img.shields.io/badge/Discord-Join-5865F2?style=flat&logo=discord&logoColor=white" style="transform: scale(1.5);">
+      </a>
     {{ end }}
 </div>

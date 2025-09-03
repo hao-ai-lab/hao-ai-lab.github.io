@@ -34,31 +34,42 @@ summary: people
 
 {{< lab_member name="Zheyu Fu" role="Master's" image="zheyu_fu.jpg" academic="https://www.linkedin.com/in/zheyu-fu-1b4667231/">}}
 
+<!-- 
 {{< lab_member name="Ashwin Ramachandran" role="Master's" image="ashwin_ramachandran.jpg" academic="https://ashwinramachandran2002.github.io/">}}
+-->
 
 {{< lab_member name="Abhilash Shankarampeta" role="Master's" image="ABHILASH_SHANKARAMPETA.jpg" academic="https://abhilashreddys.github.io/" twitter="https://x.com/areddys53">}}
 
 {{< lab_member name="Runlong Su" role="Master's" image="runlong_su.jpg" academic="https://www.linkedin.com/in/runlong-su-b36126258/?originalSubdomain=hk" twitter="https://x.com/RunlongSu">}}
 
+<!-- 
 {{< lab_member name="Daniel Zhao" role="Master's" image="daniel_zhao.png" academic="https://astradzhao.github.io/" twitter="https://x.com/astradzhao">}}
+-->
+
+{{< lab_member name="Yuxuan Zhang" role="Master's" image="yuxuan_zhang.jpg" academic="https://yuxuan-zhang-dexter.github.io/">}}
 
 {{< lab_member name="Yiming Zhao" role="Master's" image="yiming_zhao.png" academic="https://www.linkedin.com/in/yiming-zhao-zym2002/" twitter="https://x.com/YimingBob">}}
 
 {{< lab_member name="Mathew Luo" role="Master's" image="mathew_luo.jpg" academic="https://www.linkedin.com/in/mathewluo/" >}}
 
+<!--
 {{< lab_member name="Yuhsiang Shao" role="Master's" image="yuhsiang_shao.jpg" academic="https://www.linkedin.com/in/yu-hsiang-shao-1b33251b6/" twitter="https://x.com/KyleShao2K">}}
+-->
 
 {{< lab_member name="Yongqi Chen" role="Research Intern" image="yongqi_chen.jpg" academic="https://brianchen1129.github.io/">}}
+
 <!-- 
-{{< lab_member name="Wei Zhou" role="Research Intern" image="wei_zhou.jpg" academic="https://www.linkedin.com/in/wei-zhou3/">}} -->
+{{< lab_member name="Wei Zhou" role="Research Intern" image="wei_zhou.jpg" academic="https://www.linkedin.com/in/wei-zhou3/">}} 
+-->
 
+<!-- 
 {{< lab_member name="Jason Kong" role="Undergrad Intern" image="jason_kong.jpg" academic="https://www.jasonkongie.com/" twitter="https://x.com/JasonkongLLM">}}
+-->
 
-<!-- {{< lab_member name="Jonathan Nitisastro" role="Undergrad Intern" image="jonathan_nitisastro.jpg" academic="https://www.linkedin.com/in/jonathan-nitisastro-ba781b193/">}} -->
+<!-- {{< lab_member name="Jonathan Nitisastro" role="Undergrad Intern" image="jonathan_nitisastro.jpg" academic="https://www.linkedin.com/in/jonathan-nitisastro-ba781b193/">}} 
+-->
 
 {{< lab_member name="Haoyang Yu" role="Undergrad Intern" image="haoyang_yu.jpeg" academic="https://www.linkedin.com/in/haoyang-yu-8b1997257/">}}
-
-{{< lab_member name="Yuxuan Zhang" role="Undergrad Intern" image="yuxuan_zhang.jpg" academic="https://yuxuan-zhang-dexter.github.io/">}}
 
 {{< lab_member name="Jerry Xu" role="Undergrad Intern" image="jerry_xu.jpg" academic="https://www.linkedin.com/in/jerry-xu-a8a905217/">}}
 
@@ -67,6 +78,7 @@ summary: people
 ### Alumni
 {{< alumni >}}
 
+{{< alumni_entry name="Runlong Su" description="Master's, now software engineer at Bytedance" homepage="https://www.linkedin.com/in/runlong-su-24132b317/">}}
 {{< alumni_entry name="Nan Jiang" description="Undergrad Intern, now PhD Student at UChicago" homepage="https://www.nanjiangwill.com/">}}
 {{< alumni_entry name="Anze Xie" description="Master's, now at MBZUAI IFM LLM360 Team" homepage="https://anzexie.github.io/">}}
 {{< alumni_entry name="Siqi Zhu" description="Undergrad Intern, now incoming PhD Student at UIUC" homepage="https://github.com/zhusq20">}}
