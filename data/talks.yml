@@ -1,3 +1,7 @@
+- title: "Talk at GPU Mode: Lmgame 08/2025"
+  url: "https://www.youtube.com/embed/Yb9MiSInuEs?si=Uvcvdq4beejR5iiC"
+  description: "LLM/VLM gaming agents, model evaluation and training games."
+
 - title: "Talk at GPU Mode: FastVideo 05/2025"
   url: "https://www.youtube.com/embed/tquHfKqKo1s?si=A-FmM98QZsbbz90a"
   description: "Unified post-training and inference framework for accelerated video generation"
