@@ -1,3 +1,15 @@
+- title: "Talk at GPU Mode: Lmgame 08/2025"
+  url: "https://www.youtube.com/embed/Yb9MiSInuEs?si=Uvcvdq4beejR5iiC"
+  description: "LLM/VLM gaming agents, model evaluation and training games."
+
+- title: "Talk at GPU Mode: FastVideo 05/2025"
+  url: "https://www.youtube.com/embed/tquHfKqKo1s?si=A-FmM98QZsbbz90a"
+  description: "Unified post-training and inference framework for accelerated video generation"
+
+- title: "Talk at GPU Mode: DistServe 05/2025"
+  url: "https://www.youtube.com/embed/tIPDwUepXcA?si=mvRaDhvQL6UTY8ux"
+  description: "Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving"
+
 - title: "Talk at Faster LLM Inference Seminar @ Weizmann Institute of Science 02/2025"
   url: "https://www.youtube.com/embed/znd7o-EBSKU?si=ao755-0iUItpYAG6"
   description: "Efficiently Serving Reasoning Programs with Certaindex"

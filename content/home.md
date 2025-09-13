@@ -32,6 +32,10 @@ We also develop and maintain open-source models, evaluations, and systems to dem
 
 <!-- <div class="news-year">2025</div> -->
 
+{{< newsEntry date="2025/06" >}}
+Hao was awarded with [Google ML and Systems Junior Faculty Award](https://datascience.ucsd.edu/hdsi-assistant-professor-hao-zhang-receives-google-junior-faculty-award/)!
+{{< /newsEntry >}}
+
 {{< newsEntry date="2025/04" >}}
 NVIDIA gifted us a DGX B200! See [our recent post](https://x.com/haoailab/status/1914402516420440072) here.
 {{< /newsEntry >}}
