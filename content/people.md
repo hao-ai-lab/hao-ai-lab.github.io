@@ -73,6 +73,8 @@ summary: people
 <!-- {{< lab_member name="Jonathan Nitisastro" role="Undergrad Intern" image="jonathan_nitisastro.jpg" academic="https://www.linkedin.com/in/jonathan-nitisastro-ba781b193/">}} 
 -->
 
+{{< lab_member name="Rui Ge" role="Undergrad Intern" image="rui_ge.jpg" academic="https://motigrez.github.io/" twitter="https://x.com/motigrez777" >}}
+
 {{< lab_member name="Haoyang Yu" role="Undergrad Intern" image="haoyang_yu.jpeg" academic="https://www.linkedin.com/in/haoyang-yu-8b1997257/">}}
 
 {{< lab_member name="Jerry Xu" role="Undergrad Intern" image="jerry_xu.jpg" academic="https://www.linkedin.com/in/jerry-xu-a8a905217/">}}
