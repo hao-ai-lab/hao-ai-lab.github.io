@@ -1,6 +1,6 @@
 +++
 title = "Scaling Speculative Decoding with Lookahead Reasoning"
-date = 2025-09-13T12:00:00-08:00
+date = 2025-09-22T12:00:00-08:00
 authors = ["Yichao Fu", "Yiming Zhao", "Rui Ge", "Hao Zhang"]
 author = "Yichao Fu, Yiming Zhao, Rui Ge, Hao Zhang"
 ShowReadingTime = true
