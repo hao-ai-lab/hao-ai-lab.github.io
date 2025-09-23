@@ -32,16 +32,15 @@ draft = false
 
 LLM inference is historically autoregressive and sequential. Each new token depends on all the tokens before it. This makes it hard to run in parallel, so a lot of GPU compute is left unused. Speculative decoding (SD) helps a little: a small drafter guesses a few future tokens, and the large model checks them in parallel. In other words, SD uses extra FLOPs to save some sequential steps. At the same time, GPUs keep getting much faster. For example, NVIDIA's H200, B200, and Rubin chips bring huge jumps in peak FLOPs. It is natural to think that giving more FLOPs to SD should keep making inference faster.
 
-But in reality, token-level SD quickly hits limits. It only works well if a whole block of drafted tokens is correct. Longer drafts usually fail, so the acceptance rate drops. Drafting and checking add overhead. Wrong drafts waste compute. As a result, the overall speedup stops growing, even though GPUs are much more powerful. This means token-level SD by itself cannot take full advantage of the new FLOPs. To go further, we need another dimension beyond tokens. Theoretically, methods that work at the level of reasoning steps instead of individual tokens can yield higher overall speedups (Figure 1).
+But in reality, token-level SD quickly hits limits. It only works well if a whole block of drafted tokens is correct. Longer drafts usually fail, so the acceptance rate drops. Drafting and checking add overhead. Wrong drafts waste compute. As a result, the overall speedup stops growing, even though GPUs are much more powerful. This means token-level SD by itself cannot take full advantage of the new FLOPs. To go further, we need another dimension beyond tokens. For example, if there exists a method that operates along a dimension orthogonal to token-level SD, then splitting the total budget between SD and this new method allows their speedups to multiply. As shown in Figure 1, this joint allocation achieves higher peak acceleration and delays the onset of diminishing returns, enabling better utilization of high-throughput GPUs.
 
 {{< /justify >}}
 
-{{< image src="img/sd_two_dim_product.gif" alt="background" width="100%" title="Figure 1: Theoretical speedup vs. speculative length. Pure Speculative Decoding (SD) allocates the entire budget to token-level drafting, while Step+level+Token-level SD splits it evenly between step-level lookahead and SD. This joint allocation yields higher peak speedup and delays saturation, enabling more effective utilization of high-throughput GPUs such as H200, B200, and Rubin.">}}
+{{< image src="img/sd_two_dim_product.gif" alt="background" width="100%" title="Figure 1: Theoretical speedup under joint allocation. Pure Speculative Decoding (SD) dedicates the entire budget to token-level drafting, while combining Step-level Lookahead with SD splits the budget across orthogonal dimensions. This joint allocation yields multiplicative gains, higher peak speedups, and delays saturation—allowing more effective use of high-throughput GPUs such as H200, B200, and Rubin.">}}
 
 {{< justify >}}
 
-These limits are not only seen in practice but are also clear from the math. Let \$\alpha\in(0,1)\$ be the average per-token acceptance rate, \$\gamma\$ the number of drafted tokens, and \$c\$ the drafter-to-target per-token latency ratio. Under the standard independence assumption, the expected number of target tokens validated in a single target forward pass is
-
+To see why token-only SD has a hard ceiling, let's read the upper bound directly from a simple model. Let \$\alpha\in(0,1)\$ be the average per-token acceptance rate, \$\gamma\$ the number of drafted tokens, and \$c\$ the drafter-to-target per-token latency ratio. Under the standard independence assumption, the expected number of target tokens validated in a single target forward pass is
 
 $$
 1+\alpha+\cdots+\alpha^\gamma \;=\; \frac{1-\alpha^{\gamma+1}}{1-\alpha}.
@@ -65,13 +64,26 @@ This ceiling is especially problematic for large reasoning models that generate 
 ## Key Insight: Reasoning Happens in Steps, Not Just Tokens
 
 
+
+
 {{< justify >}}
 
-Our key insight is that **reasoning is inherently hierarchical**: a complete chain-of-thought naturally decomposes into **discrete steps**, each representing a semantically meaningful unit of progress. A *step* might consist of a subgoal (“let's first isolate \$x\$”), a case split (“if \$x > 0\$ then…”), or a logical transformation (“apply the distributive law to simplify…”). Importantly, each step only needs to be **semantically correct**, rather than matching the target model's output token-for-token, to contribute validly to the overall reasoning trace. This insight is also shared by [concurrent work](https://arxiv.org/abs/2504.07891).
+Our key insight is that **reasoning is inherently hierarchical**: a chain-of-thought naturally decomposes into **discrete steps**, each representing a semantically meaningful unit of progress. A *step* might consist of a subgoal ("let's first isolate \$x\$"), a case split ("if \$x > 0\$ then..."), or a logical transformation ("apply the distributive law to simplify..."). A step only needs to be **semantically correct** to advance the proof or derivation; it need not match the target model **token-for-token**, to contribute validly to the overall reasoning trace. This insight is also shared by [concurrent work](https://arxiv.org/abs/2504.07891).
 
-By shifting speculation from the token-level to the step-level, we mitigate the primary bottleneck of traditional SD. Instead of being constrained by the low probability of guessing long, exact token sequences, we can now speculatively generate and verify multiple semantically complete reasoning steps in parallel. Intuitively, successfully speculating a multi-token reasoning step, which only needs to be semantically correct to be accepted, should be more achievable than speculating a long sequence of tokens that must match exactly. Moreover, this step-level approach is complementary to existing methods; token-level speculation can still operate within each verified step, creating layered acceleration for enhanced overall speedup.
+{{< /justify >}}
 
-This leads to the central challenge: how does one actually perform step-level speculative decoding? At the token level, verification is straightforward: we compare the draft model's probability for the proposed token against the target model's probability and use rejection sampling to decide acceptance. But for step-level speculation, it's unclear how to determine whether a draft step aligns with the target model's distribution over the next reasoning step.
+{{< image src="img/TwoDimensionTogether.jpg" alt="orthgonal" width="100%" title="Figure 3: Two-Dimensional Speculation (Step X Token). A step-drafter proposes semantically complete steps; accepted steps (green) are verified and then accelerated further with token-level SD inside each step. Because the step and token axes are orthogonal, splitting the budget across both yields layered, near-multiplicative speedups and delays diminishing returns."
+>}}
+
+
+{{< justify >}}
+
+
+Shifting speculation from tokens to semantically complete steps tackles SD's core bottleneck: instead of wagering on long, exact token matches, we speculate and verify multiple steps in parallel. Because a step only needs to be semantically correct (not token-identical) to advance the chain-of-thought, it is typically easier to accept than a long verbatim sequence. This step-level approach is complementary to token-level SD: token-level SD can still operate within steps, yielding combined acceleration. And since the step and token dimensions are orthogonal (Figure 3), splitting budget across both produces multiplicative speedups and delays diminishing returns.
+
+
+This raises the central question: **how do we verify a step?** At the token level, verification is simple—compare drafter vs. target token probabilities and accept via rejection sampling. At the step level, we must decide whether an entire drafted step is both semantically valid and compatible with the target model's distribution over the next reasoning step. Designing a principled, efficient step-level acceptance test is therefore the key challenge for step-level speculative decoding.
+
 
 {{< /justify >}}
 
@@ -81,7 +93,7 @@ This leads to the central challenge: how does one actually perform step-level sp
 
 **Lookahead Reasoning (LR)** accelerates long-form reasoning by introducing a novel form of **step-level speculative decoding**. The core idea is to leverage a lightweight **draft model** to proactively generate a sequence of *drafted reasoning steps*, denoted \${\hat{s}\_1, \hat{s}_2, \dots}$, ahead of time.
 
-Rather than verifying each drafted step sequentially, a more powerful **target model** processes these speculatively in *parallelized step-level calls*. Specifically, for each \$i\$, the target model generates its own ground truth version \$s\_i\$ conditioned on the prior accepted context plus the previously drafted step \$\hat{s}\_{i-1}\$. Each of these ground truth step are generated in parallel. The key distinction between LR and speculative decoding is that we parallelize across *reasoning steps*, not individual tokens.
+Rather than verifying each drafted step sequentially, a more powerful **target model** processes these speculatively in *parallelized step-level calls*. Specifically, for each \$\hat{s}\_{i}\$, the target model generates its own ground truth version \$s\_i\$ conditioned on the prior accepted context plus the previously drafted step \$\hat{s}\_{i-1}\$. Each of these ground truth step are generated in parallel. The key distinction between LR and speculative decoding is that we parallelize across *reasoning steps*, not individual tokens.
 
 After generation, a **semantic verifier** compares each pair \$(\hat{s}\_i, s\_i)\$ to determine semantic equivalence, not just token-level match. The sequence of drafted steps is accepted up to the first mismatch; the remaining sequence is discarded, and decoding continues from the divergence point using the target model.
 
@@ -89,14 +101,14 @@ This mechanism replaces multiple sequential step-by-step target model calls with
 
 {{< /justify >}}
 
-{{< image src="img/LookaheadReasoningStep.jpg" alt="LookaheadReasoning" width="100%" title="Figure 2: One cycle of Lookahead Reasoning. The draft model proposes \$\gamma=3\$ steps ŝ₁, ŝ₂, ŝ₃. The target model then generate \$s_1, s_2, s_3\$ based on prefixes and ŝ₁, ŝ₂, ŝ₃, respectively. Verifier checks if draft and target steps are semantically equivalent (e.g., \$s_1 \approx  ŝ₁\$). If the first two steps are equivalent but the third is not, Lookahead Reasoning outputs the verified draft steps (ŝ₁, ŝ₂) followed by the target's correction (\$s_3\$). This allows accepting multiple steps with only a lowered latency (e.g., \$2t + T\$) compared to the sequential target calls in autoregressive decoding (e.g., \$3T\$), where $t$ is draft step time and \$T\$ is target step time.">}}
+{{< image src="img/LookaheadReasoningStep.jpg" alt="LookaheadReasoning" width="100%" title="Figure 2: One cycle of Lookahead Reasoning. The draft model proposes \$\gamma=3\$ steps ŝ₁, ŝ₂, ŝ₃. The target model then generate \$s_1, s_2, s_3\$ based on prefixes and ŝ₁, ŝ₂, respectively. Verifier checks if draft and target steps are semantically equivalent (e.g., \$s_1 \approx  ŝ₁\$). If the first two steps are equivalent but the third is not, Lookahead Reasoning outputs the verified draft steps (ŝ₁, ŝ₂) followed by the target's correction (\$s_3\$). This allows accepting multiple steps with only a lowered latency (e.g., \$2t + T\$) compared to the sequential target calls in autoregressive decoding (e.g., \$3T\$), where $t$ is draft step time and \$T\$ is target step time.">}}
 
 
 ### Semantic Verifier Selection
 
 {{< justify >}}
 
-The choice of the semantic verifier is a pivotal design consideration in LR. While an ideal semantic verifier ensures no accuracy loss, practical implementations face a primary trade-off between judgment precision and computational overhead. In cases where semantic verification is imperfect, accepting more steps can lead to accumulated accuracy drops as errors compound.
+The choice of the semantic verifier is a pivotal design consideration in LR. While an ideal semantic verifier ensures no accuracy loss, practical implementations face a primary trade-off between judgment precision and computational overhead. In cases where semantic verification is imperfect, accepting more steps can lead to accumulated accuracy drops as errors compound. We compared various semantic verifiers in our paper.
 
 {{< /justify >}}
 
@@ -112,9 +124,9 @@ To increase the number of accepted reasoning steps, we explore tree-structured g
 
 {{< justify >}}
 
-We evaluate the end-to-end performance of **Lookahead Reasoning (LR)** across a diverse set of benchmarks using two model pairs: DeepSeek-R1-Distill (1.7B/32B) and Qwen3 (1.5B/32B). All experiments were conducted on NVIDIA H100 GPUs. Detailed results are presented in Table 1.
+We evaluate the end-to-end performance of **Lookahead Reasoning (LR)** across a diverse set of benchmarks using two model pairs: DeepSeek-R1-Distill (1.5B/32B) and Qwen3 (1.7B/32B). All experiments were conducted on NVIDIA H100 GPUs. Detailed results are presented in Table 1.
 
-A key observation is LR's strong ability to preserve task accuracy. Across all benchmarks, LR achieves accuracies within a narrow margin of the target model's autoregressive baseline, ranging from **1.0% above to 2.1% below**, demonstrating the semantic fidelity of step-level speculation.
+A key observation is LR's strong ability to preserve task accuracy. Across all benchmarks, LR achieves accuracies within a narrow margin of the target model's autoregressive baseline, ranging from 1.0% above to 2.1% below, demonstrating the semantic fidelity of step-level speculation.
 
 In terms of efficiency, LR alone achieves speedups ranging from 1.04X to 1.71X, depending on the dataset and model combination. When combined with token-level speculative decoding (SD), the speedup is further amplified, achieving up to 2.11X total acceleration. These results confirm that LR offers substantial latency gains with minimal degradation in accuracy, and is complementary to existing token-level approaches. See more detailed analysis in our [paper](https://arxiv.org/abs/2506.19830).
 
