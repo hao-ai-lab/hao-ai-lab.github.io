@@ -64,7 +64,7 @@ summary: people
 {{< lab_member name="Yongqi Chen" role="Research Intern" image="yongqi_chen.jpg" academic="https://brianchen1129.github.io/">}}
 -->
 
-{{< lab_member name="Wei Zhou" role="Research Intern" image="wei_zhou.jpg" academic="https://www.linkedin.com/in/wei-zhou3/">}} 
+{{< lab_member name="Wei Zhou" role="Research Intern" image="wei_zhou.png" academic="https://www.linkedin.com/in/wei-zhou3/">}} 
 
 <!-- 
 {{< lab_member name="Jason Kong" role="Undergrad Intern" image="jason_kong.jpg" academic="https://www.jasonkongie.com/" twitter="https://x.com/JasonkongLLM">}}
