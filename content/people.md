@@ -56,15 +56,15 @@ summary: people
 
 {{< lab_member name="Yiming Zhao" role="Master's" image="yiming_zhao.png" academic="https://www.linkedin.com/in/yiming-zhao-zym2002/" twitter="https://x.com/YimingBob">}}
 
-<!--
-{{< lab_member name="Yuhsiang Shao" role="Master's" image="yuhsiang_shao.jpg" academic="https://www.linkedin.com/in/yu-hsiang-shao-1b33251b6/" twitter="https://x.com/KyleShao2K">}}
--->
+
+{{< lab_member name="Yu-hsiang Shao" role="Master's" image="yuhsiang_shao.jpg" academic="https://www.linkedin.com/in/yu-hsiang-shao-1b33251b6/" twitter="https://x.com/KyleShao2K">}}
+
 
 <!--
 {{< lab_member name="Yongqi Chen" role="Research Intern" image="yongqi_chen.jpg" academic="https://brianchen1129.github.io/">}}
 -->
 
-{{< lab_member name="Wei Zhou" role="Research Intern" image="wei_zhou.jpg" academic="https://www.linkedin.com/in/wei-zhou3/">}} 
+{{< lab_member name="Wei Zhou" role="Research Intern" image="wei_zhou.png" academic="https://www.linkedin.com/in/wei-zhou3/">}} 
 
 <!-- 
 {{< lab_member name="Jason Kong" role="Undergrad Intern" image="jason_kong.jpg" academic="https://www.jasonkongie.com/" twitter="https://x.com/JasonkongLLM">}}
