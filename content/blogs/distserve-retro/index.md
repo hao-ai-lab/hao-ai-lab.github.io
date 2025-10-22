@@ -1,8 +1,8 @@
 +++
 title = "Disaggregated Inference: The Past, Present and Future"
-date = 2025-10-14T12:00:00-08:00
+date = 2025-10-22T00:00:00-08:00
 authors = ["Junda Chen", "Hao Zhang"]
-author = "Junda Chen"
+author = "Junda Chen, Hao Zhang"
 ShowReadingTime = true
 draft = false
 [cover]
@@ -27,8 +27,6 @@ In this blog, we delve into the past, present, and future of disaggregated infer
 The shift toward disaggregated inference was a response to fundamental limitations in the way LLM serving systems were originally built. DistServe, our research system, was among the first to formalize prefill-decode disaggregation and transform the LLM serving stack from a monolithic execution path into a composition of specialized services, each optimized and scaled for its unique workload characteristics.
 
 
-{{< image src="img/distserve_anime-crop.gif" alt="disaggregation" width="100%" title="Figure 1. Request life cycle with prefill-decode disaggregation.">}}
-
 ### **DistServe: A New Architecture for Inference**
 
 [DistServe](https://hao-ai-lab.github.io/blogs/distserve/) starts from a simple observation: LLM inference is not a single homogeneous workload. Every request goes through two fundamentally different phases - a **prefill** phase, which processes the input prompt in one dense forward pass, and a **decode** phase, which generates output tokens one by one. These two phases have fundamentally different characteristics: prefill is **compute-bound** and saturates the GPU even with a small batch, while decode is **memory-bound**, requiring much larger batches to approach peak efficiency.
@@ -42,11 +40,11 @@ Instead of forcing prefill and decode to share the same GPU, DistServe disaggreg
 
 ### **Bottlenecks in Conventional LLM Serving**
 
-Before DistServe, most serving frameworks relied on **continuous batching**, a technique popularized by systems like Orca and vLLM. Multiple requests were grouped into a single forward pass to improve GPU utilization - an effective solution when workloads were simple and latency targets were loose. But as deployment scales grew and strict user-facing SLOs emerged, two inherent bottlenecks became impossible to ignore.
+Before DistServe, most serving frameworks relied on **continuous batching**, a technique popularized by systems like [Orca](https://www.usenix.org/conference/osdi22/presentation/yu), [vLLM](https://dl.acm.org/doi/10.1145/3600006.3613165), and [Sarathi](https://www.usenix.org/conference/osdi24/presentation/agrawal). Multiple requests were grouped into a single forward pass to improve GPU utilization - an effective solution when workloads were simple and latency targets were loose. But as deployment scales grew and strict user-facing SLOs emerged, two inherent bottlenecks became impossible to ignore.
 
 #### **1. Prefill-Decode Interference**
 
-Colocating both stages on the same GPU inevitably led to **resource contention**. Compute-intensive prefills arriving during long decode sessions stalled token generation, inflating per-token latency. Conversely, memory-heavy decoding workloads blocked new prefills from being scheduled promptly. The result was a cascade of idle gaps and wasted cycles - a system that looked fully utilized on paper but suffered from degraded throughput and responsiveness in practice. 
+Colocating both stages on the same GPU inevitably led to **resource contention**. Compute-intensive prefills arriving during long decode sessions stalled token generation, inflating per-token latency. Conversely, memory-heavy decoding workloads blocked new prefills from being scheduled promptly. The result was a cascade of idle gaps and wasted cycles - a system may fully utilize the GPU but suffered from degraded responsiveness in practice. 
 
 DistServe fundamentally solved prefill–decode interference by disaggregating the two phases onto separate GPU pools, allowing each to progress independently. Prefill bursts no longer interrupt ongoing decoding, and decode sessions can sustain steady throughput without being preempted by new prefills.
 
@@ -58,12 +56,12 @@ DistServe fundamentally solved prefill–decode interference by disaggregating t
 
 A single monolithic service also meant a coupled single resource pool for both prefill and decode phases. Because prefill and decode have very different scaling demands, resource allocators were forced to choose between (a) **overprovisioning** resources to handle peak bursts, with the cost of wasting capacity and inflating cost, or (b) **underprovisioning** resources, with the risk of SLO violations. The inability to scale each stage independently was a structural inefficiency that no scheduling or kernel optimization could fundamentally overcome.
 
-{{< image src="img/02-resource-colocate.png" alt="scaling" width="100%" title="Figure 3. Colocation forces resource allocators to choose between over- or under-provisioning, leading to inefficiencies.">}}
+{{< image src="img/02-resource-colocate.png" alt="scaling" width="100%" title="Figure 3(a). Colocation forces resource allocators to choose between over- or under-provisioning, leading to inefficiencies.">}}
 
 
 DistServe fundamentally solves this problem by isolating prefill and decode into independently scalable services, enabling fine-grained resource allocation that matches each phase’s unique demand profile and eliminates wasteful over- or under-provisioning. On top of this, DistServe also finds the optimal configuration of available compute and network hierarchies to maximize throughput under SLO constraints, making large-scale LLM serving both more efficient and more predictable in production environments.
 
-{{< image src="img/02-resource-disagg.png" alt="scaling" width="100%" title="Figure 3. Disaggregation enables independent scaling of prefill and decode, making resource allocation strategy tailored for each phase.">}}
+{{< image src="img/02-resource-disagg.png" alt="scaling" width="100%" title="Figure 3(b). Disaggregation enables independent scaling of prefill and decode, making resource allocation strategy tailored for each phase.">}}
 
 
 
@@ -99,7 +97,7 @@ In addition, many companies including [Meta](https://pytorch.org/blog/disaggrega
 
 Perhaps the closest concurrent academic work with DistServe is [Splitwise](https://www.microsoft.com/en-us/research/blog/splitwise-improves-gpu-usage-by-splitting-llm-inference-phases/) and [ShuffleInfer](https://dl.acm.org/doi/10.1145/3732941). [Splitwise](https://www.microsoft.com/en-us/research/blog/splitwise-improves-gpu-usage-by-splitting-llm-inference-phases/) also focuses on the architectural perspective that separates P/D, and uses heterogeneous hardware (H100 vs A100) to achieve better energy efficiency. [ShuffleInfer](https://dl.acm.org/doi/10.1145/3732941) also studies p/p and d/d interference, and proposes to group requests of different lengths into buckets to further isolate the interference. 
 
-Other academic work also extend or improve disaggregation to optimize KV cache transfer ([CacheGen](https://dl.acm.org/doi/10.1145/3651890.3672274), [MemServe](https://arxiv.org/abs/2406.17565)), parallelism configurations ([Mitra et al](https://research.nvidia.com/publication/2025-06_beyond-buzz-pragmatic-take-inference-disaggregation).,), scheduling ([SLO-Serve](https://arxiv.org/abs/2504.08784)), disaggregation/aggregation fusion ([TaiChi](https://arxiv.org/abs/2508.01989)), multimodal serving ([ModServe](https://arxiv.org/abs/2502.00937)), heterogeneous hardwares ([Helix](https://dl.acm.org/doi/abs/10.1145/3669940.3707215), [HexGen-2](https://arxiv.org/abs/2502.07903), [CENT](https://dl.acm.org/doi/abs/10.1145/3676641.3716267)), network ([FuseLink](https://www.usenix.org/conference/osdi25/presentation/ren)), RL ([StreamRL](https://arxiv.org/pdf/2504.15930)), power efficiency ([EcoServe](https://arxiv.org/abs/2502.05043), [GreenLLM](https://arxiv.org/abs/2412.20322)), and more. Together, these works demonstrate the rapid expansion of disaggregation as a general systems principle that continues to evolve across diverse contexts in LLM inference and beyond.
+Other academic work also extend or improve disaggregation to optimize KV cache transfer ([CacheGen](https://dl.acm.org/doi/10.1145/3651890.3672274), [MemServe](https://arxiv.org/abs/2406.17565)), parallelism configurations ([Mitra et al](https://research.nvidia.com/publication/2025-06_beyond-buzz-pragmatic-take-inference-disaggregation)), scheduling ([SLO-Serve](https://arxiv.org/abs/2504.08784)), disaggregation/aggregation fusion ([TaiChi](https://arxiv.org/abs/2508.01989)), multimodal serving ([ModServe](https://arxiv.org/abs/2502.00937)), heterogeneous hardwares ([Helix](https://dl.acm.org/doi/abs/10.1145/3669940.3707215), [HexGen-2](https://arxiv.org/abs/2502.07903), [CENT](https://dl.acm.org/doi/abs/10.1145/3676641.3716267)), network ([FuseLink](https://www.usenix.org/conference/osdi25/presentation/ren)), RL ([StreamRL](https://arxiv.org/pdf/2504.15930)), power efficiency ([EcoServe](https://arxiv.org/abs/2502.05043), [GreenLLM](https://arxiv.org/abs/2412.20322)), and more. Together, these works demonstrate the rapid expansion of disaggregation as a general systems principle that continues to evolve across diverse contexts in LLM inference and beyond.
 
 ## **Future - A/F Disaggregation: A New direction of Disaggregated Inference**
 
