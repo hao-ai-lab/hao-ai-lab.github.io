@@ -1,10 +1,10 @@
 +++
 title = "Disaggregated Inference: The Past, Present and Future"
-date = 2025-11-22T00:00:00-08:00
+date = 2024-02-22T00:00:00-08:00
 authors = ["Junda Chen", "Yonghao Zhuang", "Hao Zhang"]
 author = "Junda Chen, Yonghao Zhuang, Hao Zhang"
 ShowReadingTime = true
-draft = false
+draft = true
 [cover]
     image = "/img/distserve_anime-crop.gif"
     alt = "DistServe"
