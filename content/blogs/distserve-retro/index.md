@@ -1,8 +1,8 @@
 +++
 title = "Disaggregated Inference: The Past, Present and Future"
-date = 2025-10-22T00:00:00-08:00
-authors = ["Junda Chen", "Hao Zhang"]
-author = "Junda Chen, Hao Zhang"
+date = 2025-11-22T00:00:00-08:00
+authors = ["Junda Chen", "Yonghao Zhuang", "Hao Zhang"]
+author = "Junda Chen, Yonghao Zhuang, Hao Zhang"
 ShowReadingTime = true
 draft = false
 [cover]
