@@ -59,6 +59,7 @@ summary: people
 
 {{< lab_member name="Yu-hsiang Shao" role="Master's" image="yuhsiang_shao.jpg" academic="https://www.linkedin.com/in/yu-hsiang-shao-1b33251b6/" twitter="https://x.com/KyleShao2K">}}
 
+{{< lab_member name="Nikhil Paleti" role="Master's" image="Nikhil_Paleti.png" academic="https://nikhil-paleti.github.io/" twitter="https://x.com/nikhil2362">}}
 
 <!--
 {{< lab_member name="Yongqi Chen" role="Research Intern" image="yongqi_chen.jpg" academic="https://brianchen1129.github.io/">}}
