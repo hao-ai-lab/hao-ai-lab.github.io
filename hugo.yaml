@@ -10,8 +10,7 @@ googleAnalytics: 'G-T4DXGLCH1D'
 # FIXME: This is a workaround for rendering differnet sizes of the gif images.
 timeout: 90 # seconds
 
-pagination:
-  pagerSize: 200
+paginate: 200
 
 markup:
   goldmark:
