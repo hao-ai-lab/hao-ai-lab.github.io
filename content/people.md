@@ -79,6 +79,7 @@ summary: people
 {{< lab_member name="Haoyang Yu" role="Undergrad Intern" image="haoyang_yu.jpeg" academic="https://www.linkedin.com/in/haoyang-yu-8b1997257/">}}
 
 {{< lab_member name="Jerry Xu" role="Undergrad Intern" image="jerry_xu.jpg" academic="https://www.linkedin.com/in/jerry-xu-a8a905217/">}}
+{{< lab_member name="Wenxuan Tan" role="Undergrad Intern" image="wenxuan_tan.jpg" academic="https://github.com/Edenzzzz">}}
 
 {{< /lab_members_grid >}}
 
