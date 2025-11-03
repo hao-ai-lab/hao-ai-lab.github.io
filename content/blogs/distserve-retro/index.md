@@ -1,6 +1,6 @@
 +++
 title = "Disaggregated Inference: 18 Months Later"
-date = 2025-11-03T00:00:00-08:00
+date = 2025-11-04T00:00:00-08:00
 authors = ["Junda Chen", "Yonghao Zhuang", "Hao Zhang"]
 author = "Junda Chen, Yonghao Zhuang, Hao Zhang"
 ShowReadingTime = true
