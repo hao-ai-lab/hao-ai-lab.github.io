@@ -53,7 +53,7 @@ In addition to the two core techniques, DistServe also supports simple and effic
 
 ### Retro: Why did DistServe take off in 2025?
 
-When we introduced DistServe, we believed it was a disruptive idea – perhaps even ahead of its time – so much so that we received a lot of push backs from the open-source community, and didn’t see widespread adoption throughout 2024, primarily because disaggregation indeed introduces a architectural shift which requires a lot of engineering effort to refactor existing  serving systems. But in 2025, the landscape suddenly changed – disaggregation quickly became the default playbook across nearly every major LLM serving stack.  
+When we introduced DistServe, we believed it was a disruptive idea – perhaps even ahead of its time – so much so that we received a lot of push backs from the open-source community, and didn’t see widespread adoption throughout 2024, primarily because disaggregation indeed introduces an architectural shift which requires a lot of engineering effort to refactor existing  serving systems. But in 2025, the landscape suddenly changed – disaggregation quickly became the default playbook across nearly every major LLM serving stack.  
 
 One major reason is that more and more businesses started aggressively adopting LLMs as a core component of their applications. When businesses run competitively at full scale, system throughput is not the only most important metric any more. Taming latency has become increasingly critical to the growth (or even survival) of their businesses. DistServe precisely addresses this pain point by making prefill and decode latency easy to monitor and easy to control in real-world production systems. At the same time, models grew larger and traffic rates increased, forcing inference systems to scale to hundreds or even thousands of GPUs to accommodate large models and highly variable workloads. At this scale, a disaggregated architecture truly shines because it can independently allocate resources to different phases while pairing effectively with different parallelism strategies.
 
@@ -158,3 +158,16 @@ Still, current AFD implementations only demonstrate its effectiveness on MoE mod
 
 The journey of disaggregated inference is far from complete. 
 In the next blog, we will discuss our latest research results in disaggregation, stay tuned!
+
+
+## Citation
+
+```
+@article{zhong2024distserve,
+ title={DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving},
+ author={Zhong, Yinmin and Liu, Shengyu and Chen, Junda and Hu, Jianbo and Zhu, Yibo and Liu, Xuanzhe and Jin, Xin and Zhang, Hao},
+ journal={arXiv preprint arXiv:2401.09670},
+ year={2024}
+}
+```
+
