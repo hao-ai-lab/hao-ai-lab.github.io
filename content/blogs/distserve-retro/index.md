@@ -1,6 +1,6 @@
 +++
 title = "Disaggregated Inference: 18 Months Later"
-date = 2025-11-04T00:00:00-08:00
+date = 2025-11-03T00:00:00-08:00
 authors = ["Junda Chen", "Yonghao Zhuang", "Hao Zhang"]
 author = "Junda Chen, Yonghao Zhuang, Hao Zhang"
 ShowReadingTime = true
@@ -12,7 +12,7 @@ draft = false
 
 +++
 
-# Disaggregated Inference:18 Months Later
+# Disaggregated Inference: 18 Months Later
 
 Eighteen months ago, our lab introduced [DistServe](https://hao-ai-lab.github.io/blogs/distserve/) with a simple bet: split LLM inference into prefill and decode, and scale them independently on separate compute pools. Today, almost every production-grade LLM serving framework – [NVIDIA Dynamo](https://www.nvidia.com/en-us/ai/dynamo/), [llm-d](https://github.com/llm-d/llm-d), [**SGLang**](https://github.com/sgl-project/sglang), [**vLLM**](https://github.com/vllm-project/vllm), [**LMCache**](https://github.com/LMCache/LMCache), [**MoonCake**](https://github.com/kvcache-ai/Mooncake) – runs on disaggregation and demonstrates its power in large-scale, real-world LLM serving workloads, with many more continuing to push its boundaries. Concepts like TTFT (time-to-first-token) and TPOT (time-per-output-token), now standard latency metrics in nearly every serving benchmark, were also popularized through the lens of disaggregation. 
 
