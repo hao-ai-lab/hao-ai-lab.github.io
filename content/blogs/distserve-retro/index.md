@@ -6,7 +6,7 @@ author = "Junda Chen, Yonghao Zhuang, Hao Zhang"
 ShowReadingTime = true
 draft = false
 [cover]
-    image = "/img/distserve-retro.png"
+    image = "/img/distserve-retro-2.png"
     alt = "Disaggregated Inference: 18 Months Later"
     caption = "The landscape of disaggregated inference 18 months later."
 
