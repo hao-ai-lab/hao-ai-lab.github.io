@@ -12,6 +12,11 @@ draft = false
 
 +++
 
+{{< socialBadges arxiv-index="2401.09670" >}}
+
+{{< justify >}}
+
+
 Eighteen months ago, our lab introduced [DistServe](https://hao-ai-lab.github.io/blogs/distserve/) with a simple bet: split LLM inference into prefill and decode, and scale them independently on separate compute pools. Today, almost every production-grade LLM serving framework – [NVIDIA Dynamo](https://www.nvidia.com/en-us/ai/dynamo/), [llm-d](https://github.com/llm-d/llm-d), [**SGLang**](https://github.com/sgl-project/sglang), [**vLLM**](https://github.com/vllm-project/vllm), [**LMCache**](https://github.com/LMCache/LMCache), [**MoonCake**](https://github.com/kvcache-ai/Mooncake) – runs on disaggregation and demonstrates its power in large-scale, real-world LLM serving workloads, with many more continuing to push its boundaries. Concepts like TTFT (time-to-first-token) and TPOT (time-per-output-token), now standard latency metrics in nearly every serving benchmark, were also popularized through the lens of disaggregation. 
 
 If Moore’s law says compute doubles every ~18 months, then November 2025 is a tidy checkpoint – not because NVIDIA chips doubled, but because serving systems did. [LLM inference costs](https://a16z.com/llmflation-llm-inference-cost/) today have dropped at a rate far exceeding the 2x improvement compared to Moore’s law, and have delivered both lower latency under heavy and dynamic workload shifts and scalable performance across thousands of GPUs across datacenters.
@@ -79,8 +84,7 @@ What began as a radical architectural idea has now become the standard playbook 
 
 
 <!-- https://docs.ray.io/en/latest/serve/llm/architecture/serving-patterns/prefill-decode.html#why-disaggregate -->
-[**Ray**](https://github.com/ray-project/ray) also supports [disaggregated inference](https://docs.ray.io/en/latest/serve/llm/architecture/serving-patterns/prefill-decode.html#why-disaggregate) in Ray Serve that provides a one-click deployment solution for disaggregated inference. Ray integrates with SGLang and vLLM as the core inference engine, and uses LMCache and Mooncake as the KV cache storage backend. Ray Serve also supports custom routing to further improve the performance of inference, reducing the inference latency by [60% or more](https://www.anyscale.com/blog/ray-serve-faster-first-token-custom-routing).
-
+[**Ray Serve LLM**]((https://github.com/ray-project/ray))**.** Building on Ray Serve primitives, Ray Serve LLM provides a first-class serving pattern for [prefill-decode disaggregation](https://docs.ray.io/en/latest/serve/llm/architecture/serving-patterns/prefill-decode.html), focusing on modularity and ease of deployment on Ray clusters (including KubeRay-managed Kubernetes). A key differentiator is its seamless integration with the broader Ray ecosystem, including data processing and reinforcement learning (RL). It decouples prefill and decode instances as separate Serve deployments and orchestrates requests between them. The framework integrates with NIXL and LMCache connectors for efficient KV transfer and leverages Ray's distributed computing primitives to enable independent autoscaling of each phase based on load characteristics. Together with [data parallel attention](https://docs.ray.io/en/latest/serve/llm/architecture/serving-patterns/data-parallel.html) and [KV-affinity request routing](https://docs.ray.io/en/latest/serve/llm/architecture/routing-policies.html), this solution provides a flexible and programmable layer for inference workloads that can be easily extended and composed to implement different serving patterns, including prefill-decode disaggregation.
 
 
 **Storage Layer**
