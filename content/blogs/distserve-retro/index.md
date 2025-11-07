@@ -78,6 +78,10 @@ What began as a radical architectural idea has now become the standard playbook 
 {{< image src="img/llm-d.png" alt="afd" width="100%" title="Figure 4(b). [llm-d](https://github.com/llm-d/llm-d) architecture diagram.">}}
 
 
+<!-- https://docs.ray.io/en/latest/serve/llm/architecture/serving-patterns/prefill-decode.html#why-disaggregate -->
+[**Ray**](https://github.com/ray-project/ray) also supports [disaggregated inference](https://docs.ray.io/en/latest/serve/llm/architecture/serving-patterns/prefill-decode.html#why-disaggregate) in Ray Serve that provides a one-click deployment solution for disaggregated inference. Ray integrates with SGLang and vLLM as the core inference engine, and uses LMCache and Mooncake as the KV cache storage backend. Ray Serve also supports custom routing to further improve the performance of inference, reducing the inference latency by [60% or more](https://www.anyscale.com/blog/ray-serve-faster-first-token-custom-routing).
+
+
 
 **Storage Layer**
 
