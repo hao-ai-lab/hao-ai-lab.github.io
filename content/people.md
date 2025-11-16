@@ -42,7 +42,7 @@ summary: people
 
 {{< lab_member name="Yixin Huang" role="Master's" image="yixin_huang.jpg" academic="https://yixin-huang1.github.io/yixinhuang1.github.io/" twitter="https://x.com/Yixinhuang48">}}
 
-{{< lab_member name="Mathew Luo" role="Master's" image="mathew_luo.jpg" academic="https://www.linkedin.com/in/mathewluo/" >}}
+<!-- {{< lab_member name="Mathew Luo" role="Master's" image="mathew_luo.jpg" academic="https://www.linkedin.com/in/mathewluo/" >}} -->
 
 {{< lab_member name="Abhilash Shankarampeta" role="Master's" image="ABHILASH_SHANKARAMPETA.jpg" academic="https://abhilashreddys.github.io/" twitter="https://x.com/areddys53">}}
 
