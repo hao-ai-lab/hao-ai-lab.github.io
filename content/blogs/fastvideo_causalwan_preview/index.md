@@ -21,7 +21,7 @@ draft = false
 
 {{< socialBadges github="hao-ai-lab/FastVideo" demo="https://causalwan.fastvideo.org/" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" huggingface="https://huggingface.co/FastVideo" >}}
 
-The FastVideo Team is excited to share some of our progress on distilling the Wan2.2-I2V-A14B model into an autoregressive architecture, alongside the release of our preview checkpoint for CausalWan2.2-I2V-A14B. In this blog, we’ll first discuss the new MoE architecture behind the open-source SOTA performance of Wan2.2, the differences between bidirectional and autoregressive video models, and then share some of the challenges we encountered when applying Self-Forcing distillation to this architecture.
+**TL;DR:** The FastVideo Team is excited to share some of our progress on distilling the Wan2.2-I2V-A14B model into an autoregressive architecture, alongside the release of our preview checkpoint for CausalWan2.2-I2V-A14B. In this blog, we’ll first discuss the new MoE architecture behind the open-source SOTA performance of Wan2.2, the differences between bidirectional and autoregressive video models, and then share some of the challenges we encountered when applying Self-Forcing distillation to this architecture.
 
 ## Model Link
 
