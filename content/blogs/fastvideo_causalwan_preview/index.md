@@ -184,7 +184,7 @@ Meet the team behind CausalWan-MoE-Preview:
 
 ## Citation
 
-If you use FastWan or any of our code for your research, please cite our work:
+If you use FastWan for your research, please cite our work:
 
 ```bibtex
 @software{fastvideo2024,
