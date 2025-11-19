@@ -13,9 +13,9 @@ draft = false
       name = "github"
       url = "https://github.com/hao-ai-lab/FastVideo"
 [cover]
-    image = "/img/fastwan/logo.svg"
-    alt = "Logo of FastVideo"
-    caption = "Logo of FastVideo"
+    image = "/img/fastwan/kv_cache.png"
+    alt = "attention mask configurations between teacher forcing, diffusion forcing, and self-forcing."
+    caption = "attention mask configurations between teacher forcing, diffusion forcing, and self-forcing."
     hidden = true
 +++
 
