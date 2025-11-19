@@ -1,0 +1,131 @@
++++
+title = "CausalWan-MoE Preview: Applying Self-Forcing Distillation To Wan2.2"
+date = 2025-11-18T11:00:00-08:00
+authors = ["FastVideo Team"]
+author = "FastVideo Team"
+ShowReadingTime = true
+draft = false
+[socialIcons]
+    [[socialIcons.icon]]
+      name = "twitter"
+      url = "https://twitter.com"
+    [[socialIcons.icon]]
+      name = "github"
+      url = "https://github.com/hao-ai-lab/FastVideo"
+[cover]
+    image = "/img/fastwan/fastwan-teaser.gif"
+    alt = "Denoising speedup of FastWan"
+    caption = "A gif of a graph showing FastWan achieving 72.8x speedup for denoising"
+    hidden = true
++++
+
+
+{{< socialBadges github="hao-ai-lab/FastVideo" arxiv-index="2505.13389" demo="https://fastwan.fastvideo.org/" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-38u6p1jqe-yDI1QJOCEnbtkLoaI5bjZQ" discord="https://discord.gg/Dm8F2peD3e" huggingface="https://huggingface.co/FastVideo" >}}
+
+The FastVideo Team is excited to share some of our progress on distilling the Wan2.2-I2V-A14B model into an autoregressive architecture, alongside the release of our preview checkpoint for CausalWan2.2-I2V-A14B. In this blog, we’ll first discuss the new MoE architecture introduced by Wan2.2, the differences between bidirectional and autoregressive video models, and then share some of the challenges we encountered when applying self-forcing distillation to this architecture. 
+
+## Wan2.2-A14B Model Architecture
+In large language models, the MoE (mixture of experts) architecture consists of replacing a single feed-forward network, which is always active for every input in a transformer block, with several feed-forward networks (called experts), which are sparsely activated depending on the input. This architecture is widely prevalent in modern large language models since it allows for models with more parameters without a proportional increase in inference cost. Towards a similar goal, the Wan2.2-A14B series of models from Alibaba uses a new MoE architecture (Figure 1) in which the two experts (high-noise and low-noise) are two diffusion transformers (rather than FFNs) that run sequentially and are each responsible for denoising a fraction of the total timesteps. 
+
+
+{{< image src="img/moe_arch.png" alt="Wan2.2-MoE" width="100%" >}}
+Figure 1 (Source: https://github.com/Wan-Video/Wan2.2/tree/main) 
+
+Since it operates during the early timesteps of the denoising process, the high-noise expert is responsible for the high-level structure and motion of the video, while the low-noise expert adds more fine-grained details during later denoising timesteps to produce the final video. The Wan team found that this architecture achieved better performance than Wan 2.1 and using Wan 2.1 with a low noise or high noise expert. However, this performance gain comes at a cost: there are now two 14B models in memory, increasing RAM requirements. 
+
+## Bidirectional vs Autoregressive Generation
+Bidirectional video models (Figure 2a) like OpenAI’s Sora, Google’s Veo, and Wan2.2-A14B are ideal when you want a single, fixed-length video. All frames are simultaneously denoised, and all frames can attend to each other, allowing future frames to affect past frames that are generated and vice versa. This leads to good temporal consistency, but high latency in generating videos. Thus, for workloads like extending or editing a video, bidirectional models are not ideal, as you need to re-run the generation process for all frames to get the updated video. 
+Rather than generating the entire video upfront, autoregressive models (Figure 2b) generate the next chunk* of a video conditioned only on prior output chunks. This makes long-horizon and streaming generation much more natural: we can keep going, without needing to keep all frames in the context, allowing for low-latency real-time video generation. This causal architecture is necessary for action-conditioned video generation, where the model must predict future frames from past frames and user actions.
+
+{{< image src="img/causal_dit.jpg" alt="Bidirectional vs Autoregressive" width="100%" >}}
+Figure 2 (Source: https://www.xunhuang.me/blogs/world_model.html) 
+
+Google’s Genie 3 (https://deepmind.google/blog/genie-3-a-new-frontier-for-world-models/), Tencent’s Yan (https://greatx3.github.io/Yan/), and SkyworkAI’s Matrix Game 2.0 (https://matrix-game-v2.github.io/) are examples of such autoregressive models, which can produce “playable” dynamic environments that can be navigated in real time (often termed world models). As a result, these models are capable of dynamic, on-the-fly editing and generation of a video stream. We can do things like inject new conditions mid-stream, update prompts, replace keyframes, masks, or motion hints, and then only regenerate future frames, rather than the entire clip itself. 
+
+## Self-Forcing 
+While autoregressive models are better suited for live streaming video generation than bidirectional models, naively training them from scratch is slower, and the final model tends to be lower in quality. Additionally, converting a working bidirectional model to an autoregressive one isn’t trivial, as the latter suffers from error accumulation, leading to autoregressive drift as additional frames are generated. Prior to self-forcing, the two main autoregressive training methods were teacher forcing and diffusion forcing. During training, teacher forcing conditions a model on ground-truth latents while diffusion forcing conditions a model on noisy ground-truth latents, both of which don’t match the distribution of generated frames at inference (Figure 3(a/b)). 
+
+Self-Forcing attempts to solve this problem by conditioning each frame’s generation on previously generated frames, resolving the train-test distribution mismatch (Figure 3c). Since the inference process is simulated during training, self-forcing can also leverage KV caching, resulting in an efficient autoregressive rollout. To align the distribution of the generated videos with that of real videos, self-forcing can utilize a variety of distribution matching losses, including GAN, SiD (score identity distillation), and DMD (Distribution Matching Distillation), with DMD being the most widely used.  
+
+
+{{< image src="img/self_forcing.png" alt="Self-Forcing" width="100%" >}}
+Figure 3 (Source: https://arxiv.org/pdf/2506.08009) 
+
+When combined with a causal initialization procedure, Self-Forcing becomes a SOTA distillation technique for converting bidirectional diffusion models (which potentially require many denoising steps) to few-step autoregressive models (Figure 4) and has already been scaled up to 14B parameter models (https://www.krea.ai/blog/krea-realtime-14b) and extended to create world models (e.g. Matrix Game 2.0). 
+
+{{< image src="img/causvid.png" alt="CausalWan2.2" width="100%" >}}
+Figure 4 (Source: https://causvid.github.io/causvid_paper.pdf) 
+
+## Applying Self-Forcing To Wan2.2-A14B
+When applied to dense models, the original Self-Forcing recipe works well. However, it is not obvious how to translate this existing recipe to Wan2.2-A14B’s MoE architecture. Here are some of the challenges we encountered when naively applying self-forcing to the MoE architecture: 
+
+### High Memory Requirements
+Due to the higher parameter count of the MoE, VRAM and RAM usage could quickly explode if we are not careful about which models we are currently training (and hence which models have gradients being tracked)
+
+### Distill both Experts Simultaneously
+The only current open-source bidirectional DMD recipe for MoE first distills the high noise generator and then distills the low noise generator (https://huggingface.co/lightx2v/Wan2.2-Distill-Models), which complicates the distillation procedure for bidirectional models. Furthermore, this approach isn’t feasible for autoregressive models if we want to condition the high noise generator model on x0. Therefore, our current recipe aims to distill both high and low-noise generators simultaneously. 
+
+### How to Apply Updates to the Student Model and Fake Score Model
+Self-forcing uses a DMD loss, which requires the student model (generator), the teacher model (real score model), and a fake score model. If all three models use the Wan2.2 MoE architecture, the question arises of how updates to the student model and the fake score model are applied at each step. 
+
+Specifically, self-forcing requires sampling a timestep to add noise to the generator’s output videos in order to calculate the loss for the generator and the finetuning loss for the fake score model. When the generator is an MoE in self-forcing, videos can either be generated by the
+
+It becomes unclear how we should sample the timestep if the videos are generated only by the high noise generator or by both high and low noise generators. 
+
+After empirical studies, we found out that the current best setting is:
+
+  1. Sampling timestep from the high noise region to add noise to videos generated by only the high noise generator
+
+  2. Sampling timestep from the full range to add noise to videos generated by both the high noise and low noise generators. 
+
+### How to perform I2V Inference
+When we trained our model and conducted I2V inference using 3333, it does not work for some images in the sense that the transition between the first frame and the rest of the frames is not smooth. Thus, we adopted 1333 during causal initialization, distillation and I2V inference.
+
+### How to Condition the Autoregressive High Noise Generation
+Conditioning the high noise generation using previous x0 or x_boundary is unclear. During bidirectional inference, the high noise generator is only required to denoise to x_boundary, so at first it makes sense to condition the high noise generation using x_boundary. It does produce high quality text-conditioned videos, however it fails in the image-to-video case. Using x0 to condition high noise generation produces videos with more saturated colors and less motion in the case of text-to-video. However, it supports image-to-video because during inference we are able to condition the high noise generator on the clean image.
+
+ 
+
+
+
+## Acknowledgement
+We thank [Anyscale](https://www.anyscale.com/), [MBZUAI](https://mbzuai.ac.ae/), and [GMI Cloud](https://www.gmicloud.ai/) for supporting the development and release of CausalWan-MoE. We are especially grateful to the developers of the [Wan series](https://github.com/Wan-Video), whose work laid the foundation for our advancements. Our implementation of DMD distillation and Video Sparse Attention would not be possible without the effort from [ThunderKittens](https://github.com/HazyResearch/ThunderKittens), [Triton](https://github.com/triton-lang/triton), [DMD2](https://github.com/tianweiy/DMD2), [CausVid](https://github.com/tianweiy/CausVid), and [Self-Forcing](https://arxiv.org/pdf/2506.08009) 
+
+
+
+## The Team
+Meet the team behind FastWan and FastVideo:
+- **Will Lin, Wei Zhou, Matthew Noto, Peiyuan Zhang**: Co-Leads, Sparse Distillation Recipe, VSA, Training Pipeline, Distillation experiments
+- **Kevin Lin**: CI/CD, Tests, Comfyui, demo video and Animations
+- **Wenxuan Tan**: Add Lora inference and training support
+- **Jinzhe Pan**: Improve FastVideo architecture
+- **Richard Liaw**: Advisor
+- **Hao Zhang**: Advisor
+
+## Citation
+If you use FastWan for your research, please cite our work:
+```bibtex
+@software{fastvideo2024,
+  title        = {FastVideo: A Unified Framework for Accelerated Video Generation},
+  author       = {The FastVideo Team},
+  url          = {https://github.com/hao-ai-lab/FastVideo},
+  month        = apr,
+  year         = {2024},
+}
+
+@article{zhang2025faster,
+  title={Faster video diffusion with trainable sparse attention},
+  author={Zhang, Peiyuan and Huang, Haofeng and Chen, Yongqi and Lin, Will and Liu, Zhengzhong and Stoica, Ion and Xing, Eric P and Zhang, Hao},
+  journal={arXiv e-prints},
+  pages={arXiv--2505},
+  year={2025}
+}
+```
+
+
+Ready to experience lightning-fast video generation? Check out our [documentation](https://hao-ai-lab.github.io/FastVideo/index.html) and [FastVideo](https://github.com/hao-ai-lab/FastVideo) to get started today.
+Available now with native support for ComfyUI, Apple Silicon, Windows WSL, and Gradio web interface!
+
+
+*The FastVideo team continues to push the boundaries of real-time video generation. Stay tuned for more exciting developments!*
+
