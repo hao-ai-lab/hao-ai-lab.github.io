@@ -13,16 +13,20 @@ draft = false
       name = "github"
       url = "https://github.com/hao-ai-lab/FastVideo"
 [cover]
-    image = "/img/fastwan/fastwan-teaser.gif"
-    alt = "Denoising speedup of FastWan"
-    caption = "A gif of a graph showing FastWan achieving 72.8x speedup for denoising"
+    image = "/img/fastwan/logo.svg"
+    alt = "Logo of FastVideo"
+    caption = "Logo of FastVideo"
     hidden = true
 +++
 
 
-{{< socialBadges github="hao-ai-lab/FastVideo" arxiv-index="2505.13389" demo="https://fastwan.fastvideo.org/" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-38u6p1jqe-yDI1QJOCEnbtkLoaI5bjZQ" discord="https://discord.gg/Dm8F2peD3e" huggingface="https://huggingface.co/FastVideo" >}}
+{{< socialBadges github="hao-ai-lab/FastVideo" demo="https://causalwan.fastvideo.org/" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" huggingface="https://huggingface.co/FastVideo" >}}
 
 The FastVideo Team is excited to share some of our progress on distilling the Wan2.2-I2V-A14B model into an autoregressive architecture, alongside the release of our preview checkpoint for CausalWan2.2-I2V-A14B. In this blog, we’ll first discuss the new MoE architecture introduced by Wan2.2, the differences between bidirectional and autoregressive video models, and then share some of the challenges we encountered when applying self-forcing distillation to this architecture. 
+
+## Model Link
+
+- [CausalWan2.2-I2V-A14B-Preview-Diffusers](https://huggingface.co/FastVideo/CausalWan2.2-I2V-A14B-Preview-Diffusers)
 
 ## Wan2.2-A14B Model Architecture
 In large language models, the MoE (mixture of experts) architecture consists of replacing a single feed-forward network, which is always active for every input in a transformer block, with several feed-forward networks (called experts), which are sparsely activated depending on the input. This architecture is widely prevalent in modern large language models since it allows for models with more parameters without a proportional increase in inference cost. Towards a similar goal, the Wan2.2-A14B series of models from Alibaba uses a new MoE architecture (Figure 1) in which the two experts (high-noise and low-noise) are two diffusion transformers (rather than FFNs) that run sequentially and are each responsible for denoising a fraction of the total timesteps. 
@@ -162,7 +166,7 @@ We thank [Anyscale](https://www.anyscale.com/), [MBZUAI](https://mbzuai.ac.ae/),
 
 
 ## The Team
-Meet the team behind CausalWan-MoE:
+Meet the team behind CausalWan-MoE-Preview:
 - **Will Lin, Wei Zhou, Matthew Noto, Peiyuan Zhang**: Causal Initialization, Self-Forcing Recipe, Training Pipeline, Distillation experiments
 - **Richard Liaw**: Advisor
 - **Hao Zhang**: Advisor
