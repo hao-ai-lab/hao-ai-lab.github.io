@@ -185,17 +185,19 @@ In addition to the novel distillation recipe, we also introduce an efficient dec
 
 ## Benchmark Results
 
+<!-- We present -->
 
-By combining our distillation recipe with the proposed decoding strategy, our d3LLM framework surpasses previous state-of-the-art methods on both TPF and TPS, without sacrificing accuracy. The results are presented below.
+<!-- By combining our distillation recipe with the proposed decoding strategy, our d3LLM framework surpasses previous state-of-the-art methods on both TPF and TPS, without sacrificing accuracy.  -->
+
+We present comprehensive benchmark comparisons across five representative tasks: GSM8K-CoT (chain-of-thought reasoning), MATH (mathematical problem solving), HumanEval (code generation), MBPP (Python programming), and a long-context math reasoning task (5-shot GSM8K reasoning, with a prompt length ≈ 1000). These evaluations assess the performance of our proposed model, d3LLM, against state-of-the-art diffusion-based language models using three key metrics: tokens per forward (TPF), accuracy, and our proposed Accuracy Under Parallelism (AUP).
 
 **Implementation Details.** Our approach begins with a semi-autoregressive diffusion model (either LLaDA or Dream) with a block size of 32 as the teacher model. This setup enforces causal dependencies between blocks while enabling parallel decoding of multiple tokens within each block. For fair comparison, we adopt the same distillation dataset as dParallel, which includes approximately 122k samples for Dream and 92k samples for LLaDA, sourced from the PRM12K, AceCode, GSM8K (training split), and Numina-Math datasets. The learning rate is set to 2e-5. We train six epochs for LLaDA and three for Dream. For d3LLM-Coder, we use _Dream-Coder-7B-Instruct_ as the teacher dLLM and collect 120k samples from the Ling-Coder-SFT and AceCode datasets, along with a small amount of math-reasoning data. More implementation details can be found in our [code repo](https://github.com/hao-ai-lab/text-diffusion).
 
-**Benchmark Datasets.** We present comprehensive benchmark results across five representative tasks: GSM8K-CoT (chain-of-thought reasoning), MATH (mathematical problem solving), HumanEval (code generation), MBPP (Python programming), and a long-context math reasoning task (5-shot GSM8K reasoning, with a prompt length ≈ 1000). These evaluations assess the performance of our proposed model, d3LLM, against state-of-the-art diffusion-based language models using three key metrics: tokens per forward (TPF), accuracy, and our proposed Accuracy Under Parallelism (AUP).
 
 Our experiments are conducted on three foundational diffusion models: LLaDA, Dream, and Dream-Coder. From these models, we derive three distilled variants—d3LLM-LLaDA, d3LLM-Dream, and d3LLM-Coder—each trained using the same trajectory-based distillation procedure and multi-block decoding strategy described earlier. For the LLaDA-based model, we compare *d3LLM-LLaDA* with *vanilla LLaDA*, *Fast-dLLM-LLaDA*, *D2F*, and *dParallel-LLaDA*.
 For the Dream-based model, we compare *d3LLM-Dream* with *vanilla Dream*, *Fast-dLLM-Dream*, *Fast-dLLM-v2-7B*, and *dParallel-Dream*.
 
-We use the AUP (*Accuracy Under Parallelism*) score as the primary evaluation metric. All experiments were conducted on NVIDIA H100 GPUs. Details of AUP and additional experimental results are provided in [this blog](../text-diffusion). For brevity, we present a radar plot of AUP scores across different foundation models and datasets below.
+We use the AUP (*Accuracy Under Parallelism*) score as the primary evaluation metric. All experiments were conducted on NVIDIA H100 GPUs. Details of AUP and comprehensive experimental results including AUP Curve, TPF, and Accuracy are provided in [this blog](../text-diffusion). For brevity, we present a radar plot of AUP scores across different foundation models and datasets below.
 
 <figure>
 <div class="responsive-img-grid">
