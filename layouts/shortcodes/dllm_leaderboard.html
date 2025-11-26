@@ -18,12 +18,12 @@
 }
 
 .leaderboard-container::-webkit-scrollbar-thumb {
-    background: #667eea;
+    background: #4dcdc4;
     border-radius: 4px;
 }
 
 .leaderboard-container::-webkit-scrollbar-thumb:hover {
-    background: #764ba2;
+    background: #3a9d96;
 }
 
 .leaderboard-table {
@@ -37,7 +37,7 @@
 }
 
 .leaderboard-table thead {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #3a9d96 0%, #2c6963 100%);
     color: white;
 }
 
@@ -91,7 +91,7 @@
 .leaderboard-table .rank-cell {
     font-weight: 700;
     font-size: 16px;
-    color: #667eea;
+    color: #4dcdc4;
     width: 80px;
     min-width: 80px;
     max-width: 80px;
@@ -113,7 +113,7 @@
 .aup-score {
     font-size: 20px;
     font-weight: 700;
-    color: #8b9dff;
+    color: #48cfc6;
     display: block;
     margin-bottom: 4px;
 }
@@ -125,7 +125,7 @@
 }
 
 .avg-cell {
-    background-color: #2d2550;
+    background-color: #1a3d3a;
     font-weight: 700;
     min-width: 120px;
     max-width: 140px;
@@ -133,7 +133,7 @@
 
 .avg-cell .aup-score {
     font-size: 22px;
-    color: #a78bfa;
+    color: #43bfb7;
 }
 
 .na-value {
@@ -150,24 +150,31 @@
     border-radius: 50%;
     text-align: center;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 20px;
 }
 
-.rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: white; }
-.rank-2 { background: linear-gradient(135deg, #C0C0C0, #808080); color: white; }
-.rank-3 { background: linear-gradient(135deg, #CD7F32, #8B4513); color: white; }
+.rank-medal {
+    font-size: 36px;
+    display: inline-block;
+    line-height: 1;
+}
+
+.rank-1 { background: none; }
+.rank-2 { background: none; }
+.rank-3 { background: none; }
 .rank-other { background: #3a3a3a; color: #bbb; }
 
 /* Scroll hint for mobile */
 .scroll-hint {
     display: none;
     text-align: center;
-    color: #999;
+    color: #4dcdc4;
     font-size: 12px;
     margin-bottom: 10px;
     padding: 8px;
-    background: rgba(102, 126, 234, 0.1);
+    background: rgba(77, 205, 196, 0.15);
     border-radius: 4px;
+    border: 1px solid rgba(77, 205, 196, 0.3);
 }
 
 @media (max-width: 768px) {
@@ -444,8 +451,15 @@
     }
     
     function getRankBadge(rank) {
-        const rankClass = rank <= 3 ? `rank-${rank}` : 'rank-other';
-        return `<span class="rank-badge ${rankClass}">${rank}</span>`;
+        if (rank === 1) {
+            return `<span class="rank-badge rank-1"><span class="rank-medal">🥇</span></span>`;
+        } else if (rank === 2) {
+            return `<span class="rank-badge rank-2"><span class="rank-medal">🥈</span></span>`;
+        } else if (rank === 3) {
+            return `<span class="rank-badge rank-3"><span class="rank-medal">🥉</span></span>`;
+        } else {
+            return `<span class="rank-badge rank-other">${rank}</span>`;
+        }
     }
     
     function renderTable(data) {
