@@ -176,6 +176,9 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
 .responsive-img-grid img[data-width="24"] {
   width: 24%;
 }
+.responsive-img-grid img[data-width="23.5"] {
+  width: 23.5%;
+}
 @media (max-width: 768px) {
   .responsive-img-grid img {
     width: 100% !important;
@@ -292,7 +295,7 @@ Across both models, our d3LLM achieves the highest TPS with minimal accuracy deg
   <img src="img/data_dream_coder_aup_curve_humaneval.png" alt="Dream-Coder HumanEval" data-width="23">
   <img src="img/data_dream_coder_aup_curve_humaneval+.png" alt="Dream-Coder HumanEval+" data-width="23">
   <img src="img/data_dream_coder_aup_curve_mbpp.png" alt="Dream-Coder MBPP" data-width="22.5">
-  <img src="img/data_dream_coder_aup_curve_mbpp+.png" alt="Dream-Coder MBPP+" data-width="23">
+  <img src="img/data_dream_coder_aup_curve_mbpp+.png" alt="Dream-Coder MBPP+" data-width="23.5">
 </div>
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 6: Evaluation for Coders across four coding benchmarks (HumanEval, HumanEval+, MBPP, MBPP+).</figcaption>
 </figure>
