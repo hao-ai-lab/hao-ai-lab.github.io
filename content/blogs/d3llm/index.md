@@ -1,5 +1,5 @@
 +++
-title = "d3LLM: Ultra Fast dLLM using Pseudo-Trajectory Distillation 🚀"
+title = "d3LLM: Ultra-Fast dLLM using Pseudo-Trajectory Distillation 🚀"
 date = 2025-11-22T12:00:00-08:00
 authors = ["Yu-Yang Qian", "Junda Su", "Peiyuan Zhang", "Lanxiang Hu", "Peng Zhao", "Hao Zhang"]
 author = "Yu-Yang Qian, Junda Su, Peiyuan Zhang, Lanxiang Hu, Peng Zhao, Hao Zhang"
@@ -14,8 +14,8 @@ draft = false
       url = "https://github.com/hao-ai-lab/text-diffusion"
 [cover]
       image = "/img/dllm_demo.gif"
-      alt = "d3LLM: Ultra Fast dLLM using Pseudo-Trajectory Distillation"
-      caption = "d3LLM: Ultra Fast dLLM using Pseudo-Trajectory Distillation"
+      alt = "d3LLM: Ultra-Fast dLLM using Pseudo-Trajectory Distillation"
+      caption = "d3LLM: Ultra-Fast dLLM using Pseudo-Trajectory Distillation"
       hidden = true
 +++
 
@@ -195,7 +195,7 @@ By combining our distillation recipe with the proposed decoding strategy, our d3
 Our experiments are conducted on three foundational diffusion models: LLaDA, Dream, and Dream-Coder. From these models, we derive three distilled variants—d3LLM-LLaDA, d3LLM-Dream, and d3LLM-Coder—each trained using the same trajectory-based distillation procedure and multi-block decoding strategy described earlier. For the LLaDA-based model, we compare *d3LLM-LLaDA* with *vanilla LLaDA*, *Fast-dLLM-LLaDA*, *D2F*, and *dParallel-LLaDA*.
 For the Dream-based model, we compare *d3LLM-Dream* with *vanilla Dream*, *Fast-dLLM-Dream*, *Fast-dLLM-v2-7B*, and *dParallel-Dream*.
 
-We use the AUP (*Accuracy Under Parallelism*) score as the primary evaluation metric. Details of AUP and additional experimental results are provided in [this blog](../text-diffusion). All experiments were conducted on NVIDIA H100 GPUs. For short, we present a radar plot of AUP scores on different datasets as below.
+We use the AUP (*Accuracy Under Parallelism*) score as the primary evaluation metric. All experiments were conducted on NVIDIA H100 GPUs. Details of AUP and additional experimental results are provided in [this blog](../text-diffusion). For brevity, we present a radar plot of AUP scores across different foundation models and datasets below.
 
 <figure>
 <div class="responsive-img-grid">
