@@ -21,7 +21,7 @@ draft = false
 
 {{< socialBadges github="hao-ai-lab/text-diffusion">}}
 
-## Parallel-Decoder Leaderboard
+## 🏆 Parallel-Decoder Leaderboard
 
 {{< justify >}}
 
