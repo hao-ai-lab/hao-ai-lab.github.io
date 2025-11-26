@@ -21,7 +21,9 @@ draft = false
 
 {{< socialBadges github="hao-ai-lab/text-diffusion">}}
 
+{{< justify >}}
 **TL;DR:** We introduce a novel recipe for building an ultra-fast diffusion language model named **_d3LLM_** (_dequeued-distillate-diffusion Large Language Model_) with negligible accuracy degradation. The d3LLM framework comprises two key components: (i) _distillation_ recipe and (ii)_decoding_ strategy.
+{{< /justify >}}
 
 {{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Demo of the d3LLM-Dream, which can be 5× faster than the AR (Qwen) on H100 GPU and 3.5× faster on A100 GPU.">}}
 
@@ -101,9 +103,12 @@ We introduce a novel recipe for building a highly efficient and high-performing 
 
 {{< /justify >}}
 
+{{< justify >}}
 ### (i) Pseudo-Trajectory-based Distillation Recipe
 
 We propose a novel **trajectory-based distillation** recipe, which introduces an advanced distillation recipe aimed at improving both decoding efficiency and alignment with the teacher model's generation pattern. Specifically, it consists of the following key techniques:
+
+{{< /justify >}}
 
 
 {{< justify >}}
@@ -140,11 +145,14 @@ We propose a novel **trajectory-based distillation** recipe, which introduces an
 {{< /justify >}}
 
 
+{{< justify >}}
 - **Progressive Window Size (Further 8%↑ TPF Improvement)**
 
     <div style="margin-top: 2mm;"></div>
 
   We also employ a _progressive window size_ during training: instead of fixing the decoding window length \$k\$, we gradually increase it from 16 to 32 during the training process. This allows the model to adapt to increasingly larger context spans, facilitating smoother distillation process and stable token generation. This approach leads to an additional **8% improvement in TPF** compared to a constant window size.
+
+{{< /justify >}}
 
 
 ### (ii) Multi-Block Decoding Strategy
@@ -185,6 +193,7 @@ In addition to the novel distillation recipe, we also introduce an efficient dec
 
 ## Benchmark Results
 
+{{< justify >}}
 <!-- We present -->
 
 <!-- By combining our distillation recipe with the proposed decoding strategy, our d3LLM framework surpasses previous state-of-the-art methods on both TPF and TPS, without sacrificing accuracy.  -->
@@ -199,6 +208,8 @@ For the Dream-based model, we compare *d3LLM-Dream* with *vanilla Dream*, *Fast-
 
 We use the AUP (*Accuracy Under Parallelism*) score as the primary evaluation metric. All experiments were conducted on NVIDIA H100 GPUs. Details of AUP and comprehensive experimental results including AUP Curve, TPF, and Accuracy are provided in [this blog](../text-diffusion). For brevity, we present a radar plot of AUP scores across different foundation models and datasets below.
 
+{{< /justify >}}
+
 <figure>
 <div class="responsive-img-grid">
   <img src="img/data_llada_aup_radar.png" alt="LLaDA GSM8K-CoT" data-width="30">
@@ -208,11 +219,17 @@ We use the AUP (*Accuracy Under Parallelism*) score as the primary evaluation me
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Radar plot of AUP scores comparing (a) LLaDA-based, (b) Dream-based, and (c) Coder models.</figcaption>
 </figure>
 
+{{< justify >}}
+
 **Results on Different Models and Datasets.** As shown by the results above, the proposed distillation recipe and multi-block decoding strategy are robust and improve efficiency across various domains. Specifically, our d3LLM achieves the highest AUP score, and accelerates the vanilla LLaDA by approximately 5–10× on TPF across different tasks. Remarkably, we note that for Fast-dLLM-v2, the accuracy scores on Math and HumanEval are notably higher than those of other diffusion models derived from Dreams. We suspect that this stems from the fact that Fast-dLLM-v2 is finetuned directly from Qwen-2.5-7B with an additional 1B tokens (i.e., the LLaMA–Nemotron post-training dataset). In contrast, our d3LLM-Dream is distilled based on the vanilla Dream and uses only 60M additional tokens.
+
 
 
 **Wall-Clock Speed Comparison.** We further evaluate different methods on multiple hardware platforms, including H100 and A100 GPUs, to measure their wall-clock throughput (measured by tokens per second, TPS) and speedup. The results are presented below.
 For the *LLaDA-8B-Instruct*, we report speed (TPS) and accuracy on GSM8K-CoT dataset.
+
+{{< /justify >}}
+
 
 
 {{< table title="Table 1: TPS and performance comparison on LLaDA-based models on GSM8K-CoT dataset." >}}
@@ -246,7 +263,12 @@ For the *Dream-7B-Instruct*, we again report speed and accuracy on GSM8K-CoT dat
 {{< /table >}}
 
 
+{{< justify >}}
+
 To summarize, across both models, our d3LLM framework achieves higher TPF and maintains the highest AUP score across all four tasks with negligible performance degradation. It delivers up to a **5× speedup** over autoregressive decoding (Qwen-2.5-7B-it) on H100 GPUs, and approximately **3× speedup** on A100 GPUs. 
 Note that all experiments are conducted using the HuggingFace inference backend. We leave system-level optimizations including GPU kernel fusion and integration with vLLM, to future work for further TPS improvements
 
 All our distillation code, data, model weights, and benchmark evaluation code are available at [https://github.com/hao-ai-lab/text-diffusion](https://github.com/hao-ai-lab/text-diffusion). The full paper about AUP and our d3LLM framework will be released soon. Stay tuned!
+
+
+{{< /justify >}}

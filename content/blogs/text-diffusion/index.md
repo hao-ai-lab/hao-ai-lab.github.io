@@ -91,6 +91,7 @@ In addition to proposing a new evaluation metric for dLLMs, we introduce [**_d3L
 
 {{< /justify >}}
 
+{{< justify >}}
 ### (i) Distillation Recipe: Pseudo-Trajectory Distillation
 
 
@@ -99,6 +100,9 @@ We propose leveraging the teacher’s **pseudo-trajectory** to guide the student
 
 We further enhance the distillation recipe with two curriculum learning techniques. First, we use a **progressive noise schedule**, gradually increasing the masking ratio from easy scenarios (few masks) to harder ones (many masks) during training. This curriculum approach helps the model build robust unmasking strategies incrementally, contributing an additional **18% TPF improvement**. Second, we employ a **progressive window sizing**, starting with small decoding windows of 16 tokens and gradually expanding to 32 tokens. This improves another **8% to TPF performance**.
 
+{{< /justify >}}
+
+{{< justify >}}
 
 ### (ii) Decoding Strategy: Entropy-based Multi-Block Decoding
 
@@ -112,9 +116,12 @@ For long-context scenarios, we further combine this with a **KV-cache mechanism 
 
 Together, these distillation and decoding innovations enable d3LLM to achieve substantial efficiency gains while maintaining generation quality, making diffusion language models practical for real-world deployment. More details about our d3LLM framework can be found in our [code repository](https://github.com/hao-ai-lab/text-diffusion) and in [this blog post](../d3llm).
 
-## Benchmark Results
+{{< /justify >}}
+
 
 {{< justify >}}
+
+## Benchmark Results
 
 We present comprehensive benchmark results across five representative tasks: GSM8K-CoT (chain-of-thought reasoning), MATH (mathematical problem solving), HumanEval (code generation), MBPP (Python programming), and a long-context math reasoning task (5-shot GSM8K reasoning, with a prompt length ≈ 1000). These datasets span diverse domains and problem types and are widely used in the research community. In addition, their relatively long output lengths allow us to effectively evaluate the models' native parallel decoding capabilities.
 
@@ -234,12 +241,15 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 5: AUP scores and radar chart comparing different Dream-based methods.</figcaption>
 </figure>
 
+{{< justify >}}
+
 
 **Results on Different Models and Datasets.** As shown by the results above, the proposed distillation recipe and multi-block decoding strategy are robust and improve efficiency across various domains. Specifically, our d3LLM achieves the highest AUP score on 4 out of 5 tasks, and accelerates the vanilla LLaDA by approximately 5–10× on TPF across different tasks. 
 <!-- Remarkably, we note that for Fast-dLLM-v2, the accuracy scores on Math and HumanEval are notably higher than those derived from Dreams. We suspect that this stems from the fact that Fast-dLLM-v2 is finetuned directly from Qwen-2.5-7B with an additional 1B tokens. In contrast, our d3LLM-Dream is distilled based on the vanilla Dream and uses only 60M additional tokens. -->
 
 The experimental results also validate the reliability of our AUP metric. For example, on the MBPP dataset with the LLaDA model, although many methods achieve parallelism (TPF) greater than 1, their accuracy degradation compared with the best-performing model (Qwen-2.5-7B-it) is substantial, leading to low overall utility, highlighting that the AUP metric better reflects practical efficiency-performance trade-off.
 
+{{< /justify >}}
 
 
 
@@ -281,8 +291,12 @@ For the *Dream-7B-Instruct*, we again report speed and accuracy on GSM8K-CoT dat
 
 Across both models, our d3LLM achieves the highest TPS with minimal accuracy degradation. It delivers up to a **4.5× speedup** over autoregressive decoding (Qwen-2.5-7B-it) on H100 GPUs, and approximately **3× speedup** on A100 GPUs. All experiments are conducted using the HuggingFace inference backend. We leave system-level optimizations including GPU kernel fusion and integration with vLLM, to future work for further TPS improvements. -->
 
+{{< justify >}}
+
 **Efficient Diffusion Coder.** Beyond LLaDA and Dream, we further apply our distillation approach and multi-block decoding method to a more realistic and challenging application: an efficient LLM-based coding model. Specifically, we use _Dream-Coder-7B-Instruct_ as the teacher dLLM and collect 120k samples from the Ling-Coder-SFT and AceCode datasets, along with a small amount of math-reasoning data, to distill our d3LLM-Coder. The results are demonstrated as below.
 
+
+{{< /justify >}}
 
 <style>
 .responsive-img-grid img[data-width="23"] {
@@ -315,6 +329,7 @@ Our d3LLM-Coder achieves higher TPF and maintains the highest AUP score across a
 {{< /justify >}}
 
 {{< justify >}}
+
 ## Reference
 
 {{< /justify >}}
