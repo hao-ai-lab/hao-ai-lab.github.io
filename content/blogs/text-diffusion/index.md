@@ -21,11 +21,11 @@ draft = false
 
 {{< socialBadges github="hao-ai-lab/text-diffusion">}}
 
-## 🏆 Parallel-Decoder Leaderboard
+## 🏆 Parallel Diffusion LLM Leaderboard
 
 {{< justify >}}
 
-**TL;DR:** We present a leaderboard that compares different parallel-decoders across five representative benchmark tasks, using the AUP score (_Accuracy Under Parallelism_, which will be described in detail later) as the primary evaluation metric, which is a hardware-independent metric that measures both the efficiency and the performance of a parallel-decoder.
+**TL;DR:** We present a leaderboard that compares different diffusion language models (dLLMs) across five representative benchmark tasks, using the AUP score (_Accuracy Under Parallelism_, which will be described in detail later) as the primary evaluation metric, which is a hardware-independent metric that measures both the efficiency and the performance of a dLLM.
 
 {{< /justify >}}
 
@@ -51,11 +51,11 @@ Although many acceleration techniques have been proposed, there is still no stan
 
 {{< /justify >}}
 
-## AUP: A New Metric for Evaluating Parallel-Decoders
+## AUP: A New Metric for Evaluating dLLMs
 
 {{< justify >}}
 
-The challenge in defining a measure for parallel decoders primarily arises from their *dependence on hardware*. Because GPU computational capacity varies across platforms, traditional throughput (often measured in tokens per second, TPS) can differ significantly across different devices. To this end, we propose a new metric, **_AUP_** (_Accuracy Under Parallelism_), to quantify how well the accuracy is maintained as the degree of parallelism increases, which jointly measures the *efficiency and performance* of a parallel-decoder in a *device-independent* manner.
+The challenge in defining a measure for dLLMs primarily arises from their *dependence on hardware*. Because GPU computational capacity varies across platforms, traditional throughput (often measured in tokens per second, TPS) can differ significantly across different devices. To this end, we propose a new metric, **_AUP_** (_Accuracy Under Parallelism_), to quantify how well the accuracy is maintained as the degree of parallelism increases, which jointly measures the *efficiency and performance* of a dLLM in a *device-independent* manner.
 
 Let \$\mathcal{S} = \\{(\rho_i, y_i)\\}\_{i=1}^m\$ be a set of parallelism-accuracy pairs, where \$\rho_1 < \rho_2 < \dots < \rho_m\$, \$\rho_i \in \mathbb{R}^{+}\$ denotes the parallelism (measured in _tokens per forward_, TPF), and \$y_i \in [0, 100]\$ represents accuracy in percentage. We define a minimum accuracy threshold \$y\_{\min} = y_1 - 5\$ to avoid measuring in regimes of significant accuracy degradation. Only points satisfying \$y_i \ge y\_{\min}\$ are included. 
 
@@ -77,7 +77,7 @@ where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y
 
 {{< /justify >}}
 
-## [d3LLM: the Most Parallel Parallel-Decoder so far](../d3llm) 🚀
+## [d3LLM: the Most Parallel dLLM so far](../d3llm) 🚀
 
 
 {{< justify >}}
@@ -87,7 +87,7 @@ where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y
 
 {{< justify >}}
 
-In addition to proposing a new evaluation metric for parallel decoders, we introduce [**_d3LLM_** (_dequeued-distillate-diffusion Large Language Model_)](../d3llm), a novel recipe for building highly efficient diffusion language models. The d3LLM framework combines two key innovations: a trajectory-based distillation approach and an entropy-based multi-block decoding strategy.
+In addition to proposing a new evaluation metric for dLLMs, we introduce [**_d3LLM_** (_dequeued-distillate-diffusion Large Language Model_)](../d3llm), a novel recipe for building highly efficient diffusion language models. The d3LLM framework combines two key innovations: a trajectory-based distillation approach and an entropy-based multi-block decoding strategy.
 
 {{< /justify >}}
 
