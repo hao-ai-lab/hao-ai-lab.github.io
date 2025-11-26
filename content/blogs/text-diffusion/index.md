@@ -1,8 +1,8 @@
 +++
 title = "Who is the Most Parallel Parallel-Decoder?"
 date = 2025-11-21T12:00:00-08:00
-authors = ["Yu-Yang Qian", "Junda Su", "Peng Zhao", "Hao Zhang"]
-author = "Yu-Yang Qian, Junda Su, Peng Zhao, Hao Zhang"
+authors = ["Yu-Yang Qian", "Junda Su", "Peiyuan Zhang", "Lanxiang Hu", "Peng Zhao", "Hao Zhang"]
+author = "Yu-Yang Qian, Junda Su, Peiyuan Zhang, Lanxiang Hu, Peng Zhao, Hao Zhang"
 ShowReadingTime = true
 draft = false
 [socialIcons]
@@ -13,7 +13,7 @@ draft = false
       name = "github"
       url = "https://github.com/hao-ai-lab/text-diffusion"
 [cover]
-      image = "/img/text-diffusion-demo.gif"
+      image = "/img/dllm_leaderboard.png"
       alt = "d3LLM: Ultra-fast diffusion language model"
       caption = "d3LLM: the Most Parallel Parallel-Decoder"
       hidden = true
@@ -39,7 +39,11 @@ Diffusion large language models (dLLMs) have emerged as a promising alternative 
  
 With growing interest from the research community, an increasing number of methods have been proposed to accelerate diffusion large language models (dLLMs) [[1](https://arxiv.org/abs/2505.22618), [2](https://arxiv.org/abs/2508.09192), [3](https://arxiv.org/abs/2509.26488), [4](https://arxiv.org/abs/2509.26328), [5](https://arxiv.org/abs/2510.08666)]. Upon carefully examining the behavior of dLLMs, our key observation is that: **dLLMs are inherently parallel-decoders with bidirectional attention.** As a result, many recent efforts to equip AR models with parallel-decoding capabilities [[6](https://arxiv.org/abs/2401.10774), [7](https://arxiv.org/abs/2403.00835)] are closely related to the design principles of dLLMs. This leads to a natural question:
 
-_Who is the most parallel parallel-decoder?_
+<center><i>
+
+**Who is the most parallel parallel-decoder?**</i>
+
+</center>
 
 Although numerous acceleration techniques have been introduced, there is currently no standardized benchmark or metric to evaluate and compare their degree of parallelism.
 
@@ -63,16 +67,16 @@ where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y
 
 {{< justify >}}
 
-**Remark 1 (Choice of \$\alpha\$).** The hyperparameter \$\alpha\$ controls the penalty for accuracy degradation. A larger \$\alpha\$ increases sensitivity to performance drops, causing the contribution of throughput to decay exponentially with the error rate. In the ideal case, where a method improves parallelism without compromising accuracy, the AUP reduces to the standard area under the parallelism-accuracy curve (AUC). In our setting, we set \$\alpha = 3\$.
+**Choice of \$\alpha\$.** The hyperparameter \$\alpha\$ controls the penalty for accuracy degradation. A larger \$\alpha\$ increases sensitivity to performance drops, causing the contribution of throughput to decay exponentially with the error rate. In the ideal case, where a method improves parallelism without compromising accuracy, the AUP reduces to the standard area under the parallelism-accuracy curve (AUC). In our setting, we set \$\alpha = 3\$.
 
-**Remark 2 (Hardware-Independence).** Unlike traditional throughput metrics such as TPS (tokens per second), which are highly dependent on hardware capabilities, AUP offers a more robust and hardware-independent measure. For instance, in our experiments, our d3LLM-LLaDA model (which will be introduced in the next section) demonstrated around 5× higher TPS than an AR baseline (Qwen 2.5 7B it) on an NVIDIA H100 GPU (280 vs. 57 tokens/s). However, this advantage shrank significantly on an NVIDIA A100 GPU (180 vs. 50 tokens/s). In contrast, the TPF (tokens per forward pass) remained consistent across hardware platforms. Therefore, AUP provides a robust and fair evaluation metric that reflects both efficiency and accuracy while remaining independent of specific hardware configurations, helping the community focus on algorithmic design without requiring access to particular GPUs.
+**Hardware-Independence.** Unlike traditional throughput metrics such as TPS (tokens per second), which are highly dependent on hardware capabilities, AUP offers a more robust and hardware-independent measure. For instance, in our experiments, our d3LLM-LLaDA model (which will be introduced in the next section) demonstrated around 5× higher TPS than an AR baseline (Qwen 2.5 7B it) on an NVIDIA H100 GPU (280 vs. 57 tokens/s). However, this advantage shrank significantly on an NVIDIA A100 GPU (180 vs. 50 tokens/s). In contrast, the TPF (tokens per forward pass) remained consistent across hardware platforms. Therefore, AUP provides a robust and fair evaluation metric that reflects both efficiency and accuracy while remaining independent of specific hardware configurations, helping the community focus on algorithmic design without requiring access to particular GPUs.
 
 {{< /justify >}}
 
 ## d3LLM: the Most Parallel Parallel-Decoder so far 🚀
 
 
-{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="d3LLM: the Most Parallel Parallel-Decoder">}}
+{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Demo of the d3LLM-Dream, which can be 5× faster than the AR (Qwen) on H100 GPU and 3.5× faster on A100 GPU.">}}
 
 {{< justify >}}
 
