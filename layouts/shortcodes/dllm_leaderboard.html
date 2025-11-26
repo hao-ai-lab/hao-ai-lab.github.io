@@ -182,7 +182,8 @@
     
     .leaderboard-table {
         font-size: 11px;
-        min-width: 1000px; /* Slightly smaller min-width for mobile */
+        min-width: auto; /* Remove fixed min-width on mobile */
+        width: max-content; /* Fit content exactly */
     }
     
     .leaderboard-table th,
@@ -205,12 +206,25 @@
         font-size: 12px;
     }
     
+    .leaderboard-table .rank-cell {
+        width: 60px;
+        min-width: 60px;
+        max-width: 60px;
+    }
+    
     .leaderboard-table .model-cell {
-        min-width: 140px;
+        min-width: 120px;
+        max-width: 140px;
     }
     
     .leaderboard-table .metric-cell {
+        min-width: 110px;
+        max-width: 130px;
+    }
+    
+    .avg-cell {
         min-width: 100px;
+        max-width: 120px;
     }
 }
 </style>
