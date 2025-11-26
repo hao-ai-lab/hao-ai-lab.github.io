@@ -176,7 +176,11 @@ In addition to the novel distillation recipe, we also introduce an efficient dec
 
     <div style="margin-top: 2mm;"></div>
 
-  Inspired by the approach in [D2F](https://arxiv.org/abs/2508.09192), we propose an _entropy-based multi-block decoding_ method. Unlike conventional diffusion decoding, which operates strictly within a single block, our method enables decoding of both the current and future blocks in parallel. We select tokens to decode based on entropy threshold, in which lower-entropy (more confident) predictions across blocks are first to be unmasked. This strategy significantly enhances decoding efficiency and increases TPF by approximately **20%**.
+  Inspired by the approach in [D2F](https://arxiv.org/abs/2508.09192), we propose an _entropy-based multi-block decoding_ method. Unlike conventional diffusion decoding, which operates strictly within a single block, our method enables decoding of both the current and future blocks in parallel. We select tokens to decode based on entropy threshold, in which lower-entropy (more confident) predictions across blocks are first to be unmasked. 
+  
+  <div style="margin-top: 2mm;"></div>
+
+  Each block can be in one of four states: **Completed**, **Completed but Stabilizing**, **Fully Activated**, and **Activated**. We create a new *Activated* block when its preceding block reaches 10% completion and employ a conservative decoding strategy for this block, generating tokens only when they meet the entropy threshold. When the preceding block reaches 95% completion, the *Activated* block transitions to a *Fully Activated* state, where a more aggressive strategy is used by decoding at least one token per forward pass regardless of the threshold. Once all tokens in a block are unmasked, the block enters the *Completed but Stabilizing* state, during which we perform forward passes without using the KV cache and refresh previous caches. After 2–4 rounds, the block becomes *Completed*, and we store its KV cache. This multi-block decoding strategy substantially improves decoding efficiency and increases TPF by **20%**.
 
 {{< /justify >}}
 
