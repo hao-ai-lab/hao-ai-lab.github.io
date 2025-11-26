@@ -14,8 +14,8 @@ draft = false
       url = "https://github.com/hao-ai-lab/text-diffusion"
 [cover]
       image = "/img/dllm_leaderboard.png"
-      alt = "d3LLM: Ultra-fast diffusion language model"
-      caption = "d3LLM: the Most Parallel Parallel-Decoder"
+      alt = "Who is the Most Parallel Parallel-Decoder?"
+      caption = "Who is the Most Parallel Parallel-Decoder?"
       hidden = true
 +++
 
@@ -77,7 +77,7 @@ where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y
 
 {{< /justify >}}
 
-## d3LLM: the Most Parallel Parallel-Decoder so far 🚀
+## [d3LLM:](../d3llm) the Most Parallel Parallel-Decoder so far 🚀
 
 
 {{< justify >}}
@@ -113,8 +113,7 @@ For long-context scenarios, we further combine this with a **KV-cache mechanism 
 
 
 
-Together, these distillation and decoding innovations enable d3LLM to achieve substantial efficiency gains while maintaining generation quality, making diffusion language models practical for real-world deployment.
-
+Together, these distillation and decoding innovations enable d3LLM to achieve substantial efficiency gains while maintaining generation quality, making diffusion language models practical for real-world deployment. More details about our d3LLM framework can be found in our [code repository](https://github.com/hao-ai-lab/text-diffusion) and in [this blog post](../d3llm).
 
 ## Benchmark Results
 
@@ -141,30 +140,72 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
   flex-wrap: wrap;
 }
 .responsive-img-grid img {
-  width: 30%;
   height: auto;
+  flex-shrink: 0;
+}
+.responsive-img-grid img[data-width="39"] {
+  width: 39%;
+}
+.responsive-img-grid img[data-width="38"] {
+  width: 38%;
+}
+.responsive-img-grid img[data-width="30"] {
+  width: 30%;
+}
+.responsive-img-grid img[data-width="31"] {
+  width: 31%;
+}
+.responsive-img-grid img[data-width="30.5"] {
+  width: 30.5%;
+}
+.responsive-img-grid img[data-width="29"] {
+  width: 29%;
+}
+.responsive-img-grid img[data-width="22.5"] {
+  width: 22.5%;
+}
+.responsive-img-grid img[data-width="45"] {
+  width: 45%;
+}
+.responsive-img-grid img[data-width="50"] {
+  width: 50%;
+}
+.responsive-img-grid img[data-width="40"] {
+  width: 40%;
+}
+.responsive-img-grid img[data-width="44"] {
+  width: 44%;
+}
+.responsive-img-grid img[data-width="24"] {
+  width: 24%;
 }
 @media (max-width: 768px) {
   .responsive-img-grid img {
-    width: 100%;
+    width: 100% !important;
   }
 }
 </style>
 
 <figure>
 <div class="responsive-img-grid">
-  <img src="img/data_llada_aup_curve_gsm8k_cot.png" alt="LLaDA GSM8K-CoT">
-  <img src="img/data_llada_aup_curve_humaneval.png" alt="LLaDA HumanEval">
-  <img src="img/data_llada_aup_curve_long-gsm8k.png" alt="LLaDA Long-GSM8K">
+  <img src="img/data_llada_aup_curve_gsm8k_cot.png" alt="LLaDA GSM8K-CoT" data-width="30">
+  <img src="img/data_llada_aup_curve_humaneval.png" alt="LLaDA HumanEval" data-width="30">
+  <img src="img/data_llada_aup_curve_mbpp.png" alt="LLaDA MBPP" data-width="29">
 </div>
 <div class="responsive-img-grid" style="margin-top: 20px;">
-  <img src="img/data_llada_aup_curve_math.png" alt="LLaDA MATH">
-  <img src="img/data_llada_aup_curve_mbpp.png" alt="LLaDA MBPP">
+  <img src="img/data_llada_aup_curve_math.png" alt="LLaDA MATH" data-width="30">
+  <img src="img/data_llada_aup_curve_long-gsm8k.png" alt="LLaDA Long-GSM8K" data-width="30">
 </div>
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 2: AUP curves for LLaDA-based models across five benchmark tasks (GSM8K-CoT, HumanEval, Long-GSM8K, MATH, MBPP).</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 2: AUP curves for LLaDA-based models across five benchmark tasks (GSM8K-CoT, HumanEval, MBPP, MATH, and Long-GSM8K).</figcaption>
 </figure>
 
-{{< two_images src1="img/data_llada_aup_histogram.png" src2="img/data_llada_aup_radar.png" alt1="LLaDA AUP Histogram" alt2="LLaDA AUP Radar" width1="45%" width2="40%" title="Figure 3: AUP scores and radar chart comparing different LLaDA-based methods.">}}
+<figure>
+<div class="responsive-img-grid">
+  <img src="img/data_llada_aup_histogram.png" alt="LLaDA AUP Histogram" data-width="45">
+  <img src="img/data_llada_aup_radar.png" alt="LLaDA AUP Radar" data-width="40">
+</div>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 3: AUP scores and radar chart comparing different LLaDA-based methods.</figcaption>
+</figure>
 
 {{< justify >}}
 
@@ -174,18 +215,24 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
 
 <figure>
 <div class="responsive-img-grid">
-  <img src="img/data_dream_aup_curve_gsm8k_cot.png" alt="Dream GSM8K-CoT">
-  <img src="img/data_dream_aup_curve_humaneval_instruct.png" alt="Dream HumanEval_Instruct">
-  <img src="img/data_dream_aup_curve_long-gsm8k.png" alt="Dream Long-GSM8K">
+  <img src="img/data_dream_aup_curve_gsm8k_cot.png" alt="Dream GSM8K-CoT" data-width="30">
+  <img src="img/data_dream_aup_curve_humaneval_instruct.png" alt="Dream HumanEval_Instruct" data-width="29">
+  <img src="img/data_dream_aup_curve_mbpp_instruct.png" alt="Dream MBPP_Instruct" data-width="29">
 </div>
 <div class="responsive-img-grid" style="margin-top: 20px;">
-  <img src="img/data_dream_aup_curve_math.png" alt="Dream MATH">
-  <img src="img/data_dream_aup_curve_mbpp_instruct.png" alt="Dream MBPP_Instruct">
+  <img src="img/data_dream_aup_curve_math.png" alt="Dream MATH" data-width="30">
+  <img src="img/data_dream_aup_curve_long-gsm8k.png" alt="Dream Long-GSM8K" data-width="31">
 </div>
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 4: AUP curves for Dream-based models across five benchmark tasks (GSM8K-CoT, HumanEval_Instruct, Long-GSM8K, MATH, MBPP_Instruct).</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 4: AUP curves for Dream-based models across five benchmark tasks (GSM8K-CoT, HumanEval_Instruct, MBPP_Instruct, MATH, and Long-GSM8K).</figcaption>
 </figure>
 
-{{< two_images src1="img/data_dream_aup_histogram.png" src2="img/data_dream_aup_radar.png" alt1="Dream AUP Histogram" alt2="Dream AUP Radar" width1="50%" width2="44%" title="Figure 5: AUP scores and radar chart comparing different Dream-based methods.">}}
+<figure>
+<div class="responsive-img-grid">
+  <img src="img/data_dream_aup_histogram.png" alt="Dream AUP Histogram" data-width="50">
+  <img src="img/data_dream_aup_radar.png" alt="Dream AUP Radar" data-width="44">
+</div>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 5: AUP scores and radar chart comparing different Dream-based methods.</figcaption>
+</figure>
 
 
 **Results on Different Models and Datasets.** As shown by the results above, the proposed distillation recipe and multi-block decoding strategy are robust and improve efficiency across various domains. Specifically, our d3LLM achieves the highest AUP score on 9 out of 10 tasks, and accelerates the vanilla LLaDA by approximately 5–10× on TPF across different tasks. 
@@ -238,35 +285,28 @@ Across both models, our d3LLM achieves the highest TPS with minimal accuracy deg
 
 
 <style>
-.responsive-img-grid-4 {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.responsive-img-grid-4 img {
+.responsive-img-grid img[data-width="23"] {
   width: 23%;
-  height: auto;
-}
-@media (max-width: 768px) {
-  .responsive-img-grid-4 img {
-    width: 100%;
-  }
 }
 </style>
 
 <figure>
-<div class="responsive-img-grid-4">
-  <img src="img/data_dream_coder_aup_curve_humaneval.png" alt="Dream-Coder HumanEval">
-  <img src="img/data_dream_coder_aup_curve_humaneval+.png" alt="Dream-Coder HumanEval+">
-  <img src="img/data_dream_coder_aup_curve_mbpp.png" alt="Dream-Coder MBPP">
-  <img src="img/data_dream_coder_aup_curve_mbpp+.png" alt="Dream-Coder MBPP+">
+<div class="responsive-img-grid">
+  <img src="img/data_dream_coder_aup_curve_humaneval.png" alt="Dream-Coder HumanEval" data-width="23">
+  <img src="img/data_dream_coder_aup_curve_humaneval+.png" alt="Dream-Coder HumanEval+" data-width="23">
+  <img src="img/data_dream_coder_aup_curve_mbpp.png" alt="Dream-Coder MBPP" data-width="22.5">
+  <img src="img/data_dream_coder_aup_curve_mbpp+.png" alt="Dream-Coder MBPP+" data-width="23">
 </div>
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 6: Evaluation for Coders across four coding benchmarks (HumanEval, HumanEval+, MBPP, MBPP+).</figcaption>
 </figure>
 
-{{< two_images src1="img/data_dream_coder_aup_histogram.png" src2="img/data_dream_coder_aup_radar.png" alt1="Dream-Coder AUP Histogram" alt2="Dream-Coder AUP Radar" width1="50%" width2="40%" title="Figure 7: AUP histogram and radar chart comparing different Dream-based methods.">}}
+<figure>
+<div class="responsive-img-grid">
+  <img src="img/data_dream_coder_aup_histogram.png" alt="Dream-Coder AUP Histogram" data-width="50">
+  <img src="img/data_dream_coder_aup_radar.png" alt="Dream-Coder AUP Radar" data-width="39">
+</div>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 7: AUP scores and radar chart comparing different Coder-based methods.</figcaption>
+</figure>
 
 {{< justify >}}
 
