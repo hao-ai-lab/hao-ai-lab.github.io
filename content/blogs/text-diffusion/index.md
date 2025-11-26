@@ -25,7 +25,7 @@ draft = false
 
 {{< justify >}}
 
-We present a leaderboard comparing different parallel-decoding methods across five benchmark tasks. The **AUP score** (which will be detailed later) is the metric.
+We present a leaderboard that compares different parallel-decoders across five representative benchmark tasks, using the AUP score (which will be described in detail later) as the primary evaluation metric.
 
 {{< /justify >}}
 
@@ -33,7 +33,7 @@ We present a leaderboard comparing different parallel-decoding methods across fi
 
 {{< justify >}}
 
-## Introduction
+## Background
 
 Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of _bidirectional attention_, enabling capabilities such as parallel decoding, error correction, and random-order generation, which are features that are not feasible with AR models. Recently, several closed-source diffusion models, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), have demonstrated impressive efficiency and performance, achieving high decoding speeds and competitive results compared to AR models. In contrast, open-source diffusion language models have exhibited significantly lower throughput, often performing even slower than AR models. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) achieve only around 20 tokens per second, whereas closed-source dLLMs exceed 1000 tokens per second.
  
@@ -46,7 +46,7 @@ With growing interest from the research community, an increasing number of metho
 </center>
 
 
-Although many acceleration techniques have been proposed, there is still no standardized benchmark or metric for evaluating and comparing their degrees of parallelism. Notably, we focus on models with *native parallelism capabilities*, with diffusion language models being a representative example. Speculative decoding framework falls outside the scope of our study because it relies on different model architectures and an additional verification step to ensure token correctness. Accordingly, our parallel-decoder leaderboard includes only models with native parallelism capabilities, while speculative decoding framework is orthogonal to our study and can be incorporated separately to achieve additional speedup.
+Although many acceleration techniques have been proposed, there is still no standardized benchmark or metric for evaluating and comparing their degrees of parallelism. In this work, we focus on models with *native parallelism capabilities*, with diffusion language models as a representative example. The speculative decoding framework falls out of our scope because it depends on different model architectures and requires an additional verification step to ensure token correctness, which introduces more complexity when serving models of different sizes. Consequently, our parallel-decoder leaderboard includes only models with native parallelism capabilities, and speculative decoding is orthogonal to our study and can be further incorporated to achieve additional speedup.
 
 
 {{< /justify >}}
@@ -87,28 +87,29 @@ where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y
 
 {{< justify >}}
 
-In addition to proposing a new evaluation metric for parallel decoders, we introduce **_d3LLM_** (_dequeued-distillate-diffusion Large Language Model_), a novel recipe for building highly efficient diffusion language models. The d3LLM framework combines two key innovations: a trajectory-based distillation approach and an entropy-driven multi-block decoding strategy.
+In addition to proposing a new evaluation metric for parallel decoders, we introduce **_d3LLM_** (_dequeued-distillate-diffusion Large Language Model_), a novel recipe for building highly efficient diffusion language models. The d3LLM framework combines two key innovations: a trajectory-based distillation approach and an entropy-based multi-block decoding strategy.
 
 {{< /justify >}}
 
 ### (i) Distillation Recipe: Pseudo-Trajectory Distillation
 
 
-Distillation for dLLMs faces a fundamental challenge: we typically only have access to final prompt-response pairs, without visibility into how the teacher model arrived at its answer. This is particularly problematic because the teacher's decoding trajectory—the order in which it unmasks tokens—contains valuable information about efficient generation patterns. Our key insight is to leverage this trajectory as a form of intermediate supervision.
+Distillation for dLLMs faces a fundamental challenge: we typically only have access to final prompt-response pairs, without visibility into how the teacher model arrived at its answer through intermediate states. This is particularly problematic because the teacher's decoding trajectory, the order in which it unmasks tokens, contains valuable information about efficient generation patterns. Our key insight is to leverage this trajectory as a form of intermediate supervision.
 
 
-To this end, we propose to leverage the teacher's **pseudo-trajectory** to guide the student model. Given a prompt, we first let the teacher diffusion model generate a response while recording its complete decoding trajectory. Rather than using the content of the response itself, we extract the _dequeuing order_—essentially, which tokens the teacher chose to unmask at each step. This forms what we call a **pseudo-trajectory** that captures the teacher's decoding strategy. We then reconstruct intermediate noisy sequences that simulate what the teacher "saw" at various points during generation, with tokens masked or revealed according to the recorded trajectory. This trajectory-based approach alone yields a **15% improvement in tokens-per-forward** compared to naive random masking strategies.
+To this end, we propose leveraging the teacher’s **pseudo-trajectory** to guide the student model. Given a prompt, we first let the teacher diffusion model generate a full output. Instead of using the content of the response, we extract the *dequeuing order*, i.e., the sequence in which the teacher chooses to unmask tokens at each step. This sequence forms a **pseudo-trajectory** that reflects the teacher’s decoding strategy. We then reconstruct noisy sequences that approximate the intermediate states of the teacher. This trajectory-based method alone yields a **15% increase in tokens per forward pass** compared with naive random masking.
 
-We further enhance the distillation recipe with two curriculum learning techniques. First, we use a **progressive noise schedule**, gradually increasing the masking ratio from easy scenarios (few masks) to harder ones (many masks) during training. This curriculum approach helps the model build robust unmasking strategies incrementally, contributing an additional **18% TPF improvement**. Second, inspired by recent work on diffusion models, we employ **progressive window sizing**, starting with small decoding windows of 16 tokens and gradually expanding to 32 tokens. This allows the model to first master local dependencies before tackling longer-range generation, adding another **8% to TPF performance**.
+
+We further enhance the distillation recipe with two curriculum learning techniques. First, we use a **progressive noise schedule**, gradually increasing the masking ratio from easy scenarios (few masks) to harder ones (many masks) during training. This curriculum approach helps the model build robust unmasking strategies incrementally, contributing an additional **18% TPF improvement**. Second, we employ a **progressive window sizing**, starting with small decoding windows of 16 tokens and gradually expanding to 32 tokens. This improves another **8% to TPF performance**.
 
 
 ### (ii) Decoding Strategy: Entropy-based Multi-Block Decoding
 
 
-While our distillation recipe produces an efficient student model, we also need a decoding strategy that fully exploits its parallel generation capabilities. Standard diffusion decoding operates within fixed-size blocks, processing one block at a time. We push this further with **entropy-based multi-block parallel decoding**. This cross-block parallel decoding delivers approximately **20% TPF improvement** by allowing the model to make progress on multiple blocks simultaneously rather than strictly sequentially. 
+While our distillation recipe produces an efficient student model, we also need a decoding strategy that fully exploits its parallel generation capabilities. Standard diffusion decoding operates within fixed-size blocks, processing one block at a time. We push this further with **entropy-based multi-block parallel decoding**. This multi-block parallel decoding delivers approximately **20% TPF improvement**. 
 
 
-For long-context scenarios, we further combine this with a **KV-cache mechanism with periodic refresh**. After completing each block, we cache its key-value states but also periodically perform full forward passes to refresh stale caches. This hybrid approach maintains generation quality while boosting throughput by roughly **20% in long-context scenarios**. Finally, we implement **early stopping** when the model generates an end-of-sequence token, avoiding wasteful computation on already-complete sequences—a simple optimization that contributes an additional **5% TPF gain**.
+For long-context scenarios, we further combine this with a **KV-cache mechanism with periodic refresh**. After completing each block, we delay for several rounds before caching its key-value states, and simultaneously perform full forward passes to refresh previous caches. This hybrid approach maintains generation quality while boosting throughput by roughly **20% in long-context scenarios**. Finally, we implement **early stopping** when the model generates an EOS token, contributes an additional **5% TPF gain**.
 
 
 
