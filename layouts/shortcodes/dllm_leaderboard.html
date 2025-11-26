@@ -1,0 +1,439 @@
+<style>
+.leaderboard-container {
+    width: 100%;
+    overflow-x: auto;
+    margin: 30px 0;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1e1e1e;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.leaderboard-table thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.leaderboard-table th {
+    padding: 16px 12px;
+    text-align: center !important;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    white-space: nowrap;
+}
+
+.leaderboard-table th:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.leaderboard-table th.sortable::after {
+    content: ' ↕';
+    opacity: 0.5;
+    font-size: 12px;
+}
+
+.leaderboard-table th.sort-asc::after {
+    content: ' ↑';
+    opacity: 1;
+}
+
+.leaderboard-table th.sort-desc::after {
+    content: ' ↓';
+    opacity: 1;
+}
+
+.leaderboard-table tbody tr {
+    border-bottom: 1px solid #333;
+    transition: background-color 0.2s;
+}
+
+.leaderboard-table tbody tr:hover {
+    background-color: #2a2a2a;
+}
+
+.leaderboard-table td {
+    padding: 16px 12px;
+    text-align: center;
+    font-size: 14px;
+    color: #e0e0e0;
+}
+
+.leaderboard-table .rank-cell {
+    font-weight: 700;
+    font-size: 16px;
+    color: #667eea;
+    width: 60px;
+}
+
+.leaderboard-table .model-cell {
+    text-align: center;
+    font-weight: 600;
+    color: #ffffff;
+    min-width: 180px;
+}
+
+.leaderboard-table .metric-cell {
+    min-width: 120px;
+}
+
+.aup-score {
+    font-size: 20px;
+    font-weight: 700;
+    color: #8b9dff;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.sub-metrics {
+    font-size: 11px;
+    color: #999;
+    display: block;
+}
+
+.avg-cell {
+    background-color: #2d2550;
+    font-weight: 700;
+}
+
+.avg-cell .aup-score {
+    font-size: 22px;
+    color: #a78bfa;
+}
+
+.na-value {
+    color: #666;
+    font-size: 18px;
+}
+
+/* Rank badges */
+.rank-badge {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 50%;
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: white; }
+.rank-2 { background: linear-gradient(135deg, #C0C0C0, #808080); color: white; }
+.rank-3 { background: linear-gradient(135deg, #CD7F32, #8B4513); color: white; }
+.rank-other { background: #3a3a3a; color: #bbb; }
+
+@media (max-width: 768px) {
+    .leaderboard-table {
+        font-size: 12px;
+    }
+    
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 10px 6px;
+    }
+    
+    .aup-score {
+        font-size: 16px;
+    }
+    
+    .sub-metrics {
+        font-size: 10px;
+    }
+}
+</style>
+
+<div class="leaderboard-container">
+    <table class="leaderboard-table" id="leaderboard-unified">
+        <thead>
+            <tr>
+                <th class="sortable" data-sort="rank">Rank</th>
+                <th class="sortable" data-sort="model">Model</th>
+                <th class="sortable" data-sort="gsm8k_cot">GSM8K-CoT</th>
+                <th class="sortable" data-sort="math">MATH</th>
+                <th class="sortable" data-sort="mbpp">MBPP</th>
+                <th class="sortable" data-sort="humaneval">HumanEval</th>
+                <th class="sortable" data-sort="long_gsm8k">Long-GSM8K</th>
+                <th class="sortable" data-sort="avg">Avg AUP</th>
+            </tr>
+        </thead>
+        <tbody id="leaderboard-body-unified">
+            <!-- Data will be populated by JavaScript -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+(function() {
+    let currentSort = { column: 'avg', direction: 'desc' };
+    let allData = {};
+    
+    // Parse CSV data
+    function parseCSV(csvText) {
+        const lines = csvText.split('\n');
+        const data = {
+            "gsm8k_cot": {},
+            "math": {},
+            "mbpp": {},
+            "humaneval": {},
+            "long_gsm8k": {}
+        };
+        
+        let headerLine = null;
+        let datasetColumns = {}; // Maps column index to dataset name
+        
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
+            
+            const cells = line.split(',');
+            
+            // Check if this is a header line with dataset names
+            if (line.includes('gsm8k_cot') || line.includes('mbpp') || line.includes('humaneval') || line.includes('long-gsm8k')) {
+                headerLine = i;
+                datasetColumns = {};
+                
+                // Map column indices to dataset names
+                for (let j = 0; j < cells.length; j++) {
+                    const cell = cells[j].trim();
+                    if (cell === 'gsm8k_cot') {
+                        datasetColumns[j] = 'gsm8k_cot';
+                    } else if (cell === 'math' && !cells.join(',').includes('long-gsm8k')) {
+                        datasetColumns[j] = 'math';
+                    } else if (cell === 'mbpp_instruct' || cell === 'mbpp') {
+                        datasetColumns[j] = 'mbpp';
+                    } else if (cell === 'humaneval_instruct' || cell === 'humaneval') {
+                        datasetColumns[j] = 'humaneval';
+                    } else if (cell === 'long-gsm8k') {
+                        datasetColumns[j] = 'long_gsm8k';
+                    }
+                }
+                continue;
+            }
+            
+            // Skip header rows with "token/forward (TPF)"
+            if (line.includes('token/forward (TPF)')) {
+                continue;
+            }
+            
+            // Parse data rows
+            if (cells.length > 4 && cells[1] && headerLine !== null) {
+                const modelName = cells[1].trim();
+                
+                // Skip section headers and empty model names
+                if (modelName && 
+                    !modelName.includes('Dream:') && 
+                    !modelName.includes('LLaDA:') && 
+                    !modelName.includes('Dream Coder:') && 
+                    !modelName.includes('TPS:') &&
+                    !modelName.includes('Qwen2.5-Coder-7B')) {
+                    
+                    // Parse data for each dataset in this row
+                    for (let colIdx in datasetColumns) {
+                        const dataset = datasetColumns[colIdx];
+                        const baseCol = parseInt(colIdx);
+                        
+                        // CSV structure:
+                        // Row with dataset names: ..., gsm8k_cot, ..., math, ...
+                        // Row with column headers: ..., token/forward (TPF), Acc, AUP, TPF=1时的Acc, ...
+                        // Data rows: ..., 1.00, 74.10, 74.1000, 74.10, ...
+                        // 
+                        // If dataset name is at column N, then:
+                        // - TPF is at column N (same position)
+                        // - Acc is at column N+1
+                        // - AUP is at column N+2
+                        const tpf = parseFloat(cells[baseCol]);
+                        const acc = parseFloat(cells[baseCol + 1]);
+                        const aup = parseFloat(cells[baseCol + 2]);
+                        
+                        if (!isNaN(tpf) && !isNaN(acc) && !isNaN(aup)) {
+                            data[dataset][modelName] = [tpf, acc, aup];
+                        }
+                    }
+                }
+            }
+        }
+        
+        return data;
+    }
+    
+    // Load CSV file
+    async function loadData() {
+        try {
+            const response = await fetch('/blogs/text-diffusion/dLLM_Results.csv');
+            const csvText = await response.text();
+            allData = parseCSV(csvText);
+            
+            // Initialize and render table
+            const processedData = processData(allData);
+            const sortedData = sortData([...processedData], currentSort.column, currentSort.direction);
+            renderTable(sortedData);
+            updateSortIndicators();
+            
+            // Add click handlers to headers
+            const table = document.getElementById('leaderboard-unified');
+            const headers = table.querySelectorAll('th.sortable');
+            
+            headers.forEach(th => {
+                th.addEventListener('click', () => {
+                    const column = th.dataset.sort;
+                    
+                    if (currentSort.column === column) {
+                        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        currentSort.column = column;
+                        currentSort.direction = 'desc';
+                    }
+                    
+                    const sortedData = sortData([...processedData], currentSort.column, currentSort.direction);
+                    renderTable(sortedData);
+                    updateSortIndicators();
+                });
+            });
+        } catch (error) {
+            console.error('Error loading CSV:', error);
+            document.getElementById('leaderboard-body-unified').innerHTML = 
+                '<tr><td colspan="8" style="text-align:center;color:#999;">Error loading data</td></tr>';
+        }
+    }
+    
+    function processData(data) {
+        const tasks = ['gsm8k_cot', 'math', 'mbpp', 'humaneval', 'long_gsm8k'];
+        const models = {};
+        
+        // Extract all unique models
+        tasks.forEach(task => {
+            if (data[task]) {
+                Object.keys(data[task]).forEach(model => {
+                    if (!models[model]) {
+                        models[model] = {
+                            name: model,
+                            metrics: {}
+                        };
+                    }
+                });
+            }
+        });
+        
+        // Process metrics for each model
+        Object.keys(models).forEach(modelName => {
+            let totalAUP = 0;
+            let taskCount = 0;
+            
+            tasks.forEach(task => {
+                if (data[task] && data[task][modelName]) {
+                    const [tpf, acc, aup] = data[task][modelName];
+                    
+                    models[modelName].metrics[task] = {
+                        aup: aup,
+                        tpf: tpf,
+                        acc: acc
+                    };
+                    
+                    totalAUP += aup;
+                    taskCount++;
+                } else {
+                    models[modelName].metrics[task] = null;
+                }
+            });
+            
+            models[modelName].avgAUP = taskCount > 0 ? totalAUP / taskCount : 0;
+        });
+        
+        return Object.values(models);
+    }
+    
+    function formatMetricCell(metric) {
+        if (!metric) {
+            return '<span class="na-value">/</span>';
+        }
+        
+        return `
+            <span class="aup-score">${metric.aup.toFixed(1)}</span>
+            <span class="sub-metrics">TPF: ${metric.tpf.toFixed(2)} | Acc: ${metric.acc.toFixed(1)}%</span>
+        `;
+    }
+    
+    function getRankBadge(rank) {
+        const rankClass = rank <= 3 ? `rank-${rank}` : 'rank-other';
+        return `<span class="rank-badge ${rankClass}">${rank}</span>`;
+    }
+    
+    function renderTable(data) {
+        const tbody = document.getElementById('leaderboard-body-unified');
+        tbody.innerHTML = '';
+        
+        data.forEach((model, index) => {
+            const row = document.createElement('tr');
+            
+            row.innerHTML = `
+                <td class="rank-cell">${getRankBadge(index + 1)}</td>
+                <td class="model-cell">${model.name}</td>
+                <td class="metric-cell">${formatMetricCell(model.metrics.gsm8k_cot)}</td>
+                <td class="metric-cell">${formatMetricCell(model.metrics.math)}</td>
+                <td class="metric-cell">${formatMetricCell(model.metrics.mbpp)}</td>
+                <td class="metric-cell">${formatMetricCell(model.metrics.humaneval)}</td>
+                <td class="metric-cell">${formatMetricCell(model.metrics.long_gsm8k)}</td>
+                <td class="metric-cell avg-cell">
+                    <span class="aup-score">${model.avgAUP.toFixed(1)}</span>
+                </td>
+            `;
+            
+            tbody.appendChild(row);
+        });
+    }
+    
+    function sortData(data, column, direction) {
+        return data.sort((a, b) => {
+            let aVal, bVal;
+            
+            if (column === 'model') {
+                aVal = a.name;
+                bVal = b.name;
+                return direction === 'asc' 
+                    ? aVal.localeCompare(bVal)
+                    : bVal.localeCompare(aVal);
+            } else if (column === 'avg') {
+                aVal = a.avgAUP;
+                bVal = b.avgAUP;
+            } else if (column === 'rank') {
+                // Rank by average AUP
+                aVal = a.avgAUP;
+                bVal = b.avgAUP;
+                direction = direction === 'asc' ? 'desc' : 'asc'; // Invert for rank
+            } else {
+                aVal = a.metrics[column]?.aup || -1; // Use -1 for missing data to sort them last
+                bVal = b.metrics[column]?.aup || -1;
+            }
+            
+            if (direction === 'asc') {
+                return aVal - bVal;
+            } else {
+                return bVal - aVal;
+            }
+        });
+    }
+    
+    function updateSortIndicators() {
+        const table = document.getElementById('leaderboard-unified');
+        const headers = table.querySelectorAll('th.sortable');
+        
+        headers.forEach(th => {
+            th.classList.remove('sort-asc', 'sort-desc');
+            if (th.dataset.sort === currentSort.column) {
+                th.classList.add(`sort-${currentSort.direction}`);
+            }
+        });
+    }
+    
+    // Load data from CSV
+    loadData();
+})();
+</script>

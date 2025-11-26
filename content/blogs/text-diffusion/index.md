@@ -21,9 +21,19 @@ draft = false
 
 {{< socialBadges github="hao-ai-lab/text-diffusion">}}
 
-{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="d3LLM: the Most Parallel Parallel-Decoder">}}
+## Parallel-Decoder Leaderboard
 
 {{< justify >}}
+
+We present a leaderboard comparing different parallel-decoding methods across five benchmark tasks. The **AUP score** (which will be detailed later) is the metric.
+
+{{< /justify >}}
+
+{{< dllm_leaderboard >}}
+
+{{< justify >}}
+
+## Introduction
 
 Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of _bidirectional attention_, enabling capabilities such as parallel decoding, error correction, and random-order generation, which are features that are not feasible with AR models. Recently, several closed-source diffusion models, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), have demonstrated impressive efficiency and performance, achieving high decoding speeds and competitive results compared to AR models. In contrast, open-source diffusion language models have exhibited significantly lower throughput, often performing even slower than AR models. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) achieve only around 20 tokens per second, whereas closed-source dLLMs exceed 1000 tokens per second.
  
@@ -60,6 +70,9 @@ where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y
 {{< /justify >}}
 
 ## d3LLM: the Most Parallel Parallel-Decoder so far 🚀
+
+
+{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="d3LLM: the Most Parallel Parallel-Decoder">}}
 
 {{< justify >}}
 
@@ -187,17 +200,17 @@ For **_Dream-7B-Instruct_** model, we compare our *d3LLM-Dream* with _vanilla Dr
 <figure>
 <div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; flex-wrap: wrap;">
   <img src="img/data_dream_aup_curve_gsm8k_cot.png" alt="Dream GSM8K-CoT" style="width: 30%; height: auto;">
-  <img src="img/data_dream_aup_curve_humaneval_instruct.png" alt="Dream HumanEval" style="width: 30%; height: auto;">
+  <img src="img/data_dream_aup_curve_humaneval_instruct.png" alt="Dream HumanEval_Instruct" style="width: 30%; height: auto;">
   <img src="img/data_dream_aup_curve_long-gsm8k.png" alt="Dream Long-GSM8K" style="width: 30%; height: auto;">
 </div>
 <div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
   <img src="img/data_dream_aup_curve_math.png" alt="Dream MATH" style="width: 30%; height: auto;">
-  <img src="img/data_dream_aup_curve_mbpp_instruct.png" alt="Dream MBPP" style="width: 30%; height: auto;">
+  <img src="img/data_dream_aup_curve_mbpp_instruct.png" alt="Dream MBPP_Instruct" style="width: 30%; height: auto;">
 </div>
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 4: AUP curves for d3LLM-Dream across five benchmark tasks (GSM8K-CoT, HumanEval, Long-GSM8K, MATH, MBPP).</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 4: AUP curves for d3LLM-Dream across five benchmark tasks (GSM8K-CoT, HumanEval_Instruct, Long-GSM8K, MATH, MBPP_Instruct).</figcaption>
 </figure>
 
-{{< two_images src1="img/data_dream_aup_histogram.png" src2="img/data_dream_aup_radar.png" alt1="Dream AUP Histogram" alt2="Dream AUP Radar" width1="45%" width2="45%" title="Figure 5: AUP histogram and radar chart comparing d3LLM-Dream with baseline methods.">}}
+{{< two_images src1="img/data_dream_aup_histogram.png" src2="img/data_dream_aup_radar.png" alt1="Dream AUP Histogram" alt2="Dream AUP Radar" width1="50%" width2="45%" title="Figure 5: AUP histogram and radar chart comparing d3LLM-Dream with baseline methods.">}}
 
 {{< justify >}}
 
@@ -268,10 +281,10 @@ Across both models, our d3LLM achieves the highest TPS with minimal accuracy deg
   <img src="img/data_dream_coder_aup_curve_mbpp.png" alt="Dream-Coder MBPP" style="width: 23%; height: auto;">
   <img src="img/data_dream_coder_aup_curve_mbpp+.png" alt="Dream-Coder MBPP+" style="width: 23%; height: auto;">
 </div>
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 6: AUP curves for d3LLM-Coder across four coding benchmarks (HumanEval, HumanEval+, MBPP, MBPP+).</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 6: Evaluation for d3LLM-Coder across four coding benchmarks (HumanEval, HumanEval+, MBPP, MBPP+).</figcaption>
 </figure>
 
-{{< two_images src1="img/data_dream_coder_aup_histogram.png" src2="img/data_dream_coder_aup_radar.png" alt1="Dream-Coder AUP Histogram" alt2="Dream-Coder AUP Radar" width1="45%" width2="45%" title="Figure 7: AUP histogram and radar chart comparing d3LLM-Coder with baseline methods.">}}
+{{< two_images src1="img/data_dream_coder_aup_histogram.png" src2="img/data_dream_coder_aup_radar.png" alt1="Dream-Coder AUP Histogram" alt2="Dream-Coder AUP Radar" width1="50%" width2="40%" title="Figure 7: AUP histogram and radar chart comparing d3LLM-Coder with baseline methods.">}}
 
 {{< justify >}}
 
