@@ -81,7 +81,9 @@ where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y
 
 
 {{< justify >}}
-{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Demo of our [d3LLM-Dream](../d3llm), which can be 5× faster than the AR (Qwen) on H100 GPU and 3.5× faster on A100 GPU.">}}
+<a href="../d3llm">
+{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="[Demo of our d3LLM-Dream, which can be 5× faster than the AR (Qwen) on H100 GPU and 3.5× faster on A100 GPU.](../d3llm)">}}
+</a>
 
 {{< /justify >}}
 
