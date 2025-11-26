@@ -25,7 +25,7 @@ draft = false
 
 {{< justify >}}
 
-We present a leaderboard that compares different parallel-decoders across five representative benchmark tasks, using the AUP score (which will be described in detail later) as the primary evaluation metric.
+**TL;DR:** We present a leaderboard that compares different parallel-decoders across five representative benchmark tasks, using the AUP score (_Accuracy Under Parallelism_, which will be described in detail later) as the primary evaluation metric, which is a hardware-independent metric that measures both the efficiency and the performance of a parallel-decoder.
 
 {{< /justify >}}
 
@@ -77,27 +77,24 @@ where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y
 
 {{< /justify >}}
 
-## [d3LLM:](../d3llm) the Most Parallel Parallel-Decoder so far 🚀
+## [d3LLM: the Most Parallel Parallel-Decoder so far](../d3llm) 🚀
 
 
 {{< justify >}}
-{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Demo of our d3LLM-Dream, which can be 5× faster than the AR (Qwen) on H100 GPU and 3.5× faster on A100 GPU.">}}
+{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Demo of our [d3LLM-Dream](../d3llm), which can be 5× faster than the AR (Qwen) on H100 GPU and 3.5× faster on A100 GPU.">}}
 
 {{< /justify >}}
 
 {{< justify >}}
 
-In addition to proposing a new evaluation metric for parallel decoders, we introduce **_d3LLM_** (_dequeued-distillate-diffusion Large Language Model_), a novel recipe for building highly efficient diffusion language models. The d3LLM framework combines two key innovations: a trajectory-based distillation approach and an entropy-based multi-block decoding strategy.
+In addition to proposing a new evaluation metric for parallel decoders, we introduce [**_d3LLM_** (_dequeued-distillate-diffusion Large Language Model_)](../d3llm), a novel recipe for building highly efficient diffusion language models. The d3LLM framework combines two key innovations: a trajectory-based distillation approach and an entropy-based multi-block decoding strategy.
 
 {{< /justify >}}
 
 ### (i) Distillation Recipe: Pseudo-Trajectory Distillation
 
 
-Distillation for dLLMs faces a fundamental challenge: we typically only have access to final prompt-response pairs, without visibility into how the teacher model arrived at its answer through intermediate states. This is particularly problematic because the teacher's decoding trajectory, the order in which it unmasks tokens, contains valuable information about efficient generation patterns. Our key insight is to leverage this trajectory as a form of intermediate supervision.
-
-
-To this end, we propose leveraging the teacher’s **pseudo-trajectory** to guide the student model. Given a prompt, we first let the teacher diffusion model generate a full output. Instead of using the content of the response, we extract the *dequeuing order*, i.e., the sequence in which the teacher chooses to unmask tokens at each step. This sequence forms a **pseudo-trajectory** that reflects the teacher’s decoding strategy. We then reconstruct noisy sequences that approximate the intermediate states of the teacher. This trajectory-based method alone yields a **15% increase in tokens per forward pass** compared with naive random masking.
+We propose leveraging the teacher’s **pseudo-trajectory** to guide the student model. Given a prompt, we first let the teacher diffusion model generate a full output. Instead of using the content of the response, we extract the *dequeuing order*, i.e., the sequence in which the teacher chooses to unmask tokens at each step. This sequence forms a **pseudo-trajectory** that reflects the teacher’s decoding strategy. We then reconstruct noisy sequences that approximate the intermediate states of the teacher. This trajectory-based method alone yields a **15% increase in tokens per forward pass** compared with naive random masking.
 
 
 We further enhance the distillation recipe with two curriculum learning techniques. First, we use a **progressive noise schedule**, gradually increasing the masking ratio from easy scenarios (few masks) to harder ones (many masks) during training. This curriculum approach helps the model build robust unmasking strategies incrementally, contributing an additional **18% TPF improvement**. Second, we employ a **progressive window sizing**, starting with small decoding windows of 16 tokens and gradually expanding to 32 tokens. This improves another **8% to TPF performance**.
@@ -235,8 +232,8 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
 </figure>
 
 
-**Results on Different Models and Datasets.** As shown by the results above, the proposed distillation recipe and multi-block decoding strategy are robust and improve efficiency across various domains. Specifically, our d3LLM achieves the highest AUP score on 9 out of 10 tasks, and accelerates the vanilla LLaDA by approximately 5–10× on TPF across different tasks. 
-Remarkably, we note that for Fast-dLLM-v2, the accuracy scores on Math and HumanEval are notably higher than those derived from Dreams. We suspect that this stems from the fact that Fast-dLLM-v2 is finetuned directly from Qwen-2.5-7B with an additional 1B tokens. In contrast, our d3LLM-Dream is distilled based on the vanilla Dream and uses only 60M additional tokens.
+**Results on Different Models and Datasets.** As shown by the results above, the proposed distillation recipe and multi-block decoding strategy are robust and improve efficiency across various domains. Specifically, our d3LLM achieves the highest AUP score on 4 out of 5 tasks, and accelerates the vanilla LLaDA by approximately 5–10× on TPF across different tasks. 
+<!-- Remarkably, we note that for Fast-dLLM-v2, the accuracy scores on Math and HumanEval are notably higher than those derived from Dreams. We suspect that this stems from the fact that Fast-dLLM-v2 is finetuned directly from Qwen-2.5-7B with an additional 1B tokens. In contrast, our d3LLM-Dream is distilled based on the vanilla Dream and uses only 60M additional tokens. -->
 
 The experimental results also validate the reliability of our AUP metric. For example, on the MBPP dataset with the LLaDA model, although many methods achieve parallelism (TPF) greater than 1, their accuracy degradation compared with the best-performing model (Qwen-2.5-7B-it) is substantial, leading to low overall utility, highlighting that the AUP metric better reflects practical efficiency-performance trade-off.
 
