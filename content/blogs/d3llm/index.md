@@ -103,6 +103,10 @@ We introduce a novel recipe for building a highly efficient and high-performing 
 
 {{< /justify >}}
 
+
+{{< image src="img/fig_distillation.png" alt="Distillation Illustration" width="100%" title="Illustration of our pseudo-trajectory-based distillation recipe.">}}
+
+
 {{< justify >}}
 ### (i) Pseudo-Trajectory-based Distillation Recipe
 
@@ -153,6 +157,9 @@ We propose a novel **trajectory-based distillation** recipe, which introduces an
   We also employ a _progressive window size_ during training: instead of fixing the decoding window length \$k\$, we gradually increase it from 16 to 32 during the training process. This allows the model to adapt to increasingly larger context spans, facilitating smoother distillation process and stable token generation. This approach leads to an additional **8% improvement in TPF** compared to a constant window size.
 
 {{< /justify >}}
+
+
+{{< image src="img/fig_decoding.png" alt="Decoding Illustration" width="100%" title="Illustration of our multi-block decoding strategy with KV-cache and refresh.">}}
 
 
 ### (ii) Multi-Block Decoding Strategy
