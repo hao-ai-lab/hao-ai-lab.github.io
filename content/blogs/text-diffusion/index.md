@@ -200,7 +200,7 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
   <img src="img/data_llada_aup_curve_mbpp.png" alt="LLaDA MBPP" data-width="29">
 </div>
 <div class="responsive-img-grid" style="margin-top: 20px;">
-  <img src="img/data_llada_aup_curve_math.png" alt="LLaDA MATH" data-width="30">
+  <img src="img/data_llada_aup_curve_math.png" alt="LLaDA MATH" data-width="29">
   <img src="img/data_llada_aup_curve_long-gsm8k.png" alt="LLaDA Long-GSM8K" data-width="30">
 </div>
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 2: AUP curves for LLaDA-based models across five benchmark tasks (GSM8K-CoT, HumanEval, MBPP, MATH, and Long-GSM8K).</figcaption>
