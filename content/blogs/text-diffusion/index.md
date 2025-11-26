@@ -191,11 +191,11 @@ For **_LLaDA-8B-Instruct_** model, we compare our *d3LLM-LLaDA* with _vanilla LL
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 2: AUP curves for d3LLM-LLaDA across five benchmark tasks (GSM8K-CoT, HumanEval, Long-GSM8K, MATH, MBPP).</figcaption>
 </figure>
 
-{{< two_images src1="img/data_llada_aup_histogram.png" src2="img/data_llada_aup_radar.png" alt1="LLaDA AUP Histogram" alt2="LLaDA AUP Radar" width1="45%" width2="45%" title="Figure 3: AUP histogram and radar chart comparing d3LLM-LLaDA with baseline methods.">}}
+{{< two_images src1="img/data_llada_aup_histogram.png" src2="img/data_llada_aup_radar.png" alt1="LLaDA AUP Histogram" alt2="LLaDA AUP Radar" width1="45%" width2="40%" title="Figure 3: AUP histogram and radar chart comparing d3LLM-LLaDA with baseline methods.">}}
 
 {{< justify >}}
 
-**Results on Dream-7B-Instruct Model**
+**Results on Dream-7B-Instruct Model:**
 
 For **_Dream-7B-Instruct_** model, we compare our *d3LLM-Dream* with _vanilla Dream, Fast-dLLM-Dream, Fast-dLLM-v2-7B_, and _dParallel-Dream_.
 
@@ -204,8 +204,8 @@ For **_Dream-7B-Instruct_** model, we compare our *d3LLM-Dream* with _vanilla Dr
 <figure>
 <div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; flex-wrap: wrap;">
   <img src="img/data_dream_aup_curve_gsm8k_cot.png" alt="Dream GSM8K-CoT" style="width: 30%; height: auto;">
-  <img src="img/data_dream_aup_curve_humaneval_instruct.png" alt="Dream HumanEval_Instruct" style="width: 30%; height: auto;">
-  <img src="img/data_dream_aup_curve_long-gsm8k.png" alt="Dream Long-GSM8K" style="width: 30%; height: auto;">
+  <img src="img/data_dream_aup_curve_humaneval_instruct.png" alt="Dream HumanEval_Instruct" style="width: 29%; height: auto;">
+  <img src="img/data_dream_aup_curve_long-gsm8k.png" alt="Dream Long-GSM8K" style="width: 30.5%; height: auto;">
 </div>
 <div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
   <img src="img/data_dream_aup_curve_math.png" alt="Dream MATH" style="width: 30%; height: auto;">
@@ -214,7 +214,7 @@ For **_Dream-7B-Instruct_** model, we compare our *d3LLM-Dream* with _vanilla Dr
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 4: AUP curves for d3LLM-Dream across five benchmark tasks (GSM8K-CoT, HumanEval_Instruct, Long-GSM8K, MATH, MBPP_Instruct).</figcaption>
 </figure>
 
-{{< two_images src1="img/data_dream_aup_histogram.png" src2="img/data_dream_aup_radar.png" alt1="Dream AUP Histogram" alt2="Dream AUP Radar" width1="50%" width2="45%" title="Figure 5: AUP histogram and radar chart comparing d3LLM-Dream with baseline methods.">}}
+{{< two_images src1="img/data_dream_aup_histogram.png" src2="img/data_dream_aup_radar.png" alt1="Dream AUP Histogram" alt2="Dream AUP Radar" width1="50%" width2="44%" title="Figure 5: AUP histogram and radar chart comparing d3LLM-Dream with baseline methods.">}}
 
 {{< justify >}}
 
