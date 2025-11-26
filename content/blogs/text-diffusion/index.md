@@ -45,7 +45,9 @@ With growing interest from the research community, an increasing number of metho
 
 </center>
 
-Although numerous acceleration techniques have been introduced, there is currently no standardized benchmark or metric to evaluate and compare their degree of parallelism.
+
+Although many acceleration techniques have been proposed, there is still no standardized benchmark or metric for evaluating and comparing their degrees of parallelism. Notably, we focus on models with *native parallelism capabilities*, with diffusion language models being a representative example. Speculative decoding framework falls outside the scope of our study because it relies on different model architectures and an additional verification step to ensure token correctness. Accordingly, our parallel-decoder leaderboard includes only models with native parallelism capabilities, while speculative decoding framework is orthogonal to our study and can be incorporated separately to achieve additional speedup.
+
 
 {{< /justify >}}
 
@@ -55,7 +57,9 @@ Although numerous acceleration techniques have been introduced, there is current
 
 The challenge in defining a measure for parallel decoders primarily arises from their *dependence on hardware*. Because GPU computational capacity varies across platforms, traditional throughput (often measured in tokens per second, TPS) can differ significantly across different devices. To this end, we propose a new metric, **_AUP_** (_Accuracy Under Parallelism_), to quantify how well the accuracy is maintained as the degree of parallelism increases, which jointly measures the *efficiency and performance* of a parallel-decoder in a *device-independent* manner.
 
-Let \$\mathcal{S} = \\{(\rho_i, y_i)\\}\_{i=1}^m\$ be a set of parallelism-accuracy pairs, where \$\rho_1 < \rho_2 < \dots < \rho_m\$, \$\rho_i \in \mathbb{R}^{+}\$ denotes the parallelism (measured in _tokens per forward_, TPF), and \$y_i \in [0, 100]\$ represents accuracy in percentage. We define a minimum accuracy threshold \$y\_{\min} = y_1 - 5\$ to avoid measuring in regimes of significant accuracy degradation. Only points satisfying \$y_i \ge y\_{\min}\$ are included. The AUP is then defined as the weighted area under the accuracy-parallelism curve:
+Let \$\mathcal{S} = \\{(\rho_i, y_i)\\}\_{i=1}^m\$ be a set of parallelism-accuracy pairs, where \$\rho_1 < \rho_2 < \dots < \rho_m\$, \$\rho_i \in \mathbb{R}^{+}\$ denotes the parallelism (measured in _tokens per forward_, TPF), and \$y_i \in [0, 100]\$ represents accuracy in percentage. We define a minimum accuracy threshold \$y\_{\min} = y_1 - 5\$ to avoid measuring in regimes of significant accuracy degradation. Only points satisfying \$y_i \ge y\_{\min}\$ are included. 
+
+The most naïve approach is to calculate a score is the area under the accuracy–parallelism curve (AUC), but this is not an effective metric. This quantity is strongly influenced by parallelism even when accuracy degrades substantially, allowing low-quality but fast models to obtain high scores. To this end, we propose AUP, which take the accuracy degradation into account, which is defined as the weighted area under the accuracy-parallelism curve:
 
 $$\operatorname{AUP} \triangleq \rho_1 y_1 + \frac{1}{2} \sum_{i=2}^{m} (\rho_{i} - \rho_{i-1}) \left( y_i \cdot W(y_i) + y_{i-1} \cdot W(y_{i-1}) \right),$$
 
@@ -67,16 +71,19 @@ where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y
 
 {{< justify >}}
 
-**Choice of \$\alpha\$.** The hyperparameter \$\alpha\$ controls the penalty for accuracy degradation. A larger \$\alpha\$ increases sensitivity to performance drops, causing the contribution of throughput to decay exponentially with the error rate. In the ideal case, where a method improves parallelism without compromising accuracy, the AUP reduces to the standard area under the parallelism-accuracy curve (AUC). In our setting, we set \$\alpha = 3\$.
+**Choice of \$\alpha\$.** The hyperparameter \$\alpha\$ controls the penalty for accuracy degradation. A larger \$\alpha\$ increases sensitivity to performance drops, causing the contribution of throughput to decay exponentially with the error rate. In the ideal case, where a method improves parallelism without compromising accuracy, the AUP reduces to the standard area under the parallelism-accuracy curve (AUC). In our setting, we set \$\alpha = 3\$ as it balances the importance of parallelism and accuracy.
 
-**Hardware-Independence.** Unlike traditional throughput metrics such as TPS (tokens per second), which are highly dependent on hardware capabilities, AUP offers a more robust and hardware-independent measure. For instance, in our experiments, our d3LLM-LLaDA model (which will be introduced in the next section) demonstrated around 5× higher TPS than an AR baseline (Qwen 2.5 7B it) on an NVIDIA H100 GPU (280 vs. 57 tokens/s). However, this advantage shrank significantly on an NVIDIA A100 GPU (180 vs. 50 tokens/s). In contrast, the TPF (tokens per forward pass) remained consistent across hardware platforms. Therefore, AUP provides a robust and fair evaluation metric that reflects both efficiency and accuracy while remaining independent of specific hardware configurations, helping the community focus on algorithmic design without requiring access to particular GPUs.
+**Hardware-Independence.** Unlike traditional throughput metrics such as TPS (tokens per second), which are highly dependent on hardware capabilities, AUP offers a more robust and hardware-independent measure. For instance, in our experiments, our d3LLM-LLaDA model (which will be introduced in the next section) demonstrated around 5× higher TPS than an AR baseline (Qwen-2.5-7B-it) on an NVIDIA H100 GPU (280 vs. 57 tokens/s). However, this advantage shrank significantly on an NVIDIA A100 GPU (180 vs. 50 tokens/s). In contrast, the TPF (tokens per forward pass) remained consistent across hardware platforms. Therefore, AUP provides a robust and fair evaluation metric that reflects both efficiency and accuracy while remaining independent of specific hardware configurations, helping the community focus on algorithmic design without requiring access to particular GPUs.
 
 {{< /justify >}}
 
 ## d3LLM: the Most Parallel Parallel-Decoder so far 🚀
 
 
+{{< justify >}}
 {{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Demo of the d3LLM-Dream, which can be 5× faster than the AR (Qwen) on H100 GPU and 3.5× faster on A100 GPU.">}}
+
+{{< /justify >}}
 
 {{< justify >}}
 
@@ -84,7 +91,7 @@ In addition to proposing a new evaluation metric for parallel decoders, we intro
 
 {{< /justify >}}
 
-### Trajectory-Based Distillation: Learning from Teacher's Decoding Order
+### (i) Distillation Recipe: Pseudo-Trajectory Distillation
 
 
 Distillation for dLLMs faces a fundamental challenge: we typically only have access to final prompt-response pairs, without visibility into how the teacher model arrived at its answer. This is particularly problematic because the teacher's decoding trajectory—the order in which it unmasks tokens—contains valuable information about efficient generation patterns. Our key insight is to leverage this trajectory as a form of intermediate supervision.
@@ -95,7 +102,7 @@ To this end, we propose to leverage the teacher's **pseudo-trajectory** to guide
 We further enhance the distillation recipe with two curriculum learning techniques. First, we use a **progressive noise schedule**, gradually increasing the masking ratio from easy scenarios (few masks) to harder ones (many masks) during training. This curriculum approach helps the model build robust unmasking strategies incrementally, contributing an additional **18% TPF improvement**. Second, inspired by recent work on diffusion models, we employ **progressive window sizing**, starting with small decoding windows of 16 tokens and gradually expanding to 32 tokens. This allows the model to first master local dependencies before tackling longer-range generation, adding another **8% to TPF performance**.
 
 
-### Entropy-Driven Multi-Block Decoding: Maximizing Parallelism
+### (ii) Decoding Strategy: Entropy-based Multi-Block Decoding
 
 
 While our distillation recipe produces an efficient student model, we also need a decoding strategy that fully exploits its parallel generation capabilities. Standard diffusion decoding operates within fixed-size blocks, processing one block at a time. We push this further with **entropy-based multi-block parallel decoding**. This cross-block parallel decoding delivers approximately **20% TPF improvement** by allowing the model to make progress on multiple blocks simultaneously rather than strictly sequentially. 
@@ -134,10 +141,10 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
   <img src="img/data_llada_aup_curve_math.png" alt="LLaDA MATH" style="width: 30%; height: auto;">
   <img src="img/data_llada_aup_curve_mbpp.png" alt="LLaDA MBPP" style="width: 30%; height: auto;">
 </div>
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 2: AUP curves for d3LLM-LLaDA across five benchmark tasks (GSM8K-CoT, HumanEval, Long-GSM8K, MATH, MBPP).</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 2: AUP curves for LLaDA-based models across five benchmark tasks (GSM8K-CoT, HumanEval, Long-GSM8K, MATH, MBPP).</figcaption>
 </figure>
 
-{{< two_images src1="img/data_llada_aup_histogram.png" src2="img/data_llada_aup_radar.png" alt1="LLaDA AUP Histogram" alt2="LLaDA AUP Radar" width1="45%" width2="40%" title="Figure 3: AUP histogram and radar chart comparing d3LLM-LLaDA with baseline methods.">}}
+{{< two_images src1="img/data_llada_aup_histogram.png" src2="img/data_llada_aup_radar.png" alt1="LLaDA AUP Histogram" alt2="LLaDA AUP Radar" width1="45%" width2="40%" title="Figure 3: AUP histogram and radar chart comparing LLaDA-based methods.">}}
 
 {{< justify >}}
 
@@ -155,19 +162,17 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
   <img src="img/data_dream_aup_curve_math.png" alt="Dream MATH" style="width: 30%; height: auto;">
   <img src="img/data_dream_aup_curve_mbpp_instruct.png" alt="Dream MBPP_Instruct" style="width: 30%; height: auto;">
 </div>
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 4: AUP curves for d3LLM-Dream across five benchmark tasks (GSM8K-CoT, HumanEval_Instruct, Long-GSM8K, MATH, MBPP_Instruct).</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 4: AUP curves for Dream-based models across five benchmark tasks (GSM8K-CoT, HumanEval_Instruct, Long-GSM8K, MATH, MBPP_Instruct).</figcaption>
 </figure>
 
-{{< two_images src1="img/data_dream_aup_histogram.png" src2="img/data_dream_aup_radar.png" alt1="Dream AUP Histogram" alt2="Dream AUP Radar" width1="50%" width2="44%" title="Figure 5: AUP histogram and radar chart comparing d3LLM-Dream with baseline methods.">}}
+{{< two_images src1="img/data_dream_aup_histogram.png" src2="img/data_dream_aup_radar.png" alt1="Dream AUP Histogram" alt2="Dream AUP Radar" width1="50%" width2="44%" title="Figure 5: AUP histogram and radar chart comparing Dream-based methods.">}}
 
-{{< justify >}}
 
 **Results on Different Models and Datasets.** As shown by the results above, the proposed distillation recipe and multi-block decoding strategy are robust and improve efficiency across various domains. Specifically, our d3LLM achieves the highest AUP score on 9 out of 10 tasks, and accelerates the vanilla LLaDA by approximately 5–10× on TPF across different tasks. The experimental results also validate the reliability of our AUP metric. For example, on the MBPP dataset with the LLaDA model, although many methods achieve parallelism (TPF) greater than 1, their accuracy degradation compared with the best-performing model (Qwen-2.5-7B-it) is substantial, leading to low overall utility. Remarkably, we note that for Fast-dLLM-v2, the accuracy scores on Math and HumanEval are notably higher than those of other diffusion models derived from Dreams. We suspect that this stems from the fact that Fast-dLLM-v2 is finetuned directly from Qwen-2.5-7B with an additional 1B tokens (i.e., the LLaMA–Nemotron post-training dataset). In contrast, our d3LLM-Dream is distilled based on the vanilla Dream and uses only 60M additional tokens.
 
-{{< /justify >}}
 
 
-**Wall-Clock Speed Comparison.** We further evaluate different methods on multiple hardware platforms, including H100 and A100 GPUs, to measure their wall-clock throughput (measured by tokens per second, TPS) and speedup. The results are presented below.
+<!-- **Wall-Clock Speed Comparison.** We further evaluate different methods on multiple hardware platforms, including H100 and A100 GPUs, to measure their wall-clock throughput (measured by tokens per second, TPS) and speedup. The results are presented below.
 
 
 For the *LLaDA-8B-Instruct*, we report speed (TPS) and accuracy on GSM8K-CoT dataset.
@@ -203,14 +208,10 @@ For the *Dream-7B-Instruct*, we again report speed and accuracy on GSM8K-CoT dat
 {{< /table >}}
 
 
-Across both models, our d3LLM achieves the highest TPS with minimal accuracy degradation. It delivers up to a **4.5× speedup** over autoregressive decoding (Qwen-2.5-7B-it) on H100 GPUs, and approximately **3× speedup** on A100 GPUs. All experiments are conducted using the HuggingFace inference backend. We leave system-level optimizations including GPU kernel fusion and integration with vLLM, to future work for further TPS improvements.
-
-
-{{< justify >}}
+Across both models, our d3LLM achieves the highest TPS with minimal accuracy degradation. It delivers up to a **4.5× speedup** over autoregressive decoding (Qwen-2.5-7B-it) on H100 GPUs, and approximately **3× speedup** on A100 GPUs. All experiments are conducted using the HuggingFace inference backend. We leave system-level optimizations including GPU kernel fusion and integration with vLLM, to future work for further TPS improvements. -->
 
 **Efficient Diffusion Coder.** Beyond LLaDA and Dream, we further apply our distillation approach and multi-block decoding method to a more realistic and challenging application: an efficient LLM-based coding model. Specifically, we use _Dream-Coder-7B-Instruct_ as the teacher dLLM and collect 120k samples from the Ling-Coder-SFT and AceCode datasets, along with a small amount of math-reasoning data, to distill our d3LLM-Coder. The results are demonstrated as below.
 
-{{< /justify >}}
 
 <figure>
 <div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; flex-wrap: wrap;">
@@ -219,10 +220,10 @@ Across both models, our d3LLM achieves the highest TPS with minimal accuracy deg
   <img src="img/data_dream_coder_aup_curve_mbpp.png" alt="Dream-Coder MBPP" style="width: 23%; height: auto;">
   <img src="img/data_dream_coder_aup_curve_mbpp+.png" alt="Dream-Coder MBPP+" style="width: 23%; height: auto;">
 </div>
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 6: Evaluation for d3LLM-Coder across four coding benchmarks (HumanEval, HumanEval+, MBPP, MBPP+).</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 6: Evaluation for Coders across four coding benchmarks (HumanEval, HumanEval+, MBPP, MBPP+).</figcaption>
 </figure>
 
-{{< two_images src1="img/data_dream_coder_aup_histogram.png" src2="img/data_dream_coder_aup_radar.png" alt1="Dream-Coder AUP Histogram" alt2="Dream-Coder AUP Radar" width1="50%" width2="40%" title="Figure 7: AUP histogram and radar chart comparing d3LLM-Coder with baseline methods.">}}
+{{< two_images src1="img/data_dream_coder_aup_histogram.png" src2="img/data_dream_coder_aup_radar.png" alt1="Dream-Coder AUP Histogram" alt2="Dream-Coder AUP Radar" width1="50%" width2="40%" title="Figure 7: AUP histogram and radar chart comparing different Dream-based methods.">}}
 
 {{< justify >}}
 
@@ -230,28 +231,48 @@ Our d3LLM-Coder achieves higher TPF and maintains the highest AUP score across a
 
 {{< /justify >}}
 
+{{< justify >}}
 ## Reference
 
+{{< /justify >}}
+
+
 {{< justify >}}
-
 [1] [Fast-dLLM: Training-free Acceleration of Diffusion LLM by Enabling KV Cache and Parallel Decoding](https://arxiv.org/abs/2505.22618)
+{{< /justify >}}
 
+{{< justify >}}
 [2] [Diffusion LLMs Can Do Faster-Than-AR Inference via Discrete Diffusion Forcing](https://arxiv.org/abs/2508.09192)
+{{< /justify >}}
 
+{{< justify >}}
 [3] [dParallel: Learnable Parallel Decoding for dLLMs](https://arxiv.org/abs/2509.26488)
+{{< /justify >}}
 
+{{< justify >}}
 [4] [Fast-dLLM v2: Efficient Block-wise Diffusion LLM](https://arxiv.org/abs/2509.26328)
+{{< /justify >}}
 
+{{< justify >}}
 [5] [dInfer: An Efficient Inference Framework for Diffusion Language Models](https://arxiv.org/abs/2510.08666)
+{{< /justify >}}
 
+{{< justify >}}
 [6] [Medusa: Simple LLM Inference Acceleration Framework with Multiple Decoding Heads](https://arxiv.org/abs/2401.10774)
+{{< /justify >}}
 
+{{< justify >}}
 [7] [CLLMs: Consistency Large Language Models](https://arxiv.org/abs/2403.00835)
+{{< /justify >}}
 
+{{< justify >}}
 [8] [Large Language Diffusion Models](https://arxiv.org/abs/2502.09992)
+{{< /justify >}}
 
+{{< justify >}}
 [9] [Dream 7B: Diffusion Large Language Models](https://arxiv.org/abs/2508.15487)
+{{< /justify >}}
 
+{{< justify >}}
 [10] [Dream-Coder 7B: An Open Diffusion Language Model for Code](https://arxiv.org/abs/2509.01142)
-
 {{< /justify >}}
