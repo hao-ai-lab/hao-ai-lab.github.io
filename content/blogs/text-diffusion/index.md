@@ -132,15 +132,34 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
 
 {{< /justify >}}
 
+<style>
+.responsive-img-grid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.responsive-img-grid img {
+  width: 30%;
+  height: auto;
+}
+@media (max-width: 768px) {
+  .responsive-img-grid img {
+    width: 100%;
+  }
+}
+</style>
+
 <figure>
-<div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; flex-wrap: wrap;">
-  <img src="img/data_llada_aup_curve_gsm8k_cot.png" alt="LLaDA GSM8K-CoT" style="width: 30%; height: auto;">
-  <img src="img/data_llada_aup_curve_humaneval.png" alt="LLaDA HumanEval" style="width: 30%; height: auto;">
-  <img src="img/data_llada_aup_curve_long-gsm8k.png" alt="LLaDA Long-GSM8K" style="width: 30%; height: auto;">
+<div class="responsive-img-grid">
+  <img src="img/data_llada_aup_curve_gsm8k_cot.png" alt="LLaDA GSM8K-CoT">
+  <img src="img/data_llada_aup_curve_humaneval.png" alt="LLaDA HumanEval">
+  <img src="img/data_llada_aup_curve_long-gsm8k.png" alt="LLaDA Long-GSM8K">
 </div>
-<div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
-  <img src="img/data_llada_aup_curve_math.png" alt="LLaDA MATH" style="width: 30%; height: auto;">
-  <img src="img/data_llada_aup_curve_mbpp.png" alt="LLaDA MBPP" style="width: 30%; height: auto;">
+<div class="responsive-img-grid" style="margin-top: 20px;">
+  <img src="img/data_llada_aup_curve_math.png" alt="LLaDA MATH">
+  <img src="img/data_llada_aup_curve_mbpp.png" alt="LLaDA MBPP">
 </div>
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 2: AUP curves for LLaDA-based models across five benchmark tasks (GSM8K-CoT, HumanEval, Long-GSM8K, MATH, MBPP).</figcaption>
 </figure>
@@ -154,14 +173,14 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
 {{< /justify >}}
 
 <figure>
-<div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; flex-wrap: wrap;">
-  <img src="img/data_dream_aup_curve_gsm8k_cot.png" alt="Dream GSM8K-CoT" style="width: 30%; height: auto;">
-  <img src="img/data_dream_aup_curve_humaneval_instruct.png" alt="Dream HumanEval_Instruct" style="width: 29%; height: auto;">
-  <img src="img/data_dream_aup_curve_long-gsm8k.png" alt="Dream Long-GSM8K" style="width: 30.5%; height: auto;">
+<div class="responsive-img-grid">
+  <img src="img/data_dream_aup_curve_gsm8k_cot.png" alt="Dream GSM8K-CoT">
+  <img src="img/data_dream_aup_curve_humaneval_instruct.png" alt="Dream HumanEval_Instruct">
+  <img src="img/data_dream_aup_curve_long-gsm8k.png" alt="Dream Long-GSM8K">
 </div>
-<div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
-  <img src="img/data_dream_aup_curve_math.png" alt="Dream MATH" style="width: 30%; height: auto;">
-  <img src="img/data_dream_aup_curve_mbpp_instruct.png" alt="Dream MBPP_Instruct" style="width: 30%; height: auto;">
+<div class="responsive-img-grid" style="margin-top: 20px;">
+  <img src="img/data_dream_aup_curve_math.png" alt="Dream MATH">
+  <img src="img/data_dream_aup_curve_mbpp_instruct.png" alt="Dream MBPP_Instruct">
 </div>
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 4: AUP curves for Dream-based models across five benchmark tasks (GSM8K-CoT, HumanEval_Instruct, Long-GSM8K, MATH, MBPP_Instruct).</figcaption>
 </figure>
@@ -218,12 +237,31 @@ Across both models, our d3LLM achieves the highest TPS with minimal accuracy deg
 **Efficient Diffusion Coder.** Beyond LLaDA and Dream, we further apply our distillation approach and multi-block decoding method to a more realistic and challenging application: an efficient LLM-based coding model. Specifically, we use _Dream-Coder-7B-Instruct_ as the teacher dLLM and collect 120k samples from the Ling-Coder-SFT and AceCode datasets, along with a small amount of math-reasoning data, to distill our d3LLM-Coder. The results are demonstrated as below.
 
 
+<style>
+.responsive-img-grid-4 {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.responsive-img-grid-4 img {
+  width: 23%;
+  height: auto;
+}
+@media (max-width: 768px) {
+  .responsive-img-grid-4 img {
+    width: 100%;
+  }
+}
+</style>
+
 <figure>
-<div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; flex-wrap: wrap;">
-  <img src="img/data_dream_coder_aup_curve_humaneval.png" alt="Dream-Coder HumanEval" style="width: 23%; height: auto;">
-  <img src="img/data_dream_coder_aup_curve_humaneval+.png" alt="Dream-Coder HumanEval+" style="width: 23%; height: auto;">
-  <img src="img/data_dream_coder_aup_curve_mbpp.png" alt="Dream-Coder MBPP" style="width: 23%; height: auto;">
-  <img src="img/data_dream_coder_aup_curve_mbpp+.png" alt="Dream-Coder MBPP+" style="width: 23%; height: auto;">
+<div class="responsive-img-grid-4">
+  <img src="img/data_dream_coder_aup_curve_humaneval.png" alt="Dream-Coder HumanEval">
+  <img src="img/data_dream_coder_aup_curve_humaneval+.png" alt="Dream-Coder HumanEval+">
+  <img src="img/data_dream_coder_aup_curve_mbpp.png" alt="Dream-Coder MBPP">
+  <img src="img/data_dream_coder_aup_curve_mbpp+.png" alt="Dream-Coder MBPP+">
 </div>
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 6: Evaluation for Coders across four coding benchmarks (HumanEval, HumanEval+, MBPP, MBPP+).</figcaption>
 </figure>
