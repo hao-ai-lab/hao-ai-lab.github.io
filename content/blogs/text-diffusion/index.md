@@ -59,7 +59,7 @@ The challenge in defining a measure for parallel decoders primarily arises from 
 
 Let \$\mathcal{S} = \\{(\rho_i, y_i)\\}\_{i=1}^m\$ be a set of parallelism-accuracy pairs, where \$\rho_1 < \rho_2 < \dots < \rho_m\$, \$\rho_i \in \mathbb{R}^{+}\$ denotes the parallelism (measured in _tokens per forward_, TPF), and \$y_i \in [0, 100]\$ represents accuracy in percentage. We define a minimum accuracy threshold \$y\_{\min} = y_1 - 5\$ to avoid measuring in regimes of significant accuracy degradation. Only points satisfying \$y_i \ge y\_{\min}\$ are included. 
 
-The most naïve approach is to calculate a score is the area under the accuracy–parallelism curve (AUC), but this is not an effective metric. This quantity is strongly influenced by parallelism even when accuracy degrades substantially, allowing low-quality but fast models to obtain high scores. To this end, we establish **AUP**, which take the accuracy degradation into account, which is defined as the weighted area under the accuracy-parallelism curve:
+The most naïve approach is to calculate a score as the area under the accuracy–parallelism curve (AUC), but this is not an effective metric. This quantity is strongly influenced by parallelism even when accuracy degrades substantially, allowing low-quality but fast models to obtain high scores. To this end, we establish **AUP**, which takes the accuracy degradation into account, which is defined as the weighted area under the accuracy-parallelism curve:
 
 $$\operatorname{AUP} \triangleq \rho_1 y_1 + \frac{1}{2} \sum_{i=2}^{m} (\rho_{i} - \rho_{i-1}) \left( y_i \cdot W(y_i) + y_{i-1} \cdot W(y_{i-1}) \right),$$
 
@@ -109,7 +109,7 @@ We further enhance the distillation recipe with two curriculum learning techniqu
 While our distillation recipe produces an efficient student model, we also need a decoding strategy that fully exploits its parallel generation capabilities. Standard diffusion decoding operates within fixed-size blocks, processing one block at a time. We push this further with **entropy-based multi-block parallel decoding**. This multi-block parallel decoding delivers approximately **20% TPF improvement**. 
 
 
-For long-context scenarios, we further combine this with a **KV-cache mechanism with periodic refresh**. After completing each block, we delay for several rounds before caching its key-value states, and simultaneously perform full forward passes to refresh previous caches. This hybrid approach maintains generation quality while boosting throughput by roughly **20% in long-context scenarios**. Finally, we implement **early stopping** when the model generates an EOS token, contributes an additional **5% TPF gain**.
+For long-context scenarios, we further combine this with a **KV-cache mechanism with periodic refresh**. After completing each block, we delay for several rounds before caching its key-value states, and simultaneously perform full forward passes to refresh previous caches. This hybrid approach maintains generation quality while boosting throughput by roughly **20% in long-context scenarios**. Finally, we implement **early stopping** when the model generates an EOS token, which contributes an additional **5% TPF gain**.
 
 
 
@@ -128,7 +128,7 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
 
 {{< justify >}}
 
-**Results on LLaDA-8B-Instruct Model:** For _LLaDA-8B-Instruct_ model, we compare our *d3LLM-LLaDA* with _vanilla LLaDA, Fast-dLLM-LLaDA, D2F_, and _dParallel-LLaDA_.
+**Results on LLaDA-8B-Instruct Model:** For the foundation model of _LLaDA-8B-Instruct_, we compare our *d3LLM-LLaDA* with _vanilla LLaDA, Fast-dLLM-LLaDA, D2F_, and _dParallel-LLaDA_.
 
 {{< /justify >}}
 
@@ -164,11 +164,11 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 2: AUP curves for LLaDA-based models across five benchmark tasks (GSM8K-CoT, HumanEval, Long-GSM8K, MATH, MBPP).</figcaption>
 </figure>
 
-{{< two_images src1="img/data_llada_aup_histogram.png" src2="img/data_llada_aup_radar.png" alt1="LLaDA AUP Histogram" alt2="LLaDA AUP Radar" width1="45%" width2="40%" title="Figure 3: AUP histogram and radar chart comparing LLaDA-based methods.">}}
+{{< two_images src1="img/data_llada_aup_histogram.png" src2="img/data_llada_aup_radar.png" alt1="LLaDA AUP Histogram" alt2="LLaDA AUP Radar" width1="45%" width2="40%" title="Figure 3: AUP scores and radar chart comparing different LLaDA-based methods.">}}
 
 {{< justify >}}
 
-**Results on Dream-7B-Instruct Model:** For _Dream-7B-Instruct_ model, we compare our *d3LLM-Dream* with _vanilla Dream, Fast-dLLM-Dream, Fast-dLLM-v2-7B_, and _dParallel-Dream_.
+**Results on Dream-7B-Instruct Model:** For the foundation model of _Dream-7B-Instruct_, we compare our *d3LLM-Dream* with _vanilla Dream, Fast-dLLM-Dream, Fast-dLLM-v2-7B_, and _dParallel-Dream_.
 
 {{< /justify >}}
 
@@ -185,7 +185,7 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 4: AUP curves for Dream-based models across five benchmark tasks (GSM8K-CoT, HumanEval_Instruct, Long-GSM8K, MATH, MBPP_Instruct).</figcaption>
 </figure>
 
-{{< two_images src1="img/data_dream_aup_histogram.png" src2="img/data_dream_aup_radar.png" alt1="Dream AUP Histogram" alt2="Dream AUP Radar" width1="50%" width2="44%" title="Figure 5: AUP histogram and radar chart comparing Dream-based methods.">}}
+{{< two_images src1="img/data_dream_aup_histogram.png" src2="img/data_dream_aup_radar.png" alt1="Dream AUP Histogram" alt2="Dream AUP Radar" width1="50%" width2="44%" title="Figure 5: AUP scores and radar chart comparing different Dream-based methods.">}}
 
 
 **Results on Different Models and Datasets.** As shown by the results above, the proposed distillation recipe and multi-block decoding strategy are robust and improve efficiency across various domains. Specifically, our d3LLM achieves the highest AUP score on 9 out of 10 tasks, and accelerates the vanilla LLaDA by approximately 5–10× on TPF across different tasks. 
