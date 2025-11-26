@@ -27,8 +27,8 @@
 }
 
 .leaderboard-table {
-    width: 100%;
-    min-width: 1200px; /* Ensure table doesn't shrink too much */
+    width: auto; /* Auto width to fit content */
+    min-width: 100%; /* At least full width on desktop */
     border-collapse: collapse;
     background: #1e1e1e;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
@@ -92,18 +92,22 @@
     font-weight: 700;
     font-size: 16px;
     color: #667eea;
-    width: 60px;
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
 }
 
 .leaderboard-table .model-cell {
     text-align: center;
     font-weight: 600;
     color: #ffffff;
-    min-width: 180px;
+    min-width: 160px;
+    max-width: 180px;
 }
 
 .leaderboard-table .metric-cell {
-    min-width: 120px;
+    min-width: 140px;
+    max-width: 160px;
 }
 
 .aup-score {
@@ -123,6 +127,8 @@
 .avg-cell {
     background-color: #2d2550;
     font-weight: 700;
+    min-width: 120px;
+    max-width: 140px;
 }
 
 .avg-cell .aup-score {
