@@ -33,6 +33,66 @@ draft = false
 
 {{< justify >}}
 
+
+<style>
+.responsive-img-grid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.responsive-img-grid img {
+  height: auto;
+  flex-shrink: 0;
+}
+.responsive-img-grid img[data-width="39"] {
+  width: 39%;
+}
+.responsive-img-grid img[data-width="38"] {
+  width: 38%;
+}
+.responsive-img-grid img[data-width="30"] {
+  width: 30%;
+}
+.responsive-img-grid img[data-width="31"] {
+  width: 31%;
+}
+.responsive-img-grid img[data-width="30.5"] {
+  width: 30.5%;
+}
+.responsive-img-grid img[data-width="29"] {
+  width: 29%;
+}
+.responsive-img-grid img[data-width="22.5"] {
+  width: 22.5%;
+}
+.responsive-img-grid img[data-width="45"] {
+  width: 45%;
+}
+.responsive-img-grid img[data-width="50"] {
+  width: 50%;
+}
+.responsive-img-grid img[data-width="40"] {
+  width: 40%;
+}
+.responsive-img-grid img[data-width="44"] {
+  width: 44%;
+}
+.responsive-img-grid img[data-width="24"] {
+  width: 24%;
+}
+.responsive-img-grid img[data-width="23.5"] {
+  width: 23.5%;
+}
+@media (max-width: 768px) {
+  .responsive-img-grid img {
+    width: 100% !important;
+  }
+}
+</style>
+
+
 ## Background
 
 Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of _bidirectional attention_, enabling capabilities such as parallel decoding, error correction, and random-order generation, which are features that are not feasible with AR models. Recently, several closed-source diffusion models, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), have demonstrated impressive efficiency and performance, achieving high decoding speeds and competitive results compared to AR models. In contrast, open-source diffusion language models have exhibited significantly lower throughput, often performing even slower than AR models. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) achieve only around 20 tokens per second, whereas closed-source dLLMs exceed 1000 tokens per second.
@@ -67,7 +127,17 @@ where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y
 
 {{< /justify >}}
 
-{{< image src="img/aup_illustration.png" alt="AUP Illustration" width="50%" title="Figure 1: Illustration of the AUP metric. The metric captures both parallelism (TPF) and accuracy, with a weighting function that penalizes accuracy degradation.">}}
+<!-- {{< image src="img/aup_illustration.png" alt="AUP Illustration" width="50%" title="Figure 1: Illustration of the AUP metric. The metric captures both parallelism (TPF) and accuracy, with a weighting function that penalizes accuracy degradation.">}} -->
+
+
+
+<figure>
+<div class="responsive-img-grid">
+  <img src="img/aup_illustration.png" alt="AUP Illustration" data-width="50">
+</div>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 1: Illustration of the AUP metric. The metric captures both parallelism (TPF) and accuracy, with a weighting function that penalizes accuracy degradation.</figcaption>
+</figure>
+
 
 {{< justify >}}
 
@@ -136,64 +206,6 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
 **Results on LLaDA-8B-Instruct Model:** For the foundation model of _LLaDA-8B-Instruct_, we compare our *d3LLM-LLaDA* with _vanilla LLaDA, Fast-dLLM-LLaDA, D2F_, and _dParallel-LLaDA_.
 
 {{< /justify >}}
-
-<style>
-.responsive-img-grid {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.responsive-img-grid img {
-  height: auto;
-  flex-shrink: 0;
-}
-.responsive-img-grid img[data-width="39"] {
-  width: 39%;
-}
-.responsive-img-grid img[data-width="38"] {
-  width: 38%;
-}
-.responsive-img-grid img[data-width="30"] {
-  width: 30%;
-}
-.responsive-img-grid img[data-width="31"] {
-  width: 31%;
-}
-.responsive-img-grid img[data-width="30.5"] {
-  width: 30.5%;
-}
-.responsive-img-grid img[data-width="29"] {
-  width: 29%;
-}
-.responsive-img-grid img[data-width="22.5"] {
-  width: 22.5%;
-}
-.responsive-img-grid img[data-width="45"] {
-  width: 45%;
-}
-.responsive-img-grid img[data-width="50"] {
-  width: 50%;
-}
-.responsive-img-grid img[data-width="40"] {
-  width: 40%;
-}
-.responsive-img-grid img[data-width="44"] {
-  width: 44%;
-}
-.responsive-img-grid img[data-width="24"] {
-  width: 24%;
-}
-.responsive-img-grid img[data-width="23.5"] {
-  width: 23.5%;
-}
-@media (max-width: 768px) {
-  .responsive-img-grid img {
-    width: 100% !important;
-  }
-}
-</style>
 
 <figure>
 <div class="responsive-img-grid">
