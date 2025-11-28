@@ -1,5 +1,5 @@
 +++
-title = "d3LLM: Ultra-Fast dLLM using Pseudo-Trajectory Distillation 🚀"
+title = "d3LLM: Ultra-Fast Diffusion LLM using Pseudo-Trajectory Distillation 🚀"
 date = 2025-11-22T12:00:00-08:00
 authors = ["Yu-Yang Qian", "Junda Su", "Peiyuan Zhang", "Lanxiang Hu", "Peng Zhao", "Hao Zhang"]
 author = "Yu-Yang Qian, Junda Su, Peiyuan Zhang, Lanxiang Hu, Peng Zhao, Hao Zhang"
@@ -14,8 +14,8 @@ draft = false
       url = "https://github.com/hao-ai-lab/text-diffusion"
 [cover]
       image = "/img/dllm_demo.gif"
-      alt = "d3LLM: Ultra-Fast dLLM using Pseudo-Trajectory Distillation"
-      caption = "d3LLM: Ultra-Fast dLLM using Pseudo-Trajectory Distillation"
+      alt = "d3LLM: Ultra-Fast Diffusion LLM using Pseudo-Trajectory Distillation"
+      caption = "d3LLM: Ultra-Fast Diffusion LLM using Pseudo-Trajectory Distillation"
       hidden = true
 +++
 
