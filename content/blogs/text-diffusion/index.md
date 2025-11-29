@@ -152,7 +152,7 @@ where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y
 
 {{< justify >}}
 <a href="../d3llm">
-{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="[Demo of our d3LLM-Dream, which can be 5× faster than the AR (Qwen) on H100 GPU and 3.5× faster on A100 GPU.](../d3llm)">}}
+{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="[Demo of our d3LLM-Dream](../d3llm), which can be 5× faster than the AR (Qwen) on H100 GPU and 3.5× faster on A100 GPU. You can try our demo [here](https://d3llm-team.github.io/).">}}
 </a>
 
 {{< /justify >}}
@@ -186,7 +186,7 @@ For long-context scenarios, we further combine this with a **KV-cache mechanism 
 
 
 
-Together, these distillation and decoding innovations enable d3LLM to achieve substantial efficiency gains while maintaining generation quality, making diffusion language models practical for real-world deployment. More details about our d3LLM framework can be found in our [code repository](https://github.com/hao-ai-lab/text-diffusion) and in [this blog post](../d3llm).
+Together, these distillation and decoding innovations enable d3LLM to achieve substantial efficiency gains while maintaining generation quality, making diffusion language models practical for real-world deployment. More details about our d3LLM framework can be found in our [GitHub code repo](https://github.com/hao-ai-lab/text-diffusion) and in [this blog post](../d3llm).
 
 {{< /justify >}}
 
