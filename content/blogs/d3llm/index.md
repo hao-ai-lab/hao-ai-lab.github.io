@@ -25,7 +25,7 @@ draft = false
 **TL;DR:** We introduce a novel recipe for building an ultra-fast diffusion language model named **_d3LLM_** (_dequeued-distillate-diffusion Large Language Model_) with negligible accuracy degradation. The d3LLM framework comprises two key components: (i) _distillation_ recipe and (ii)_decoding_ strategy.
 {{< /justify >}}
 
-{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Demo of the d3LLM-Dream, which can be 5× faster than the AR (Qwen) on H100 GPU and 3.5× faster on A100 GPU. You can try our demo [here](https://d3llm-team.github.io/).">}}
+{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Demo of the d3LLM-Dream, which achieves up to 5× speedup over the AR (Qwen-2.5-7B-it) on H100 GPU and 3.5× speedup on A100 GPU. You can try our demo [here](https://d3llm-team.github.io/).">}}
 
 
 <style>
