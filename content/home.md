@@ -47,7 +47,7 @@ Hao was norminated [2024 MIT Technology Review Innovators Under 35 (TR35), China
 {{< /newsEntry >}}
 
 {{< newsEntry date="2025/05" >}}
-AMD gifted our lab with a MI355x node, too!
+AMD gifted our lab with a MI355x node!
 {{< /newsEntry >}}
 
 
