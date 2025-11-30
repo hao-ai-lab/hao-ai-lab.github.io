@@ -252,7 +252,7 @@ For the *LLaDA-8B-Instruct*, we report speed (TPS) and accuracy on GSM8K-CoT dat
 | Fast-dLLM-LLaDA | 114.29     | 79.14      | 74.68 |
 | D2F             | 102.13     | 76.24      | 73.24 |
 | dParallel-LLaDA | 172.23     | 105.85     | 72.63 |
-| **d3LLM-LLaDA** | **280.97** | **180.23** | **73.10** |
+| **d3LLM-LLaDA** | **288.73** | **174.57** | **73.10** |
 
 {{< /table >}}
 
