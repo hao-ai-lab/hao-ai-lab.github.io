@@ -19,7 +19,7 @@ draft = false
       hidden = true
 +++
 
-{{< socialBadges github="hao-ai-lab/text-diffusion">}}
+{{< socialBadges github="hao-ai-lab/text-diffusion" demo="https://d3llm-team.github.io/" huggingface="https://huggingface.co/d3LLM-model">}}
 
 {{< justify >}}
 **TL;DR:** We introduce a novel recipe for building an ultra-fast diffusion language model named **_d3LLM_** (_dequeued-distillate-diffusion LLM_) with negligible accuracy degradation. The d3LLM framework comprises two key components: (i) a novel _distillation_ recipe and (ii) an efficient _decoding_ strategy.
