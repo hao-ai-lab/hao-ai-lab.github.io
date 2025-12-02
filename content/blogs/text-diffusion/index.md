@@ -1,5 +1,5 @@
 +++
-title = "Who is the Most Parallel Parallel-Decoder? - Hardware-independent Diffusion LLM Leaderboard"
+title = "Who is the Most Parallel Parallel-Decoder? - A Hardware-Agnostic Diffusion LLM Leaderboard"
 date = 2025-11-21T12:00:00-08:00
 authors = ["Yu-Yang Qian", "Junda Su", "Peiyuan Zhang", "Lanxiang Hu", "Peng Zhao", "Hao Zhang"]
 author = "Yu-Yang Qian, Junda Su, Peiyuan Zhang, Lanxiang Hu, Peng Zhao, Hao Zhang"
@@ -14,8 +14,8 @@ draft = false
       url = "https://github.com/hao-ai-lab/text-diffusion"
 [cover]
       image = "/img/dllm_leaderboard.png"
-      alt = "Who is the Most Parallel Parallel-Decoder? - Hardware-independent Diffusion LLM Leaderboard"
-      caption = "Who is the Most Parallel Parallel-Decoder? - Hardware-independent Diffusion LLM Leaderboard"
+      alt = "Who is the Most Parallel Parallel-Decoder? - A Hardware-Agnostic Diffusion LLM Leaderboard"
+      caption = "Who is the Most Parallel Parallel-Decoder? - A Hardware-Agnostic Diffusion LLM Leaderboard"
       hidden = true
 +++
 
