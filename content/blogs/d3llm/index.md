@@ -265,7 +265,7 @@ For the *Dream-7B-Instruct*, we again report speed and accuracy on GSM8K-CoT dat
 |                 | H100's TPS | A100's TPS | Acc   |
 |:---------------:|:----------:|:----------:|:-----:|
 | Qwen-2.5-7B-it  | 57.32      | 50.36      | 74.10 |
-| Dream           | 27.62      | 8.32       | 83.94 |
+| Dream           | 13.41      | 8.32       | 83.94 |
 | Fast-dLLM-Dream | 77.25      | 51.55      | 79.00 |
 | Fast-dLLM-v2-7B | 150.01     | 109.68     | 77.48 |
 | dParallel-Dream | 168.36     | 80.23      | 82.12 |
