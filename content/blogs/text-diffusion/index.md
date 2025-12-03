@@ -29,7 +29,8 @@ draft = false
 
 {{< /justify >}}
 
-{{< dllm_leaderboard >}}
+{{< dllm_leaderboard_previous >}}
+<!-- {{< dllm_leaderboard >}} -->
 
 {{< justify >}}
 
@@ -335,6 +336,10 @@ Across both models, our d3LLM achieves the highest TPS with minimal accuracy deg
 </div>
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 7: AUP scores and radar chart comparing different Coder-based methods.</figcaption>
 </figure>
+
+## 🏆 Full Leaderboard Containing our d3LLM
+
+{{< dllm_leaderboard >}}
 
 {{< justify >}}
 
