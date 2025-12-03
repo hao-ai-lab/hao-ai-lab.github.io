@@ -414,7 +414,7 @@
         // Process metrics for each model
         Object.keys(models).forEach(modelName => {
             let totalAUP = 0;
-            let taskCount = 0;
+            const taskCount = tasks.length; // Always count all tasks
             
             tasks.forEach(task => {
                 if (data[task] && data[task][modelName]) {
@@ -427,13 +427,13 @@
                     };
                     
                     totalAUP += aup;
-                    taskCount++;
                 } else {
                     models[modelName].metrics[task] = null;
+                    // Missing values are treated as 0, so no need to add anything
                 }
             });
             
-            models[modelName].avgAUP = taskCount > 0 ? totalAUP / taskCount : 0;
+            models[modelName].avgAUP = totalAUP / taskCount;
         });
         
         return Object.values(models);
