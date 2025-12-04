@@ -22,7 +22,7 @@ draft = false
 {{< socialBadges github="hao-ai-lab/text-diffusion" demo="https://d3llm-team.github.io/" huggingface="https://huggingface.co/d3LLM">}}
 
 {{< justify >}}
-**TL;DR:** We introduce a novel recipe for building an ultra-fast diffusion language model named **_d3LLM_** (_dequeued-distillate-diffusion LLM_) with negligible accuracy degradation. The d3LLM framework comprises two key components: (i) a novel _distillation_ recipe and (ii) an efficient _decoding_ strategy.
+**TL;DR:** We introduce a novel framework for building an ultra-fast diffusion language model named **_d3LLM_** (_pseuDo-Distilled Diffusion Large Language Model_) that not only improves parallelism but also preserves model performance with negligible accuracy degradation. The d3LLM framework comprises two key components: (i) a novel _distillation_ recipe with curriculum learning and (ii) an efficient _decoding_ strategy with KV-refresh mechanisms. The underlying motivation is straightforward: the distillation and multi-block decoding are crucial for enhancing parallelism, while the curriculum learning recipe and KV-refresh mechanisms are designed to maintain accuracy.
 {{< /justify >}}
 
 {{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Demo of the d3LLM, which achieves up to 5× speedup over the AR (Qwen-2.5-7B-it) on H100 GPU and 3.5× speedup on A100 GPU. You can try 🕹️ [our demo](https://d3llm-team.github.io/).">}}
@@ -95,11 +95,13 @@ With growing interest from the research community, an increasing number of metho
 {{< /justify >}}
 
 
-## d3LLM: the Most Parallel Parallel-Decoder so far 🚀
+## d3LLM: Jointly Achieving Accuracy and Parallelism 🚀
 
 {{< justify >}}
 
-We introduce a novel recipe for building a highly efficient and high-performing diffusion language model: **_d3LLM_** (_dequeued-distillate-diffusion Large Language Model_). The d3LLM framework comprises two key components: (i) _distillation_ recipe and (ii)_decoding_ strategy.
+We introduce a novel framework for building a highly efficient and high-performing diffusion language model: **_d3LLM_** (_pseuDo-Distilled Diffusion Large Language Model_). Our approach not only improves parallelism but also preserves model performance, with only minimal accuracy degradation compared to vanilla LLaDA and Dream models. 
+
+The d3LLM framework comprises two key components: (i) a trajectory-based _distillation_ recipe with curriculum learning and (ii) an efficient _decoding_ strategy with KV-cache and KV-refresh mechanisms. The underlying ***motivation*** is straightforward: the distillation and multi-block decoding are crucial for enhancing parallelism, while the curriculum learning recipe and KV-refresh mechanisms are designed to maintain accuracy.
 
 {{< /justify >}}
 
@@ -110,7 +112,7 @@ We introduce a novel recipe for building a highly efficient and high-performing 
 {{< justify >}}
 ### (i) Pseudo-Trajectory-based Distillation Recipe
 
-We propose a novel **trajectory-based distillation** recipe, which introduces an advanced distillation recipe aimed at improving both decoding efficiency and alignment with the teacher model's generation pattern. Specifically, it consists of the following key techniques:
+We propose a novel **trajectory-based distillation** recipe with curriculum learning, which is crucial for enhancing parallelism while maintaining model accuracy. This advanced distillation approach aims at improving decoding efficiency and alignment with the teacher model's generation pattern. Specifically, it consists of the following key techniques:
 
 {{< /justify >}}
 
@@ -144,7 +146,7 @@ We propose a novel **trajectory-based distillation** recipe, which introduces an
 
     <div style="margin-top: 2mm;"></div>
 
-  Rather than applying a fixed masking ratio throughout training, we introduce a _progressive noise schedule_ by gradually increasing the mask ratio \$t\$ from 0.0 to 0.8 during the training process. This dynamic adjustment encourages the model to learn from easier to harder decoding scenarios in a curriculum-like manner, thereby enhancing its robustness and decoding efficiency. Empirically, this strategy further improves the model's tokens-per-forward (TPF) by approximately **18%** compared to using a fixed mask ratio.
+  To preserve accuracy during distillation, we introduce a _progressive noise schedule_ by gradually increasing the mask ratio \$t\$ from 0.0 to 0.8 during the training process. This curriculum learning approach encourages the model to learn from easier to harder decoding scenarios, thereby enhancing its robustness and decoding efficiency while maintaining generation quality. Empirically, this strategy further improves the model's tokens-per-forward (TPF) by approximately **18%** compared to using a fixed mask ratio. Without this curriculum strategy, we observe that the distillation process becomes unstable and the model is more prone to accuracy degradation.
 
 {{< /justify >}}
 
@@ -154,7 +156,7 @@ We propose a novel **trajectory-based distillation** recipe, which introduces an
 
     <div style="margin-top: 2mm;"></div>
 
-  We also employ a _progressive window size_ during training: instead of fixing the decoding window length \$k\$, we gradually increase it from 16 to 32 during the training process. This allows the model to adapt to increasingly larger context spans, facilitating smoother distillation process and stable token generation. This approach leads to an additional **8% improvement in TPF** compared to a constant window size.
+  We also employ a _progressive window sizing_ as another curriculum learning technique: instead of fixing the decoding window length \$k\$, we gradually increase it from 16 to 32 during the training process. This allows the model to adapt to increasingly larger context spans, facilitating smoother distillation process and stable token generation while maintaining accuracy. This approach leads to an additional **8% improvement in TPF** compared to a constant window size.
 
 {{< /justify >}}
 
@@ -166,7 +168,7 @@ We propose a novel **trajectory-based distillation** recipe, which introduces an
 
 {{< justify >}}
 
-In addition to the novel distillation recipe, we also introduce an efficient decoding mechanism tailored for dLLM, designed to maximize parallelism across multiple-block decoding. Our decoding strategy includes the following components:
+In addition to the novel distillation recipe, we also introduce an efficient decoding mechanism tailored for dLLM, designed to maximize parallelism while maintaining generation quality. Our decoding strategy includes the following components:
 
 {{< /justify >}}
 
@@ -190,7 +192,7 @@ In addition to the novel distillation recipe, we also introduce an efficient dec
 
     <div style="margin-top: 2mm;"></div>
 
-  To further improve decoding throughput, particularly in long-context settings, we incorporate a _KV-cache_ mechanism alongside a periodic _KV-refresh_. Specifically, after completing each block, we delay for 1–2 iterations to store the block's key-value cache. Simultaneously, we perform a full forward pass without caching to refresh all prior KV caches. This hybrid strategy maintains decoding accuracy while significantly improving TPS by approximately **20%** in long-context scenarios.
+  To further improve decoding throughput while maintaining generation quality, particularly in long-context settings, we incorporate a _KV-cache_ mechanism alongside a periodic _KV-refresh_. Specifically, after completing each block, we introduce a short delay before caching its key–value states to ensure that the cache remains reliable and does not lead to performance degradation. Simultaneously, we perform full forward passes to refresh previous caches. This hybrid strategy maintains decoding accuracy while significantly improving TPS by approximately **20%** in long-context scenarios.
 
 {{< /justify >}}
 
@@ -232,7 +234,7 @@ We use the AUP (*Accuracy Under Parallelism*) score as the primary evaluation me
 
 {{< justify >}}
 
-**Results on Different Models and Datasets.** As shown by the results above, the proposed distillation recipe and multi-block decoding strategy are robust and improve efficiency across various domains. Specifically, our d3LLM achieves the highest AUP score, and accelerates the vanilla LLaDA by approximately 5–10× on TPF across different tasks. Remarkably, we note that for Fast-dLLM-v2, the accuracy scores on Math and HumanEval are notably higher than those of other diffusion models derived from Dreams. We suspect that this stems from the fact that Fast-dLLM-v2 is finetuned directly from Qwen-2.5-7B with an additional 1B tokens (i.e., the LLaMA–Nemotron post-training dataset). In contrast, our d3LLM-Dream is distilled based on the vanilla Dream and uses only 60M additional tokens.
+**Results on Different Models and Datasets.** As shown by the results above, the proposed distillation recipe and multi-block decoding strategy improve efficiency across various domains and maintain model performance. Specifically, our d3LLM achieves the highest average AUP score across all dLLMs, and accelerates the vanilla LLaDA by approximately 5–10× on TPF across different tasks with only minimal accuracy degradation. Remarkably, we note that for Fast-dLLM-v2, the accuracy scores on Math and HumanEval are notably higher than those of other diffusion models derived from Dreams. We suspect that this stems from the fact that Fast-dLLM-v2 is finetuned directly from Qwen-2.5-7B with an additional 1B tokens (i.e., the LLaMA–Nemotron post-training dataset). In contrast, our d3LLM-Dream is distilled based on the vanilla Dream and uses only 60M additional tokens.
 
 
 
@@ -276,8 +278,9 @@ For the *Dream-7B-Instruct*, we again report speed and accuracy on GSM8K-CoT dat
 
 {{< justify >}}
 
-To summarize, across both models, our d3LLM framework achieves higher TPF and maintains the highest AUP score across all four tasks with negligible performance degradation. It delivers up to a **5× speedup** over autoregressive decoding (Qwen-2.5-7B-it) on H100 GPUs, and approximately **3× speedup** on A100 GPUs. 
-Note that all experiments are conducted using the HuggingFace inference backend. We leave system-level optimizations including GPU kernel fusion and integration with vLLM, to future work for further TPS improvements
+To summarize, our d3LLM framework not only achieves higher TPF but also maintains the highest AUP score with negligible performance degradation, successfully balancing both parallelism and accuracy. It delivers up to a **5× speedup** over autoregressive decoding (Qwen-2.5-7B-it) on H100 GPUs, and approximately **3.5× speedup** on A100 GPUs.  Together, these distillation and decoding innovations enable d3LLM to achieve substantial efficiency improvements while maintaining generation quality, striking a balance between accuracy and parallelism that makes diffusion language models practical for real-world deployment.
+
+Note that all experiments are conducted using the HuggingFace inference backend. We leave system-level optimizations including GPU kernel fusion and integration with vLLM, to future work for further TPS improvements.
 
 All our distillation code, data, model weights, and benchmark evaluation code are available at [https://github.com/hao-ai-lab/text-diffusion](https://github.com/hao-ai-lab/text-diffusion). The full paper about AUP and our d3LLM framework will be released soon. Stay tuned!
 
