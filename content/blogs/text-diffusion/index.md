@@ -1,5 +1,5 @@
 +++
-title = "Who is the Most Parallel Parallel-Decoder? - A Hardware-Agnostic Diffusion LLM Leaderboard"
+title = "Not Just Parallelism: A New Metric for Diffusion Language Model"
 date = 2025-11-21T12:00:00-08:00
 authors = ["Yu-Yang Qian", "Junda Su", "Peiyuan Zhang", "Lanxiang Hu", "Peng Zhao", "Hao Zhang"]
 author = "Yu-Yang Qian, Junda Su, Peiyuan Zhang, Lanxiang Hu, Peng Zhao, Hao Zhang"
@@ -14,23 +14,19 @@ draft = false
       url = "https://github.com/hao-ai-lab/text-diffusion"
 [cover]
       image = "/img/dllm_leaderboard.png"
-      alt = "Who is the Most Parallel Parallel-Decoder? - A Hardware-Agnostic Diffusion LLM Leaderboard"
-      caption = "Who is the Most Parallel Parallel-Decoder? - A Hardware-Agnostic Diffusion LLM Leaderboard"
+      alt = "Not Just Parallelism: A New Metric for Diffusion Language Model"
+      caption = "Not Just Parallelism: A New Metric for Diffusion Language Model"
       hidden = true
 +++
 
 {{< socialBadges github="hao-ai-lab/text-diffusion">}}
 
-## 🏆 Diffusion LLM Leaderboard
-
 {{< justify >}}
 
-**TL;DR:** We present a leaderboard that compares different diffusion large language models (dLLMs) across five representative benchmark tasks, using the AUP score (_Accuracy Under Parallelism_, which will be described in detail later) as the primary evaluation metric, which is a hardware-independent metric that measures both the efficiency and the performance of a dLLM.
+**TL;DR:** We present a new metric that fairly measure both the performance and the parallelism of diffusion large language models (dLLMs), named _Accuracy Under Parallelism_ (AUP). Further, we propose our _d3LLM_ (pseuDo-Distillated-Diffusion LLM) framework that introduces a novel distillation recipe and decoding strategy,  which achieves higher AUP then previous SOTAs.
 
 {{< /justify >}}
 
-{{< dllm_leaderboard_previous >}}
-<!-- {{< dllm_leaderboard >}} -->
 
 {{< justify >}}
 
@@ -98,16 +94,12 @@ draft = false
 
 Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of _bidirectional attention_, enabling capabilities such as parallel decoding, error correction, and random-order generation, which are features that are not feasible with AR models. Recently, several closed-source diffusion models, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), have demonstrated impressive efficiency and performance, achieving high decoding speeds and competitive results compared to AR models. In contrast, open-source diffusion language models have exhibited significantly lower throughput, often performing even slower than AR models. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) achieve only around 20 tokens per second, whereas closed-source dLLMs exceed 1000 tokens per second.
  
-With growing interest from the research community, an increasing number of methods have been proposed to accelerate diffusion large language models (dLLMs) [[1](https://arxiv.org/abs/2505.22618), [2](https://arxiv.org/abs/2508.09192), [3](https://arxiv.org/abs/2509.26488), [4](https://arxiv.org/abs/2509.26328), [5](https://arxiv.org/abs/2510.08666)]. Upon carefully examining the behavior of dLLMs, our key observation is that: **dLLMs are inherently parallel-decoders with bidirectional attention.** As a result, many recent efforts to equip AR models with parallel-decoding capabilities [[6](https://arxiv.org/abs/2401.10774), [7](https://arxiv.org/abs/2403.00835)] are closely related to the design principles of dLLMs. This leads to a natural question:
-
-<center><i>
-
-**Who is the most parallel parallel-decoder?**</i>
-
-</center>
+With growing interest from the research community, an increasing number of methods have been proposed to accelerate diffusion large language models (dLLMs) [[1](https://arxiv.org/abs/2505.22618), [2](https://arxiv.org/abs/2508.09192), [3](https://arxiv.org/abs/2509.26488), [4](https://arxiv.org/abs/2509.26328), [5](https://arxiv.org/abs/2510.08666)]. Upon carefully examining the behavior of dLLMs, our key observation is that: **dLLMs are inherently parallel-decoders with bidirectional attention.** As a result, many recent efforts try to equip diffusion language models with more ***parallelism***. Another line of work tries to improve the accuracy of dLLMs, which incorporates more advanced training recipes, longer context length, incorporating reasoning ability, and collecting more data [[6](https://huggingface.co/collections/inclusionAI/llada-20), [7](https://arxiv.org/abs/2510.06303)].
 
 
-Although many acceleration techniques have been proposed, there is still no standardized benchmark or metric for evaluating and comparing their degrees of parallelism. In this work, we focus on models with *native parallelism capabilities*, with diffusion language models as a representative example. The speculative decoding framework falls out of our scope because it depends on different model architectures and requires an additional verification step to ensure token correctness, which introduces more complexity when serving models of different sizes. Consequently, our parallel-decoder leaderboard includes only models with native parallelism capabilities, and speculative decoding is orthogonal to our study and can be further incorporated to achieve additional speedup.
+Although previous pioneers have focus on improving the efficiency or accuracy of dLLMs separately, there seem to lack a unified metric and benchmark for fairly evaluating dLLMs by considering both the performance and the parallelism. As it can be seen in the leaderboard later, some advances
+
+<!-- many acceleration techniques have been proposed, there is still no standardized benchmark or metric for evaluating and comparing their degrees of parallelism. In this work, we focus on models with *native parallelism capabilities*, with diffusion language models as a representative example. The speculative decoding framework falls out of our scope because it depends on different model architectures and requires an additional verification step to ensure token correctness, which introduces more complexity when serving models of different sizes. Consequently, our parallel-decoder leaderboard includes only models with native parallelism capabilities, and speculative decoding is orthogonal to our study and can be further incorporated to achieve additional speedup. -->
 
 
 {{< /justify >}}
@@ -147,6 +139,9 @@ where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y
 **Hardware-Independence.** Unlike traditional throughput metrics such as TPS (tokens per second), which are highly dependent on hardware capabilities, AUP offers a more robust and hardware-independent measure. For instance, in our experiments, our d3LLM-LLaDA model (which will be introduced in the next section) demonstrated around 5× higher TPS than an AR baseline (Qwen-2.5-7B-it) on an NVIDIA H100 GPU (289 vs. 57 tokens/s). However, this advantage shrank significantly on an NVIDIA A100 GPU (175 vs. 50 tokens/s). In contrast, the TPF (tokens per forward pass) remained consistent across hardware platforms. Therefore, AUP provides a robust and fair evaluation metric that reflects both efficiency and accuracy while remaining independent of specific hardware configurations, helping the community focus on algorithmic design without requiring access to particular GPUs.
 
 {{< /justify >}}
+
+
+{{< dllm_leaderboard_previous >}}
 
 ## [d3LLM: the Most Parallel dLLM so far](../d3llm) 🚀
 
@@ -337,7 +332,7 @@ Across both models, our d3LLM achieves the highest TPS with minimal accuracy deg
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 7: AUP scores and radar chart comparing different Coder-based methods.</figcaption>
 </figure>
 
-## 🏆 Full Leaderboard Containing our d3LLM
+## 🏆 Diffusion LLM Leaderboard using AUP Score
 
 {{< dllm_leaderboard >}}
 
@@ -375,11 +370,12 @@ Our d3LLM-Coder achieves higher TPF and maintains the highest AUP score across a
 {{< /justify >}}
 
 {{< justify >}}
-[6] [Medusa: Simple LLM Inference Acceleration Framework with Multiple Decoding Heads](https://arxiv.org/abs/2401.10774)
+[6] [LLaDA 2.0](https://huggingface.co/collections/inclusionAI/llada-20)
 {{< /justify >}}
 
 {{< justify >}}
-[7] [CLLMs: Consistency Large Language Models](https://arxiv.org/abs/2403.00835)
+[7] [SDAR: A Synergistic Diffusion-AutoRegression Paradigm for
+Scalable Sequence Generation](https://arxiv.org/abs/2510.06303)
 {{< /justify >}}
 
 {{< justify >}}

@@ -2,7 +2,6 @@
     .leaderboard-container {
         width: 100%;
         overflow-x: auto;
-        margin: 30px 0;
         -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         position: relative;
     }
@@ -27,8 +26,8 @@
     }
     
     .leaderboard-table {
-        width: auto; /* Auto width to fit content */
-        min-width: 100%; /* At least full width on desktop */
+        width: fit-content; /* Fit content width */
+        margin: 0 auto; /* Center the table */
         border-collapse: collapse;
         background: #1e1e1e;
         box-shadow: 0 4px 12px rgba(0,0,0,0.3);
@@ -236,27 +235,27 @@
     }
     </style>
     
+<div style="width: fit-content; max-width: 100%; margin: 30px auto;">
     <div class="scroll-hint">
         ← Swipe left/right to see all columns →
     </div>
-<div class="leaderboard-container">
-    <table class="leaderboard-table" id="leaderboard-previous">
+    <div class="leaderboard-container">
+        <table class="leaderboard-table" id="leaderboard-previous">
         <thead>
             <tr>
-                <th class="sortable" data-sort="rank">Rank</th>
                 <th class="sortable" data-sort="model">Model</th>
                 <th class="sortable" data-sort="gsm8k_cot">GSM8K-CoT</th>
                 <th class="sortable" data-sort="math">MATH</th>
                 <th class="sortable" data-sort="mbpp">MBPP</th>
                 <th class="sortable" data-sort="humaneval">HumanEval</th>
                 <th class="sortable" data-sort="long_gsm8k">Long-GSM8K</th>
-                <th class="sortable" data-sort="avg">Avg AUP</th>
             </tr>
         </thead>
         <tbody id="leaderboard-body-previous">
             <!-- Data will be populated by JavaScript -->
         </tbody>
     </table>
+    </div>
 </div>
     
     <script>
@@ -325,7 +324,7 @@
                         !modelName.includes('Qwen2.5-Coder-7B') &&
                         !modelName.includes('d3LLM') &&
                         !modelName.includes('Qwen') &&
-                        // !modelName.includes('EAGLE')&&
+                        !modelName.includes('EAGLE')&&
                         !modelName.includes('Coder')) {
                         
                         // Parse data for each dataset in this row
@@ -393,7 +392,7 @@
             } catch (error) {
                 console.error('Error loading CSV:', error);
                 document.getElementById('leaderboard-body-previous').innerHTML = 
-                    '<tr><td colspan="8" style="text-align:center;color:#999;">Error loading data</td></tr>';
+                    '<tr><td colspan="6" style="text-align:center;color:#999;">Error loading data</td></tr>';
             }
         }
         
@@ -449,8 +448,8 @@
             }
             
             return `
-                <span class="aup-score">${metric.aup.toFixed(1)}</span>
-                <span class="sub-metrics">TPF: ${metric.tpf.toFixed(2)} | Acc: ${metric.acc.toFixed(1)}%</span>
+                <span class="sub-metrics">Acc: ${metric.acc.toFixed(1)}%</span>
+                <span class="sub-metrics">TPF: ${metric.tpf.toFixed(2)}</span>
             `;
         }
         
@@ -474,16 +473,12 @@
                 const row = document.createElement('tr');
                 
                 row.innerHTML = `
-                    <td class="rank-cell">${getRankBadge(index + 1)}</td>
                     <td class="model-cell">${model.name}</td>
                     <td class="metric-cell">${formatMetricCell(model.metrics.gsm8k_cot)}</td>
                     <td class="metric-cell">${formatMetricCell(model.metrics.math)}</td>
                     <td class="metric-cell">${formatMetricCell(model.metrics.mbpp)}</td>
                     <td class="metric-cell">${formatMetricCell(model.metrics.humaneval)}</td>
                     <td class="metric-cell">${formatMetricCell(model.metrics.long_gsm8k)}</td>
-                    <td class="metric-cell avg-cell">
-                        <span class="aup-score">${model.avgAUP.toFixed(1)}</span>
-                    </td>
                 `;
                 
                 tbody.appendChild(row);
@@ -537,4 +532,5 @@
         loadData();
     })();
     </script>
+    <!-- Version: 2024-12-04-v2 -->
     
