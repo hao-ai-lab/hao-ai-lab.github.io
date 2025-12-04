@@ -1,5 +1,5 @@
 +++
-title = "AUP: Balancing Accuracy and Parallelism for Diffusion LLMs"
+title = "Two Goals in One dLLM: Jointly Achieving Accuracy and Parallelism in Diffusion LLMs"
 date = 2025-11-21T12:00:00-08:00
 authors = ["Yu-Yang Qian", "Junda Su", "Peiyuan Zhang", "Lanxiang Hu", "Peng Zhao", "Hao Zhang"]
 author = "Yu-Yang Qian, Junda Su, Peiyuan Zhang, Lanxiang Hu, Peng Zhao, Hao Zhang"
@@ -14,8 +14,8 @@ draft = false
       url = "https://github.com/hao-ai-lab/text-diffusion"
 [cover]
       image = "/img/dllm_leaderboard.png"
-      alt = "AUP: Balancing Accuracy and Parallelism for Diffusion LLMs"
-      caption = "AUP: Balancing Accuracy and Parallelism for Diffusion LLMs"
+      alt = "Two Goals in One dLLM: Jointly Achieving Accuracy and Parallelism in Diffusion LLMs"
+      caption = "Two Goals in One dLLM: Jointly Achieving Accuracy and Parallelism in Diffusion LLMs"
       hidden = true
 +++
 
