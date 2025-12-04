@@ -114,13 +114,13 @@ Although prior work has focused on improving either the efficiency or the accura
 To jointly account for both efficiency and performance in diffusion language models, we introduce a new metric, ***AUP*** (*Accuracy Under Parallelism*). AUP quantifies how well a model preserves accuracy as the degree of parallelism increases, providing a unified, device-independent measure of a dLLM’s both *efficiency* and *performance*.
 
 
-Specifically, let $\mathcal{S} = \\{(\rho_i, y_i)\\}\_{i=1}^m$ be a set of parallelism-accuracy pairs, where $\rho_1 < \rho_2 < \dots < \rho_m$, $\rho_i \in \mathbb{R}^{+}$ denotes the parallelism (measured in _tokens per forward_, TPF), and $y_i \in [0, 100]$ represents accuracy in percentage. We define a minimum accuracy threshold $y\_{\min} = y_1 - 5$ to avoid measuring in regimes of significant accuracy degradation. Only points satisfying $y_i \ge y\_{\min}$ are included. 
+Specifically, let $\mathcal{S} = \{(\rho_i, y_i)\}_{i=1}^m$ be a set of parallelism-accuracy pairs, where $\rho_1 < \rho_2 < \dots < \rho_m$, $\rho_i \in \mathbb{R}^{+}$ denotes the parallelism (measured in _tokens per forward_, TPF), and $y_i \in [0, 100]$ represents accuracy in percentage. We define a minimum accuracy threshold $y_{\min} = y_1 - 5$ to avoid measuring in regimes of significant accuracy degradation. Only points satisfying $y_i \ge y_{\min}$ are included. 
 
 The most naïve approach is to calculate a score as the area under the accuracy–parallelism curve (AUC), but this is not an effective metric. This quantity is strongly influenced by parallelism even when accuracy degrades substantially, allowing low-quality but fast models to obtain high scores. To this end, we establish **AUP**, which takes the accuracy degradation into account, which is defined as the weighted area under the accuracy-parallelism curve:
 
 $$\operatorname{AUP} \triangleq \rho_1 y_1 + \frac{1}{2} \sum_{i=2}^{m} (\rho_{i} - \rho_{i-1}) \left( y_i \cdot W(y_i) + y_{i-1} \cdot W(y_{i-1}) \right),$$
 
-where the weighting function is defined as $W(y) = \min(e^{-\alpha \left(1 - {y}/{y\_\max}\right)}, 1)$, with a penalty factor $\alpha = 3$ and $y\_\max$ denotes the highest accuracy achieved on that task. This weight penalizes lower-accuracy regions to emphasize both high parallelism and stable performance. AUP thus provides a unified measure of decoding quality under increasing parallelism.
+where the weighting function is defined as $W(y) = \min(e^{-\alpha \left(1 - {y}/{y_\max}\right)}, 1)$, with a penalty factor $\alpha = 3$ and $y_\max$ denotes the highest accuracy achieved on that task. This weight penalizes lower-accuracy regions to emphasize both high parallelism and stable performance. AUP thus provides a unified measure of decoding quality under increasing parallelism.
 
 {{< /justify >}}
 
