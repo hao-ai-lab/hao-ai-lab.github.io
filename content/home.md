@@ -114,5 +114,5 @@ Hao AI Lab is sponsored by HDSI, NVIDIA, Google, Snowflake, Lemonslice, and AMD.
   {{< sponsor imageDay="google.png" imageNight="google-dark.png" link="https://www.google.com">}}
   {{< sponsor imageDay="snow.png" imageNight="snow-dark.png" link="https://www.snowflake.com/en/" >}}
   {{< sponsor imageDay="lemonslice.png" imageNight="lemonslice.png" link="https://lemonslice.com/" >}}
-  {{< sponsor imageDay="amd.png" imageNight="amd.png" link="https://www.amd.com" >}}
+  {{< sponsor imageDay="AMD.png" imageNight="AMD-dark.png" link="https://www.amd.com" >}}
 {{< /sponsor_grid >}}
