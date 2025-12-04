@@ -349,7 +349,7 @@ We present the leaderboard of diffusion LLMs using the AUP score as the evaluati
 {{< justify >}}
 
 Our d3LLM-Coder achieves higher TPF and maintains the highest AUP score among all diffusion LLMs.
-Notably, the state-of-the-art speculative decoding method, EAGLE-3, attains the top overall AUP score. This is expected, as speculative decoding includes an additional verification step and therefore does not suffer the accuracy degradation as in dLLMs under high parallelism. Nevertheless, our d3LLM framework substantially narrows the gap between diffusion-based models and SOTA speculative decoding methods, offering valuable insights for future research directions.
+Notably, the state-of-the-art speculative decoding method, EAGLE-3 (with LLaMA-Instruct 3.1 8B), attains the top overall AUP score. This is expected, as speculative decoding includes an additional verification step and therefore does not suffer the accuracy degradation as in dLLMs under high parallelism. Nevertheless, our d3LLM framework substantially narrows the gap between diffusion-based models and SOTA speculative decoding methods, offering valuable insights for future research directions.
 
 
 All our distillation code, data, model weights, and benchmark evaluation code are available at [https://github.com/hao-ai-lab/text-diffusion](https://github.com/hao-ai-lab/text-diffusion). The full paper about AUP and our d3LLM framework will be released soon. Stay tuned!
