@@ -26,6 +26,8 @@ markup:
           - - $
             - $
         enable: true
+    renderer:
+      unsafe: true
 params:
   env: production
   math: true

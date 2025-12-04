@@ -5,17 +5,66 @@ url: "/publications/"
 summary: publications
 ---
 
-### 2024
-{{< publication title="Specifications: The missing link to making the development of LLM systems an engineering discipline" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2412.05299" codeLink="" award="" project="" data-topic="Selected, Large Language Models, ML Systems" >}}
-Ion Stoica, Matei Zaharia, Joseph Gonzalez, Ken Goldberg, Koushik Sen, Hao Zhang, Anastasios N. Angelopoulos, Shishir G. Patil, Lingjiao Chen, Wei-Lin Chiang, Jared Q. Davis
+### 2025
+
+{{< publication title="Diffusion LLMs Can Do Faster-Than-AR Inference via Discrete Diffusion Forcing" venue="Preprint 2025" paperLink="https://arxiv.org/pdf/2508.09192" codeLink="" award="" project="https://github.com/zhijie-group/Discrete-Diffusion-Forcing" data-topic="Selected, Large Language Models" >}}
+Xu Wang, Chenkai Xu, Yijie Jin, Jiachun Jin, Hao Zhang, Zhijie Deng
 {{< /publication >}}
 
-{{< publication title="GameArena: Evaluating LLM Reasoning through Live Computer Games" venue="ICLR 2025" paperLink="https://arxiv.org/pdf/2412.06394" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Evaluation" >}}
+{{< publication title="Scaling Speculative Decoding with Lookahead Reasoning" venue="NeurIPS 2025" paperLink="https://arxiv.org/pdf/2506.19830" codeLink="" award="" project="https://github.com/hao-ai-lab/LookaheadReasoning" data-topic="Selected, Large Language Models" >}}
+Yichao Fu, Rui Ge, Zelei Shao, Zhijie Deng, Hao Zhang
+{{< /publication >}}
+
+{{< publication title="Arctic-Text2SQL-R1: Simple Rewards, Strong Reasoning in Text-to-SQL" venue="Preprint 2025" paperLink="https://arxiv.org/pdf/2505.20315" codeLink="" award="" project="https://huggingface.co/Snowflake/Arctic-Text2SQL-R1-7B" data-topic="Large Language Models" >}}
+Zhewei Yao, Guoheng Sun, Lukasz Borchmann, Zheyu Shen, Minghang Deng, Bohan Zhai, Hao Zhang, Ang Li, Yuxiong He
+{{< /publication >}}
+
+{{< publication title="VSA: Faster Video Diffusion with Trainable Sparse Attention" venue="NeurIPS 2025" paperLink="https://arxiv.org/pdf/2505.13389" codeLink="" award="" project="https://github.com/hao-ai-lab/FastVideo" data-topic="Selected, ML Systems, Scalable ML" >}}
+Peiyuan Zhang*, Yongqi Chen*, Haofeng Huang, Will Lin, Zhengzhong Liu, Ion Stoica, Eric P Xing, Hao Zhang
+{{< /publication >}}
+
+{{< publication title="LMGame-Bench: How Good are LLMs at Playing Games?" venue="Preprint 2025" paperLink="https://arxiv.org/pdf/2505.15146?" codeLink="" award="" project="https://github.com/lmgame-org/GamingAgent/tree/main/lmgame-bench" data-topic="Selected, Large Language Models" >}}
+Lanxiang Hu*, Mingjia Huo*, Yuxuan Zhang, Haoyang Yu, Eric P Xing, Ion Stoica, Tajana Rosing, Haojian Jin, Hao Zhang
+{{< /publication >}}
+
+{{< publication title="Efficiently Scaling LLM Reasoning with Certaindex" venue="NeurIPS 2025" paperLink="https://arxiv.org/pdf/2412.20993" codeLink="" award="" project="https://github.com/hao-ai-lab/Dynasor" data-topic="Selected, Large Language Models, ML Systems" >}}
+Yichao Fu*, Junda Chen*, Siqi Zhu, Zheyu Fu, Zhongdongming Dai, Yonghao Zhuang, Yian Ma, Aurick Qiao, Tajana Rosing, Ion Stoica, Hao Zhang
+{{< /publication >}}
+
+{{< publication title="Reasoning without Self-doubt: More Efficient Chain-of-thought through Certainty Probing" venue="Foundation Models in the Wild Workshop @ ICML 2025" paperLink="https://openreview.net/pdf?id=wpK4IMJfdX" codeLink="" award="" project="https://github.com/hao-ai-lab/Dynasor" data-topic="Selected, Large Language Models, ML Systems" >}}
+Yichao Fu, Junda Chen, Yonghao Zhuang, Zheyu Fu, Ion Stoica, Hao Zhang
+{{< /publication >}}
+
+{{< publication title="Fast Video Generation with Sliding Tile Attention" venue="ICML 2025" paperLink="https://arxiv.org/pdf/2502.04507" codeLink="" award="" project="https://github.com/hao-ai-lab/FastVideo" data-topic="Selected, ML Systems, Scalable ML" >}}
+Peiyuan Zhang, Yongqi Chen*, Runlong Su*, Hangliang Ding, Ion Stoica, Zhengzhong Liu, Hao Zhang
+{{< /publication >}}
+
+{{< publication title="ReFoRCE: A Text-to-SQL Agent with Self-Refinement, Format Restriction, and Column Exploration" venue="Preprint 2025" paperLink="https://arxiv.org/pdf/2502.00675" codeLink="" award="" project="" data-topic="Selected, Large Language Models" >}}
+Minghang Deng, Ashwin Ramachandran, Canwen Xu, Lanxiang Hu, Zhewei Yao, Anupam Datta, Hao Zhang
+{{< /publication >}}
+
+{{< publication title="Efficient-vDiT: Efficient Video Diffusion Transformers With Attention Tile" venue="ES-FOMO Workshop @ ICML 2025" paperLink="https://arxiv.org/pdf/2502.06155" codeLink="" award="" project="https://github.com/hao-ai-lab/FastVideo" data-topic="Selected, ML Systems, Scalable ML" >}}
+Hangliang Ding*, Dacheng Li*, Runlong Su, Peiyuan Zhang, Zhijie Deng, Ion Stoica, Hao Zhang
+{{< /publication >}}
+
+{{< publication title="Scaling Long Context Training Data by Long-Distance Referrals" venue="ICLR 2025" paperLink="https://openreview.net/pdf?id=tePFpDgyqg" codeLink="" award="" project="" data-topic="Selected, Large Language Models" >}}
+Yonghao Zhuang, Lanxiang Hu, Longfei Yun, Souvik Kundu, Zhengzhong Liu, Eric P. Xing, Hao Zhang
+{{< /publication >}}
+
+{{< publication title="MatryoshkaKV: Adaptive KV Compression via Trainable Orthogonal Projection" venue="ICLR 2025" paperLink="https://arxiv.org/pdf/2410.14731" codeLink="" award="" project="" data-topic="Large Language Models, ML Systems" >}}
+Bokai Lin, Zihao Zeng, Zipeng Xiao, Siqi Kou, TianQi Hou, Xiaofeng Gao, Hao Zhang, Zhijie Deng
+{{< /publication >}}
+
+{{< publication title="GameArena: Evaluating LLM Reasoning through Live Computer Games" venue="ICLR 2025" paperLink="https://arxiv.org/pdf/2412.06394" codeLink="https://github.com/lmgame-org" award="" project="https://lmgame.org/#/blog/ai_space_escape" data-topic="Selected, Large Language Models" >}}
 Lanxiang Hu*, Qiyu Li*, Anze Xie*, Nan Jiang, Ion Stoica, Haojian Jin, Hao Zhang
 {{< /publication >}}
 
-{{< publication title="Scaling Long Context Training Data by Long-Distance Referrals" venue="ICLR 2025" paperLink="https://openreview.net/pdf?id=tePFpDgyqg" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Scalable ML" >}}
-Yonghao Zhuang*, Lanxiang Hu*, Longfei Yun, Souvik Kundu, Zhengzhong Liu, Eric P. Xing, Hao Zhang
+&emsp;
+
+### 2024
+
+{{< publication title="Specifications: The Missing Link to Making the Development of LLM Systems an Engineering Discipline" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2412.05299" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Scalable ML, ML Systems" >}}
+Ion Stoica, Matei Zaharia, Joseph Gonzalez, Ken Goldberg, Koushik Sen, Hao Zhang, Anastasios N. Angelopoulos, Shishir G. Patil, Lingjiao Chen, Wei-Lin Chiang, Jared Q. Davis
 {{< /publication >}}
 
 {{< publication title="Efficient LLM Scheduling by Learning to Rank" venue="NeurIPS 2024" paperLink="https://arxiv.org/pdf/2408.15792" codeLink="https://github.com/hao-ai-lab/vllm-ltr" award="" project="" data-topic="Selected, Large Language Models, Scalable ML" >}}
@@ -27,7 +76,7 @@ Deevashwer Rathee*, Dacheng Li*, Ion Stoica, Hao Zhang, Raluca Ada Popa
 {{< /publication >}}
 
 {{< publication title="Optimizing Speculative Decoding for Serving Large Language Models Using Goodput" venue="Preprint 2024" paperLink="https://arxiv.org/pdf/2406.14066" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Scalable ML, ML Systems" >}}
-Xiaoxuan Liu, Cade Daniel, Lanxiang Hu, Woosuk Kwon, Zhuohan Li, Xiangxi Mo, Alvin Cheung, Zhijie Deng, Ion Stoica, Hao Zhang
+Xiaoxuan Liu, Cade Daniel, Langxiang Hu, Woosuk Kwon, Zhuohan Li, Xiangxi Mo, Alvin Cheung, Zhijie Deng, Ion Stoica, Hao Zhang
 {{< /publication >}}
 
 {{< publication title="AdaMoE: Token-Adaptive Routing with Null Experts for Mixture-of-Experts Language Models" venue="EMNLP 2024" paperLink="https://arxiv.org/pdf/2406.13233" codeLink="" award="" project="" data-topic="Selected, Large Language Models, Scalable ML" >}}

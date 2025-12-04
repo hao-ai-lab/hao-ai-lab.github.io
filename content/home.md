@@ -32,9 +32,24 @@ We also develop and maintain open-source models, evaluations, and systems to dem
 
 <!-- <div class="news-year">2025</div> -->
 
+{{< newsEntry date="2025/09" >}}
+🎉🎉 In 2025, We have 3 ICLR, 1 ICML, 1 ACL, 1 TPAMI, and 3 NeurIPS papers. Kudos to our lab members for another productive year!
+{{< /newsEntry >}}
+
+
 {{< newsEntry date="2025/06" >}}
 Hao was awarded with [Google ML and Systems Junior Faculty Award](https://datascience.ucsd.edu/hdsi-assistant-professor-hao-zhang-receives-google-junior-faculty-award/)!
 {{< /newsEntry >}}
+
+
+{{< newsEntry date="2025/06" >}}
+Hao was norminated [2024 MIT Technology Review Innovators Under 35 (TR35), China List](https://www.innovatorsunder35.com/the-list/hao-zhang/)
+{{< /newsEntry >}}
+
+{{< newsEntry date="2025/05" >}}
+AMD gifted our lab with a MI355x node!
+{{< /newsEntry >}}
+
 
 {{< newsEntry date="2025/04" >}}
 NVIDIA gifted us a DGX B200! See [our recent post](https://x.com/haoailab/status/1914402516420440072) here.
@@ -46,15 +61,13 @@ Our research paper [DistServe](blogs/distserve) is adopted by [NVIDIA Dynamo](ht
 {{< /newsEntry >}}
 
 
-
 <!-- <div class="news-year">2024</div> -->
-
 
 {{< newsEntry date="2025/01" >}}
 We released the [FastVideo project](https://github.com/hao-ai-lab/FastVideo) with [FastHunyuan](https://huggingface.co/FastVideo/FastHunyuan) and [FastMochi](https://huggingface.co/FastVideo/FastMochi) models to accelerate video DiTs.
 {{< /newsEntry >}}
 
-{{< newsEntry date="2024/12" >}}
+<!-- {{< newsEntry date="2024/12" >}}
 🎉🎉 In 2024, We have 1 ICLR, 1 OSDI, 6 ICML, 1 ACL, 1 COLM papers, 1 EMNLP, and 2 NeurIPS papers. Kudos to our lab members for a productive year!
 {{< /newsEntry >}}
 
@@ -72,7 +85,7 @@ Six papers are accepted to ICML 24! Check out: [OSD](https://arxiv.org/abs/2310.
 
 {{< newsEntry date="2023/07" >}}
 Hao officially joined UCSD!
-{{< /newsEntry >}}
+{{< /newsEntry >}} -->
 
 {{< /news_section >}}
 
@@ -94,10 +107,12 @@ Hao officially joined UCSD!
 &emsp;
 
 ### Sponsors
-Hao AI Lab is sponsored by HDSI, NVIDIA, Google, and Snowflake. We are grateful for their support!
+Hao AI Lab is sponsored by HDSI, NVIDIA, Google, Snowflake, Lemonslice, and AMD. We are grateful for their support!
 {{< sponsor_grid >}}
   {{< sponsor imageDay="HDSI.png" imageNight="HDSI-dark.png" link="https://datascience.ucsd.edu/" >}}
   {{< sponsor imageDay="nvidia.png" imageNight="nvidia-dark.png" link="https://www.nvidia.com" >}}
   {{< sponsor imageDay="google.png" imageNight="google-dark.png" link="https://www.google.com">}}
   {{< sponsor imageDay="snow.png" imageNight="snow-dark.png" link="https://www.snowflake.com/en/" >}}
+  {{< sponsor imageDay="lemonslice.png" imageNight="lemonslice.png" link="https://lemonslice.com/" >}}
+  {{< sponsor imageDay="AMD.png" imageNight="AMD-dark.png" link="https://www.amd.com" >}}
 {{< /sponsor_grid >}}

@@ -1,5 +1,5 @@
 +++
-title = "GameArena"
+title = "LMGame Bench"
 description = "Evaluating LLM Reasoning through Live Computer Games"
 date = 2025-02-10T12:00:00-08:00
 authors = ["Game Arena Team"]

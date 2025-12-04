@@ -42,7 +42,7 @@ summary: people
 
 {{< lab_member name="Yixin Huang" role="Master's" image="yixin_huang.jpg" academic="https://yixin-huang1.github.io/yixinhuang1.github.io/" twitter="https://x.com/Yixinhuang48">}}
 
-{{< lab_member name="Mathew Luo" role="Master's" image="mathew_luo.jpg" academic="https://www.linkedin.com/in/mathewluo/" >}}
+<!-- {{< lab_member name="Mathew Luo" role="Master's" image="mathew_luo.jpg" academic="https://www.linkedin.com/in/mathewluo/" >}} -->
 
 {{< lab_member name="Abhilash Shankarampeta" role="Master's" image="ABHILASH_SHANKARAMPETA.jpg" academic="https://abhilashreddys.github.io/" twitter="https://x.com/areddys53">}}
 
@@ -59,6 +59,7 @@ summary: people
 
 {{< lab_member name="Yu-hsiang Shao" role="Master's" image="yuhsiang_shao.jpg" academic="https://www.linkedin.com/in/yu-hsiang-shao-1b33251b6/" twitter="https://x.com/KyleShao2K">}}
 
+{{< lab_member name="Nikhil Paleti" role="Master's" image="Nikhil_Paleti.png" academic="https://nikhil-paleti.github.io/" twitter="https://x.com/nikhil2362">}}
 
 <!--
 {{< lab_member name="Yongqi Chen" role="Research Intern" image="yongqi_chen.jpg" academic="https://brianchen1129.github.io/">}}
@@ -78,6 +79,7 @@ summary: people
 {{< lab_member name="Haoyang Yu" role="Undergrad Intern" image="haoyang_yu.jpeg" academic="https://www.linkedin.com/in/haoyang-yu-8b1997257/">}}
 
 {{< lab_member name="Jerry Xu" role="Undergrad Intern" image="jerry_xu.jpg" academic="https://www.linkedin.com/in/jerry-xu-a8a905217/">}}
+{{< lab_member name="Wenxuan Tan" role="Undergrad Intern" image="wenxuan_tan.jpg" academic="https://github.com/Edenzzzz">}}
 
 {{< /lab_members_grid >}}
 
