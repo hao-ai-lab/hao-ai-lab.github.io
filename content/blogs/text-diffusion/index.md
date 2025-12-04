@@ -23,7 +23,7 @@ draft = false
 
 {{< justify >}}
 
-**TL;DR:** We introduce a new metric, *Accuracy Under Parallelism* (AUP), that jointly evaluates the performance and parallelism of diffusion large language models (dLLMs). In addition, we propose *d3LLM* (pseuDo-Distilled Diffusion LLM), a framework that incorporates a novel distillation method and decoding strategy, achieving higher AUP than prior state-of-the-art approaches.
+**TL;DR:** We introduce a new metric, *Accuracy Under Parallelism* (AUP), that jointly evaluates the performance and parallelism of diffusion large language models (dLLMs). In addition, we propose *d3LLM* (*pseuDo-Distilled Diffusion LLM*), a framework that incorporates a novel distillation method and decoding strategy, achieving higher AUP than prior state-of-the-art approaches.
 
 
 {{< /justify >}}
@@ -160,7 +160,7 @@ where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y
 
 {{< justify >}}
 
-In addition to introducing a new evaluation metric for dLLMs, we present [***d3LLM*** (*dequeued-distillate-diffusion Large Language Model*)](../d3llm), a novel framework for building highly efficient diffusion language models. Our d3LLM approach not only improves parallelism but also preserves model performance, with only minimal accuracy degradation compared to vanilla LLaDA and Dream models.
+In addition to introducing a new evaluation metric for dLLMs, we present [***d3LLM*** (*pseuDo-Distillated-Diffusion Large Language Model*)](../d3llm), a novel framework for building highly efficient diffusion language models. Our d3LLM approach not only improves parallelism but also preserves model performance, with only minimal accuracy degradation compared to vanilla LLaDA and Dream models.
 
 The framework consists of two key components: a trajectory-based distillation method with curriculum learning, and an entropy-based multi-block decoding strategy that incorporates KV-cache and refresh mechanisms. The underlying motivation is straightforward: the distillation and multi-block decoding are crucial for enhancing parallelism, while the curriculum learning recipe and KV-refresh mechanisms are designed to maintain accuracy.
 
