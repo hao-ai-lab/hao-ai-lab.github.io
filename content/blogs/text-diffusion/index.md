@@ -95,14 +95,12 @@ draft = false
 
 Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of *bidirectional attention*, which enables parallel decoding, error correction, and random-order generation—capabilities that are not feasible for AR models. Recently, several closed-source diffusion models, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), have demonstrated impressive efficiency and performance, achieving high decoding speeds and competitive results relative to AR models. In contrast, open-source diffusion language models have shown substantially lower throughput, often performing even slower than AR LLMs. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) reach only about 20 tokens per second, whereas closed-source dLLMs exceed 1000 tokens per second.
 
-With the growing interest from the research community, an increasing number of methods have been proposed to improve the efficiency or accuracy of dLLMs. Many recent efforts aim to enhance the parallelism of diffusion language models [[1](https://arxiv.org/abs/2505.22618), [2](https://arxiv.org/abs/2508.09192), [3](https://arxiv.org/abs/2509.26488), [4](https://arxiv.org/abs/2509.26328), [5](https://arxiv.org/abs/2510.08666)]. Another line of work focuses on improving their accuracy by employing more advanced training strategies, extending context length, incorporating reasoning capabilities, and collecting larger or higher-quality datasets [[6](https://huggingface.co/collections/inclusionAI/llada-20), [7](https://arxiv.org/abs/2510.06303)].
+With the growing interest from the research community, an increasing number of methods have been proposed to improve the efficiency or performance of dLLMs. Many recent efforts focus on accelerating diffusion language models by designing KV-cache mechanisms, parallel decoding strategies, and other system-level optimizations [[1](https://arxiv.org/abs/2505.22618), [2](https://arxiv.org/abs/2508.09192), [3](https://arxiv.org/abs/2509.26488), [4](https://arxiv.org/abs/2509.26328), [5](https://arxiv.org/abs/2510.08666)]. Another line of work focuses on improving their accuracy by employing more advanced training strategies, extending context length, incorporating reasoning capabilities, and collecting larger or higher-quality datasets [[6](https://huggingface.co/collections/inclusionAI/llada-20), [7](https://arxiv.org/abs/2510.06303)].
 
 
-Although prior work has focused on improving either the efficiency or the accuracy of dLLMs, there remains a lack of a unified metric and benchmark that fairly evaluate dLLMs by jointly considering both performance and parallelism. Existing studies instead rely on separate metricswhen assessing dLLMs, such as tokens per second (TPS) for efficiency and accuracy for model quality. As shown in the table below, some methods, such as D2F, achieve strong parallelism with high tokens per forward (TPF) but experience notable accuracy degradation, whereas others, such as Fast-dLLM-v2, achieve high accuracy but exhibit lower TPF. These observations motivate us to introduce a new metric that jointly and fairly measures both performance and parallelism, thereby providing clearer guidance for practical algorithm design in dLLMs.
-
+Although prior work has focused on improving either the efficiency or the accuracy of dLLMs, there remains a lack of a unified metric that fairly evaluates dLLMs by jointly considering both performance and parallelism. Existing studies instead rely on separate metrics when assessing dLLMs, such as tokens per second (TPS) for efficiency and accuracy for model quality. As shown in the table below, some methods, such as D2F, achieve strong parallelism with high tokens per forward (TPF) but experience notable accuracy degradation, whereas others, such as Fast-dLLM-v2, achieve high accuracy but exhibit lower TPF. These observations motivate us to introduce a new metric that jointly and fairly measures both performance and parallelism, thereby providing clearer guidance for practical algorithm design for dLLMs.
 
 {{< /justify >}}
-
 
 {{< dllm_leaderboard_previous >}}
 
@@ -116,13 +114,13 @@ Although prior work has focused on improving either the efficiency or the accura
 To jointly account for both efficiency and performance in diffusion language models, we introduce a new metric, ***AUP*** (*Accuracy Under Parallelism*). AUP quantifies how well a model preserves accuracy as the degree of parallelism increases, providing a unified, device-independent measure of a dLLM’s both *efficiency* and *performance*.
 
 
-Specifically, let \$\mathcal{S} = \\{(\rho_i, y_i)\\}\_{i=1}^m\$ be a set of parallelism-accuracy pairs, where \$\rho_1 < \rho_2 < \dots < \rho_m\$, \$\rho_i \in \mathbb{R}^{+}\$ denotes the parallelism (measured in _tokens per forward_, TPF), and \$y_i \in [0, 100]\$ represents accuracy in percentage. We define a minimum accuracy threshold \$y\_{\min} = y_1 - 5\$ to avoid measuring in regimes of significant accuracy degradation. Only points satisfying \$y_i \ge y\_{\min}\$ are included. 
+Specifically, let $\mathcal{S} = \\{(\rho_i, y_i)\\}\_{i=1}^m$ be a set of parallelism-accuracy pairs, where $\rho_1 < \rho_2 < \dots < \rho_m$, $\rho_i \in \mathbb{R}^{+}$ denotes the parallelism (measured in _tokens per forward_, TPF), and $y_i \in [0, 100]$ represents accuracy in percentage. We define a minimum accuracy threshold $y\_{\min} = y_1 - 5$ to avoid measuring in regimes of significant accuracy degradation. Only points satisfying $y_i \ge y\_{\min}$ are included. 
 
 The most naïve approach is to calculate a score as the area under the accuracy–parallelism curve (AUC), but this is not an effective metric. This quantity is strongly influenced by parallelism even when accuracy degrades substantially, allowing low-quality but fast models to obtain high scores. To this end, we establish **AUP**, which takes the accuracy degradation into account, which is defined as the weighted area under the accuracy-parallelism curve:
 
 $$\operatorname{AUP} \triangleq \rho_1 y_1 + \frac{1}{2} \sum_{i=2}^{m} (\rho_{i} - \rho_{i-1}) \left( y_i \cdot W(y_i) + y_{i-1} \cdot W(y_{i-1}) \right),$$
 
-where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y}/{y\_\max}\right)}, 1)\$, with a penalty factor \$\alpha = 3\$ and \$y\_\max\$ denotes the highest accuracy achieved on that task. This weight penalizes lower-accuracy regions to emphasize both high parallelism and stable performance. AUP thus provides a unified measure of decoding quality under increasing parallelism.
+where the weighting function is defined as $W(y) = \min(e^{-\alpha \left(1 - {y}/{y\_\max}\right)}, 1)$, with a penalty factor $\alpha = 3$ and $y\_\max$ denotes the highest accuracy achieved on that task. This weight penalizes lower-accuracy regions to emphasize both high parallelism and stable performance. AUP thus provides a unified measure of decoding quality under increasing parallelism.
 
 {{< /justify >}}
 
@@ -140,9 +138,9 @@ where the weighting function is defined as \$W(y) = \min(e^{-\alpha \left(1 - {y
 
 {{< justify >}}
 
-**Choice of \$\alpha\$.** The hyperparameter \$\alpha\$ controls the penalty for accuracy degradation. A larger \$\alpha\$ increases sensitivity to performance drops, causing the contribution of throughput to decay exponentially with the error rate. In the ideal case, where a method improves parallelism without compromising accuracy, the AUP reduces to the standard area under the parallelism-accuracy curve (AUC). In our setting, we set \$\alpha = 3\$ as it balances the importance of parallelism and accuracy.
+**Choice of $\alpha$.** The hyperparameter $\alpha$ controls the penalty for accuracy degradation. A larger $\alpha$ increases sensitivity to performance drops, causing the contribution of throughput to decay exponentially with the error rate. In the ideal case, where a method improves parallelism without compromising accuracy, the AUP reduces to the standard area under the parallelism-accuracy curve (AUC). In our setting, we set $\alpha = 3$ as it balances the importance of parallelism and accuracy.
 
-**Hardware-Independence.** Unlike traditional throughput metrics such as TPS (tokens per second), which are highly dependent on hardware capabilities, AUP offers a more robust and hardware-independent measure. For instance, in our experiments, our d3LLM-LLaDA model (which will be introduced in the next section) demonstrated around 5× higher TPS than an AR baseline (Qwen-2.5-7B-it) on an NVIDIA H100 GPU (289 vs. 57 tokens/s). However, this advantage shrank significantly on an NVIDIA A100 GPU (175 vs. 50 tokens/s). In contrast, the TPF (tokens per forward pass) remained consistent across hardware platforms. Therefore, AUP provides a robust and fair evaluation metric that reflects both efficiency and accuracy while remaining independent of specific hardware configurations, helping the community focus on algorithmic design without requiring access to particular GPUs.
+**Hardware-Independence.** Unlike traditional throughput metrics such as TPS (tokens per second), which are highly dependent on hardware capabilities, AUP offers a more robust and hardware-independent measure. For instance, in our experiments, our d3LLM-LLaDA model (which will be introduced in the next section) demonstrates around 5× higher TPS than an AR baseline (Qwen-2.5-7B-it) on an NVIDIA H100 GPU (289 vs. 57 tokens/s). However, this advantage shrinks significantly on an NVIDIA A100 GPU (175 vs. 50 tokens/s). In contrast, the TPF (tokens per forward pass) and AUP score remain consistent across hardware platforms. Therefore, AUP provides a robust and fair evaluation metric that reflects both efficiency and accuracy while remaining independent of specific hardware configurations, helping the community focus on algorithmic design without requiring access to particular GPUs.
 
 {{< /justify >}}
 
@@ -342,7 +340,7 @@ Across both models, our d3LLM achieves the highest TPS with minimal accuracy deg
 
 ## 🏆 Diffusion LLM Leaderboard using AUP Score
 
-We present the leaderboard of diffusion LLMs using the AUP score as the evaluation metric.
+We present the leaderboard of diffusion LLMs, using the AUP score as the evaluation metric.
 
 {{< dllm_leaderboard >}}
 
