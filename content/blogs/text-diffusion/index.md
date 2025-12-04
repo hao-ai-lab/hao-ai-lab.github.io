@@ -106,7 +106,7 @@ Although prior work has focused on improving either the efficiency or the accura
 
 {{< dllm_leaderboard_previous >}}
 
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Benchmark results of previous dLLM models, where accuracy and parallelism are evaluated separately using two different metrics.</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Benchmark results of previous dLLM models, where accuracy and parallelism are evaluated separately using two different metrics (Acc and TPF respectively).</figcaption>
 
 ## AUP: Considering Both Performance and Parallelism
 
