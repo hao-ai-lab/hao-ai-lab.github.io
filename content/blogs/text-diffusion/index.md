@@ -95,7 +95,7 @@ draft = false
 
 Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of *bidirectional attention*, which enables parallel decoding, error correction, and random-order generation—capabilities that are not feasible for AR models. Recently, several closed-source diffusion models, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), have demonstrated impressive efficiency and performance, achieving high decoding speeds and competitive results relative to AR models. In contrast, open-source diffusion language models have shown substantially lower throughput, often performing even slower than AR LLMs. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) reach only about 20 tokens per second, whereas closed-source dLLMs exceed 1000 tokens per second.
 
-With the growing interest from the research community, an increasing number of methods have been proposed to improve the efficiency or performance of dLLMs. Upon carefully examining the behavior of dLLMs, our key observation is that: ***dLLMs are inherently parallel-decoders with bidirectional attention.*** Many recent efforts focus on accelerating diffusion language models by designing KV-cache mechanisms, parallel decoding strategies, and other system-level optimizations [[1](https://arxiv.org/abs/2505.22618), [2](https://arxiv.org/abs/2508.09192), [3](https://arxiv.org/abs/2509.26488), [4](https://arxiv.org/abs/2509.26328), [5](https://arxiv.org/abs/2510.08666)]. Another line of work focuses on improving their accuracy by employing more advanced training strategies, extending context length, incorporating reasoning capabilities, and collecting larger or higher-quality datasets [[6](https://huggingface.co/collections/inclusionAI/llada-20), [7](https://arxiv.org/abs/2510.06303)].
+With the growing interest from the research community, an increasing number of methods have been proposed to improve the efficiency or performance of dLLMs. Upon carefully examining the behavior of dLLMs, our key observation is that: ***dLLMs are inherently parallel-decoders with bidirectional attention.*** Many recent efforts focus on accelerating diffusion language models by designing KV-cache mechanisms, parallel decoding strategies, and other system-level optimizations [[1](https://arxiv.org/abs/2505.22618), [2](https://arxiv.org/abs/2505.15781), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328), [6](https://arxiv.org/abs/2510.08666)]. Another line of work focuses on improving their performance by employing more advanced training strategies, extending context length, multi-modal capabilities, incorporating reasoning capabilities, and collecting larger or higher-quality datasets [[7](https://huggingface.co/collections/inclusionAI/llada-20), [8](https://arxiv.org/abs/2510.06303), [9](https://arxiv.org/abs/2505.15809)].
 
 
 Although prior work has focused on improving either the efficiency or the accuracy of dLLMs, there remains a lack of a unified metric that fairly evaluates dLLMs by jointly considering both performance and parallelism. Existing studies instead rely on separate metrics when assessing dLLMs, such as tokens per second (TPS) for efficiency and accuracy for model quality. As shown in the table below, some methods, such as D2F, achieve strong parallelism with high tokens per forward (TPF) but experience notable accuracy degradation, whereas others, such as Fast-dLLM-v2, achieve high accuracy but exhibit lower TPF. These observations motivate us to introduce a new metric that jointly and fairly measures both performance and parallelism, thereby providing clearer guidance for practical algorithm design for dLLMs.
@@ -366,38 +366,46 @@ All our distillation code, data, model weights, and benchmark evaluation code ar
 {{< /justify >}}
 
 {{< justify >}}
-[2] [Diffusion LLMs Can Do Faster-Than-AR Inference via Discrete Diffusion Forcing](https://arxiv.org/abs/2508.09192)
+[2] [dKV-Cache: The Cache for Diffusion Language Models](https://arxiv.org/abs/2505.15781)
 {{< /justify >}}
 
 {{< justify >}}
-[3] [dParallel: Learnable Parallel Decoding for dLLMs](https://arxiv.org/abs/2509.26488)
+[3] [Diffusion LLMs Can Do Faster-Than-AR Inference via Discrete Diffusion Forcing](https://arxiv.org/abs/2508.09192)
 {{< /justify >}}
 
 {{< justify >}}
-[4] [Fast-dLLM v2: Efficient Block-wise Diffusion LLM](https://arxiv.org/abs/2509.26328)
+[4] [dParallel: Learnable Parallel Decoding for dLLMs](https://arxiv.org/abs/2509.26488)
 {{< /justify >}}
 
 {{< justify >}}
-[5] [dInfer: An Efficient Inference Framework for Diffusion Language Models](https://arxiv.org/abs/2510.08666)
+[5] [Fast-dLLM v2: Efficient Block-wise Diffusion LLM](https://arxiv.org/abs/2509.26328)
 {{< /justify >}}
 
 {{< justify >}}
-[6] [LLaDA 2.0](https://huggingface.co/collections/inclusionAI/llada-20)
+[6] [dInfer: An Efficient Inference Framework for Diffusion Language Models](https://arxiv.org/abs/2510.08666)
 {{< /justify >}}
 
 {{< justify >}}
-[7] [SDAR: A Synergistic Diffusion-AutoRegression Paradigm for
+[7] [LLaDA 2.0](https://huggingface.co/collections/inclusionAI/llada-20)
+{{< /justify >}}
+
+{{< justify >}}
+[8] [SDAR: A Synergistic Diffusion-AutoRegression Paradigm for
 Scalable Sequence Generation](https://arxiv.org/abs/2510.06303)
 {{< /justify >}}
 
 {{< justify >}}
-[8] [Large Language Diffusion Models](https://arxiv.org/abs/2502.09992)
+[9] [MMaDA: Multimodal Large Diffusion Language Models](https://arxiv.org/abs/2505.15809)
 {{< /justify >}}
 
 {{< justify >}}
-[9] [Dream 7B: Diffusion Large Language Models](https://arxiv.org/abs/2508.15487)
+[10] [Large Language Diffusion Models](https://arxiv.org/abs/2502.09992)
 {{< /justify >}}
 
 {{< justify >}}
-[10] [Dream-Coder 7B: An Open Diffusion Language Model for Code](https://arxiv.org/abs/2509.01142)
+[11] [Dream 7B: Diffusion Large Language Models](https://arxiv.org/abs/2508.15487)
+{{< /justify >}}
+
+{{< justify >}}
+[12] [Dream-Coder 7B: An Open Diffusion Language Model for Code](https://arxiv.org/abs/2509.01142)
 {{< /justify >}}
