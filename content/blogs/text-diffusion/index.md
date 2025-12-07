@@ -388,7 +388,7 @@ The experimental results also validate the reliability of our AUP metric. For ex
 
 {{< justify >}}
 
-**Wall-Clock Speed Comparison.** We further evaluate different methods on multiple hardware platforms, including H100 and A100 GPUs, to measure their wall-clock throughput (measured by tokens per second, TPS) and speedup. 
+**Wall-Clock Speed Comparison.** In addition to AUP scores, we further evaluate different methods on multiple hardware platforms, including H100 and A100 GPUs, to measure their wall-clock throughput (measured by tokens per second, TPS) and speedup. 
 For the *LLaDA-8B-Instruct*, we report speed (TPS) and accuracy on GSM8K-CoT dataset.
 The results are presented below.
 
