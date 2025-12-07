@@ -425,7 +425,7 @@ For the *Dream-7B-Instruct*, we again report speed and accuracy on GSM8K-CoT dat
 
 {{< justify >}}
 
-To summarize, our d3LLM framework achieves the highest AUP score with negligible performance degradation, successfully balancing both parallelism and accuracy and striking a balance between accuracy and parallelism. It delivers up to a **5× speedup** over autoregressive decoding (Qwen-2.5-7B-it) on H100 GPUs (288.73 TPS vs. 57.32 TPS), and approximately **3.5× speedup** on A100 GPUs (174.57 TPS vs. 50.36 TPS) with comparable performance. This makes diffusion language models more practical for real-world applications.
+To summarize, our d3LLM framework achieves the highest AUP score with negligible performance degradation, successfully balancing both parallelism and accuracy and striking a balance between accuracy and parallelism. It delivers up to a **5× speedup** over autoregressive decoding (Qwen-2.5-7B-it) on H100 GPUs (288.73 TPS vs. 57.32 TPS), and approximately **3.5× speedup** on A100 GPUs (174.57 TPS vs. 50.36 TPS) with comparable performance. This makes dLLMs more practical for real-world deployment.
 
 Note that all experiments are conducted using the HuggingFace inference backend. We leave system-level optimizations including GPU kernel fusion and integration with vLLM, to future work for further TPS improvements.
 
