@@ -343,7 +343,7 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
 **Results on Different Models and Datasets.** As shown by the results above, the proposed distillation recipe and multi-block decoding strategy are robust and improve efficiency across various domains. Specifically, our d3LLM achieves the highest AUP score on 4 out of 5 tasks, and accelerates the vanilla LLaDA by approximately 5–10× on TPF across different tasks. 
 <!-- Remarkably, we note that for Fast-dLLM-v2, the accuracy scores on Math and HumanEval are notably higher than those derived from Dreams. We suspect that this stems from the fact that Fast-dLLM-v2 is finetuned directly from Qwen-2.5-7B with an additional 1B tokens. In contrast, our d3LLM-Dream is distilled based on the vanilla Dream and uses only 60M additional tokens. -->
 
-The experimental results also validate the reliability of our AUP metric. For example, on the MBPP dataset with the LLaDA model, although many methods achieve parallelism (TPF) greater than 1, their accuracy degradation compared with the best-performing model (Qwen-2.5-7B-it) is substantial, leading to low overall utility, highlighting that the AUP metric better reflects practical efficiency-performance trade-off.
+The experimental results also validate the reliability of our AUP metric. For example, on the MBPP dataset with the LLaDA-based model, although many methods achieve parallelism (TPF) greater than 1, their accuracy degradation compared with the best-performing model (Qwen-2.5-7B-it) is substantial, leading to low overall utility. This demonstrates that the AUP metric more faithfully reflects the practical efficiency–performance trade-off.
 
 {{< /justify >}}
 
