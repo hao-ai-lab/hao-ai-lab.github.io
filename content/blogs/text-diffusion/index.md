@@ -23,7 +23,7 @@ draft = false
 
 {{< justify >}}
 
-**TL;DR:** Existing dLLM works typically focus on either one side (either efficiency or performance) of dLLM. In this work, we introduce a new metric, *Accuracy Under Parallelism* (AUP), that jointly evaluates the performance and parallelism of diffusion large language models (dLLMs). To achieve a higher AUP, we propose *d3LLM* (*pseuDo-Distilled Diffusion LLM*), a framework that incorporates a novel distillation method and decoding strategy, achieving a balance between efficiency and performance.
+**TL;DR:** Existing diffusion LLMs are typically evaluated using isolated metrics that focus solely on either efficiency or performance, overlooking the *trade-off* between them. In this work, we introduce a new metric, *Accuracy Under Parallelism* (AUP), that jointly measures the performance and parallelism of diffusion large language models (dLLMs). To achieve a higher AUP, we propose *d3LLM* (*pseuDo-Distilled Diffusion LLM*), a framework that incorporates a novel distillation method and decoding strategy, outperforming previous state-of-the-art approaches and striking a balance between efficiency and performance. 
 
 
 {{< /justify >}}
