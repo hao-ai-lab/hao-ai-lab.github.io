@@ -110,7 +110,7 @@ We argue that this issue stems from the limitations of relying on single, isolat
 {{< justify >}}
 
 Next, we elaborate on how we define the AUP metric.
-A common practice is that, most dLLM methods employ a "threshold" in decoding, where only logits above this threshold are decoded. By varying this threshold, we can adjust the quality–speed trade-off of the decoding process and obtain multiple parallelism–accuracy pairs, which can then be used to plot a curve of accuracy versus parallelism. We refer to this curve as the ***accuracy–parallelism curve*** (see the white curve in Figure 1 for an illustration), which characterizes the trade-off between efficiency and performance.
+A common practice is that, most dLLM methods employ a "threshold" in decoding, where tokens with logits above this threshold can be decoded in parallel. By varying this threshold, we can adjust the quality–speed trade-off of the decoding process and obtain multiple parallelism–accuracy pairs, which can then be used to plot a curve of accuracy versus parallelism. We refer to this curve as the ***accuracy–parallelism curve*** (see the white curve in Figure 1 for an illustration), which characterizes the trade-off between efficiency and performance.
 
 A naïve metric based on this curve is the area under the curve (AUC). However, this is not appropriate, because it is heavily influenced by parallelism even when accuracy degrades significantly, allowing low-quality but fast models to obtain high scores. To address this limitation, we propose ***AUP*** (Accuracy Under Parallelism). AUP quantifies how well a model maintains accuracy as the degree of parallelism increases, providing a unified measure of both the *efficiency* and *performance* of a dLLM.
 
