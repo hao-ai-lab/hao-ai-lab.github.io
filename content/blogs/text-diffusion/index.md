@@ -19,7 +19,7 @@ draft = false
       hidden = true
 +++
 
-{{< socialBadges github="hao-ai-lab/text-diffusion">}}
+{{< socialBadges github="hao-ai-lab/text-diffusion" demo="https://d3llm-team.github.io/" huggingface="https://huggingface.co/d3LLM">}}
 
 {{< justify >}}
 
@@ -105,11 +105,11 @@ We argue that this issue arises from the limitations of relying on a single metr
 
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Benchmark results of previous dLLM models, where accuracy and parallelism are evaluated separately using two different metrics (Acc and TPF, respectively).</figcaption>
 
-## AUP: Jointly Considering Both Performance and Parallelism
+## AUP: Considering Both Performance and Parallelism
 
 {{< justify >}}
 
-Most dLLM methods adopt a decoding "threshold", where only logits above this threshold are decoded. By varying the threshold, we can adjust the quality–speed trade-off of the decoding process and obtain multiple parallelism–accuracy pairs, which can then be used to plot a curve of accuracy versus parallelism. We refer to this curve as the ***accuracy–parallelism curve*** (see the white curve in Figure 1 for an illustration), which characterizes the trade-off between efficiency and performance.
+Most dLLM methods adopt a "threshold" in decoding, where only logits above this threshold are decoded. By varying the threshold, we can adjust the quality–speed trade-off of the decoding process and obtain multiple parallelism–accuracy pairs, which can then be used to plot a curve of accuracy versus parallelism. We refer to this curve as the ***accuracy–parallelism curve*** (see the white curve in Figure 1 for an illustration), which characterizes the trade-off between efficiency and performance.
 
 
 The most naïve approach is to calculate a score using this curve is the *area under the curve* (AUC), but this is not a reasonable metric, because it is strongly influenced by parallelism even when accuracy degrades substantially, allowing low-quality but fast models to obtain high scores. To this end, we establish ***AUP*** (*Accuracy Under Parallelism*). AUP quantifies how well a model preserves accuracy as the degree of parallelism increases, providing a unified measure of a dLLM’s both *efficiency* and *performance*.
@@ -163,7 +163,7 @@ Following the guidance of the AUP score, we introduce ***d3LLM*** (*pseuDo-Disti
 
 First, to ***improve parallelism***, we carefully study the behavior of dLLMs and find that the key to high parallelism is enabling the model to unmask multiple tokens at each forward pass. Previous work often overlooks the trajectory in distillation process and typically adopts a single-block decoding strategy. This motivates us to adopt ***trajectory-based distillation*** and ***multi-block decoding*** as two key techniques for improving parallelism. Distillation is used to guide the model to unmask as many tokens as possible, while multi-block decoding is designed to fully exploit the parallel decoding capability of the dLLM.
 
-Second, to ***preserve accuracy***, we find that robustness in both distillation and decoding is crucial. Therefore, we design a ***curriculum learning strategy*** that gradually increases the masking ratio from easier scenarios (few masks) to more difficult ones (many masks) during training, resulting in a more robust distillation process. Moreover, we observe that the multi-block decoding process may cause a performance drop, as the *bidirectional attention* in dLLMs may harm accuracy. This motivates us to design a ***KV-cache refresh*** mechanism to update the KV cache and maintain accuracy.
+Second, to ***maintain accuracy***, we find that robustness in both distillation and decoding is crucial. Therefore, we design a ***curriculum learning strategy*** that gradually increases the masking ratio from easier scenarios (few masks) to more difficult ones (many masks) during training, resulting in a more robust distillation process. Moreover, we observe that the multi-block decoding process may cause a performance drop, as the *bidirectional attention* in dLLMs may harm accuracy. This motivates us to design a ***KV-cache refresh*** mechanism to update the KV cache and maintain accuracy.
 
 Together, these techniques enable d3LLM to strike a balance between accuracy and parallelism and to obtain the highest AUP score among all dLLMs. We will introduce details of the d3LLM framework in the following.
 
@@ -177,7 +177,7 @@ Together, these techniques enable d3LLM to strike a balance between accuracy and
 
 {{< image src="img/fig_distillation.png" alt="Distillation Illustration" width="100%" title="Figure 3. Illustration of our pseudo-trajectory-based distillation recipe.">}}
 
-We first introduce our **trajectory-based distillation** recipe with curriculum learning, which is crucial for enhancing parallelism while maintaining model accuracy. This advanced distillation recipe aims at improving decoding efficiency and alignment with the teacher model's generation pattern. Specifically, it consists of the following key techniques:
+We first introduce our **pseudo-trajectory-based distillation** recipe with curriculum learning, which is crucial for enhancing parallelism while maintaining model accuracy. This advanced distillation recipe aims at improving decoding efficiency and alignment with the teacher model's generation pattern. Specifically, it consists of the following key techniques:
 
 {{< /justify >}}
 
@@ -192,7 +192,7 @@ We first introduce our **trajectory-based distillation** recipe with curriculum 
 
     <div style="margin-top: 2mm;"></div>
 
-    Specifically, given a prompt \$\mathbf{x}\$ and a predefined maximum output length \$n\$, we first let the teacher dLLM to generate and record its own decoding trajectory \$\\{\mathcal{T}_1,\ldots,\mathcal{T}_n\\}\$, where \$\mathcal{T}_i \in \mathbb{R}^n, \forall i \in \\{1,\ldots,n\\}\$. Rather than relying on the content of the teacher's response, we extract only the order in which tokens are **_dequeued_**, that is, the sequence in which masked tokens are predicted and revealed. This order forms what we refer to as the **_pseudo-trajectory_** of the teacher.
+    Specifically, given a prompt \$\mathbf{x}\$ and a predefined maximum output length \$n\$, we first let the teacher dLLM to generate and record its own decoding trajectory \$\\{\mathcal{T}_1,\ldots,\mathcal{T}_n\\}\$, where \$\mathcal{T}_i \in \mathbb{R}^n, \forall i \in \\{1,\ldots,n\\}\$. Rather than relying on the content of the teacher's response, we extract only the order in which tokens are decoded. This order forms what we refer to as the **_pseudo-trajectory_** of the teacher.
 
     <div style="margin-top: 2mm;"></div>
     
@@ -250,7 +250,7 @@ In addition to the novel distillation recipe, we also introduce an efficient dec
   
   <div style="margin-top: 2mm;"></div>
 
-  Each block can be in one of five states: **Inactive**, **Activated**, **Fully-Activated**, **Completed but Stabilizing**, and **Completed**. We create a new *Activated* block when its preceding block reaches 10% completion and employ a conservative decoding strategy for this block, generating tokens only when they meet the entropy threshold. When the preceding block reaches 95% completion, the *Activated* block transitions to a *Fully-Activated* state, where a more aggressive strategy is used by decoding at least one token per forward pass regardless of the threshold. Once all tokens in a block are unmasked, the block enters the *Completed but Stabilizing* state, during which we perform forward passes without using the KV cache and refresh previous caches. After 1-2 rounds, the block becomes *Completed*, and we store its KV cache. In addition, we apply a periodic-refresh strategy that updates the KV cache every few rounds. This multi-block decoding strategy substantially increases TPF by **20%**.
+  Each block can be in one of five states: **Inactive**, **Activated**, **Fully-Activated**, **Completed but Stabilizing**, and **Completed**. We create a new *Activated* block when its preceding block reaches 10% completion and employ a conservative decoding strategy for this block, generating tokens only when they meet the entropy threshold. When the preceding block reaches 95% completion, the *Activated* block transitions to a *Fully-Activated* state, where a more aggressive strategy is used by decoding at least one token per forward pass regardless of the threshold. Once all tokens in a block are unmasked, the block enters the *Completed but Stabilizing* state, during which we perform forward passes without using the KV cache and refresh previous caches. After 1-2 rounds, the block becomes *Completed*, and we store its KV cache. In addition, we apply a periodic-refresh strategy that updates the KV cache every few rounds. This multi-block decoding strategy increases TPF by **20%**, and the KV-refresh mechanism helps maintain the accuracy.
 
 {{< /justify >}}
 
