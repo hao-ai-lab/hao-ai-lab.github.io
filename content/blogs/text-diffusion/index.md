@@ -23,7 +23,7 @@ draft = false
 
 {{< justify >}}
 
-**TL;DR:** Existing dLLM works often focus on either one side (either efficiency or performance) of dLLM. In this work, we introduce a new metric, *Accuracy Under Parallelism* (AUP), that jointly evaluates the performance and parallelism of diffusion large language models (dLLMs). To achieve a higher AUP, we propose *d3LLM* (*pseuDo-Distilled Diffusion LLM*), a framework that incorporates a novel distillation method and decoding strategy, achieving a balance between efficiency and performance.
+**TL;DR:** Existing dLLM works typically focus on either one side (either efficiency or performance) of dLLM. In this work, we introduce a new metric, *Accuracy Under Parallelism* (AUP), that jointly evaluates the performance and parallelism of diffusion large language models (dLLMs). To achieve a higher AUP, we propose *d3LLM* (*pseuDo-Distilled Diffusion LLM*), a framework that incorporates a novel distillation method and decoding strategy, achieving a balance between efficiency and performance.
 
 
 {{< /justify >}}
@@ -95,9 +95,9 @@ draft = false
 
 Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of *bidirectional attention*, which enables parallel decoding, error correction, and random-order generation—capabilities that are not feasible for AR models. Recently, several closed-source diffusion models, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), have demonstrated impressive efficiency and performance, achieving high decoding speeds and competitive results relative to AR models. In contrast, open-source diffusion language models have shown substantially ***lower throughput***, often performing even slower than AR LLMs. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) reach only about 20 tokens per second, whereas closed-source dLLMs exceed 1000 tokens per second. Besides, the ***inferior performance*** of open-sourced dLLMs compared to similar-sized AR models also limits their practical applications.
 
-With the growing interest from the research community, an increasing number of methods have been proposed to improve the dLLMs. On one side, many recent efforts focus on accelerating diffusion language models by designing KV-cache mechanisms, parallel decoding strategies, and other system-level optimizations [[1](https://arxiv.org/abs/2505.22618), [2](https://arxiv.org/abs/2505.15781), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328), [6](https://arxiv.org/abs/2510.08666)]. On the other side, another line of work focuses on improving their performance by employing more advanced training strategies, extending context length, multi-modal capabilities, incorporating reasoning capabilities, and collecting larger or higher-quality datasets [[7](https://huggingface.co/collections/inclusionAI/llada-20), [8](https://arxiv.org/abs/2510.06303), [9](https://arxiv.org/abs/2505.15809)]. However, we find that: ***most previous works focus on either one side (either efficiency or performance) of dLLM***. 
+With growing interest from the research community, an increasing number of methods have been proposed to improve dLLMs. On one hand, many recent efforts aim to accelerate diffusion language models by designing KV-cache mechanisms, parallel decoding strategies, and other system-level optimizations [[1](https://arxiv.org/abs/2505.22618), [2](https://arxiv.org/abs/2505.15781), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328), [6](https://arxiv.org/abs/2510.08666)]. On the other hand, another line of work focuses on improving performance by employing more advanced training strategies, extending context length and multimodal capabilities, incorporating reasoning abilities, and collecting larger or higher-quality datasets [[7](https://huggingface.co/collections/inclusionAI/llada-20), [8](https://arxiv.org/abs/2510.06303), [9](https://arxiv.org/abs/2505.15809)]. However, we observe that ***most previous works focus on only one side of dLLMs, targeting either efficiency or performance***.
 
-We argue that this may because of the misuse of a only a single metric, that existing studies relying and reporting on separate single metrics when assessing dLLMs, such as only reporting tokens per second (TPS) for efficiency, or accuracy for model quality. This may lead to a lack consideration of the ***trade-off*** between efficiency and performance: higher efficiency often leads to lower accuracy, and vice versa. For example, as illustrated in the table below, D2F focuses on improving the efficiency of dLLM, achieve strong parallelism with high tokens per forward (TPF) but experience notable accuracy degradation; whereas Fast-dLLM-v2 focuses on improving the performance of dLLM, achieve high accuracy but exhibit lower TPF. This motivates us to *design an integrated metric that can account for both efficiency and performance*, guide the model to ***striking a balance*** between both, and use this ***integrated metric*** to evaluate the model.
+We argue that this issue arises from the limitations of relying on a single metric. Existing studies often evaluate dLLMs using isolated metrics, such as reporting only tokens per second (TPS) for efficiency or accuracy for model performance. This approach overlooks the inherent ***trade-off*** between efficiency and performance: higher efficiency often leads to lower accuracy, and vice versa. For example, as shown in the table below, D2F emphasizes efficiency by achieving high tokens per forward (TPF) through improved parallelism, but suffers a drop in accuracy. In contrast, Fast-dLLM-v2 achieves higher performance compared to other dLLMs, but with a cost of lower TPF. These observations motivate us to *design an integrated metric* that captures both efficiency and performance, guiding models to ***striking a balance*** between both.
 
 {{< /justify >}}
 
@@ -105,13 +105,14 @@ We argue that this may because of the misuse of a only a single metric, that exi
 
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Benchmark results of previous dLLM models, where accuracy and parallelism are evaluated separately using two different metrics (Acc and TPF respectively).</figcaption>
 
-## AUP: Considering Both Performance and Parallelism
+## AUP: Jointly Considering Both Performance and Parallelism
 
 {{< justify >}}
 
-Currently, most of the dLLM methods have a "threshold" when decoding, only the logits higher than the threshold are decoded. Then, by varying the threshold of different values, we can adjust the quality-speed trade-off of the decoding process, and get many parallelism-accuracy pairs, and then plot a curve of accuracy vs. parallelism. This curve is called the ***accuracy-parallelism curve*** (see Figure 1 for an illustration), characterizing a trade-off between efficiency and performance.
+Most dLLM methods adopt a decoding "threshold", where only logits above this threshold are decoded. By varying the threshold, we can adjust the quality–speed trade-off of the decoding process and obtain multiple parallelism–accuracy pairs, which can then be used to plot a curve of accuracy versus parallelism. We refer to this curve as the ***accuracy–parallelism curve*** (see the white curve in Figure 1 for an illustration), which characterizes the trade-off between efficiency and performance.
 
-The most naïve approach is to calculate a score using this curve is the *area under the curve* (AUC), but this is not a reasonable metric, because it is strongly influenced by parallelism even when accuracy degrades substantially, allowing low-quality but fast models to obtain high scores. To this end, we establish ***AUP*** (*Accuracy Under Parallelism*). AUP quantifies how well a model preserves accuracy as the degree of parallelism increases, providing a unified, device-independent measure of a dLLM’s both *efficiency* and *performance*.
+
+The most naïve approach is to calculate a score using this curve is the *area under the curve* (AUC), but this is not a reasonable metric, because it is strongly influenced by parallelism even when accuracy degrades substantially, allowing low-quality but fast models to obtain high scores. To this end, we establish ***AUP*** (*Accuracy Under Parallelism*). AUP quantifies how well a model preserves accuracy as the degree of parallelism increases, providing a unified measure of a dLLM’s both *efficiency* and *performance*.
 
 Formally, let $\mathcal{S} = \{(\rho_i, y_i)\}_{i=1}^m$ be a set of parallelism-accuracy pairs, where $\rho_1 < \rho_2 < \dots < \rho_m$, $\rho_i \in \mathbb{R}^{+}$ denotes the parallelism (measured in _tokens per forward_, TPF), and $y_i \in [0, 100]$ represents accuracy in percentage. We define a minimum accuracy threshold $y_{\min} = y_1 - 5$ to avoid measuring in regimes of significant accuracy degradation. Only points satisfying $y_i \ge y_{\min}$ are included. AUP is then defined as the weighted area under the accuracy-parallelism curve:
 
@@ -143,7 +144,7 @@ where the weighting function is defined as $W(y) = \min(e^{-\alpha \left(1 - {y}
 
 {{< justify >}}
 
-**Application of AUP.** We further evaluate previous methods using our AUP metric, as shown in the results in the [Leaderboard](#-diffusion-llm-leaderboard-using-aup-score), it shows that previous dLLM methods although achieve higher AUP then vanilla Dream and LLaDA, but they are not able to beat the speculative decoding methods (EAGLE-3). We claim that this do not Negated the capability of the dLLM. In the following, we will introduce our proposed d3LLM to achieve the highest AUP score in all dLLMs.
+**Application of AUP.** We further evaluate previous methods using our AUP metric. As shown in the results in the [Leaderboard](#-diffusion-llm-leaderboard-using-aup-score), although existing dLLM methods achieve higher AUP scores than vanilla Dream and LLaDA, they still lag behind speculative decoding methods (e.g., EAGLE-3). We argue that this does not negate the potential of dLLMs. In the following, we introduce our proposed d3LLM framework, which attains the highest AUP score among all dLLMs.
 
 {{< /justify >}}
 
@@ -152,32 +153,31 @@ where the weighting function is defined as $W(y) = \min(e^{-\alpha \left(1 - {y}
 
 
 {{< justify >}}
-{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Demo of our d3LLM, which achieves up to 5× speedup over the AR (Qwen-2.5-7B-it) on H100 GPU and 3.5× speedup on A100 GPU. You can try 🕹️ [our demo](https://d3llm-team.github.io/).">}}
+{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Figure 2. Demo of our d3LLM, which achieves up to 5× speedup over the AR (Qwen-2.5-7B-it) on H100 GPU and 3.5× speedup on A100 GPU. You can try 🕹️ [our demo](https://d3llm-team.github.io/).">}}
 
 {{< /justify >}}
 
 {{< justify >}}
 
-Following the guidance of the AUP score, we introduce ***d3LLM*** (*pseuDo-Distillated-Diffusion Large Language Model*), a novel framework for achieving dLLMs with both high accuracy and high parallelism. Our d3LLM approach not only improves parallelism but also preserves model performance, with only minimal accuracy degradation compared to vanilla LLaDA/Dream models.
+Following the guidance of the AUP score, we introduce ***d3LLM*** (*pseuDo-Distillated-Diffusion Large Language Model*), a novel framework for constructing dLLMs with both high accuracy and high parallelism. Our d3LLM approach not only improves parallelism but also preserves model performance, with only minimal accuracy degradation compared to standard LLaDA/Dream models.
 
-First, to ***improve the parallelism***, we carefully study the behaviour of dLLM and finds that the key to high parallelism is that model can unmask multiple tokens at each forward pass. Previous work often overlook the distillation process, and typically adopt single-block decoding strategy. This motivates us to select the ***distillation*** and ***multi-block decoding*** as two key techniques to improve the parallelism, where distillation is used to guide the model to unmask as more as possible multiple tokens following the teacher model, and multi-block decoding is designed to fully exploit the parallel generation capabilities of the dLLM.
+First, to ***improve parallelism***, we carefully study the behavior of dLLMs and find that the key to high parallelism is enabling the model to unmask multiple tokens at each forward pass. Previous work often overlooks the trajectory in distillation process and typically adopts a single-block decoding strategy. This motivates us to adopt ***trajectory-based distillation*** and ***multi-block decoding*** as two key techniques for improving parallelism. Distillation is used to guide the model to unmask as many tokens as possible, while multi-block decoding is designed to fully exploit the parallel decoding capability of the dLLM.
 
-Secondly, to ***preserve the accuracy***, we find that the robustness in both distillation and decoding are of great importance. Therefore, we design a ***curriculum learning*** technique to gradually increase the masking ratio from easy scenarios (few masks) to harder ones (many masks) during training and get a more robust distillation process. Besides, we find that the multi-block decoding process may cause a performance drop as the *bidirectional attention* in dLLM may cause a harm to the accuracy. This motivates us to design a ***KV-cache refresh*** mechanism to refresh the KV cache to maintain the accuracy.
+Second, to ***preserve accuracy***, we find that robustness in both distillation and decoding is crucial. Therefore, we design a ***curriculum learning strategy*** that gradually increases the masking ratio from easier scenarios (few masks) to more difficult ones (many masks) during training, resulting in a more robust distillation process. Moreover, we observe that the multi-block decoding process may cause a performance drop, as the *bidirectional attention* in dLLMs may harm accuracy. This motivates us to design a ***KV-cache refresh*** mechanism to update the KV cache and maintain accuracy.
 
-Together, these techniques enable d3LLM to achieve a balance between accuracy and parallelism, and achieve the highest AUP score in all dLLMs. We will introduce the details of the d3LLM framework in the following.
+Together, these techniques enable d3LLM to strike a balance between accuracy and parallelism and to obtain the highest AUP score among all dLLMs. We will introduce details of the d3LLM framework in the following.
 
 
 {{< /justify >}}
-
-{{< image src="img/fig_distillation.png" alt="Distillation Illustration" width="100%" title="Illustration of our pseudo-trajectory-based distillation recipe.">}}
-
 
 
 {{< justify >}}
 
 ### (i) Pseudo-Trajectory-based Distillation Recipe
 
-We propose a novel **trajectory-based distillation** recipe with curriculum learning, which is crucial for enhancing parallelism while maintaining model accuracy. This advanced distillation approach aims at improving decoding efficiency and alignment with the teacher model's generation pattern. Specifically, it consists of the following key techniques:
+{{< image src="img/fig_distillation.png" alt="Distillation Illustration" width="100%" title="Figure 3. Illustration of our pseudo-trajectory-based distillation recipe.">}}
+
+We first introduce our **trajectory-based distillation** recipe with curriculum learning, which is crucial for enhancing parallelism while maintaining model accuracy. This advanced distillation recipe aims at improving decoding efficiency and alignment with the teacher model's generation pattern. Specifically, it consists of the following key techniques:
 
 {{< /justify >}}
 
@@ -226,12 +226,15 @@ We propose a novel **trajectory-based distillation** recipe with curriculum lear
 {{< /justify >}}
 
 
-{{< image src="img/fig_decoding.png" alt="Decoding Illustration" width="100%" title="Illustration of our multi-block decoding strategy with KV-cache and refresh.">}}
+---
+
+{{< justify >}}
 
 
 ### (ii) Multi-Block Decoding Strategy
 
-{{< justify >}}
+{{< image src="img/fig_decoding.png" alt="Decoding Illustration" width="100%" title="Figure 4. Illustration of our multi-block decoding strategy with KV-cache and refresh.">}}
+
 
 In addition to the novel distillation recipe, we also introduce an efficient decoding mechanism tailored for dLLM, designed to maximize parallelism while maintaining generation quality. Our decoding strategy includes the following components:
 
@@ -296,7 +299,7 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
   <img src="img/data_llada_aup_curve_math.png" alt="LLaDA MATH" data-width="29">
   <img src="img/data_llada_aup_curve_long-gsm8k.png" alt="LLaDA Long-GSM8K" data-width="30">
 </div>
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 2: AUP curves for LLaDA-based models across five benchmark tasks (GSM8K-CoT, HumanEval, MBPP, MATH, and Long-GSM8K).</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 5: AUP curves for LLaDA-based models across five benchmark tasks (GSM8K-CoT, HumanEval, MBPP, MATH, and Long-GSM8K).</figcaption>
 </figure>
 
 <figure>
@@ -304,7 +307,7 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
   <img src="img/data_llada_aup_histogram.png" alt="LLaDA AUP Histogram" data-width="45">
   <img src="img/data_llada_aup_radar.png" alt="LLaDA AUP Radar" data-width="40">
 </div>
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 3: AUP scores and radar chart comparing different LLaDA-based methods.</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 6: AUP scores and radar chart comparing different LLaDA-based methods.</figcaption>
 </figure>
 
 {{< justify >}}
@@ -323,7 +326,7 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
   <img src="img/data_dream_aup_curve_math.png" alt="Dream MATH" data-width="30">
   <img src="img/data_dream_aup_curve_long-gsm8k.png" alt="Dream Long-GSM8K" data-width="31">
 </div>
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 4: AUP curves for Dream-based models across five benchmark tasks (GSM8K-CoT, HumanEval_Instruct, MBPP_Instruct, MATH, and Long-GSM8K).</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 7: AUP curves for Dream-based models across five benchmark tasks (GSM8K-CoT, HumanEval_Instruct, MBPP_Instruct, MATH, and Long-GSM8K).</figcaption>
 </figure>
 
 <figure>
@@ -331,7 +334,7 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
   <img src="img/data_dream_aup_histogram.png" alt="Dream AUP Histogram" data-width="50">
   <img src="img/data_dream_aup_radar.png" alt="Dream AUP Radar" data-width="44">
 </div>
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 5: AUP scores and radar chart comparing different Dream-based methods.</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 8: AUP scores and radar chart comparing different Dream-based methods.</figcaption>
 </figure>
 
 {{< justify >}}
@@ -365,7 +368,7 @@ The experimental results also validate the reliability of our AUP metric. For ex
   <img src="img/data_dream_coder_aup_curve_mbpp.png" alt="Dream-Coder MBPP" data-width="22.5">
   <img src="img/data_dream_coder_aup_curve_mbpp+.png" alt="Dream-Coder MBPP+" data-width="23.5">
 </div>
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 6: Evaluation for Coders across four coding benchmarks (HumanEval, HumanEval+, MBPP, MBPP+).</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 9: Evaluation for Coders across four coding benchmarks (HumanEval, HumanEval+, MBPP, MBPP+).</figcaption>
 </figure>
 
 <figure>
@@ -373,7 +376,7 @@ The experimental results also validate the reliability of our AUP metric. For ex
   <img src="img/data_dream_coder_aup_histogram.png" alt="Dream-Coder AUP Histogram" data-width="50">
   <img src="img/data_dream_coder_aup_radar.png" alt="Dream-Coder AUP Radar" data-width="39">
 </div>
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 7: AUP scores and radar chart comparing different Coder-based methods.</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 10: AUP scores and radar chart comparing different Coder-based methods.</figcaption>
 </figure>
 
 
