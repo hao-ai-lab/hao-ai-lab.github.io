@@ -23,7 +23,7 @@ draft = false
 
 {{< justify >}}
 
-**TL;DR:** We introduce a new metric, *Accuracy Under Parallelism* (AUP), that jointly evaluates the performance and parallelism of diffusion large language models (dLLMs). In addition, we propose *d3LLM* (*pseuDo-Distilled Diffusion LLM*), a framework that incorporates a novel distillation method and decoding strategy, achieving higher AUP than prior state-of-the-art approaches.
+**TL;DR:** Existing dLLM works often focus on either one side (either efficiency or performance) of dLLM. In this work, we introduce a new metric, *Accuracy Under Parallelism* (AUP), that jointly evaluates the performance and parallelism of diffusion large language models (dLLMs). To achieve a higher AUP, we propose *d3LLM* (*pseuDo-Distilled Diffusion LLM*), a framework that incorporates a novel distillation method and decoding strategy, achieving a balance between efficiency and performance.
 
 
 {{< /justify >}}
@@ -93,12 +93,11 @@ draft = false
 
 ## Background
 
-Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of *bidirectional attention*, which enables parallel decoding, error correction, and random-order generation—capabilities that are not feasible for AR models. Recently, several closed-source diffusion models, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), have demonstrated impressive efficiency and performance, achieving high decoding speeds and competitive results relative to AR models. In contrast, open-source diffusion language models have shown substantially lower throughput, often performing even slower than AR LLMs. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) reach only about 20 tokens per second, whereas closed-source dLLMs exceed 1000 tokens per second.
+Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of *bidirectional attention*, which enables parallel decoding, error correction, and random-order generation—capabilities that are not feasible for AR models. Recently, several closed-source diffusion models, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), have demonstrated impressive efficiency and performance, achieving high decoding speeds and competitive results relative to AR models. In contrast, open-source diffusion language models have shown substantially ***lower throughput***, often performing even slower than AR LLMs. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) reach only about 20 tokens per second, whereas closed-source dLLMs exceed 1000 tokens per second. Besides, the ***inferior performance*** of open-sourced dLLMs compared to similar-sized AR models also limits their practical applications.
 
-With the growing interest from the research community, an increasing number of methods have been proposed to improve the efficiency or performance of dLLMs. Upon carefully examining the behavior of dLLMs, our key observation is that: ***dLLMs are inherently parallel-decoders with bidirectional attention.*** Many recent efforts focus on accelerating diffusion language models by designing KV-cache mechanisms, parallel decoding strategies, and other system-level optimizations [[1](https://arxiv.org/abs/2505.22618), [2](https://arxiv.org/abs/2505.15781), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328), [6](https://arxiv.org/abs/2510.08666)]. Another line of work focuses on improving their performance by employing more advanced training strategies, extending context length, multi-modal capabilities, incorporating reasoning capabilities, and collecting larger or higher-quality datasets [[7](https://huggingface.co/collections/inclusionAI/llada-20), [8](https://arxiv.org/abs/2510.06303), [9](https://arxiv.org/abs/2505.15809)].
+With the growing interest from the research community, an increasing number of methods have been proposed to improve the dLLMs. On one side, many recent efforts focus on accelerating diffusion language models by designing KV-cache mechanisms, parallel decoding strategies, and other system-level optimizations [[1](https://arxiv.org/abs/2505.22618), [2](https://arxiv.org/abs/2505.15781), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328), [6](https://arxiv.org/abs/2510.08666)]. On the other side, another line of work focuses on improving their performance by employing more advanced training strategies, extending context length, multi-modal capabilities, incorporating reasoning capabilities, and collecting larger or higher-quality datasets [[7](https://huggingface.co/collections/inclusionAI/llada-20), [8](https://arxiv.org/abs/2510.06303), [9](https://arxiv.org/abs/2505.15809)]. However, we find that: ***most previous works focus on either one side (either efficiency or performance) of dLLM***. 
 
-
-Although prior work has focused on improving either the efficiency or the accuracy of dLLMs, there remains a lack of a unified metric that fairly evaluates dLLMs by jointly considering both performance and parallelism. Existing studies instead rely on separate metrics when assessing dLLMs, such as tokens per second (TPS) for efficiency and accuracy for model quality. As shown in the table below, some methods, such as D2F, achieve strong parallelism with high tokens per forward (TPF) but experience notable accuracy degradation, whereas others, such as Fast-dLLM-v2, achieve high accuracy but exhibit lower TPF. These observations motivate us to introduce a new metric that jointly and fairly measures both performance and parallelism, thereby providing clearer guidance for practical algorithm design for dLLMs.
+We argue that this may because of the misuse of a only a single metric, that existing studies relying and reporting on separate single metrics when assessing dLLMs, such as only reporting tokens per second (TPS) for efficiency, or accuracy for model quality. This may lead to a lack consideration of the ***trade-off*** between efficiency and performance: higher efficiency often leads to lower accuracy, and vice versa. For example, as illustrated in the table below, D2F focuses on improving the efficiency of dLLM, achieve strong parallelism with high tokens per forward (TPF) but experience notable accuracy degradation; whereas Fast-dLLM-v2 focuses on improving the performance of dLLM, achieve high accuracy but exhibit lower TPF. This motivates us to *design an integrated metric that can account for both efficiency and performance*, guide the model to ***striking a balance*** between both, and use this ***integrated metric*** to evaluate the model.
 
 {{< /justify >}}
 
@@ -110,17 +109,15 @@ Although prior work has focused on improving either the efficiency or the accura
 
 {{< justify >}}
 
+Currently, most of the dLLM methods have a "threshold" when decoding, only the logits higher than the threshold are decoded. Then, by varying the threshold of different values, we can adjust the quality-speed trade-off of the decoding process, and get many parallelism-accuracy pairs, and then plot a curve of accuracy vs. parallelism. This curve is called the ***accuracy-parallelism curve*** (see Figure 1 for an illustration), characterizing a trade-off between efficiency and performance.
 
-To jointly account for both efficiency and performance in diffusion language models, we introduce a new metric, ***AUP*** (*Accuracy Under Parallelism*). AUP quantifies how well a model preserves accuracy as the degree of parallelism increases, providing a unified, device-independent measure of a dLLM’s both *efficiency* and *performance*.
+The most naïve approach is to calculate a score using this curve is the *area under the curve* (AUC), but this is not a reasonable metric, because it is strongly influenced by parallelism even when accuracy degrades substantially, allowing low-quality but fast models to obtain high scores. To this end, we establish ***AUP*** (*Accuracy Under Parallelism*). AUP quantifies how well a model preserves accuracy as the degree of parallelism increases, providing a unified, device-independent measure of a dLLM’s both *efficiency* and *performance*.
 
-
-Specifically, let $\mathcal{S} = \{(\rho_i, y_i)\}_{i=1}^m$ be a set of parallelism-accuracy pairs, where $\rho_1 < \rho_2 < \dots < \rho_m$, $\rho_i \in \mathbb{R}^{+}$ denotes the parallelism (measured in _tokens per forward_, TPF), and $y_i \in [0, 100]$ represents accuracy in percentage. We define a minimum accuracy threshold $y_{\min} = y_1 - 5$ to avoid measuring in regimes of significant accuracy degradation. Only points satisfying $y_i \ge y_{\min}$ are included. 
-
-The most naïve approach is to calculate a score as the area under the accuracy–parallelism curve (AUC), but this is not an effective metric. This quantity is strongly influenced by parallelism even when accuracy degrades substantially, allowing low-quality but fast models to obtain high scores. To this end, we establish **AUP**, which takes the accuracy degradation into account, which is defined as the weighted area under the accuracy-parallelism curve:
+Formally, let $\mathcal{S} = \{(\rho_i, y_i)\}_{i=1}^m$ be a set of parallelism-accuracy pairs, where $\rho_1 < \rho_2 < \dots < \rho_m$, $\rho_i \in \mathbb{R}^{+}$ denotes the parallelism (measured in _tokens per forward_, TPF), and $y_i \in [0, 100]$ represents accuracy in percentage. We define a minimum accuracy threshold $y_{\min} = y_1 - 5$ to avoid measuring in regimes of significant accuracy degradation. Only points satisfying $y_i \ge y_{\min}$ are included. AUP is then defined as the weighted area under the accuracy-parallelism curve:
 
 $$\operatorname{AUP} \triangleq \rho_1 y_1 + \frac{1}{2} \sum_{i=2}^{m} (\rho_{i} - \rho_{i-1}) \left( y_i \cdot W(y_i) + y_{i-1} \cdot W(y_{i-1}) \right),$$
 
-where the weighting function is defined as $W(y) = \min(e^{-\alpha \left(1 - {y}/{y_\max}\right)}, 1)$, with a penalty factor $\alpha = 3$ and $y_\max$ denotes the highest accuracy achieved on that task. This weight penalizes lower-accuracy regions to emphasize both high parallelism and stable performance. AUP thus provides a unified measure of decoding quality under increasing parallelism.
+where the weighting function is defined as $W(y) = \min(e^{-\alpha \left(1 - {y}/{y_\max}\right)}, 1)$, with a penalty factor $\alpha = 3$ and $y_\max$ denotes the highest accuracy achieved on that task. This weight penalizes lower-accuracy regions to emphasize both high parallelism and high performance.
 
 {{< /justify >}}
 
@@ -144,51 +141,131 @@ where the weighting function is defined as $W(y) = \min(e^{-\alpha \left(1 - {y}
 
 {{< /justify >}}
 
+{{< justify >}}
+
+**Application of AUP.** We further evaluate previous methods using our AUP metric, as shown in the results in the [Leaderboard](#-diffusion-llm-leaderboard-using-aup-score), it shows that previous dLLM methods although achieve higher AUP then vanilla Dream and LLaDA, but they are not able to beat the speculative decoding methods (EAGLE-3). We claim that this do not Negated the capability of the dLLM. In the following, we will introduce our proposed d3LLM to achieve the highest AUP score in all dLLMs.
+
+{{< /justify >}}
 
 
-## [d3LLM: Jointly Achieving Accuracy and Parallelism 🚀](../d3llm)
+## d3LLM: Jointly Achieving Accuracy and Parallelism 🚀
 
 
 {{< justify >}}
-<a href="../d3llm">
-{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="[Demo of our d3LLM](../d3llm), which achieves up to 5× speedup over the AR (Qwen-2.5-7B-it) on H100 GPU and 3.5× speedup on A100 GPU. You can try our demo [here](https://d3llm-team.github.io/).">}}
-</a>
+{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Demo of our d3LLM, which achieves up to 5× speedup over the AR (Qwen-2.5-7B-it) on H100 GPU and 3.5× speedup on A100 GPU. You can try 🕹️ [our demo](https://d3llm-team.github.io/).">}}
 
 {{< /justify >}}
 
 {{< justify >}}
 
-In addition to introducing a new evaluation metric for dLLMs, we present [***d3LLM*** (*pseuDo-Distillated-Diffusion Large Language Model*)](../d3llm), a novel framework for building highly efficient diffusion language models. Our d3LLM approach not only improves parallelism but also preserves model performance, with only minimal accuracy degradation compared to vanilla LLaDA/Dream models.
+Following the guidance of the AUP score, we introduce ***d3LLM*** (*pseuDo-Distillated-Diffusion Large Language Model*), a novel framework for achieving dLLMs with both high accuracy and high parallelism. Our d3LLM approach not only improves parallelism but also preserves model performance, with only minimal accuracy degradation compared to vanilla LLaDA/Dream models.
 
-The framework consists of two key components: a trajectory-based distillation method with curriculum learning, and an entropy-based multi-block decoding strategy that incorporates KV-cache and refresh mechanisms. The underlying ***motivation*** is straightforward: the distillation and multi-block decoding are crucial for enhancing parallelism, while the curriculum learning recipe and KV-refresh mechanisms are designed to maintain accuracy.
+First, to ***improve the parallelism***, we carefully study the behaviour of dLLM and finds that the key to high parallelism is that model can unmask multiple tokens at each forward pass. Previous work often overlook the distillation process, and typically adopt single-block decoding strategy. This motivates us to select the ***distillation*** and ***multi-block decoding*** as two key techniques to improve the parallelism, where distillation is used to guide the model to unmask as more as possible multiple tokens following the teacher model, and multi-block decoding is designed to fully exploit the parallel generation capabilities of the dLLM.
 
+Secondly, to ***preserve the accuracy***, we find that the robustness in both distillation and decoding are of great importance. Therefore, we design a ***curriculum learning*** technique to gradually increase the masking ratio from easy scenarios (few masks) to harder ones (many masks) during training and get a more robust distillation process. Besides, we find that the multi-block decoding process may cause a performance drop as the *bidirectional attention* in dLLM may cause a harm to the accuracy. This motivates us to design a ***KV-cache refresh*** mechanism to refresh the KV cache to maintain the accuracy.
+
+Together, these techniques enable d3LLM to achieve a balance between accuracy and parallelism, and achieve the highest AUP score in all dLLMs. We will introduce the details of the d3LLM framework in the following.
+
+
+{{< /justify >}}
+
+{{< image src="img/fig_distillation.png" alt="Distillation Illustration" width="100%" title="Illustration of our pseudo-trajectory-based distillation recipe.">}}
+
+
+
+{{< justify >}}
+
+### (i) Pseudo-Trajectory-based Distillation Recipe
+
+We propose a novel **trajectory-based distillation** recipe with curriculum learning, which is crucial for enhancing parallelism while maintaining model accuracy. This advanced distillation approach aims at improving decoding efficiency and alignment with the teacher model's generation pattern. Specifically, it consists of the following key techniques:
+
+{{< /justify >}}
+
+
+{{< justify >}}
+
+- **Utilizing the Teacher dLLM's Pseudo-Trajectory (15%↑ TPF Improvement)**
+
+    <div style="margin-top: 2mm;"></div>
+
+    A fundamental challenge in distillation is the limited availability of intermediate supervision for the diffusion process, where only prompt-response pairs are accessible, and the teacher model's final response may be suboptimal or incorrect. When a strong teacher dLLM produces a response that exactly matches the ground-truth output, its decoding trajectory can help the student model learn the correct generation order; we refer to this as a _real-trajectory_. However, such real-trajectories are hard to obtainable in practice because the teacher’s response often differs from the ground truth. To address this limitation, we propose using the trajectory produced by the teacher dLLM (denoted as _pseudo-trajectory_, due to it is not the exact diffusion trajectory for the ground-truth response) to guide the student model.
+
+    <div style="margin-top: 2mm;"></div>
+
+    Specifically, given a prompt \$\mathbf{x}\$ and a predefined maximum output length \$n\$, we first let the teacher dLLM to generate and record its own decoding trajectory \$\\{\mathcal{T}_1,\ldots,\mathcal{T}_n\\}\$, where \$\mathcal{T}_i \in \mathbb{R}^n, \forall i \in \\{1,\ldots,n\\}\$. Rather than relying on the content of the teacher's response, we extract only the order in which tokens are **_dequeued_**, that is, the sequence in which masked tokens are predicted and revealed. This order forms what we refer to as the **_pseudo-trajectory_** of the teacher.
+
+    <div style="margin-top: 2mm;"></div>
+    
+    To train the student model, we combine the pseudo-trajectory \$\\{\mathcal{T}_1,\ldots,\mathcal{T}_n\\}\$ with the ground-truth prompt-response pair \$(\mathbf{x}, \mathbf{y})\$ and construct a _noisy sequence_ \$\widetilde{\mathbf{y}} \in \mathbb{R}^n\$ that simulates teacher's intermediate state during the decoding process. Formally, let \$t \in [0, 1]\$ denote the mask ratio, and let \$w = \\{s, s+1, \ldots, s + k\\}\$ be a decoding window of length \$k\$ starting at position \$s\$, the noisy sequence \$\widetilde{\mathbf{y}}\$ is defined as
+
+    $$[\widetilde{\mathbf{y}}]_i= \begin{cases}[\mathbf{y}]_i & \text { if } i \leqslant s \text {  or  }\left[\mathcal{T}_{s+\lceil k t \rceil}\right]_i \neq \texttt{mask}, \\ {\texttt{mask} } & \text { if } i>s+k \text { or }\left[\mathcal{T}_{s+\lceil k t \rceil}\right]_i=\texttt{mask},\end{cases}$$
+
+    where \$\texttt{mask}\$ is the special mask token ID, and \$[\cdot]_i\$ denotes the \$i\$-th token in the trajectory sequence. By training the student dLLM on this noisy input by requiring it to predict the labels of the masked tokens, the model learns to unmask tokens sequentially in a manner aligned with the teacher's decoding order. This leads to smoother and more efficient token generation, yielding a **15% improvement in TPF** compared to strategies that use random masking.
+
+{{< /justify >}}
+
+
+{{< justify >}}
+
+- **Progressive Noise Level (Further get 18%↑ TPF Improvement)**
+
+    <div style="margin-top: 2mm;"></div>
+
+  To preserve accuracy during distillation, we introduce a _progressive noise schedule_ by gradually increasing the mask ratio \$t\$ from 0.0 to 0.8 during the training process. This curriculum learning approach encourages the model to learn from easier to harder decoding scenarios, thereby enhancing its robustness and decoding efficiency while maintaining generation quality. Empirically, this strategy further improves the model's tokens-per-forward (TPF) by approximately **18%** compared to using a fixed mask ratio. Without this curriculum strategy, we observe that the distillation process becomes unstable and the model is more likely to suffer accuracy degradation.
+
+{{< /justify >}}
+
+
+{{< justify >}}
+- **Progressive Window Size (Further 8%↑ TPF Improvement)**
+
+    <div style="margin-top: 2mm;"></div>
+
+  We also employ a _progressive window sizing_ as another curriculum learning technique: instead of fixing the decoding window length \$k\$, we gradually increase it from 16 to 32 during the training process. This allows the model to adapt to increasingly larger context spans, facilitating smoother distillation process and stable token generation while maintaining accuracy. This approach leads to an additional **8% improvement in TPF** compared to a constant window size.
+
+{{< /justify >}}
+
+
+{{< image src="img/fig_decoding.png" alt="Decoding Illustration" width="100%" title="Illustration of our multi-block decoding strategy with KV-cache and refresh.">}}
+
+
+### (ii) Multi-Block Decoding Strategy
+
+{{< justify >}}
+
+In addition to the novel distillation recipe, we also introduce an efficient decoding mechanism tailored for dLLM, designed to maximize parallelism while maintaining generation quality. Our decoding strategy includes the following components:
 
 {{< /justify >}}
 
 {{< justify >}}
 
-### (i) Distillation Recipe: Pseudo-Trajectory Distillation
+- **Entropy-Based Multi-Block Parallel Decoding (20%↑ TPF Improvement)**
 
+    <div style="margin-top: 2mm;"></div>
 
-We leverage the teacher’s **pseudo-trajectory** to guide the student model to achieve a higher parallelism. Given a prompt, we first let the teacher diffusion model generate a full output. Instead of using the content of the response, we extract the decoding order of the teacher, i.e., the sequence in which the teacher chooses to unmask tokens at each step. This sequence forms a **pseudo-trajectory** that reflects the teacher’s decoding strategy. We then reconstruct noisy sequences that approximate the intermediate states of the teacher. This trajectory-based method alone yields a **15% increase in tokens per forward pass** compared with naive random masking.
+  Inspired by the approach in [D2F](https://arxiv.org/abs/2508.09192), we propose an _entropy-based multi-block decoding_ method. Unlike conventional diffusion decoding, which operates strictly within a single block, our method enables decoding of both the current and future blocks in parallel. We select tokens to decode based on entropy threshold, in which lower-entropy (more confident) predictions across blocks are first to be unmasked. 
+  
+  <div style="margin-top: 2mm;"></div>
 
-
-To preserve accuracy during distillation, we further equip the recipe with two curriculum learning techniques. First, we use a **progressive noise schedule**, gradually increasing the masking ratio from easy scenarios (few masks) to harder ones (many masks) during training. This curriculum approach helps the model build robust unmasking strategies incrementally, contributing an additional **18% TPF improvement**. Second, we employ a **progressive window sizing**, starting with small decoding windows of 16 tokens and gradually expanding to 32 tokens. This improves another **8% to TPF performance**. Without these curriculum strategies, we observe that the distillation process becomes unstable and the model is more prone to accuracy degradation.
+  Each block can be in one of five states: **Inactive**, **Activated**, **Fully-Activated**, **Completed but Stabilizing**, and **Completed**. We create a new *Activated* block when its preceding block reaches 10% completion and employ a conservative decoding strategy for this block, generating tokens only when they meet the entropy threshold. When the preceding block reaches 95% completion, the *Activated* block transitions to a *Fully-Activated* state, where a more aggressive strategy is used by decoding at least one token per forward pass regardless of the threshold. Once all tokens in a block are unmasked, the block enters the *Completed but Stabilizing* state, during which we perform forward passes without using the KV cache and refresh previous caches. After 1-2 rounds, the block becomes *Completed*, and we store its KV cache. In addition, we apply a periodic-refresh strategy that updates the KV cache every few rounds. This multi-block decoding strategy substantially increases TPF by **20%**.
 
 {{< /justify >}}
 
 {{< justify >}}
 
-### (ii) Decoding Strategy: Entropy-based Multi-Block Decoding
+- **Multi-Block Decoding with KV-Cache and Refresh (20%↑ TPS under Long Contexts)**
 
+    <div style="margin-top: 2mm;"></div>
 
-We also design a decoding strategy that fully exploits dLLM's parallel generation capabilities. Standard diffusion decoding operates within fixed-size blocks, processing one block at a time. We push this further with **entropy-based multi-block parallel decoding**. This multi-block parallel decoding delivers approximately **20% TPF improvement**. 
+  To further improve decoding throughput while maintaining generation quality, particularly in long-context settings, we incorporate a _KV-cache_ mechanism alongside a periodic _KV-refresh_. Specifically, after completing each block, we introduce a short delay before caching its key–value states to ensure that the cache remains reliable and does not lead to performance degradation. Simultaneously, we perform full forward passes to refresh previous caches. This hybrid strategy maintains decoding accuracy while significantly improving TPS by approximately **20%** in long-context scenarios.
 
+{{< /justify >}}
 
-For long-context scenarios, we further combine this with a **KV-cache mechanism with periodic refresh**. After completing each block, we introduce a short delay before caching its key–value states to ensure that the cache remains reliable and does not lead to performance degradation, and simultaneously perform full forward passes to refresh previous caches. In addition, we apply a periodic-refresh strategy that updates the KV cache every few rounds. This hybrid approach maintains generation quality while boosting TPS by roughly **20% in long-context scenarios**. Finally, we implement **early stopping** when the model generates an EOS token, which contributes an additional **5% TPF gain**.
+{{< justify >}}
 
+- **Early Stopping on EOS Token (5%↑ TPF Improvement)**
 
-Together, these distillation and decoding innovations enable d3LLM to achieve substantial efficiency improvements while maintaining generation quality, striking a balance between accuracy and parallelism that makes diffusion language models practical for real-world deployment. More details about the d3LLM framework can be found in our [GitHub code repo](https://github.com/hao-ai-lab/text-diffusion) and in [this blog post](../d3llm).
+  We implement an **early stopping mechanism** that halts decoding once the end-of-sequence (EOS) token is generated. This simple yet effective optimization reduces unnecessary computation and yields a **5% improvement in TPF** on average.
 
 {{< /justify >}}
 
@@ -268,45 +345,6 @@ The experimental results also validate the reliability of our AUP metric. For ex
 {{< /justify >}}
 
 
-
-<!-- **Wall-Clock Speed Comparison.** We further evaluate different methods on multiple hardware platforms, including H100 and A100 GPUs, to measure their wall-clock throughput (measured by tokens per second, TPS) and speedup. The results are presented below.
-
-
-For the *LLaDA-8B-Instruct*, we report speed (TPS) and accuracy on GSM8K-CoT dataset.
-
-{{< table title="Table 1: Performance comparison of d3LLM-LLaDA with baseline methods on GSM8K-CoT." >}}
-
-|                 | H100's TPS | A100's TPS | Acc   |
-|-----------------|:----------:|:----------:|:-----:|
-| Qwen-2.5-7B-it  | 57.32      | 50.36      | 74.10 |
-| LLaDA           | 27.89      | 19.15      | 72.55 |
-| Fast-dLLM-LLaDA | 114.29     | 79.14      | 74.68 |
-| D2F             | 102.13     | 76.24      | 73.24 |
-| dParallel-LLaDA | 172.23     | 105.85     | 72.63 |
-| **d3LLM-LLaDA** | **288.73** | **174.57** | **73.10** |
-
-{{< /table >}}
-
-
-For the *Dream-7B-Instruct*, we again report speed and accuracy on GSM8K-CoT dataset.
-
-
-{{< table title="Table 2: Performance comparison of d3LLM-Dream with baseline methods on GSM8K-CoT." >}}
-
-|                 | H100's TPS | A100's TPS | Acc   |
-|:---------------:|:----------:|:----------:|:-----:|
-| Qwen-2.5-7B-it  | 57.32      | 50.36      | 74.10 |
-| Dream           | 27.62      | 8.32       | 83.94 |
-| Fast-dLLM-Dream | 77.25      | 51.55      | 79.00 |
-| Fast-dLLM-v2-7B | 150.01     | 109.68     | 77.48 |
-| dParallel-Dream | 168.36     | 80.23      | 82.12 |
-| **d3LLM-Dream** | **235.34** | **128.19** | **81.86** |
-
-{{< /table >}}
-
-
-Across both models, our d3LLM achieves the highest TPS with minimal accuracy degradation. It delivers up to a **4.5× speedup** over autoregressive decoding (Qwen-2.5-7B-it) on H100 GPUs, and approximately **3× speedup** on A100 GPUs. All experiments are conducted using the HuggingFace inference backend. We leave system-level optimizations including GPU kernel fusion and integration with vLLM, to future work for further TPS improvements. -->
-
 {{< justify >}}
 
 **Efficient Diffusion Coder.** Beyond LLaDA and Dream, we further apply our distillation approach and multi-block decoding method to a more realistic and challenging application: an efficient LLM-based coding model. Specifically, we use _Dream-Coder-7B-Instruct_ as the teacher dLLM and collect 120k samples from the Ling-Coder-SFT and AceCode datasets, along with a small amount of math-reasoning data, to distill our d3LLM-Coder. The results are demonstrated as below.
@@ -337,6 +375,57 @@ Across both models, our d3LLM achieves the highest TPS with minimal accuracy deg
 </div>
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 7: AUP scores and radar chart comparing different Coder-based methods.</figcaption>
 </figure>
+
+
+
+
+{{< justify >}}
+
+**Wall-Clock Speed Comparison.** We further evaluate different methods on multiple hardware platforms, including H100 and A100 GPUs, to measure their wall-clock throughput (measured by tokens per second, TPS) and speedup. The results are presented below.
+For the *LLaDA-8B-Instruct*, we report speed (TPS) and accuracy on GSM8K-CoT dataset.
+
+{{< /justify >}}
+
+
+
+{{< table title="Table 1: TPS and performance comparison on LLaDA-based models on GSM8K-CoT dataset." >}}
+
+|                 | H100's TPS | A100's TPS | Acc   |
+|-----------------|:----------:|:----------:|:-----:|
+| Qwen-2.5-7B-it  | 57.32      | 50.36      | 74.10 |
+| LLaDA           | 27.89      | 19.15      | 72.55 |
+| Fast-dLLM-LLaDA | 114.29     | 79.14      | 74.68 |
+| D2F             | 102.13     | 76.24      | 74.39 |
+| dParallel-LLaDA | 172.23     | 105.85     | 72.63 |
+| **d3LLM-LLaDA** | **288.73** | **174.57** | **73.10** |
+
+{{< /table >}}
+
+
+For the *Dream-7B-Instruct*, we again report speed and accuracy on GSM8K-CoT dataset.
+
+
+{{< table title="Table 2: TPS and performance comparison on Dream-based models on GSM8K-CoT dataset." >}}
+
+|                 | H100's TPS | A100's TPS | Acc   |
+|---------------|:----------:|:----------:|:-----:|
+| Qwen-2.5-7B-it  | 57.32      | 50.36      | 74.10 |
+| Dream           | 13.41      | 8.32       | 83.94 |
+| Fast-dLLM-Dream | 77.25      | 51.55      | 79.00 |
+| Fast-dLLM-v2-7B | 150.01     | 109.68     | 77.48 |
+| dParallel-Dream | 168.36     | 80.23      | 82.12 |
+| **d3LLM-Dream** | **235.34** | **128.19** | **81.86** |
+
+{{< /table >}}
+
+
+{{< justify >}}
+
+To summarize, our d3LLM framework achieves the highest AUP score with negligible performance degradation, successfully balancing both parallelism and accuracy and striking a balance between accuracy and parallelism. It delivers up to a **5× speedup** over autoregressive decoding (Qwen-2.5-7B-it) on H100 GPUs, and approximately **3.5× speedup** on A100 GPUs with comparable performance. This makes diffusion language models more practical for real-world applications.
+
+Note that all experiments are conducted using the HuggingFace inference backend. We leave system-level optimizations including GPU kernel fusion and integration with vLLM, to future work for further TPS improvements.
+
+{{< /justify >}}
 
 ## 🏆 Diffusion LLM Leaderboard using AUP Score
 
