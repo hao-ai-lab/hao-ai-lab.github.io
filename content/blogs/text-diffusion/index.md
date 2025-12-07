@@ -103,7 +103,7 @@ We argue that this issue arises from the limitations of relying on a single metr
 
 {{< dllm_leaderboard_previous >}}
 
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Benchmark results of previous dLLM models, where accuracy and parallelism are evaluated separately using two different metrics (Acc and TPF respectively).</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Benchmark results of previous dLLM models, where accuracy and parallelism are evaluated separately using two different metrics (Acc and TPF, respectively).</figcaption>
 
 ## AUP: Jointly Considering Both Performance and Parallelism
 
@@ -246,7 +246,7 @@ In addition to the novel distillation recipe, we also introduce an efficient dec
 
     <div style="margin-top: 2mm;"></div>
 
-  Inspired by the approach in [D2F](https://arxiv.org/abs/2508.09192), we propose an _entropy-based multi-block decoding_ method. Unlike conventional diffusion decoding, which operates strictly within a single block, our method enables decoding of both the current and future blocks in parallel. We select tokens to decode based on entropy threshold, in which lower-entropy (more confident) predictions across blocks are first to be unmasked. 
+  Inspired by the approach in [D2F](https://arxiv.org/abs/2508.09192), we propose an _entropy-based multi-block decoding_ method. Unlike conventional diffusion decoding, which operates strictly within a single block, our method enables decoding of both the current and future blocks in parallel. We select tokens to decode based on the entropy threshold, in which lower-entropy (more confident) predictions across blocks are first to be unmasked. 
   
   <div style="margin-top: 2mm;"></div>
 
@@ -439,7 +439,7 @@ We present the leaderboard of diffusion LLMs, using the AUP score as the evaluat
 {{< justify >}}
 
 Our d3LLM-Coder achieves higher TPF and maintains the highest AUP score among all diffusion LLMs.
-Notably, the state-of-the-art speculative decoding method, EAGLE-3 (with LLaMA-Instruct 3.1 8B), attains the top overall AUP score. This is expected, as speculative decoding includes an additional verification step and therefore does not suffer the accuracy degradation as in dLLMs under high parallelism. Moreover, our evaluation does not constrain total FLOPs, and speculative decoding methods may take more FLOPs than diffusion-based approaches. Nevertheless, our d3LLM framework substantially narrows the gap between diffusion-based models and SOTA speculative decoding methods, offering valuable insights for future research directions.
+Notably, the state-of-the-art speculative decoding method, EAGLE-3 (with LLaMA-Instruct 3.1 8B), attains the top overall AUP score. This is expected, as speculative decoding includes an additional verification step and therefore does not suffer from accuracy degradation as in dLLMs under high parallelism. Moreover, our evaluation does not constrain total FLOPs, and speculative decoding methods may take more FLOPs than diffusion-based approaches. Nevertheless, our d3LLM framework substantially narrows the gap between diffusion-based models and SOTA speculative decoding methods, offering valuable insights for future research directions.
 
 
 All our distillation code, data, model weights, and benchmark evaluation code are available at [https://github.com/hao-ai-lab/text-diffusion](https://github.com/hao-ai-lab/text-diffusion). The full paper about AUP and our d3LLM framework will be released soon. Stay tuned!
