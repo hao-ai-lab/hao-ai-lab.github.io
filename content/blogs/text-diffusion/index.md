@@ -415,7 +415,7 @@ For the *Dream-7B-Instruct*, we again report speed and accuracy on GSM8K-CoT dat
 | Qwen-2.5-7B-it  | 57.32      | 50.36      | 74.10 |
 | Dream           | 13.41      | 8.32       | 83.94 |
 | Fast-dLLM-Dream | 77.25      | 51.55      | 79.00 |
-| Fast-dLLM-v2-7B | 150.01     | 109.68     | 77.48 |
+| Fast-dLLM-v2-7B | 150.01     | 109.68     | 81.48 |
 | dParallel-Dream | 168.36     | 80.23      | 82.12 |
 | **d3LLM-Dream** | **235.34** | **128.19** | **81.86** |
 
