@@ -120,7 +120,7 @@ It is worth noting that, in parallel, a separate line of work seeks to improve t
 
 
 Now here’s the part that surprised us the most when we looked at the data “with both axes turned on”:
-***When judged jointly on speed and accuracy, strong AR models combined with speculative decoding in fact delivers the best overall trade-offs in our study. (see row 1 of Table 1).*** For example, state-of-the-art speculative decoding (e.g., EAGLE-3 on LLaMA-3.1 8B) increases effective parallelism while remaining (in principle) lossless relative to the target AR model. Under this joint view, diffusion systems do not currently dominate. We clarify that this does not mean diffusion is “bad”:
+***When judged jointly on speed and accuracy, strong AR models combined with speculative decoding in fact deliver the best overall trade-offs in our study. (see row 1 of Table 1).*** For example, state-of-the-art speculative decoding (e.g., EAGLE-3 on LLaMA-3.1 8B) increases effective parallelism while remaining (in principle) lossless relative to the target AR model. Under this joint view, diffusion systems do not currently dominate. We clarify that this does not mean diffusion is “bad”:
 - Diffusion decoding is genuinely parallel and can be very fast.
 - But open diffusion systems today pay for speed with accuracy, and the cost is often non-trivial.
 - AR + speculative decoding remains a very strong baseline when you measure the full trade-off.
