@@ -84,7 +84,7 @@ This raises a simple question that we think has been under-emphasized: If we eva
 
 ## Key finding: a fundamental accuracy-parallelism trade-off in dLLMs
 
-To answer these questions, we conduct a comprehensive evaluation of state-of-the-art dLLM methods [[1](https://arxiv.org/abs/2505.22618), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328)] on several widely used benchmarks in dLLM literature:
+To answer this question, we conduct a comprehensive evaluation of state-of-the-art dLLM methods [[1](https://arxiv.org/abs/2505.22618), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328)] on several widely used benchmarks in dLLM literature:
 - Math / reasoning: GSM8K-CoT (zero-shot CoT), MATH
 - Coding: HumanEval, MBPP
 - Long-context reasoning: 5-shot GSM8K (prompt length ~1000)
@@ -109,18 +109,18 @@ The results are summarized in the table below.
 
 {{< justify >}}
 
-Upon careful examination of previous dLLM methods, the answer to these questions is clear: the speedup offered by dLLMs is ***not a free lunch***. It almost always comes with accuracy degradation – different dLLM simply lands at different points on the same curve:
+Upon careful examination of previous dLLM methods, the answer to this question is clear: the speedup offered by dLLMs is ***not a free lunch***. It almost always comes with accuracy degradation – different dLLMs simply land at different points on the same curve:
 - Methods like D2F push hard on parallelism (higher TPF), but take a visible hit in accuracy compared to similarly sized AR models.
 - Methods like Fast-dLLM-v2 preserve accuracy better, but at the cost of lower parallelism (lower TPF).
+
 In other words, most diffusion decoding improvements implicitly slide along a trade-off frontier: more parallelism usually means lower accuracy, and vice versa.
 
 
 It is worth noting that, in parallel, a separate line of work seeks to improve the efficiency of AR models through speculative decoding. By combining AR models with speculative decoding, i.e., the state-of-the-art [EAGLE-3](https://arxiv.org/abs/2503.01840) method with the LLaMA-Instruct 3.1 8B model, parallelism can be improved **without sacrificing accuracy**. This approach achieves superior results and significantly outperforms current dLLM methods.
 
-In parallel, a separate line of work seeks to improve the efficiency of AR models through *speculative decoding*. By combining AR models with speculative decoding, i.e., the state-of-the-art [EAGLE-3](https://arxiv.org/abs/2503.01840) method with the LLaMA-Instruct 3.1 8B model, parallelism can be improved **without sacrificing accuracy**. This approach achieves superior results and significantly outperforms current dLLM methods.
 
 Now here’s the part that surprised us the most when we looked at the data “with both axes turned on”:
-***When judged jointly on speed and accuracy, strong AR models combined with speculative decoding in fact delivers the best overall trade-offs in our study. (see row 1 of Table xxx).*** For example, state-of-the-art speculative decoding (e.g., EAGLE-3 on LLaMA-3.1 8B) increases effective parallelism while remaining (in principle) lossless relative to the target AR model. Under this joint view, diffusion systems do not currently dominate. This does not mean diffusion is “bad”:
+***When judged jointly on speed and accuracy, strong AR models combined with speculative decoding in fact delivers the best overall trade-offs in our study. (see row 1 of Table 1).*** For example, state-of-the-art speculative decoding (e.g., EAGLE-3 on LLaMA-3.1 8B) increases effective parallelism while remaining (in principle) lossless relative to the target AR model. Under this joint view, diffusion systems do not currently dominate. We clarify that this does not mean diffusion is “bad”:
 - Diffusion decoding is genuinely parallel and can be very fast.
 - But open diffusion systems today pay for speed with accuracy, and the cost is often non-trivial.
 - AR + speculative decoding remains a very strong baseline when you measure the full trade-off.
