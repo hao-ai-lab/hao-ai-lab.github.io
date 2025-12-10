@@ -177,12 +177,6 @@ where the weighting function is defined as $W(y) = \min(e^{-\alpha \left(1 - {y}
 
 {{< /justify >}}
 
-{{< justify >}}
-
-**Application of AUP.** We further evaluate previous methods using our AUP metric. As shown in the results in the [Leaderboard](#-diffusion-llm-leaderboard-using-aup-score), although existing dLLM methods achieve higher AUP scores than vanilla Dream and LLaDA, they still lag behind speculative decoding methods (e.g., EAGLE-3). We argue that this does not negate the potential of dLLMs. In the following, we introduce our proposed d3LLM framework, which attains the highest AUP score among all dLLMs.
-
-{{< /justify >}}
-
 
 ## d3LLM: Jointly Achieving Accuracy and Parallelism 🚀
 
@@ -194,7 +188,7 @@ where the weighting function is defined as $W(y) = \min(e^{-\alpha \left(1 - {y}
 
 {{< justify >}}
 
-Following the guidance of the AUP score, we introduce ***d3LLM*** (*pseuDo-Distillated-Diffusion Large Language Model*), a novel framework for constructing dLLMs with both high accuracy and high parallelism. Our d3LLM approach not only improves parallelism but also preserves model performance, with only minimal accuracy degradation compared to standard LLaDA/Dream models.
+The above AUP not only provides a unified metric for evaluating the performance of dLLMs, but also serves as a guideline for algorithm design to achieve a better balance between accuracy and parallelism. Guided by the AUP score, we introduce ***d3LLM*** (*pseuDo-Distillated-Diffusion Large Language Model*), a novel framework for constructing dLLMs with both high accuracy and high parallelism. Our d3LLM approach not only improves parallelism but also preserves model performance, with only minimal accuracy degradation compared to standard LLaDA/Dream models.
 
 First, to ***improve parallelism***, we carefully study the behavior of dLLMs and find that the key to high parallelism is enabling the model to unmask multiple tokens at each forward pass. Previous work often overlooks the trajectory in distillation process and typically adopts a single-block decoding strategy. This motivates us to adopt ***trajectory-based distillation*** and ***multi-block decoding*** as two key techniques for improving parallelism. Distillation is used to guide the model to unmask as many tokens as possible, while multi-block decoding is designed to fully exploit the parallel decoding capability of the dLLM.
 
@@ -322,7 +316,7 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
 
 {{< justify >}}
 
-**Results on LLaDA-8B-Instruct Model:** For the foundation model of _LLaDA-8B-Instruct_, we compare our *d3LLM-LLaDA* with _vanilla LLaDA, Fast-dLLM-LLaDA, D2F_, and _dParallel-LLaDA_.
+For the **LLaDA-based models**, we compare our *d3LLM-LLaDA* with _vanilla LLaDA, Fast-dLLM-LLaDA, D2F_, and _dParallel-LLaDA_. The parallelism-accuracy curves are as below.
 
 {{< /justify >}}
 
@@ -349,7 +343,7 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
 
 {{< justify >}}
 
-**Results on Dream-7B-Instruct Model:** For the foundation model of _Dream-7B-Instruct_, we compare our *d3LLM-Dream* with _vanilla Dream, Fast-dLLM-Dream, Fast-dLLM-v2-7B_, and _dParallel-Dream_.
+For the **Dream-based models**, we compare our *d3LLM-Dream* with _vanilla Dream, Fast-dLLM-Dream, Fast-dLLM-v2-7B_, and _dParallel-Dream_. The parallelism-accuracy curves are as below.
 
 {{< /justify >}}
 
