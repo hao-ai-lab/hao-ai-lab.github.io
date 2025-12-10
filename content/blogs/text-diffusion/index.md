@@ -120,8 +120,6 @@ To answer these questions, we conduct a comprehensive evaluation of state-of-the
 
 {{< justify >}}
 
- For example, as shown in the table below, D2F prioritizes efficiency by achieving high TPF through increased parallelism, but its accuracy declines relative to 
-
 Upon careful examination of previous dLLM methods, the answer to these questions is clear: the speedup offered by dLLMs is ***not a free lunch***. It comes at the cost of accuracy degradation, and existing dLLM approaches implicitly navigate a trade-off between accuracy and parallelism. For example, as shown in the table below, D2F prioritizes efficiency by achieving, but its accuracy declines compared to the similar-sized AR model. In contrast, Fast-dLLM-v2 attains higher accuracy than other dLLM methods but at the cost of lower TPF. This fundamental trade-off between accuracy and parallelism represents a core challenge for dLLMs.
 
 In parallel, a separate line of work seeks to improve the efficiency of AR models through *speculative decoding*. By combining AR models with speculative decoding, i.e., the state-of-the-art [EAGLE-3](https://arxiv.org/abs/2503.01840) method with the LLaMA-Instruct 3.1 8B model, parallelism can be improved **without sacrificing accuracy**. This approach achieves superior results and significantly outperforms current dLLM methods.
