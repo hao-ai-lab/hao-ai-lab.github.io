@@ -1,8 +1,8 @@
 +++
 title = "AUP: when Accuracy Meets Parallelism in Diffusion Language Models"
 date = 2025-12-09T12:00:00-08:00
-authors = ["Yu-Yang Qian", "Junda Su", "Peiyuan Zhang", "Lanxiang Hu", "Peng Zhao", "Hao Zhang"]
-author = "Yu-Yang Qian, Junda Su, Peiyuan Zhang, Lanxiang Hu, Peng Zhao, Hao Zhang"
+authors = ["Yu-Yang Qian", "Junda Su", "Lanxiang Hu", "Peiyuan Zhang", "Peng Zhao", "Hao Zhang"]
+author = "Yu-Yang Qian, Junda Su, Lanxiang Hu, Peiyuan Zhang, Peng Zhao, Hao Zhang"
 ShowReadingTime = true
 draft = false
 [socialIcons]
