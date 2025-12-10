@@ -321,7 +321,7 @@ Our experiments are conducted on three foundational diffusion models: LLaDA, Dre
 <div class="responsive-img-grid">
   <img src="img/data_dream_aup_curve_gsm8k_cot.png" alt="Dream GSM8K-CoT" data-width="30">
   <img src="img/data_dream_aup_curve_humaneval_instruct.png" alt="Dream HumanEval_Instruct" data-width="30.5">
-  <img src="img/data_dream_aup_curve_mbpp_instruct.png" alt="Dream MBPP_Instruct" data-width="30">
+  <img src="img/data_dream_aup_curve_mbpp_instruct.png" alt="Dream MBPP_Instruct" data-width="30.2">
 </div>
 <div class="responsive-img-grid" style="margin-top: 20px;">
   <img src="img/data_dream_aup_curve_math.png" alt="Dream MATH" data-width="31.2">
