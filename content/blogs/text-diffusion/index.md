@@ -23,7 +23,7 @@ draft = false
 
 {{< justify >}}
 
-**TL;DR:** Existing diffusion LLMs (dLLMs) are typically evaluated with isolated metrics that focus on only one side of the coin, targeting either efficiency or performance, while overlooking the inherent *trade-off* between them. In this work, we introduce a new metric, *Accuracy Under Parallelism* (AUP), that jointly measures the performance and parallelism for dLLMs. Moreover, guided by this new metric, we propose *d3LLM* (*pseuDo-Distilled Diffusion LLM*), a framework that incorporates a novel distillation method and decoding strategy, outperforming previous SOTA approaches and achieving a balance between efficiency and performance. 
+**TL;DR:** Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs, offering advantages such as parallel decoding, error correction, and random-order generation—capabilities that AR models lack. In this blog, we conduct a comprehensive study of open-source dLLMs and uncover a fundamental trade-off between accuracy and parallelism. However, prior work typically focuses on only one side of this trade-off, targeting either efficiency or performance. When jointly considering speed and accuracy, AR models combined with speculative decoding still deliver the best results. We argue that this is due to the reliance on single, isolated metrics, which fail to capture the full picture. To address this, we introduce **Accuracy Under Parallelism (AUP)**, a unified metric that evaluates both speed and accuracy. Furthermore, guided by AUP, we propose **d3LLM** (*pseuDo-Distilled Diffusion LLM*), a framework that incorporates a novel distillation method and decoding strategy, outperforming previous SOTA approaches and achieving a balance between efficiency and performance. 
 
 
 {{< /justify >}}
@@ -93,27 +93,40 @@ draft = false
 
 ## Background
 
-Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of *bidirectional attention*, which enables parallel decoding, error correction, and random-order generation—capabilities, especially promsing the high parallelism and speedup, that are not feasible for AR models. Recently, several diffusion large language models have been released, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), which demonstrate impressive efficiency and performance and achieve high throughput compared to AR models, can output 1000+ token per second. However, we raise natural questions: are dLLMs really faster then AR? If so, at what cost? Or is it free lunch?
+Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of *bidirectional attention*, which enables parallel decoding, error correction, and random-order generation capabilities, especially promsing the high parallelism and speedup, that are not feasible for AR models. Recently, several diffusion large language models have been released, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), which demonstrate impressive efficiency and performance and achieve high throughput compared to AR models, can output 1000+ token per second. 
 
-To answer these questions, we conduct comprehensive studies on several commonly-used popular benchmarks using state-of-the-arts dLLM methods [[1](https://arxiv.org/abs/2505.22618), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328)] and compare them with AR models (Qwen-2.5-7B-it). We compare the parallelism (measured by tokens per forward pass, TPF) and accuracy (in percentage) of different models. The results are shown in the following table.
+
+Despite this progress, open-source dLLMs have attracted growing interest but currently exhibit *significantly lower throughput*, in some cases running even slower than AR LLMs. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) reach only about 20 tokens per second, whereas closed-source dLLMs exceed 1000 tokens per second. Moreover, the *inferior accuracy* of open-source dLLMs relative to similarly sized AR models further limits their practical utility. These raise natural questions:
+
+
+<div style="text-align: center;">
+
+***Are dLLMs really faster then AR? If so, at what cost? Or is it a free lunch?***
+
+</div>
+
+To answer these questions, we conduct a comprehensive evaluation of state-of-the-art dLLM methods [[1](https://arxiv.org/abs/2505.22618), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328)] on several widely used benchmarks (GSM8K-CoT-Zero, MATH, HumanEval, MBPP, and 5-shot GSM8K reasoning) and compare them with an AR models. We evaluate both parallelism (measured by tokens per forward pass, TPF) and accuracy. The results are summarized in the table below.
+
 
 {{< /justify >}}
 
 
 {{< dllm_leaderboard_previous >}}
 <div style="margin-top: -30px;"></div>
-<figcaption style="text-align: center; color: #808080; margin-top: 0px;">Table 1. Benchmark results of previous dLLM models, where accuracy and parallelism are evaluated separately using two different metrics (Acc and TPF, respectively).</figcaption>
+<figcaption style="text-align: center; color: #808080; margin-top: 0px;">Table 1. Benchmark results of previous dLLM models compared with AR models.</figcaption>
 
 <div style="margin-top: 20px;"></div>
 
 
 {{< justify >}}
 
-Upon carefully examining and analyzing previous dLLM methods, the answer to the above questions is clear: the speedup of dLLM is ***not a free lunch***, it comes the cost of accuracy degration, and dLLM methods are actually trying to tune the trade-off between accuracy and parallelism. For example, as shown in the table below, D2F emphasizes efficiency by achieving high TPF through improved parallelism, but its accuracy decreases compared to the same-sized AR model. On the other hand, Fast-dLLM-v2 achieves higher performance than other models, but at the cost of lower TPF. This fundamental trade-off between accuracy and parallelism is a fundamental challenge for dLLMs.
+ For example, as shown in the table below, D2F prioritizes efficiency by achieving high TPF through increased parallelism, but its accuracy declines relative to 
 
-Moreover, there is also a line of research that focuses on improving the efficiency of AR models name *speculative decoding*. If further combine the AR with speculative decoding technique (here we choose the leading speculative decoding method [EAGLE-3](https://arxiv.org/abs/2503.01840), combined with LLaMA-Instruct 3.1 8B model), the parallelism can be improved, without the compromise of accuracy (remains the same as the vanilla AR models), thus achieving the best results and leaving a huge gap over currently dLLMs.
+Upon careful examination of previous dLLM methods, the answer to these questions are clear: the speedup offered by dLLMs is ***not a free lunch***. It comes at the cost of accuracy degradation, and existing dLLM approaches implicitly navigate a trade-off between accuracy and parallelism. For example, as shown in the table below, D2F prioritizes efficiency by achieving, but its accuracy declines compared to the similar-sized AR model. In contrast, Fast-dLLM-v2 attains higher accuracy than other dLLM methods but at the cost of lower TPF. This fundamental trade-off between accuracy and parallelism represents a core challenge for dLLMs.
 
-To conclude the current situation: altohugh many methods have been proposed to improve dLLMs [[1](https://arxiv.org/abs/2505.22618), [2](https://arxiv.org/abs/2505.15781), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328), [6](https://arxiv.org/abs/2510.08666), [7](https://huggingface.co/collections/inclusionAI/llada-20), [8](https://arxiv.org/abs/2510.06303), [9](https://arxiv.org/abs/2505.15809)], they ***typically focus on only one side of the coin, targeting either efficiency or performance***. We argue that this issue stems from the limitations of relying on single, isolated metrics, such as reporting only tokens per second (TPS) or tokens per forward (TPF) for efficiency, or only accuracy for model performance. This practice overlooks the fundamental *trade-off* between efficiency and performance: improving efficiency often reduces accuracy, and vice versa. These observations motivate us to *design a new integrated metric* that captures both efficiency and performance, guiding models to ***striking a balance*** between both.
+In parallel, a separate line of work seeks to improve the efficiency of AR models through *speculative decoding*. By combining AR models with speculative decoding, i.e., the state-of-the-art [EAGLE-3](https://arxiv.org/abs/2503.01840) method with the LLaMA-Instruct 3.1 8B model, parallelism can be improved **without sacrificing accuracy**. This approach achieves superior results and significantly outperforms current dLLM methods.
+
+To summarize the current landscape: although numerous methods have been proposed to improve dLLMs [[1](https://arxiv.org/abs/2505.22618), [2](https://arxiv.org/abs/2505.15781), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328), [6](https://arxiv.org/abs/2510.08666), [7](https://huggingface.co/collections/inclusionAI/llada-20), [8](https://arxiv.org/abs/2510.06303), [9](https://arxiv.org/abs/2505.15809)], they ***typically focus on only one side of the coin, targeting either efficiency or performance***. We argue that this issue stems from the limitations of relying on single, isolated metrics, such as reporting only tokens per second (TPS) or tokens per forward (TPF) for efficiency, or only accuracy for model performance. This practice overlooks the fundamental *trade-off* between efficiency and performance: improving efficiency often reduces accuracy, and vice versa. These insights motivate us to ***design a new unified metric*** that jointly captures both efficiency and performance, guiding models to ***striking a balance*** between both.
 
 {{< /justify >}}
 
@@ -122,9 +135,9 @@ To conclude the current situation: altohugh many methods have been proposed to i
 
 {{< justify >}}
 
-Following previous comprehensive studies, we learned that we should *look at two sides of the coin* because there is a natural accuracy-speed tradeoff space for dLLMs, therefore there is a need for designing a new metric that captures both efficiency and performance.
+Building on the above comprehensive studies, we observe that it is essential to *look at two sides of the coin*, due to the inherent accuracy-speed tradeoff in dLLMs. This motivates the design of a new metric that jointly captures efficiency and performance.
 
-Next, we elaborate on how we define the AUP metric.
+Next, we elaborate on how we define our new metric.
 A common practice is that, most dLLM methods employ a "threshold" in decoding, where tokens with logits above this threshold can be decoded in parallel. By varying this threshold, we can adjust the quality–speed trade-off of the decoding process and obtain multiple parallelism–accuracy pairs, which can then be used to plot a curve of accuracy versus parallelism. We refer to this curve as the ***accuracy–parallelism curve*** (see the white curve in Figure 1 for an illustration), which characterizes the trade-off between efficiency and performance.
 
 A naïve metric based on this curve is the area under the curve (AUC). However, this is not appropriate, because it is heavily influenced by parallelism even when accuracy degrades significantly, allowing low-quality but fast models to obtain high scores. To address this limitation, we propose ***AUP*** (Accuracy Under Parallelism). AUP quantifies how well a model maintains accuracy as the degree of parallelism increases, providing a unified measure of both the *efficiency* and *performance* of a dLLM.
