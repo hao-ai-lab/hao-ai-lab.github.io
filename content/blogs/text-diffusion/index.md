@@ -1,6 +1,6 @@
 +++
 title = "AUP: when Accuracy Meets Parallelism in Diffusion Language Models"
-date = 2025-11-21T12:00:00-08:00
+date = 2025-12-09T12:00:00-08:00
 authors = ["Yu-Yang Qian", "Junda Su", "Peiyuan Zhang", "Lanxiang Hu", "Peng Zhao", "Hao Zhang"]
 author = "Yu-Yang Qian, Junda Su, Peiyuan Zhang, Lanxiang Hu, Peng Zhao, Hao Zhang"
 ShowReadingTime = true
@@ -93,7 +93,17 @@ draft = false
 
 ## Background
 
-Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of *bidirectional attention*, which enables parallel decoding, error correction, and random-order generation—capabilities that are not feasible for AR models. Recently, several closed-source diffusion models, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), have demonstrated impressive efficiency and performance, achieving high decoding speeds and competitive results relative to AR models. In contrast, open-source diffusion language models have shown substantially ***lower throughput***, often performing even slower than AR LLMs. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) reach only about 20 tokens per second, whereas closed-source dLLMs exceed 1000 tokens per second. Besides, the ***inferior performance*** of open-sourced dLLMs compared to similar-sized AR models also limits their practical applications.
+Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of *bidirectional attention*, which enables parallel decoding, error correction, and random-order generation—capabilities, especially promsing the high parallelism and speedup, that are not feasible for AR models. Recently, several diffusion large language models have been released, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), which demonstrate impressive efficiency and performance and achieve high throughput compared to AR models. However, we raise natural questions: are dLLMs really faster then AR? If so, at what cost? Or is it free lunch?
+
+To answer these questions, we conduct comprehensive studies on several commonly-used popular benchmarks using state-of-the-arts dLLM methods [[1](https://arxiv.org/abs/2505.22618), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328)] and compare then with AR models (Qwen-2.5-7B-it). We compare the parallelism (measured by tokens per forward pass, TPF) and accuracy (in percentage) of different models. The results are shown in the following table.
+
+{{< /justify >}}
+
+{{< dllm_leaderboard_previous >}}
+
+<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Benchmark results of previous dLLM models, where accuracy and parallelism are evaluated separately using two different metrics (Acc and TPF, respectively).</figcaption>
+
+{{< justify >}}
 
 With growing interest from the research community, an increasing number of methods have been proposed to improve dLLMs. On one hand, many recent efforts aim to accelerate diffusion language models by designing KV-cache mechanisms, parallel decoding strategies, and other system-level optimizations [[1](https://arxiv.org/abs/2505.22618), [2](https://arxiv.org/abs/2505.15781), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328), [6](https://arxiv.org/abs/2510.08666)]. On the other hand, another line of work focuses on improving performance by employing more advanced training strategies, extending context length and multimodal capabilities, incorporating reasoning abilities, and collecting larger or higher-quality datasets [[7](https://huggingface.co/collections/inclusionAI/llada-20), [8](https://arxiv.org/abs/2510.06303), [9](https://arxiv.org/abs/2505.15809)]. However, we observe that ***previous works typically focus on only one side of the coin, targeting either efficiency or performance***.
 
@@ -101,9 +111,6 @@ We argue that this issue stems from the limitations of relying on single, isolat
 
 {{< /justify >}}
 
-{{< dllm_leaderboard_previous >}}
-
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Benchmark results of previous dLLM models, where accuracy and parallelism are evaluated separately using two different metrics (Acc and TPF, respectively).</figcaption>
 
 ## AUP: Considering Both Performance and Parallelism
 

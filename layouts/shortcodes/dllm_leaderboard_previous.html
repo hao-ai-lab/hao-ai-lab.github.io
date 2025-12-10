@@ -45,30 +45,8 @@
         text-align: center !important;
         font-weight: 600;
         font-size: 14px;
-        cursor: pointer;
-        user-select: none;
         position: relative;
         white-space: nowrap;
-    }
-    
-    .leaderboard-table th:hover {
-        background: rgba(255,255,255,0.1);
-    }
-    
-    .leaderboard-table th.sortable::after {
-        content: ' ↕';
-        opacity: 0.5;
-        font-size: 12px;
-    }
-    
-    .leaderboard-table th.sort-asc::after {
-        content: ' ↑';
-        opacity: 1;
-    }
-    
-    .leaderboard-table th.sort-desc::after {
-        content: ' ↓';
-        opacity: 1;
     }
     
     .leaderboard-table tbody tr {
@@ -80,6 +58,11 @@
         background-color: #2a2a2a;
     }
     
+    /* Bold divider line after top 2 methods */
+    .leaderboard-table tbody tr.divider-row {
+        border-bottom: 3px solid #4dcdc4;
+    }
+    
     .leaderboard-table td {
         padding: 16px 12px;
         text-align: center;
@@ -87,9 +70,22 @@
         color: #e0e0e0;
     }
     
-    .leaderboard-table .rank-cell {
+    .leaderboard-table .type-cell {
         font-weight: 700;
         font-size: 16px;
+        color: #ffffff;
+        background-color: #2a2a2a;
+        width: 80px;
+        min-width: 80px;
+        max-width: 80px;
+        vertical-align: middle;
+        text-align: center;
+        border-right: 1px solid #333;
+    }
+    
+    .leaderboard-table .rank-cell {
+        font-weight: 700;
+        font-size: 24px;
         color: #4dcdc4;
         width: 80px;
         min-width: 80px;
@@ -98,10 +94,14 @@
     
     .leaderboard-table .model-cell {
         text-align: center;
-        font-weight: 600;
+        font-weight: 400 !important;
         color: #ffffff;
         min-width: 160px;
         max-width: 180px;
+    }
+    
+    .leaderboard-table .model-cell.top-method {
+        font-weight: 700 !important;
     }
     
     .leaderboard-table .metric-cell {
@@ -121,6 +121,16 @@
         font-size: 11px;
         color: #999;
         display: block;
+    }
+    
+    /* White color for top 2 methods */
+    .sub-metrics.top-method {
+        color: #ffffff;
+    }
+    
+    /* Light gray for other methods */
+    .sub-metrics.other-method {
+        color: #aaa;
     }
     
     .avg-cell {
@@ -143,13 +153,7 @@
     /* Rank badges */
     .rank-badge {
         display: inline-block;
-        width: 32px;
-        height: 32px;
-        line-height: 32px;
-        border-radius: 50%;
-        text-align: center;
-        font-weight: 700;
-        font-size: 20px;
+        line-height: 1;
     }
     
     .rank-medal {
@@ -158,10 +162,11 @@
         line-height: 1;
     }
     
-    .rank-1 { background: none; }
-    .rank-2 { background: none; }
-    .rank-3 { background: none; }
-    .rank-other { background: #3a3a3a; color: #bbb; }
+    .rank-number {
+        font-size: 20px;
+        font-weight: 700;
+        color: #4dcdc4;
+    }
     
     /* Scroll hint for mobile */
     .scroll-hint {
@@ -205,11 +210,19 @@
             font-size: 9px;
         }
         
-        .rank-badge {
-            width: 28px;
-            height: 28px;
-            line-height: 28px;
-            font-size: 12px;
+        .rank-medal {
+            font-size: 28px;
+        }
+        
+        .rank-number {
+            font-size: 16px;
+        }
+        
+        .leaderboard-table .type-cell {
+            width: 60px;
+            min-width: 60px;
+            max-width: 60px;
+            font-size: 13px;
         }
         
         .leaderboard-table .rank-cell {
@@ -243,12 +256,14 @@
         <table class="leaderboard-table" id="leaderboard-previous">
         <thead>
             <tr>
-                <th class="sortable" data-sort="model">Model</th>
-                <th class="sortable" data-sort="gsm8k_cot">GSM8K-CoT</th>
-                <th class="sortable" data-sort="math">MATH</th>
-                <th class="sortable" data-sort="mbpp">MBPP</th>
-                <th class="sortable" data-sort="humaneval">HumanEval</th>
-                <th class="sortable" data-sort="long_gsm8k">Long-GSM8K</th>
+                <th>Type</th>
+                <th>Index</th>
+                <th>Model</th>
+                <th>GSM8K-CoT</th>
+                <th>MATH</th>
+                <th>MBPP</th>
+                <th>HumanEval</th>
+                <th>Long-GSM8K</th>
             </tr>
         </thead>
         <tbody id="leaderboard-body-previous">
@@ -260,8 +275,21 @@
     
     <script>
     (function() {
-        let currentSort = { column: 'avg', direction: 'desc' };
         let allData = {};
+        
+        // Custom order for models - MODIFY THIS ARRAY TO CHANGE THE ORDER
+        const customOrder = [
+            'EAGLE-3 (LLaMA-3.1)',
+            'Qwen-2.5-7B-it',
+            'dParallel-LLaDA',
+            'dParallel-Dream',
+            'D2F',
+            'Fast-dLLM-v2-7B',
+            'Fast-dLLM-LLaDA',
+            'Fast-dLLM-Dream',
+            'LLaDA',
+            'Dream',
+        ];
         
         // Parse CSV data
         function parseCSV(csvText) {
@@ -323,8 +351,6 @@
                         !modelName.includes('TPS:') &&
                         !modelName.includes('Qwen2.5-Coder-7B') &&
                         !modelName.includes('d3LLM') &&
-                        !modelName.includes('Qwen') &&
-                        !modelName.includes('EAGLE')&&
                         !modelName.includes('Coder')) {
                         
                         // Parse data for each dataset in this row
@@ -332,15 +358,6 @@
                             const dataset = datasetColumns[colIdx];
                             const baseCol = parseInt(colIdx);
                             
-                            // CSV structure:
-                            // Row with dataset names: ..., gsm8k_cot, ..., math, ...
-                            // Row with column headers: ..., token/forward (TPF), Acc, AUP, TPF=1时的Acc, ...
-                            // Data rows: ..., 1.00, 74.10, 74.1000, 74.10, ...
-                            // 
-                            // If dataset name is at column N, then:
-                            // - TPF is at column N (same position)
-                            // - Acc is at column N+1
-                            // - AUP is at column N+2
                             const tpf = parseFloat(cells[baseCol]);
                             const acc = parseFloat(cells[baseCol + 1]);
                             const aup = parseFloat(cells[baseCol + 2]);
@@ -365,34 +382,12 @@
                 
                 // Initialize and render table
                 const processedData = processData(allData);
-                const sortedData = sortData([...processedData], currentSort.column, currentSort.direction);
-                renderTable(sortedData);
-                updateSortIndicators();
-                
-                // Add click handlers to headers
-                const table = document.getElementById('leaderboard-previous');
-                const headers = table.querySelectorAll('th.sortable');
-                
-                headers.forEach(th => {
-                    th.addEventListener('click', () => {
-                        const column = th.dataset.sort;
-                        
-                        if (currentSort.column === column) {
-                            currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-                        } else {
-                            currentSort.column = column;
-                            currentSort.direction = 'desc';
-                        }
-                        
-                        const sortedData = sortData([...processedData], currentSort.column, currentSort.direction);
-                        renderTable(sortedData);
-                        updateSortIndicators();
-                    });
-                });
+                const orderedData = orderData(processedData);
+                renderTable(orderedData);
             } catch (error) {
                 console.error('Error loading CSV:', error);
                 document.getElementById('leaderboard-body-previous').innerHTML = 
-                    '<tr><td colspan="6" style="text-align:center;color:#999;">Error loading data</td></tr>';
+                    '<tr><td colspan="8" style="text-align:center;color:#999;">Error loading data</td></tr>';
             }
         }
         
@@ -416,9 +411,6 @@
             
             // Process metrics for each model
             Object.keys(models).forEach(modelName => {
-                let totalAUP = 0;
-                const taskCount = tasks.length; // Always count all tasks
-                
                 tasks.forEach(task => {
                     if (data[task] && data[task][modelName]) {
                         const [tpf, acc, aup] = data[task][modelName];
@@ -428,40 +420,53 @@
                             tpf: tpf,
                             acc: acc
                         };
-                        
-                        totalAUP += aup;
                     } else {
                         models[modelName].metrics[task] = null;
-                        // Missing values are treated as 0, so no need to add anything
                     }
                 });
-                
-                models[modelName].avgAUP = totalAUP / taskCount;
             });
             
             return Object.values(models);
         }
         
-        function formatMetricCell(metric) {
+        function orderData(data) {
+            // Create a map for quick lookup
+            const dataMap = {};
+            data.forEach(model => {
+                dataMap[model.name] = model;
+            });
+            
+            // Order according to customOrder array
+            const orderedData = [];
+            customOrder.forEach(modelName => {
+                if (dataMap[modelName]) {
+                    orderedData.push(dataMap[modelName]);
+                }
+            });
+            
+            return orderedData;
+        }
+        
+        function formatMetricCell(metric, isTopMethod) {
             if (!metric) {
                 return '<span class="na-value">/</span>';
             }
             
+            const cssClass = isTopMethod ? 'top-method' : 'other-method';
+            
             return `
-                <span class="sub-metrics">Acc: ${metric.acc.toFixed(1)}%</span>
-                <span class="sub-metrics">TPF: ${metric.tpf.toFixed(2)}</span>
+                <span class="sub-metrics ${cssClass}">Acc: ${metric.acc.toFixed(1)}%</span>
+                <span class="sub-metrics ${cssClass}">TPF: ${metric.tpf.toFixed(2)}</span>
             `;
         }
         
-        function getRankBadge(rank) {
+        function getRankDisplay(rank) {
             if (rank === 1) {
-                return `<span class="rank-badge rank-1"><span class="rank-medal">🥇</span></span>`;
+                return `<span class="rank-badge"><span class="rank-medal">🥇</span></span>`;
             } else if (rank === 2) {
-                return `<span class="rank-badge rank-2"><span class="rank-medal">🥈</span></span>`;
-            } else if (rank === 3) {
-                return `<span class="rank-badge rank-3"><span class="rank-medal">🥉</span></span>`;
+                return `<span class="rank-badge"><span class="rank-medal">🥈</span></span>`;
             } else {
-                return `<span class="rank-badge rank-other">${rank}</span>`;
+                return `<span class="rank-number">${rank}</span>`;
             }
         }
         
@@ -470,61 +475,39 @@
             tbody.innerHTML = '';
             
             data.forEach((model, index) => {
+                const rank = index + 1;
+                const isTopMethod = rank <= 2;
                 const row = document.createElement('tr');
                 
+                // Add divider class after the second row
+                if (rank === 2) {
+                    row.classList.add('divider-row');
+                }
+                
+                // Add Type cell with rowspan for first row of each type
+                let typeCellHTML = '';
+                if (rank === 1) {
+                    // First AR row - spans 2 rows
+                    typeCellHTML = `<td class="type-cell" rowspan="2">AR</td>`;
+                } else if (rank === 3) {
+                    // First dLLM row - spans remaining rows (8 rows for dLLM)
+                    typeCellHTML = `<td class="type-cell" rowspan="8">dLLM</td>`;
+                }
+                
+                const modelCellClass = isTopMethod ? 'model-cell top-method' : 'model-cell';
+                
                 row.innerHTML = `
-                    <td class="model-cell">${model.name}</td>
-                    <td class="metric-cell">${formatMetricCell(model.metrics.gsm8k_cot)}</td>
-                    <td class="metric-cell">${formatMetricCell(model.metrics.math)}</td>
-                    <td class="metric-cell">${formatMetricCell(model.metrics.mbpp)}</td>
-                    <td class="metric-cell">${formatMetricCell(model.metrics.humaneval)}</td>
-                    <td class="metric-cell">${formatMetricCell(model.metrics.long_gsm8k)}</td>
+                    ${typeCellHTML}
+                    <td class="rank-cell">${getRankDisplay(rank)}</td>
+                    <td class="${modelCellClass}">${model.name}</td>
+                    <td class="metric-cell">${formatMetricCell(model.metrics.gsm8k_cot, isTopMethod)}</td>
+                    <td class="metric-cell">${formatMetricCell(model.metrics.math, isTopMethod)}</td>
+                    <td class="metric-cell">${formatMetricCell(model.metrics.mbpp, isTopMethod)}</td>
+                    <td class="metric-cell">${formatMetricCell(model.metrics.humaneval, isTopMethod)}</td>
+                    <td class="metric-cell">${formatMetricCell(model.metrics.long_gsm8k, isTopMethod)}</td>
                 `;
                 
                 tbody.appendChild(row);
-            });
-        }
-        
-        function sortData(data, column, direction) {
-            return data.sort((a, b) => {
-                let aVal, bVal;
-                
-                if (column === 'model') {
-                    aVal = a.name;
-                    bVal = b.name;
-                    return direction === 'asc' 
-                        ? aVal.localeCompare(bVal)
-                        : bVal.localeCompare(aVal);
-                } else if (column === 'avg') {
-                    aVal = a.avgAUP;
-                    bVal = b.avgAUP;
-                } else if (column === 'rank') {
-                    // Rank by average AUP
-                    aVal = a.avgAUP;
-                    bVal = b.avgAUP;
-                    direction = direction === 'asc' ? 'desc' : 'asc'; // Invert for rank
-                } else {
-                    aVal = a.metrics[column]?.aup || -1; // Use -1 for missing data to sort them last
-                    bVal = b.metrics[column]?.aup || -1;
-                }
-                
-                if (direction === 'asc') {
-                    return aVal - bVal;
-                } else {
-                    return bVal - aVal;
-                }
-            });
-        }
-        
-        function updateSortIndicators() {
-            const table = document.getElementById('leaderboard-previous');
-            const headers = table.querySelectorAll('th.sortable');
-            
-            headers.forEach(th => {
-                th.classList.remove('sort-asc', 'sort-desc');
-                if (th.dataset.sort === currentSort.column) {
-                    th.classList.add(`sort-${currentSort.direction}`);
-                }
             });
         }
         
