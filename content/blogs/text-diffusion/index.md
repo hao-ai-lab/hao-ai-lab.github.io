@@ -11,7 +11,7 @@ draft = false
       url = "https://twitter.com"
     [[socialIcons.icon]]
       name = "github"
-      url = "https://github.com/hao-ai-lab/text-diffusion"
+      url = "https://github.com/hao-ai-lab/d3LLM"
 [cover]
       image = "/img/dllm_leaderboard.png"
       alt = "AUP: when Accuracy Meets Parallelism in Diffusion Language Models"
@@ -19,7 +19,7 @@ draft = false
       hidden = true
 +++
 
-{{< socialBadges github="hao-ai-lab/text-diffusion" demo="https://d3llm-team.github.io/" huggingface="https://huggingface.co/d3LLM">}}
+{{< socialBadges github="hao-ai-lab/d3LLM" demo="https://d3llm-team.github.io/" huggingface="https://huggingface.co/d3LLM">}}
 
 {{< justify >}}
 
@@ -280,7 +280,7 @@ We present comprehensive benchmark results across five representative tasks: GSM
 
 Our experiments are conducted on three foundational diffusion models: LLaDA, Dream, and Dream-Coder. From these, we derive three distilled models, d3LLM-LLaDA, d3LLM-Dream, and d3LLM-Coder, each trained using the same trajectory-based distillation recipe and multi-block decoding strategy outlined previously. We use a single GPU and fix the batch size to 1 for all models.
 
-**Implementation Details.** Our d3LLM begins with a block diffusion model (either LLaDA or Dream) with a block size of 32 as the teacher model. For fair comparison, we adopt the same distillation dataset as dParallel, which includes approximately 122k samples for Dream and 92k samples for LLaDA, sourced from the PRM12K, AceCode, GSM8K (training split), and Numina-Math datasets. The learning rate is set to 2e-5. We train 6 epochs for LLaDA and 3 for Dream. More implementation details can be found in our [GitHub code](https://github.com/hao-ai-lab/text-diffusion).
+**Implementation Details.** Our d3LLM begins with a block diffusion model (either LLaDA or Dream) with a block size of 32 as the teacher model. For fair comparison, we adopt the same distillation dataset as dParallel, which includes approximately 122k samples for Dream and 92k samples for LLaDA, sourced from the PRM12K, AceCode, GSM8K (training split), and Numina-Math datasets. The learning rate is set to 2e-5. We train 6 epochs for LLaDA and 3 for Dream. More implementation details can be found in our [GitHub code](https://github.com/hao-ai-lab/d3LLM).
 
 {{< /justify >}}
 
@@ -441,7 +441,7 @@ Our d3LLM-Coder achieves higher TPF and maintains the highest AUP score among al
 Notably, the state-of-the-art speculative decoding method, EAGLE-3 (with LLaMA-Instruct 3.1 8B), attains the top overall AUP score. This is expected, as speculative decoding includes an additional verification step and therefore does not suffer from accuracy degradation as in dLLMs under high parallelism. Moreover, our evaluation does not constrain total FLOPs, and speculative decoding methods may take more FLOPs than diffusion-based approaches. Nevertheless, our d3LLM framework substantially narrows the gap between diffusion-based models and SOTA speculative decoding methods, offering valuable insights for future research directions.
 
 
-All our distillation code, data, model weights, and benchmark evaluation code are available at [https://github.com/hao-ai-lab/text-diffusion](https://github.com/hao-ai-lab/text-diffusion). The full paper about AUP and our d3LLM framework will be released soon. Stay tuned!
+All our distillation code, data, model weights, and benchmark evaluation code are available at [https://github.com/hao-ai-lab/d3LLM](https://github.com/hao-ai-lab/d3LLM). The full paper about AUP and our d3LLM framework will be released soon. Stay tuned!
 
 {{< /justify >}}
 
