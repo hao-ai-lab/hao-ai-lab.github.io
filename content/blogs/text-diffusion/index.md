@@ -93,15 +93,19 @@ draft = false
 
 ## Background
 
-Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of *bidirectional attention*, which enables parallel decoding, error correction, and random-order generation—capabilities, especially promsing the high parallelism and speedup, that are not feasible for AR models. Recently, several diffusion large language models have been released, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), which demonstrate impressive efficiency and performance and achieve high throughput compared to AR models. However, we raise natural questions: are dLLMs really faster then AR? If so, at what cost? Or is it free lunch?
+Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs. A key advantage of dLLMs is the use of *bidirectional attention*, which enables parallel decoding, error correction, and random-order generation—capabilities, especially promsing the high parallelism and speedup, that are not feasible for AR models. Recently, several diffusion large language models have been released, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), which demonstrate impressive efficiency and performance and achieve high throughput compared to AR models, can output 1000+ token per second. However, we raise natural questions: are dLLMs really faster then AR? If so, at what cost? Or is it free lunch?
 
-To answer these questions, we conduct comprehensive studies on several commonly-used popular benchmarks using state-of-the-arts dLLM methods [[1](https://arxiv.org/abs/2505.22618), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328)] and compare then with AR models (Qwen-2.5-7B-it). We compare the parallelism (measured by tokens per forward pass, TPF) and accuracy (in percentage) of different models. The results are shown in the following table.
+To answer these questions, we conduct comprehensive studies on several commonly-used popular benchmarks using state-of-the-arts dLLM methods [[1](https://arxiv.org/abs/2505.22618), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328)] and compare them with AR models (Qwen-2.5-7B-it). We compare the parallelism (measured by tokens per forward pass, TPF) and accuracy (in percentage) of different models. The results are shown in the following table.
 
 {{< /justify >}}
 
-{{< dllm_leaderboard_previous >}}
 
-<figcaption style="text-align: center; color: #808080; margin-top: 10px;">Benchmark results of previous dLLM models, where accuracy and parallelism are evaluated separately using two different metrics (Acc and TPF, respectively).</figcaption>
+{{< dllm_leaderboard_previous >}}
+<div style="margin-top: -35px;"></div>
+<figcaption style="text-align: center; color: #808080; margin-top: 0px;">Table 1. Benchmark results of previous dLLM models, where accuracy and parallelism are evaluated separately using two different metrics (Acc and TPF, respectively).</figcaption>
+
+<div style="margin-top: 20px;"></div>
+
 
 {{< justify >}}
 
@@ -404,7 +408,7 @@ The results are presented below.
 
 
 
-{{< table title="Table 1: TPS and performance comparison on LLaDA-based models on GSM8K-CoT dataset." >}}
+{{< table title="Table 2. TPS and performance comparison on LLaDA-based models on GSM8K-CoT dataset." >}}
 
 |                 | H100's TPS | A100's TPS | Acc   |
 |-----------------|:----------:|:----------:|:-----:|
@@ -421,7 +425,7 @@ The results are presented below.
 For the *Dream-7B-Instruct*, we again report speed and accuracy on GSM8K-CoT dataset.
 
 
-{{< table title="Table 2: TPS and performance comparison on Dream-based models on GSM8K-CoT dataset." >}}
+{{< table title="Table 3. TPS and performance comparison on Dream-based models on GSM8K-CoT dataset." >}}
 
 |                 | H100's TPS | A100's TPS | Acc   |
 |---------------|:----------:|:----------:|:-----:|
