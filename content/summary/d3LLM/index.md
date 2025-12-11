@@ -19,7 +19,7 @@ github = "hao-ai-lab/d3LLM"
       url = "https://github.com/hao-ai-lab/d3LLM"
 [cover]
       image = "/img/dllm_demo.gif"
-      alt = "Ultra-Fast Diffusion LLM 🚀"
+      alt = "d3LLM: Ultra-Fast Diffusion LLM 🚀"
       caption = "d3LLM: Ultra-Fast Diffusion LLM using Pseudo-Trajectory Distillation 🚀"
 
 +++

@@ -1,6 +1,6 @@
 +++
 title = "AUP: when Accuracy Meets Parallelism in Diffusion Language Models"
-date = 2025-12-09T12:00:00-08:00
+date = 2025-12-10T12:00:00-08:00
 authors = ["Yu-Yang Qian", "Junda Su", "Lanxiang Hu", "Peiyuan Zhang", "Zhijie Deng", "Peng Zhao", "Hao Zhang"]
 author = "Yu-Yang Qian, Junda Su, Lanxiang Hu, Peiyuan Zhang, Zhijie Deng, Peng Zhao, Hao Zhang"
 ShowReadingTime = true
@@ -14,7 +14,7 @@ draft = false
       url = "https://github.com/hao-ai-lab/d3LLM"
 [cover]
       image = "/img/dllm_leaderboard.png"
-      alt = "AUP: when Accuracy Meets Parallelism in Diffusion Language Models"
+      alt = "d3LLM: Ultra-Fast Diffusion LLM 🚀"
       caption = "AUP: when Accuracy Meets Parallelism in Diffusion Language Models"
       hidden = true
 +++
