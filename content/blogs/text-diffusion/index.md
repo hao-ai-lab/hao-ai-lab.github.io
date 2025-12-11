@@ -76,13 +76,13 @@ Diffusion large language models (dLLMs) have emerged as a promising alternative 
 Random-order generation: tokens need not be produced strictly left-to-right.
 
 In the best-case story, dLLMs could be "the future of LLM inference": faster decoding without giving up quality, plus extra capabilities that AR decoding doesn’t naturally offer.
-Recently, several diffusion large language models have been released, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), which demonstrate impressive efficiency and performance and achieve extremely high throughput compared in certain settings, sometimes reported at 1000+ tokens per second.
+Recently, several diffusion large language models have been announced, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), which demonstrate impressive efficiency and performance and achieve extremely high throughput compared in certain settings - sometimes reported at 1000+ tokens per second in certain settings.
 
-But the open-source reality today is much more mixed. Many open diffusion models are still slow in common inference stacks, and they often trail similarly sized AR models in accuracy. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) reach only about 20 tokens per second, sometimes even be slower than AR baselines if accounting for the number of refinement steps and cache behavior.
+But the open-source reality today is much more mixed. Many open diffusion models are still slow in common inference stacks, and they often trail similarly sized AR models in accuracy. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) reach only about 20 tokens per second, sometimes even slower than AR baselines if accounting for the number of refinement steps and cache behavior.
 
 This raises a simple question that we think has been under-emphasized: If we evaluate both speed and accuracy together, are today’s diffusion LLMs actually better decoders than strong AR models (especially AR + speculative decoding)? In this blog post, we attempt to study that question with evidence, and then use what we learned to (1) propose a better metric, and (2) build a better diffusion system guided by that metric.
 
-## Key finding: a fundamental accuracy-parallelism trade-off in dLLMs
+### Key finding: a fundamental accuracy-parallelism trade-off in dLLMs
 
 To answer this question, we conduct a comprehensive evaluation of state-of-the-art dLLM methods [[1](https://arxiv.org/abs/2505.22618), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328)] on several widely used benchmarks in dLLM literature:
 - Math / reasoning: GSM8K-CoT (zero-shot CoT), MATH
@@ -93,7 +93,7 @@ We measure two quantities for each model and decoding configuration:
 - Accuracy (solve rate / pass@1 depending on the benchmark)
 - Parallelism, measured by tokens per forward pass (TPF)
 
-Why TPF? Because it captures the algorithmic “how many tokens do I advance per model evaluation” effect that diffusion-style decoding and speculative methods aim to improve. (We'll come back to why this in [Section AUP](#aup-considering-both-performance-and-parallelism).)
+Why TPF? Because it captures the algorithmic “how many tokens do I advance per model evaluation” effect that diffusion-style decoding and speculative methods aim to improve (We'll come back to why this in [Section AUP](#aup-considering-both-performance-and-parallelism)). 
 
 The results are summarized in the table below.
 
@@ -113,7 +113,7 @@ Upon careful examination of previous dLLM methods, the answer to this question i
 - Methods like D2F push hard on parallelism (higher TPF), but take a visible hit in accuracy compared to similarly sized AR models.
 - Methods like Fast-dLLM-v2 preserve accuracy better, but at the cost of lower parallelism (lower TPF).
 
-In other words, most diffusion decoding improvements implicitly slide along a trade-off frontier: more parallelism usually means lower accuracy, and vice versa.
+In other words, most diffusion decoding improvements implicitly slide along a trade-off frontier: *more parallelism usually means lower accuracy, and vice versa.*
 
 
 It is worth noting that, in parallel, a separate line of work seeks to improve the efficiency of AR models through speculative decoding. By combining AR models with speculative decoding, i.e., the state-of-the-art [EAGLE-3](https://arxiv.org/abs/2503.01840) method with the LLaMA-Instruct 3.1 8B model, parallelism can be improved **without sacrificing accuracy**. This approach achieves superior results and significantly outperforms current dLLM methods.
@@ -126,7 +126,7 @@ Now here’s the part that surprised us the most when we looked at the data “w
 - AR + speculative decoding remains a very strong baseline when you measure the full trade-off.
 
 
-## Why we need a new metric?
+### Why we need a new metric?
 
 At this point, we ran into a practical problem: the literature (and many blog discussions) tends to report diffusion progress using single, isolated metrics:
 - Efficiency-only metrics: tokens per second (TPS) or tokens per forward (TPF)
@@ -144,16 +144,19 @@ These insights motivate us to ***design a new unified metric*** – AUP, which w
 
 {{< justify >}}
 
-Most dLLM methods already expose certain knobs that trades off speed and quality. e.g., Fast-dLLM employs a “threshold” in decoding, where tokens with logits above this threshold can be decoded in parallel. By sweepingthis threshold, we can adjust the quality–speed trade-off of the decoding process and obtain multiple parallelism–accuracy pairs, which can then be used to plot a curve of accuracy versus parallelism. We refer to this curve as the ***accuracy–parallelism curve*** (see the white curve in Figure 1 for an illustration), which characterizes the trade-off between efficiency and performance.
 
-A naïve metric based on this curve is the area under the curve (AUC). However, this is not appropriate, because it is heavily influenced by parallelism even when accuracy degrades significantly, allowing low-quality but fast models to obtain high scores. To address this limitation, we propose ***AUP*** (Accuracy Under Parallelism). AUP quantifies how well a model maintains accuracy as the degree of parallelism increases, providing a unified measure of both the *efficiency* and *performance* of a dLLM.
+Most dLLM methods already expose certain knobs that trades off speed and quality. e.g., Fast-dLLM employs a logit “threshold”,where tokens with logits above this threshold can be decoded in parallel. By sweeping this threshold, we can adjust the quality–speed trade-off and obtain multiple parallelism–accuracy pairs, which can then be used to plot a curve of accuracy versus parallelism. We refer to this curve as the ***accuracy–parallelism curve*** (see the white curve in Figure 1 for an illustration), which characterizes the trade-off frontier dLLMs navigates.
 
+A natural first attempt is to summarize the curve by the area under the curve (AUC). But plain AUC has a serious failure mode: it can reward models that become extremely fast by letting accuracy collapse. The right side of the curve can contribute lots of area even if the model is not useful in practice. We want a metric that strongly prefers staying in a high-accuracy regime, and only then rewards higher parallelism.
 
-Formally, let $\mathcal{S} = \{(\rho_i, y_i)\}_{i=1}^m$ be a set of parallelism-accuracy pairs, where $\rho_1 < \rho_2 < \dots < \rho_m$, $\rho_i \in \mathbb{R}^{+}$ denotes the parallelism (measured in _tokens per forward_, TPF), and $y_i \in [0, 100]$ represents accuracy in percentage. We define a minimum accuracy threshold $y_{\min} = y_1 - 5$ to avoid measuring in regimes of significant accuracy degradation. Only points satisfying $y_i \ge y_{\min}$ are included. AUP is then defined as the weighted area under the accuracy-parallelism curve:
+We propose AUP (Accuracy Under Parallelism) as a weighted area under the accuracy–parallelism curve, where the weight penalizes accuracy drops relative to the best achievable accuracy on that task. 
+
+Formally, let $\mathcal{S} = \{(\rho_i, y_i)\}_{i=1}^m$ be a set of parallelism-accuracy pairs, where $\rho_1 < \rho_2 < \dots < \rho_m$, $\rho_i \in \mathbb{R}^{+}$ denotes the parallelism (measured in _tokens per forward_, TPF), and $y_i \in [0, 100]$ represents accuracy in percentage. We define a minimum accuracy threshold $y_{\min} = y_1 - 5$ to avoid measuring in regimes of significant accuracy degradation. Only points satisfying $y_i \ge y_{\min}$ are included. AUP is then defined as:
 
 $$\operatorname{AUP} \triangleq \rho_1 y_1 + \frac{1}{2} \sum_{i=2}^{m} (\rho_{i} - \rho_{i-1}) \left( y_i \cdot W(y_i) + y_{i-1} \cdot W(y_{i-1}) \right),$$
 
-where the weighting function is defined as $W(y) = \min(e^{-\alpha \left(1 - {y}/{y_\max}\right)}, 1)$, with a penalty factor $\alpha = 3$ and $y_\max$ denotes the highest accuracy achieved on that task. This weight penalizes lower-accuracy regions to emphasize both high parallelism and high performance.
+where the weighting function is defined as $W(y) = \min(e^{-\alpha \left(1 - {y}/{y_\max}\right)}, 1)$, with a penalty factor $\alpha = 3$ and $y_\max$ denotes the highest accuracy achieved on that task.
+
 
 {{< /justify >}}
 
@@ -168,15 +171,30 @@ where the weighting function is defined as $W(y) = \min(e^{-\alpha \left(1 - {y}
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 1: Illustration of the AUP metric. The metric captures both parallelism (TPF) and accuracy, with a weighting function that penalizes accuracy degradation.</figcaption>
 </figure>
 
+The intuition behind AUP is simple:
+- If you increase parallelism without losing accuracy, your AUP increases a lot.
+- If you increase parallelism by sacrificing accuracy, your AUP increases only a little (or not at all), because the penalty suppresses low-accuracy regimes.
+
+
 
 {{< justify >}}
 
 **Choice of $\alpha$.** The hyperparameter $\alpha$ controls the penalty for accuracy degradation. A larger $\alpha$ increases sensitivity to performance drops, causing the contribution of throughput to decay exponentially with the error rate. In the ideal case, where a method improves parallelism without compromising accuracy, the AUP reduces to the standard area under the parallelism-accuracy curve (AUC). In our setting, we set $\alpha = 3$ as it balances the importance of parallelism and accuracy.
 
-**Hardware-Independence.** Unlike traditional throughput metrics such as TPS (tokens per second), which are highly dependent on hardware capabilities, AUP offers a more robust and hardware-independent measure. For instance, in our experiments, our d3LLM-LLaDA model (which will be introduced in the next section) demonstrates around 5× higher TPS than an AR baseline (Qwen-2.5-7B-it) on an NVIDIA H100 GPU (289 vs. 57 tokens/s). However, this advantage shrinks significantly on an NVIDIA A100 GPU (175 vs. 50 tokens/s). In contrast, the TPF (tokens per forward pass) and our AUP score remain consistent across hardware platforms. Therefore, AUP provides a robust and fair evaluation metric that reflects both efficiency and accuracy while remaining independent of specific hardware configurations, helping the community focus on algorithmic design without requiring access to particular GPUs.
+**AUP is hardware-independent** because AUP is built on TPF (token per forward), not TPS (token per second). TPS is heavily affected by hardware generation (H100 vs A100), kernel fusion, cache implementation, and the inference framework. The same algorithm can look dramatically different depending on system details.
+For instance, in our experiments, our d3LLM-LLaDA model (which will be introduced in the next section) demonstrates around 5× higher TPS than an AR baseline (Qwen-2.5-7B-it) on an NVIDIA H100 GPU (289 vs. 57 tokens/s). However, this advantage shrinks significantly on an NVIDIA A100 GPU (175 vs. 50 tokens/s). In contrast, the TPF captures the algorithmic parallelism: how many tokens you progress per forward pass. This is much more stable across hardware. Therefore, AUP gives a fairer view of algorithmic progress, without requiring everyone to run on the exact same GPU or inference engine, helping the community focus on algorithmic design without requiring access to particular GPUs.
 
 {{< /justify >}}
 
+
+{{< justify >}}
+
+### What AUP reveals about Today’s landscape
+
+Once we scored existing methods using AUP, the landscape became clearer (see table xxx): Recent diffusion acceleration methods do improve AUP over vanilla diffusion baselines (e.g., vanilla Dream / LLaDA). This is real progress. However, state-of-the-art AR + speculative decoding methods still achieve the top overall AUP in our evaluation. We need methods that move the entire accuracy–parallelism curve up and to the right, not just push parallelism at the expense of accuracy. This is where d3LLM comes in: we treat AUP as the optimization target, and design a diffusion framework specifically to increase AUP.
+
+
+{{< /justify >}}
 
 ## d3LLM: Jointly Achieving Accuracy and Parallelism 🚀
 
@@ -188,14 +206,12 @@ where the weighting function is defined as $W(y) = \min(e^{-\alpha \left(1 - {y}
 
 {{< justify >}}
 
-The above AUP not only provides a unified metric for evaluating the performance of dLLMs, but also serves as a guideline for algorithm design to achieve a better balance between accuracy and parallelism. Guided by the AUP score, we introduce ***d3LLM*** (*pseuDo-Distillated-Diffusion Large Language Model*), a novel framework for constructing dLLMs with both high accuracy and high parallelism. Our d3LLM approach not only improves parallelism but also preserves model performance, with only minimal accuracy degradation compared to standard LLaDA/Dream models.
+Following the guidance of the AUP score, we introduce ***d3LLM*** (*pseuDo-Distillated-Diffusion Large Language Model*), a novel framework for constructing dLLMs with both high accuracy and high parallelism. d3LLM combines two main ideas:
+1.	Pseudo-trajectory distillation (training): Instead of distilling only from a teacher’s final answers, we distill from the teacher diffusion model’s decoding order (the order in which it unmasks tokens). This provides intermediate supervision about which tokens can be safely decoded earlier, which directly improves parallelism. we design a ***curriculum learning strategy*** that gradually increases the masking ratio from easier scenarios (few masks) to more difficult ones (many masks) during training, resulting in a more robust distillation process.
+2.	Multi-block decoding with KV-cache refresh (inference): At inference time, we decode multiple blocks in parallel based on confidence (entropy), and we introduce a KV-cache refresh mechanism to prevent quality degradation that can occur with aggressive multi-block parallelism.
 
-First, to ***improve parallelism***, we carefully study the behavior of dLLMs and find that the key to high parallelism is enabling the model to unmask multiple tokens at each forward pass. Previous work often overlooks the trajectory in distillation process and typically adopts a single-block decoding strategy. This motivates us to adopt ***trajectory-based distillation*** and ***multi-block decoding*** as two key techniques for improving parallelism. Distillation is used to guide the model to unmask as many tokens as possible, while multi-block decoding is designed to fully exploit the parallel decoding capability of the dLLM.
 
-Second, to ***maintain accuracy***, we find that robustness in both distillation and decoding is crucial. Therefore, we design a ***curriculum learning strategy*** that gradually increases the masking ratio from easier scenarios (few masks) to more difficult ones (many masks) during training, resulting in a more robust distillation process. Moreover, we observe that the multi-block decoding process may cause a performance drop, as the *bidirectional attention* in dLLMs may harm accuracy. This motivates us to design a ***KV-cache refresh*** mechanism to update the KV cache and maintain accuracy.
-
-Together, these techniques enable d3LLM to strike a balance between accuracy and parallelism and to obtain the highest AUP score among all dLLMs. We will introduce details of the d3LLM framework in the following.
-
+Together, these techniques enable d3LLM to strike a balance between accuracy and parallelism and to obtain the highest AUP score among all dLLMs.
 
 {{< /justify >}}
 
