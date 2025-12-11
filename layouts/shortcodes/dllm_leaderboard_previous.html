@@ -264,6 +264,7 @@
                 <th>MBPP</th>
                 <th>HumanEval</th>
                 <th>Long-GSM8K</th>
+                <th>AUP Score</th>
             </tr>
         </thead>
         <tbody id="leaderboard-body-previous">
@@ -283,12 +284,12 @@
             'Qwen-2.5-7B-it',
             'dParallel-LLaDA',
             'dParallel-Dream',
-            'D2F',
             'Fast-dLLM-v2-7B',
             'Fast-dLLM-LLaDA',
+            'D2F',
             'Fast-dLLM-Dream',
-            'LLaDA',
             'Dream',
+            'LLaDA',
         ];
         
         // Parse CSV data
@@ -387,7 +388,7 @@
             } catch (error) {
                 console.error('Error loading CSV:', error);
                 document.getElementById('leaderboard-body-previous').innerHTML = 
-                    '<tr><td colspan="8" style="text-align:center;color:#999;">Error loading data</td></tr>';
+                    '<tr><td colspan="9" style="text-align:center;color:#999;">Error loading data</td></tr>';
             }
         }
         
@@ -411,6 +412,9 @@
             
             // Process metrics for each model
             Object.keys(models).forEach(modelName => {
+                let totalAUP = 0;
+                const taskCount = tasks.length; // Always count all tasks
+                
                 tasks.forEach(task => {
                     if (data[task] && data[task][modelName]) {
                         const [tpf, acc, aup] = data[task][modelName];
@@ -420,10 +424,15 @@
                             tpf: tpf,
                             acc: acc
                         };
+                        
+                        totalAUP += aup;
                     } else {
                         models[modelName].metrics[task] = null;
+                        // Missing values are treated as 0, so no need to add anything
                     }
                 });
+                
+                models[modelName].avgAUP = totalAUP / taskCount;
             });
             
             return Object.values(models);
@@ -463,8 +472,8 @@
         function getRankDisplay(rank) {
             if (rank === 1) {
                 return `<span class="rank-badge"><span class="rank-medal">🥇</span></span>`;
-            } else if (rank === 2) {
-                return `<span class="rank-badge"><span class="rank-medal">🥈</span></span>`;
+            // } else if (rank === 2) {
+            //     return `<span class="rank-badge"><span class="rank-medal">🥈</span></span>`;
             } else {
                 return `<span class="rank-number">${rank}</span>`;
             }
@@ -505,6 +514,9 @@
                     <td class="metric-cell">${formatMetricCell(model.metrics.mbpp, isTopMethod)}</td>
                     <td class="metric-cell">${formatMetricCell(model.metrics.humaneval, isTopMethod)}</td>
                     <td class="metric-cell">${formatMetricCell(model.metrics.long_gsm8k, isTopMethod)}</td>
+                    <td class="metric-cell avg-cell">
+                        <span class="aup-score">${model.avgAUP.toFixed(1)}</span>
+                    </td>
                 `;
                 
                 tbody.appendChild(row);

@@ -80,21 +80,20 @@ Recently, several diffusion large language models have been announced, including
 
 But the open-source reality today is much more mixed. Many open diffusion models are still slow in common inference stacks, and they often trail similarly sized AR models in accuracy. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) reach only about 20 tokens per second, sometimes even slower than AR baselines if accounting for the number of refinement steps and cache behavior.
 
-This raises a simple question that we think has been under-emphasized: If we evaluate both speed and accuracy together, are today’s diffusion LLMs actually better decoders than strong AR models (especially AR + speculative decoding)? In this blog post, we attempt to study that question with evidence, and then use what we learned to (1) propose a better metric, and (2) build a better diffusion system guided by that metric.
+This raises a simple question that we think has been under-emphasized: If we evaluate both speed and accuracy together, are today’s diffusion LLMs actually better decoders than strong AR models (especially AR + speculative decoding)? In this blog post, we attempt to study that question with evidence, and then use what we learned to: (1) propose a better metric, and (2) build a better diffusion system guided by that metric.
 
 ### Key finding: a fundamental accuracy-parallelism trade-off in dLLMs
 
-To answer this question, we conduct a comprehensive evaluation of state-of-the-art dLLM methods [[1](https://arxiv.org/abs/2505.22618), [3](https://arxiv.org/abs/2508.09192), [4](https://arxiv.org/abs/2509.26488), [5](https://arxiv.org/abs/2509.26328)] on several widely used benchmarks in dLLM literature:
-- Math / reasoning: GSM8K-CoT (zero-shot CoT), MATH
-- Coding: HumanEval, MBPP
-- Long-context reasoning: 5-shot GSM8K (prompt length ~1000)
+To answer this question, we conduct a comprehensive evaluation of SOTA dLLM methods (including [Fast-dLLM](https://arxiv.org/abs/2505.22618), [D2F](https://arxiv.org/abs/2508.09192), [dParllel](https://arxiv.org/abs/2509.26488), and [Fast-dLLM-v2](https://arxiv.org/abs/2509.26328)) on several widely used benchmarks in dLLM literature:
+- Math / reasoning: [GSM8K-CoT (zero-shot CoT)](https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/tasks/gsm8k/gsm8k-cot-zeroshot.yaml), [MATH](https://openreview.net/forum?id=IFXTZERXdM7)
+- Coding: [HumanEval](https://arxiv.org/abs/2107.03374), [MBPP](https://arxiv.org/pdf/2108.07732)
+- Long-context reasoning: 5-shot [GSM8K](https://arxiv.org/abs/2110.14168) (prompt length ~1000)
 
 We measure two quantities for each model and decoding configuration:
 - Accuracy (solve rate / pass@1 depending on the benchmark)
 - Parallelism, measured by tokens per forward pass (TPF)
 
-Why TPF? Because it captures the algorithmic “how many tokens do I advance per model evaluation” effect that diffusion-style decoding and speculative methods aim to improve (We'll come back to why this in [Section AUP](#aup-considering-both-performance-and-parallelism)). 
-
+Why TPF? Because it captures the algorithmic “how many tokens do I advance per model evaluation” effect that diffusion-style decoding and speculative methods aim to improve. (We'll come back to why this in [Section AUP](#aup-considering-both-performance-and-parallelism)). Besides, we also report the average AUP score (which will be introduced later) and sorted previous dLLMs using AUP. 
 The results are summarized in the table below.
 
 {{< /justify >}}
@@ -109,14 +108,14 @@ The results are summarized in the table below.
 
 {{< justify >}}
 
-Upon careful examination of previous dLLM methods, the answer to this question is clear: the speedup offered by dLLMs is ***not a free lunch***. It almost always comes with accuracy degradation – different dLLMs simply land at different points on the same curve:
+Upon careful examination of previous dLLM methods (e.g., [dKV](https://arxiv.org/abs/2505.15781), [MMaDA](https://arxiv.org/abs/2505.15809), [SDAR](https://arxiv.org/abs/2510.06303), [Fast-dLLM](https://arxiv.org/abs/2505.22618), and [D2F](https://arxiv.org/abs/2508.09192)), the answer to this question is clear: the speedup offered by dLLMs is ***not a free lunch***. It almost always comes with accuracy degradation – different dLLMs simply land at different points on the same curve:
 - Methods like D2F push hard on parallelism (higher TPF), but take a visible hit in accuracy compared to similarly sized AR models.
 - Methods like Fast-dLLM-v2 preserve accuracy better, but at the cost of lower parallelism (lower TPF).
 
 In other words, most diffusion decoding improvements implicitly slide along a trade-off frontier: *more parallelism usually means lower accuracy, and vice versa.*
 
 
-It is worth noting that, in parallel, a separate line of work seeks to improve the efficiency of AR models through speculative decoding. By combining AR models with speculative decoding, i.e., the state-of-the-art [EAGLE-3](https://arxiv.org/abs/2503.01840) method with the LLaMA-Instruct 3.1 8B model, parallelism can be improved **without sacrificing accuracy**. This approach achieves superior results and significantly outperforms current dLLM methods.
+It is worth noting that, in parallel, a separate line of work seeks to improve the efficiency of AR models through speculative decoding and multi-token prediction (e.g., [Medusa](https://arxiv.org/abs/2401.10774), [Hydra](https://arxiv.org/abs/2402.05109), [CLLM](https://arxiv.org/abs/2403.00835), [OSD](https://arxiv.org/abs/2310.07177)). By combining AR models with speculative decoding, i.e., the state-of-the-art [EAGLE-3](https://arxiv.org/abs/2503.01840) method with the LLaMA-Instruct 3.1 8B model, parallelism can be improved **without sacrificing accuracy**. This approach achieves superior results and significantly outperforms current dLLM methods.
 
 
 Now here’s the part that surprised us the most when we looked at the data “with both axes turned on”:
@@ -145,12 +144,11 @@ These insights motivate us to ***design a new unified metric*** – AUP, which w
 {{< justify >}}
 
 
-Most dLLM methods already expose certain knobs that trades off speed and quality. e.g., Fast-dLLM employs a logit “threshold”,where tokens with logits above this threshold can be decoded in parallel. By sweeping this threshold, we can adjust the quality–speed trade-off and obtain multiple parallelism–accuracy pairs, which can then be used to plot a curve of accuracy versus parallelism. We refer to this curve as the ***accuracy–parallelism curve*** (see the white curve in Figure 1 for an illustration), which characterizes the trade-off frontier dLLMs navigates.
+Most dLLM methods already expose certain knobs that trades off speed and quality. e.g., Fast-dLLM employs a logit “threshold”,where tokens with logits above this threshold can be decoded in parallel. By sweeping this threshold, we can adjust the quality–speed trade-off and obtain multiple parallelism–accuracy pairs, which can then be used to plot a curve of accuracy versus parallelism. We refer to this curve as the ***accuracy–parallelism curve*** (see the white curve in Figure 1 for an illustration), which characterizes the trade-off frontier dLLMs navigate.
 
 A natural first attempt is to summarize the curve by the area under the curve (AUC). But plain AUC has a serious failure mode: it can reward models that become extremely fast by letting accuracy collapse. The right side of the curve can contribute lots of area even if the model is not useful in practice. We want a metric that strongly prefers staying in a high-accuracy regime, and only then rewards higher parallelism.
 
 We propose AUP (Accuracy Under Parallelism) as a weighted area under the accuracy–parallelism curve, where the weight penalizes accuracy drops relative to the best achievable accuracy on that task. 
-
 Formally, let $\mathcal{S} = \{(\rho_i, y_i)\}_{i=1}^m$ be a set of parallelism-accuracy pairs, where $\rho_1 < \rho_2 < \dots < \rho_m$, $\rho_i \in \mathbb{R}^{+}$ denotes the parallelism (measured in _tokens per forward_, TPF), and $y_i \in [0, 100]$ represents accuracy in percentage. We define a minimum accuracy threshold $y_{\min} = y_1 - 5$ to avoid measuring in regimes of significant accuracy degradation. Only points satisfying $y_i \ge y_{\min}$ are included. AUP is then defined as:
 
 $$\operatorname{AUP} \triangleq \rho_1 y_1 + \frac{1}{2} \sum_{i=2}^{m} (\rho_{i} - \rho_{i-1}) \left( y_i \cdot W(y_i) + y_{i-1} \cdot W(y_{i-1}) \right),$$
@@ -207,8 +205,8 @@ Once we scored existing methods using AUP, the landscape became clearer (see tab
 {{< justify >}}
 
 Following the guidance of the AUP score, we introduce ***d3LLM*** (*pseuDo-Distillated-Diffusion Large Language Model*), a novel framework for constructing dLLMs with both high accuracy and high parallelism. d3LLM combines two main ideas:
-1.	Pseudo-trajectory distillation (training): Instead of distilling only from a teacher’s final answers, we distill from the teacher diffusion model’s decoding order (the order in which it unmasks tokens). This provides intermediate supervision about which tokens can be safely decoded earlier, which directly improves parallelism. we design a ***curriculum learning strategy*** that gradually increases the masking ratio from easier scenarios (few masks) to more difficult ones (many masks) during training, resulting in a more robust distillation process.
-2.	Multi-block decoding with KV-cache refresh (inference): At inference time, we decode multiple blocks in parallel based on confidence (entropy), and we introduce a KV-cache refresh mechanism to prevent quality degradation that can occur with aggressive multi-block parallelism.
+1.	*Pseudo-trajectory distillation (training)*: Instead of distilling only from a teacher’s final answers, we distill from the teacher diffusion model’s decoding order (the order in which it unmasks tokens). This provides intermediate supervision about which tokens can be safely decoded earlier, which directly improves parallelism. we design a ***curriculum learning strategy*** that gradually increases the masking ratio from easier scenarios (few masks) to more difficult ones (many masks) during training, resulting in a more robust distillation process.
+2.	*Multi-block decoding with KV-cache refresh (inference)*: At inference time, we decode multiple blocks in parallel based on confidence (entropy), and we introduce a KV-cache refresh mechanism to prevent quality degradation that can occur with aggressive multi-block parallelism.
 
 
 Together, these techniques enable d3LLM to strike a balance between accuracy and parallelism and to obtain the highest AUP score among all dLLMs.
@@ -233,19 +231,16 @@ We first introduce our **pseudo-trajectory-based distillation** recipe with curr
 
     <div style="margin-top: 2mm;"></div>
 
-    A fundamental challenge in distillation is the limited availability of intermediate supervision for the diffusion process, where only prompt-response pairs are accessible, and the teacher model's final response may be suboptimal or incorrect. When a strong teacher dLLM produces a response that exactly matches the ground-truth output, its decoding trajectory can help the student model learn the correct generation order; we refer to this as a _real-trajectory_. However, such real-trajectories are hard to obtainable in practice because the teacher’s response often differs from the ground truth. To address this limitation, we propose using the trajectory produced by the teacher dLLM (denoted as _pseudo-trajectory_, due to it is not the exact diffusion trajectory for the ground-truth response) to guide the student model.
+    A key challenge in distillation is that dLLM's intermediate supervision is unavailable: we usually only have prompt–response pairs, without teacher's intermediate states. Ideally, when the teacher’s output matches the ground truth, its decoding trajectory provides an ideal real-trajectory for teaching the student the correct generation order, but such cases are rare. To overcome this, we instead use the teacher dLLM’s own decoding trajectory as a pseudo-trajectory, even when its final answer differs from the ground truth.
+
 
     <div style="margin-top: 2mm;"></div>
 
-    Specifically, given a prompt \$\mathbf{x}\$ and a predefined maximum output length \$n\$, we first let the teacher dLLM to generate and record its own decoding trajectory \$\\{\mathcal{T}_1,\ldots,\mathcal{T}_n\\}\$, where \$\mathcal{T}_i \in \mathbb{R}^n, \forall i \in \\{1,\ldots,n\\}\$. Rather than relying on the content of the teacher's response, we extract only the order in which tokens are decoded. This order forms what we refer to as the **_pseudo-trajectory_** of the teacher.
-
-    <div style="margin-top: 2mm;"></div>
-    
-    To train the student model, we combine the pseudo-trajectory \$\\{\mathcal{T}_1,\ldots,\mathcal{T}_n\\}\$ with the ground-truth prompt-response pair \$(\mathbf{x}, \mathbf{y})\$ and construct a _noisy sequence_ \$\widetilde{\mathbf{y}} \in \mathbb{R}^n\$ that simulates teacher's intermediate state during the decoding process. Formally, let \$t \in [0, 1]\$ denote the mask ratio, and let \$w = \\{s, s+1, \ldots, s + k\\}\$ be a decoding window of length \$k\$ starting at position \$s\$, the noisy sequence \$\widetilde{\mathbf{y}}\$ is defined as
+    Specifically, given a prompt \$\mathbf{x}\$ and a predefined maximum output length \$n\$, we first let the teacher dLLM to generate and record its own decoding trajectory \$\\{\mathcal{T}_1,\ldots,\mathcal{T}_n\\}\$, where \$\mathcal{T}_i \in \mathbb{R}^n, \forall i \in \\{1,\ldots,n\\}\$. Rather than relying on the content of the teacher's response, we extract only the order in which tokens are decoded. This order forms what we refer to as the **_pseudo-trajectory_** of the teacher. Combine the pseudo-trajectory with the ground-truth prompt-response pair \$(\mathbf{x}, \mathbf{y})\$ and construct a _noisy sequence_ \$\widetilde{\mathbf{y}} \in \mathbb{R}^n\$ that simulates teacher's intermediate state during the decoding process. Formally, let \$t \in [0, 1]\$ denote mask ratio, and \$w = \\{s, \ldots, s + k\\}\$ be a decoding window of length \$k\$, the noisy sequence \$\widetilde{\mathbf{y}}\$ is
 
     $$[\widetilde{\mathbf{y}}]_i= \begin{cases}[\mathbf{y}]_i & \text { if } i \leqslant s \text {  or  }\left[\mathcal{T}_{s+\lceil k t \rceil}\right]_i \neq \texttt{mask}, \\ {\texttt{mask} } & \text { if } i>s+k \text { or }\left[\mathcal{T}_{s+\lceil k t \rceil}\right]_i=\texttt{mask},\end{cases}$$
 
-    where \$\texttt{mask}\$ is the special mask token ID, and \$[\cdot]_i\$ denotes the \$i\$-th token in the trajectory sequence. By training the student dLLM on this noisy input by requiring it to predict the labels of the masked tokens, the model learns to unmask tokens sequentially in a manner aligned with the teacher's decoding order. This leads to smoother and more efficient token generation, yielding a **15% improvement in TPF** compared to strategies that use random masking.
+    where \$\texttt{mask}\$ is the special mask token ID, and \$[\cdot]_i\$ denotes the \$i\$-th token in the trajectory sequence. This leads to a **15% improvement in TPF** compared to strategies that use random masking.
 
 {{< /justify >}}
 
@@ -291,7 +286,7 @@ In addition to the novel distillation recipe, we also introduce an efficient dec
 
     <div style="margin-top: 2mm;"></div>
 
-  Inspired by the approach in [D2F](https://arxiv.org/abs/2508.09192), we propose an _entropy-based multi-block decoding_ method. Unlike conventional diffusion decoding, which operates strictly within a single block, our method enables decoding of both the current and future blocks in parallel. We select tokens to decode based on the entropy threshold, in which lower-entropy (more confident) predictions across blocks are first to be unmasked. 
+  Inspired by the approach in [D2F](https://arxiv.org/abs/2508.09192), we propose an _entropy-based multi-block decoding_ method. Unlike conventional diffusion decoding, which operates strictly within a single block, our method enables decoding of both the current and future blocks in parallel. We select tokens to decode based on the entropy threshold, in which lower-entropy (more confident) predictions are first to be unmasked. 
   
   <div style="margin-top: 2mm;"></div>
 
@@ -313,6 +308,8 @@ In addition to the novel distillation recipe, we also introduce an efficient dec
 
 - **Early Stopping on EOS Token (5%↑ TPF Improvement)**
 
+    <div style="margin-top: 2mm;"></div>
+
   We implement an **early stopping mechanism** that halts decoding once the end-of-sequence (EOS) token is generated. This simple yet effective optimization reduces unnecessary computation and yields a **5% improvement in TPF** on average.
 
 {{< /justify >}}
@@ -324,7 +321,7 @@ In addition to the novel distillation recipe, we also introduce an efficient dec
 
 We present comprehensive benchmark results across five representative tasks: GSM8K-CoT (chain-of-thought reasoning), MATH (mathematical problem solving), HumanEval (code generation), MBPP (Python programming), and a long-context math reasoning task (5-shot GSM8K reasoning, with a prompt length ≈ 1000). These datasets span diverse domains and problem types and are widely used in the research community. In addition, their relatively long output lengths allow us to effectively evaluate the models' parallel decoding capabilities together with their accuracy.
 
-Our experiments are conducted on three foundational diffusion models: LLaDA, Dream, and Dream-Coder. From these, we derive three distilled models, d3LLM-LLaDA, d3LLM-Dream, and d3LLM-Coder, each trained using the same trajectory-based distillation recipe and multi-block decoding strategy outlined previously. We use a single GPU and fix the batch size to 1 for all models.
+Our experiments are conducted on three foundational diffusion models: [LLaDA](https://arxiv.org/abs/2502.09992), [Dream](https://arxiv.org/abs/2508.15487), and [Dream-Coder](https://arxiv.org/abs/2509.01142). From these, we derive three distilled models, d3LLM-LLaDA, d3LLM-Dream, and d3LLM-Coder, each trained using the same trajectory-based distillation recipe and multi-block decoding strategy outlined previously. We use a single GPU and fix the batch size to 1 for all models.
 
 **Implementation Details.** Our d3LLM begins with a block diffusion model (either LLaDA or Dream) with a block size of 32 as the teacher model. For fair comparison, we adopt the same distillation dataset as dParallel, which includes approximately 122k samples for Dream and 92k samples for LLaDA, sourced from the PRM12K, AceCode, GSM8K (training split), and Numina-Math datasets. The learning rate is set to 2e-5. We train 6 epochs for LLaDA and 3 for Dream. More implementation details can be found in our [GitHub code](https://github.com/hao-ai-lab/d3LLM).
 
@@ -493,6 +490,7 @@ All our distillation code, data, model weights, and benchmark evaluation code ar
 
 {{< justify >}}
 
+<!-- 
 ## Reference
 
 {{< /justify >}}
@@ -545,4 +543,4 @@ Scalable Sequence Generation](https://arxiv.org/abs/2510.06303)
 
 {{< justify >}}
 [12] [Dream-Coder 7B: An Open Diffusion Language Model for Code](https://arxiv.org/abs/2509.01142)
-{{< /justify >}}
+{{< /justify >}} -->
