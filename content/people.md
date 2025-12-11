@@ -81,6 +81,8 @@ summary: people
 {{< lab_member name="Jerry Xu" role="Undergrad Intern" image="jerry_xu.jpg" academic="https://www.linkedin.com/in/jerry-xu-a8a905217/">}}
 {{< lab_member name="Wenxuan Tan" role="Undergrad Intern" image="wenxuan_tan.jpg" academic="https://github.com/Edenzzzz">}}
 
+{{< lab_member name="Yu-Yang Qian" role="Visiting PhD Student" image="yu_yang_qian.jpg" academic="https://www.lamda.nju.edu.cn/qianyy/" twitter="https://x.com/YuYangQian_ai" >}}
+
 {{< /lab_members_grid >}}
 
 ### Alumni
