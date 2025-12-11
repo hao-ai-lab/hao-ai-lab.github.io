@@ -93,7 +93,7 @@ We measure two quantities for each model and decoding configuration:
 - Accuracy (solve rate / pass@1 depending on the benchmark)
 - Parallelism, measured by tokens per forward pass (TPF)
 
-Why TPF? Because it captures the algorithmic “how many tokens do I advance per model evaluation” effect that diffusion-style decoding and speculative methods aim to improve. (We'll come back to why this in [Section AUP](#aup-considering-both-performance-and-parallelism)). Besides, we also report the average AUP score (which will be introduced later) and sorted previous dLLMs using AUP. 
+Why TPF? Because it captures the algorithmic “how many tokens do I advance per model evaluation” effect that diffusion-style decoding and speculative methods aim to improve. (We'll come back to why this in [Section AUP](#aup-considering-both-performance-and-parallelism)). Besides, we also report the average AUP score (which will be introduced later) and sorted previous dLLMs based on AUP. 
 The results are summarized in the table below.
 
 {{< /justify >}}
