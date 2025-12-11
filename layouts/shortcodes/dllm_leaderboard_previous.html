@@ -140,7 +140,7 @@
     
     /* Light gray for other methods */
     .sub-metrics.other-method {
-        color: #aaa;
+        color: #bbb;
     }
     
     .avg-cell {
@@ -513,7 +513,7 @@
             
             data.forEach((model, index) => {
                 const rank = index + 1;
-                const isTopMethod = rank <= 2;
+                const isTopMethod = rank <= 1;
                 const row = document.createElement('tr');
                 
                 const modelCellClass = isTopMethod ? 'model-cell top-method' : 'model-cell';
