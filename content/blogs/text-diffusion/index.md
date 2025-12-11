@@ -73,10 +73,10 @@ document.addEventListener('DOMContentLoaded', function() {
 Diffusion large language models (dLLMs) have emerged as a promising alternative to autoregressive (AR) LLMs.  Conceptually, they promise things AR models fundamentally struggle with:
 - Parallel decoding: update many tokens per forward pass instead of generating one token at a time.
 - Error correction: revise earlier positions during refinement.
-Random-order generation: tokens need not be produced strictly left-to-right.
+- Random-order generation: tokens need not be produced strictly left-to-right.
 
 In the best-case story, dLLMs could be "the future of LLM inference": faster decoding without giving up quality, plus extra capabilities that AR decoding doesn’t naturally offer.
-Recently, several diffusion large language models have been announced, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), which demonstrate impressive efficiency and performance and achieve extremely high throughput compared in certain settings - sometimes reported at 1000+ tokens per second in certain settings.
+Recently, several diffusion large language models have been announced, including [Mercury](https://arxiv.org/abs/2506.17298), [Gemini Diffusion](https://deepmind.google/models/gemini-diffusion/), and [Seed Diffusion](https://arxiv.org/abs/2508.02193), which demonstrate impressive efficiency and performance and achieve extremely high throughput - sometimes reported at 1000+ tokens per second in certain settings.
 
 But the open-source reality today is much more mixed. Many open diffusion models are still slow in common inference stacks, and they often trail similarly sized AR models in accuracy. For example, [LLaDA](https://arxiv.org/abs/2502.09992) and [Dream](https://arxiv.org/abs/2508.15487) reach only about 20 tokens per second, sometimes even slower than AR baselines if accounting for the number of refinement steps and cache behavior.
 
@@ -84,7 +84,7 @@ This raises a simple question that we think has been under-emphasized: If we eva
 
 ### Key finding: a fundamental accuracy-parallelism trade-off in dLLMs
 
-To answer this question, we conduct a comprehensive evaluation of SOTA dLLM methods (including [Fast-dLLM](https://arxiv.org/abs/2505.22618), [D2F](https://arxiv.org/abs/2508.09192), [dParllel](https://arxiv.org/abs/2509.26488), and [Fast-dLLM-v2](https://arxiv.org/abs/2509.26328)) on several widely used benchmarks in dLLM literature:
+To answer this question, we conduct a comprehensive evaluation of SOTA dLLM methods (including [Fast-dLLM](https://arxiv.org/abs/2505.22618), [D2F](https://arxiv.org/abs/2508.09192), [dParallel](https://arxiv.org/abs/2509.26488), and [Fast-dLLM-v2](https://arxiv.org/abs/2509.26328)) on several widely used benchmarks in dLLM literature:
 - Math / reasoning: [GSM8K-CoT (zero-shot CoT)](https://github.com/EleutherAI/lm-evaluation-harness/blob/main/lm_eval/tasks/gsm8k/gsm8k-cot-zeroshot.yaml), [MATH](https://openreview.net/forum?id=IFXTZERXdM7)
 - Coding: [HumanEval](https://arxiv.org/abs/2107.03374), [MBPP](https://arxiv.org/pdf/2108.07732)
 - Long-context reasoning: 5-shot [GSM8K](https://arxiv.org/abs/2110.14168) (prompt length ~1000)
@@ -125,7 +125,7 @@ Now here’s the part that surprised us the most when we looked at the data “w
 - AR + speculative decoding remains a very strong baseline when you measure the full trade-off.
 
 
-### Why we need a new metric?
+### Why do we need a new metric?
 
 At this point, we ran into a practical problem: the literature (and many blog discussions) tends to report diffusion progress using single, isolated metrics:
 - Efficiency-only metrics: tokens per second (TPS) or tokens per forward (TPF)
@@ -144,7 +144,7 @@ These insights motivate us to ***design a new unified metric*** – AUP, which w
 {{< justify >}}
 
 
-Most dLLM methods already expose certain knobs that trades off speed and quality. e.g., Fast-dLLM employs a logit “threshold”,where tokens with logits above this threshold can be decoded in parallel. By sweeping this threshold, we can adjust the quality–speed trade-off and obtain multiple parallelism–accuracy pairs, which can then be used to plot a curve of accuracy versus parallelism. We refer to this curve as the ***accuracy–parallelism curve*** (see the white curve in Figure 1 for an illustration), which characterizes the trade-off frontier dLLMs navigate.
+Most dLLM methods already expose certain knobs that trade off speed and quality. e.g., Fast-dLLM employs a logit “threshold”,where tokens with logits above this threshold can be decoded in parallel. By sweeping this threshold, we can adjust the quality–speed trade-off and obtain multiple parallelism–accuracy pairs, which can then be used to plot a curve of accuracy versus parallelism. We refer to this curve as the ***accuracy–parallelism curve*** (see the white curve in Figure 1 for an illustration), which characterizes the trade-off frontier dLLMs navigate.
 
 A natural first attempt is to summarize the curve by the area under the curve (AUC). But plain AUC has a serious failure mode: it can reward models that become extremely fast by letting accuracy collapse. The right side of the curve can contribute lots of area even if the model is not useful in practice. We want a metric that strongly prefers staying in a high-accuracy regime, and only then rewards higher parallelism.
 
@@ -189,7 +189,7 @@ For instance, in our experiments, our d3LLM-LLaDA model (which will be introduce
 
 ### What AUP reveals about Today’s landscape
 
-Once we scored existing methods using AUP, the landscape became clearer (see table xxx): Recent diffusion acceleration methods do improve AUP over vanilla diffusion baselines (e.g., vanilla Dream / LLaDA). This is real progress. However, state-of-the-art AR + speculative decoding methods still achieve the top overall AUP in our evaluation. We need methods that move the entire accuracy–parallelism curve up and to the right, not just push parallelism at the expense of accuracy. This is where d3LLM comes in: we treat AUP as the optimization target, and design a diffusion framework specifically to increase AUP.
+Once we scored existing methods using AUP, the landscape became clearer (see Table 1): Recent diffusion acceleration methods do improve AUP over vanilla diffusion baselines (e.g., vanilla Dream / LLaDA). This is real progress. However, state-of-the-art AR + speculative decoding methods still achieve the top overall AUP in our evaluation. We need methods that move the entire accuracy–parallelism curve up and to the right, not just push parallelism at the expense of accuracy. This is where d3LLM comes in: we treat AUP as the optimization target, and design a diffusion framework specifically to increase AUP.
 
 
 {{< /justify >}}
@@ -206,7 +206,7 @@ Once we scored existing methods using AUP, the landscape became clearer (see tab
 
 Following the guidance of the AUP score, we introduce ***d3LLM*** (*pseuDo-Distillated-Diffusion Large Language Model*), a novel framework for constructing dLLMs with both high accuracy and high parallelism. d3LLM combines two main ideas:
 1.	*Pseudo-trajectory distillation (training)*: Instead of distilling only from a teacher’s final answers, we distill from the teacher diffusion model’s decoding order (the order in which it unmasks tokens). This provides intermediate supervision about which tokens can be safely decoded earlier, which directly improves parallelism. we design a ***curriculum learning strategy*** that gradually increases the masking ratio from easier scenarios (few masks) to more difficult ones (many masks) during training, resulting in a more robust distillation process.
-2.	*Multi-block decoding with KV-cache refresh (inference)*: At inference time, we decode multiple blocks in parallel based on confidence (entropy), and we introduce a KV-cache refresh mechanism to prevent quality degradation that can occur with aggressive multi-block parallelism.
+2.	*Multi-block decoding with KV-cache refresh (inference)*: At inference time, we decode multiple blocks in parallel based on confidence (entropy), and we introduce a ***KV-cache refresh mechanism*** to prevent quality degradation that can occur with aggressive multi-block parallelism.
 
 
 Together, these techniques enable d3LLM to strike a balance between accuracy and parallelism and to obtain the highest AUP score among all dLLMs.
@@ -219,8 +219,6 @@ Together, these techniques enable d3LLM to strike a balance between accuracy and
 ### (i) Pseudo-Trajectory-based Distillation Recipe
 
 {{< image src="img/fig_distillation.png" alt="Distillation Illustration" width="100%" title="Figure 3. Illustration of our pseudo-trajectory-based distillation recipe.">}}
-
-We first introduce our **pseudo-trajectory-based distillation** recipe with curriculum learning, which is crucial for enhancing parallelism while maintaining model accuracy. This advanced distillation recipe aims at improving decoding efficiency and alignment with the teacher model's generation pattern. Specifically, it consists of the following key techniques:
 
 {{< /justify >}}
 
@@ -261,7 +259,7 @@ We first introduce our **pseudo-trajectory-based distillation** recipe with curr
 
     <div style="margin-top: 2mm;"></div>
 
-  We also employ a _progressive window sizing_ as another curriculum learning technique: instead of fixing the decoding window length \$k\$, we gradually increase it from 16 to 32 during the training process. This allows the model to adapt to increasingly larger context spans, facilitating smoother distillation process and stable token generation while maintaining accuracy. This approach leads to an additional **8% improvement in TPF** compared to a constant window size.
+  We also employ a _progressive window sizing_ as another curriculum learning technique: instead of fixing the decoding window length \$k\$, we gradually increase it from 16 to 32 during the training process. This allows the model to adapt to increasingly larger context spans, facilitating a smoother distillation process and stable token generation while maintaining accuracy. This approach leads to an additional **8%** improvement in TPF compared to a constant window size.
 
 {{< /justify >}}
 
@@ -276,7 +274,7 @@ We first introduce our **pseudo-trajectory-based distillation** recipe with curr
 {{< image src="img/fig_decoding.png" alt="Decoding Illustration" width="100%" title="Figure 4. Illustration of our multi-block decoding strategy with KV-cache and refresh.">}}
 
 
-In addition to the novel distillation recipe, we also introduce an efficient decoding mechanism tailored for dLLM, designed to maximize parallelism while maintaining generation quality. Our decoding strategy includes the following components:
+In addition to the distillation recipe, we also introduce an efficient decoding mechanism tailored for d3LLM.
 
 {{< /justify >}}
 
@@ -290,7 +288,7 @@ In addition to the novel distillation recipe, we also introduce an efficient dec
   
   <div style="margin-top: 2mm;"></div>
 
-  Each block can be in one of five states: **Inactive**, **Activated**, **Fully-Activated**, **Completed but Stabilizing**, and **Completed**. We create a new *Activated* block when its preceding block reaches 10% completion and employ a conservative decoding strategy for this block, generating tokens only when they meet the entropy threshold. When the preceding block reaches 95% completion, the *Activated* block transitions to a *Fully-Activated* state, where a more aggressive strategy is used by decoding at least one token per forward pass regardless of the threshold. Once all tokens in a block are unmasked, the block enters the *Completed but Stabilizing* state, during which we perform forward passes without using the KV cache and refresh previous caches. After 1-2 rounds, the block becomes *Completed*, and we store its KV cache. In addition, we apply a periodic-refresh strategy that updates the KV cache every few rounds. This multi-block decoding strategy increases TPF by **20%**, and the KV-refresh mechanism helps maintain the accuracy.
+  Each block can be in one of five states: `Inactive`, `Activated`, `Fully-Activated`, `Completed but Stabilizing`, and `Completed`. We create a new `Activated` block when its preceding block reaches 10% completion and employ a conservative decoding strategy for this block, generating tokens only when they meet the entropy threshold. When the preceding block reaches 95% completion, the `Activated` block transitions to a `Fully-Activated` state, where a more aggressive strategy is used by decoding at least one token per forward pass, regardless of the threshold. Once all tokens in a block are unmasked, the block enters the `Completed but Stabilizing` state, during which we perform forward passes without using the KV cache and refresh previous caches. After 1-2 rounds, the block becomes `Completed`, and we store its KV cache. In addition, we apply a periodic-refresh strategy that updates the KV cache every few rounds. This multi-block decoding strategy increases TPF by **20%**, and the KV-refresh mechanism helps maintain the accuracy.
 
 {{< /justify >}}
 
@@ -310,7 +308,7 @@ In addition to the novel distillation recipe, we also introduce an efficient dec
 
     <div style="margin-top: 2mm;"></div>
 
-  We implement an **early stopping mechanism** that halts decoding once the end-of-sequence (EOS) token is generated. This simple yet effective optimization reduces unnecessary computation and yields a **5% improvement in TPF** on average.
+  We implement an *early stopping mechanism* that halts decoding once the end-of-sequence (EOS) token is generated. This simple yet effective optimization reduces unnecessary computation and yields a **5%** improvement in TPF on average.
 
 {{< /justify >}}
 
