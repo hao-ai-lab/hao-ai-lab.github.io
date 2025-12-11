@@ -2,8 +2,8 @@
 title = "d3LLM"
 description = "Ultra-Fast Diffusion LLM 🚀"
 date = 2025-12-10T12:00:00-08:00
-authors = ["Yu-Yang Qian", "Junda Su", "Lanxiang Hu", "Peiyuan Zhang", "Peng Zhao", "Hao Zhang"]
-author = "Yu-Yang Qian, Junda Su, Lanxiang Hu, Peiyuan Zhang, Peng Zhao, Hao Zhang"
+authors = ["Yu-Yang Qian", "Junda Su", "Lanxiang Hu", "Peiyuan Zhang", "Zhijie Deng", "Peng Zhao", "Hao Zhang"]
+author = "Yu-Yang Qian, Junda Su, Lanxiang Hu, Peiyuan Zhang, Zhijie Deng, Peng Zhao, Hao Zhang"
 ShowReadingTime = true
 draft = false 
 urlblog = "d3LLM"

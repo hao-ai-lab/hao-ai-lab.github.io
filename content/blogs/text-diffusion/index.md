@@ -1,8 +1,8 @@
 +++
 title = "AUP: when Accuracy Meets Parallelism in Diffusion Language Models"
 date = 2025-12-09T12:00:00-08:00
-authors = ["Yu-Yang Qian", "Junda Su", "Lanxiang Hu", "Peiyuan Zhang", "Peng Zhao", "Hao Zhang"]
-author = "Yu-Yang Qian, Junda Su, Lanxiang Hu, Peiyuan Zhang, Peng Zhao, Hao Zhang"
+authors = ["Yu-Yang Qian", "Junda Su", "Lanxiang Hu", "Peiyuan Zhang", "Zhijie Deng", "Peng Zhao", "Hao Zhang"]
+author = "Yu-Yang Qian, Junda Su, Lanxiang Hu, Peiyuan Zhang, Zhijie Deng, Peng Zhao, Hao Zhang"
 ShowReadingTime = true
 draft = false
 [socialIcons]
@@ -93,7 +93,7 @@ We measure two quantities for each model and decoding configuration:
 - Accuracy (solve rate / pass@1 depending on the benchmark)
 - Parallelism, measured by tokens per forward pass (TPF)
 
-Why TPF? Because it captures the algorithmic “how many tokens do I advance per model evaluation” effect that diffusion-style decoding and speculative methods aim to improve. (We'll come back to why this in [Section AUP](#aup-considering-both-performance-and-parallelism)). Besides, we also report the average AUP score (which will be introduced later) and sorted previous dLLMs based on AUP. 
+Why TPF? Because it captures the algorithmic “how many tokens do I advance per model evaluation” effect that diffusion-style decoding and speculative methods aim to improve. Besides, we also report the average AUP score (We'll come back to this in [Section AUP](#aup-considering-both-performance-and-parallelism)) and sorted previous dLLMs based on AUP. 
 The results are summarized in the table below.
 
 {{< /justify >}}
@@ -122,7 +122,7 @@ Now here’s the part that surprised us the most when we looked at the data “w
 ***When judged jointly on speed and accuracy, strong AR models combined with speculative decoding in fact deliver the best overall trade-offs in our study. (see row 1 of Table 1).*** For example, state-of-the-art speculative decoding (e.g., EAGLE-3 on LLaMA-3.1 8B) increases effective parallelism while remaining (in principle) lossless relative to the target AR model. Under this joint view, diffusion systems do not currently dominate. We clarify that this does not mean diffusion is “bad”:
 - Diffusion decoding is genuinely parallel and can be very fast.
 - But open diffusion systems today pay for speed with accuracy, and the cost is often non-trivial.
-- AR + speculative decoding remains a very strong baseline when you measure the full trade-off.
+- AR + speculative decoding remains a very strong baseline when you measure the full trade-off (although the drafting overhead is non-negligible and may increase system complexity).
 
 
 ### Why do we need a new metric?
