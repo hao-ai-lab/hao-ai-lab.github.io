@@ -145,7 +145,7 @@ These insights motivate us to ***design a new unified metric*** – **AUP**, whi
 {{< justify >}}
 
 
-Most dLLM methods already expose certain knobs that trade off speed and quality. e.g., Fast-dLLM employs a logit “threshold”,where tokens with logits above this threshold can be decoded in parallel. By sweeping this threshold, we can adjust the quality–speed trade-off and obtain multiple parallelism–accuracy pairs, which can then be used to plot a curve of accuracy versus parallelism. We refer to this curve as the ***accuracy–parallelism curve*** (see the white curve in Figure 1 for an illustration), which characterizes the trade-off frontier dLLMs navigate.
+Most dLLM methods already expose certain knobs that trade off speed and quality. e.g., Fast-dLLM employs a logit “threshold”, where tokens with logits above this threshold can be decoded in parallel. By sweeping this threshold, we can adjust the quality–speed trade-off and obtain multiple parallelism–accuracy pairs, which can then be used to plot a curve of accuracy versus parallelism. We refer to this curve as the ***accuracy–parallelism curve*** (see the white curve in Figure 1 for an illustration), which characterizes the trade-off frontier dLLMs navigate.
 
 A natural first attempt is to summarize the curve by the area under the curve (AUC). But plain AUC has a serious failure mode: it can reward models that become extremely fast by letting accuracy collapse. The right side of the curve can contribute lots of area even if the model is not useful in practice. We want a metric that strongly prefers staying in a high-accuracy regime, and only then rewards higher parallelism.
 
@@ -205,7 +205,7 @@ Once we scored existing methods using AUP, the landscape became clearer (see Tab
 
 {{< justify >}}
 
-Following the guidance of the AUP score, we introduce ***[d3LLM](https://github.com/hao-ai-lab/d3LLM)*** (*pseuDo-Distillated-Diffusion Large Language Model*), a novel framework for constructing dLLMs with both high accuracy and high parallelism. d3LLM combines two main ideas:
+Following the guidance of the AUP score, we introduce ***[d3LLM](https://github.com/hao-ai-lab/d3LLM)*** [(*pseuDo-Distillated-Diffusion Large Language Model*)](https://github.com/hao-ai-lab/d3LLM), a novel framework for constructing dLLMs with both high accuracy and high parallelism. d3LLM combines two main ideas:
 1.	*Pseudo-trajectory distillation (training)*: Instead of distilling only from a teacher’s final answers, we distill from the teacher diffusion model’s decoding order (the order in which it unmasks tokens). This provides intermediate supervision about which tokens can be safely decoded earlier, which directly improves parallelism. we design a ***curriculum learning strategy*** that gradually increases the masking ratio from easier scenarios (few masks) to more difficult ones (many masks) during training, resulting in a more robust distillation process.
 2.	*Multi-block decoding with KV-cache refresh (inference)*: At inference time, we decode multiple blocks in parallel based on confidence (entropy), and we introduce a ***KV-cache refresh mechanism*** to prevent quality degradation that can occur with aggressive multi-block parallelism.
 
@@ -334,13 +334,13 @@ For the **LLaDA-based models**, we compare our *d3LLM-LLaDA* with _vanilla LLaDA
 
 <figure>
 <div class="responsive-img-grid">
-  <img src="img/data_llada_aup_curve_gsm8k_cot.png" alt="LLaDA GSM8K-CoT" data-width="30.2">
-  <img src="img/data_llada_aup_curve_humaneval.png" alt="LLaDA HumanEval" data-width="33">
-  <img src="img/data_llada_aup_curve_mbpp.png" alt="LLaDA MBPP" data-width="31.2">
+  <img src="img/data_llada_aup_curve_GSM8K-CoT.png" alt="LLaDA GSM8K-CoT" data-width="31">
+  <img src="img/data_llada_aup_curve_HumanEval.png" alt="LLaDA HumanEval" data-width="31.7">
+  <img src="img/data_llada_aup_curve_MBPP.png" alt="LLaDA MBPP" data-width="29.8">
 </div>
 <div class="responsive-img-grid" style="margin-top: 20px;">
-  <img src="img/data_llada_aup_curve_math.png" alt="LLaDA MATH" data-width="30">
-  <img src="img/data_llada_aup_curve_long-gsm8k.png" alt="LLaDA Long-GSM8K" data-width="30.2">
+  <img src="img/data_llada_aup_curve_MATH.png" alt="LLaDA MATH" data-width="30.2">
+  <img src="img/data_llada_aup_curve_Long-GSM8K.png" alt="LLaDA Long-GSM8K" data-width="30.2">
 </div>
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 5: AUP curves for LLaDA-based models across five benchmark tasks (GSM8K-CoT, HumanEval, MBPP, MATH, and Long-GSM8K).</figcaption>
 </figure>
@@ -348,7 +348,7 @@ For the **LLaDA-based models**, we compare our *d3LLM-LLaDA* with _vanilla LLaDA
 <figure>
 <div class="responsive-img-grid">
   <img src="img/data_llada_aup_histogram.png" alt="LLaDA AUP Histogram" data-width="51">
-  <img src="img/data_llada_aup_radar.png" alt="LLaDA AUP Radar" data-width="40.5">
+  <img src="img/data_llada_aup_radar.png" alt="LLaDA AUP Radar" data-width="40.6">
 </div>
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 6: AUP scores and radar chart comparing different LLaDA-based methods.</figcaption>
 </figure>
@@ -361,13 +361,13 @@ For the **Dream-based models**, we compare our *d3LLM-Dream* with _vanilla Dream
 
 <figure>
 <div class="responsive-img-grid">
-  <img src="img/data_dream_aup_curve_gsm8k_cot.png" alt="Dream GSM8K-CoT" data-width="29.8">
-  <img src="img/data_dream_aup_curve_humaneval_instruct.png" alt="Dream HumanEval_Instruct" data-width="30.5">
-  <img src="img/data_dream_aup_curve_mbpp_instruct.png" alt="Dream MBPP_Instruct" data-width="30.2">
+  <img src="img/data_dream_aup_curve_GSM8K-CoT.png" alt="Dream GSM8K-CoT" data-width="32.8">
+  <img src="img/data_dream_aup_curve_HumanEval-Instruct.png" alt="Dream HumanEval_Instruct" data-width="30.5">
+  <img src="img/data_dream_aup_curve_MBPP-Instruct.png" alt="Dream MBPP_Instruct" data-width="30.2">
 </div>
 <div class="responsive-img-grid" style="margin-top: 20px;">
-  <img src="img/data_dream_aup_curve_math.png" alt="Dream MATH" data-width="31.2">
-  <img src="img/data_dream_aup_curve_long-gsm8k.png" alt="Dream Long-GSM8K" data-width="30.2">
+  <img src="img/data_dream_aup_curve_MATH.png" alt="Dream MATH" data-width="29.4">
+  <img src="img/data_dream_aup_curve_Long-GSM8K.png" alt="Dream Long-GSM8K" data-width="31.2">
 </div>
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 7: AUP curves for Dream-based models across five benchmark tasks (GSM8K-CoT, HumanEval_Instruct, MBPP_Instruct, MATH, and Long-GSM8K).</figcaption>
 </figure>
@@ -402,17 +402,17 @@ The experimental results also validate the reliability of our AUP metric. For ex
 
 <figure>
 <div class="responsive-img-grid">
-  <img src="img/data_dream_coder_aup_curve_humaneval.png" alt="Dream-Coder HumanEval" data-width="22.4">
-  <img src="img/data_dream_coder_aup_curve_humaneval+.png" alt="Dream-Coder HumanEval+" data-width="22.4">
-  <img src="img/data_dream_coder_aup_curve_mbpp.png" alt="Dream-Coder MBPP" data-width="25.4">
-  <img src="img/data_dream_coder_aup_curve_mbpp+.png" alt="Dream-Coder MBPP+" data-width="22.7">
+  <img src="img/data_dream_coder_aup_curve_HumanEval.png" alt="Dream-Coder HumanEval" data-width="22.8">
+  <img src="img/data_dream_coder_aup_curve_HumanEval+.png" alt="Dream-Coder HumanEval+" data-width="22.8">
+  <img src="img/data_dream_coder_aup_curve_MBPP.png" alt="Dream-Coder MBPP" data-width="23.4">
+  <img src="img/data_dream_coder_aup_curve_MBPP+.png" alt="Dream-Coder MBPP+" data-width="22.9">
 </div>
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 9: Evaluation for Coders across four coding benchmarks (HumanEval, HumanEval+, MBPP, MBPP+).</figcaption>
 </figure>
 
 <figure>
 <div class="responsive-img-grid">
-  <img src="img/data_dream_coder_aup_histogram.png" alt="Dream-Coder AUP Histogram" data-width="53">
+  <img src="img/data_dream_coder_aup_histogram.png" alt="Dream-Coder AUP Histogram" data-width="55.4">
   <img src="img/data_dream_coder_aup_radar.png" alt="Dream-Coder AUP Radar" data-width="40.6">
 </div>
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 10: AUP scores and radar chart comparing different Coder-based methods.</figcaption>
