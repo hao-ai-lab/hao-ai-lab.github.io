@@ -58,10 +58,6 @@
         background-color: #2a2a2a;
     }
     
-    /* Bold divider line after top 2 methods */
-    .leaderboard-table tbody tr.divider-row {
-        border-bottom: 3px solid #4dcdc4;
-    }
     
     .leaderboard-table td {
         padding: 16px 12px;
@@ -70,18 +66,6 @@
         color: #e0e0e0;
     }
     
-    .leaderboard-table .type-cell {
-        font-weight: 700;
-        font-size: 16px;
-        color: #ffffff;
-        background-color: #2a2a2a;
-        width: 80px;
-        min-width: 80px;
-        max-width: 80px;
-        vertical-align: middle;
-        text-align: center;
-        border-right: 1px solid #333;
-    }
     
     .leaderboard-table .rank-cell {
         font-weight: 700;
@@ -102,6 +86,32 @@
     
     .leaderboard-table .model-cell.top-method {
         font-weight: 700 !important;
+    }
+    
+    .leaderboard-table .badge-cell {
+        width: 45px;
+        min-width: 45px;
+        max-width: 45px;
+        text-align: center;
+        padding: 16px 4px;
+    }
+    
+    .model-badge {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 500;
+        color: white;
+        padding: 2px 5px;
+        border-radius: 8px;
+        line-height: 1.2;
+    }
+    
+    .model-badge.ar {
+        background-color: #B93413;
+    }
+    
+    .model-badge.dllm {
+        background-color: #193D3A;
     }
     
     .leaderboard-table .metric-cell {
@@ -218,12 +228,6 @@
             font-size: 16px;
         }
         
-        .leaderboard-table .type-cell {
-            width: 60px;
-            min-width: 60px;
-            max-width: 60px;
-            font-size: 13px;
-        }
         
         .leaderboard-table .rank-cell {
             width: 60px;
@@ -231,9 +235,21 @@
             max-width: 60px;
         }
         
+        .leaderboard-table .badge-cell {
+            width: 38px;
+            min-width: 38px;
+            max-width: 38px;
+            padding: 8px 2px;
+        }
+        
         .leaderboard-table .model-cell {
             min-width: 120px;
             max-width: 140px;
+        }
+        
+        .model-badge {
+            font-size: 7px;
+            padding: 1px 4px;
         }
         
         .leaderboard-table .metric-cell {
@@ -256,8 +272,8 @@
         <table class="leaderboard-table" id="leaderboard-previous">
         <thead>
             <tr>
+                <th>Rank</th>
                 <th>Type</th>
-                <th>Index</th>
                 <th>Model</th>
                 <th>GSM8K-CoT</th>
                 <th>MATH</th>
@@ -279,15 +295,27 @@
         let allData = {};
         
         // Custom order for models - MODIFY THIS ARRAY TO CHANGE THE ORDER
+        const AR_or_dLLM = [
+            'AR', 
+            'dLLM',
+            'dLLM',
+            'dLLM',
+            'dLLM',
+            'dLLM',
+            'dLLM',
+            'AR',
+            'dLLM',
+            'dLLM',
+        ];
         const customOrder = [
             'EAGLE-3 (LLaMA-3.1)',
-            'Qwen-2.5-7B-it',
             'dParallel-LLaDA',
             'dParallel-Dream',
             'Fast-dLLM-v2-7B',
             'Fast-dLLM-LLaDA',
             'D2F',
             'Fast-dLLM-Dream',
+            'Qwen-2.5-7B-it',
             'Dream',
             'LLaDA',
         ];
@@ -488,26 +516,15 @@
                 const isTopMethod = rank <= 2;
                 const row = document.createElement('tr');
                 
-                // Add divider class after the second row
-                if (rank === 2) {
-                    row.classList.add('divider-row');
-                }
-                
-                // Add Type cell with rowspan for first row of each type
-                let typeCellHTML = '';
-                if (rank === 1) {
-                    // First AR row - spans 2 rows
-                    typeCellHTML = `<td class="type-cell" rowspan="2">AR</td>`;
-                } else if (rank === 3) {
-                    // First dLLM row - spans remaining rows (8 rows for dLLM)
-                    typeCellHTML = `<td class="type-cell" rowspan="8">dLLM</td>`;
-                }
-                
                 const modelCellClass = isTopMethod ? 'model-cell top-method' : 'model-cell';
                 
+                // Get the type (AR or dLLM) for this model
+                const modelType = AR_or_dLLM[index] || 'dLLM';
+                const badgeClass = modelType === 'AR' ? 'ar' : 'dllm';
+                
                 row.innerHTML = `
-                    ${typeCellHTML}
                     <td class="rank-cell">${getRankDisplay(rank)}</td>
+                    <td class="badge-cell"><span class="model-badge ${badgeClass}">${modelType}</span></td>
                     <td class="${modelCellClass}">${model.name}</td>
                     <td class="metric-cell">${formatMetricCell(model.metrics.gsm8k_cot, isTopMethod)}</td>
                     <td class="metric-cell">${formatMetricCell(model.metrics.math, isTopMethod)}</td>
