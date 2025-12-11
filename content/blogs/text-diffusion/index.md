@@ -94,7 +94,7 @@ We measure two quantities for each model and decoding configuration:
 - Accuracy (solve rate / pass@1 depending on the benchmark)
 - Parallelism, measured by tokens per forward pass (**TPF**)
 
-Why TPF? Because it captures the algorithmic “how many tokens do I advance per model evaluation” effect that diffusion-style decoding and speculative methods aim to improve (We'll come back to this in [Section AUP](#aup-considering-both-performance-and-parallelism)). 
+Why TPF? Because it captures the algorithmic “how many tokens do I advance per model evaluation” effect that diffusion-style decoding and speculative methods aim to improve (We'll come back to this in [Section AUP](#aup-considering-both-accuracy-and-parallelism)). 
 The results are summarized in the table below.
 
 {{< /justify >}}
@@ -479,7 +479,7 @@ We present the leaderboard of diffusion LLMs, using the AUP score as the evaluat
 
 {{< justify >}}
 
-Our [d3LLM-Coder](https://huggingface.co/d3LLM/d3LLM_Dream_Coder) achieves higher TPF and maintains the highest AUP score among all diffusion LLMs.
+Our d3LLM-Coder achieves higher TPF and maintains the highest AUP score among all diffusion LLMs.
 Notably, the state-of-the-art speculative decoding method, EAGLE-3 (with LLaMA-Instruct 3.1 8B), attains the top overall AUP score. This is expected, as speculative decoding includes an additional verification step and therefore does not suffer from accuracy degradation as in dLLMs under high parallelism. Moreover, our evaluation does not constrain total FLOPs, and speculative decoding methods may take more FLOPs than diffusion-based approaches. Nevertheless, our d3LLM framework substantially narrows the gap between diffusion-based models and SOTA speculative decoding methods, offering valuable insights for future research directions.
 
 
