@@ -322,8 +322,6 @@ Our ablation study training models on a 10k subset of data shows that linear pro
 | Linear Progressive  | 84.7  | **0.48**   |
 | Reverse Progressive | 82.3  | 0.62       |
 
-{{< image src="" alt="" width="100%" title="Table 2: Ablation study on different noise schedules with 10k training examples.">}}
-
 </div>
 
 {{< image src="" alt="" width="100%" title="Table 2: Ablation study on different noise schedules with 10k training examples.">}}
