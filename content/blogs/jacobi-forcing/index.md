@@ -124,6 +124,8 @@ Jacobi Forcing pushes this idea further: we keep the original causal attention a
 | **dLLMs**            | Non-causal    | 😃   | 💰/💰💰💰      | 😃 | 💔 | ⚡️ | 🥉/🥈 |
 | **Jacobi Forcing**   | Causal                 | 😃   | 💰 | 😃 |  😃   |  ⚡️⚡️⚡️    | 🥈/🏅️   |
 
+{{< image src="" alt="" width="100%" title="Table 1: Qualitative comparison of parallel decoding methods.">}}
+
 
 
 ## Jacobi Forcing
@@ -320,6 +322,8 @@ Our ablation study training models on a 10k subset of data shows that linear pro
 | Linear Progressive  | 84.7  | **0.48**   |
 | Reverse Progressive | 82.3  | 0.62       |
 
+{{< image src="" alt="" width="100%" title="Table 2: Ablation study on different noise schedules with 10k training examples.">}}
+
 </div>
 
 
@@ -371,6 +375,10 @@ Compared to **CLLM-style parallel decoders at the ssame 7B scales**, Jacobi Forc
 |       | CLLM*          | causal parallel    | $2.1\times$     | 2.3  | 86.8   | 92.2%      |
 |       | **Jacobi Forcing model**        | causal parallel | $3.5\times$    | 3.7  | 146.1  | 91.4% |
 |       | **Jacobi Forcing model (MR)**   |causal parallel | **$3.7\times$** | 4.0  | 154.9 | 91.4% |
+
+
+{{< image src="" alt="" width="100%" title="Table 3: Generation quality and efficiency comparison among Jacobi Forcing model, baseline SD and baseline dLLM methods.">}}
+
 
 {{< justify >}}
 <small><em>Footnote<sup>*</sup>:</em> Here we report the strongest checkpoints released by the authors; in principle EAGLE-3 and HASS are lossless in comparison with greedy AR checkpoints if they were trained with the Qwen2.5-7B backbone. Note that SD has a worse acceptance length (TPF) to TPS conversion ratio due to other overheads in the algorithm like token drafting using draft head, tree-like verification overhead, feature merging from different layers etc. </small>
