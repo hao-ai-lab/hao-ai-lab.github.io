@@ -32,19 +32,15 @@ We also develop and maintain open-source models, evaluations, and systems to dem
 
 <!-- <div class="news-year">2025</div> -->
 
-<<<<<<< HEAD
 {{< newsEntry date="2025/09" >}}
 🎉🎉 In 2025, We have 3 ICLR, 1 ICML, 1 ACL, 1 TPAMI, and 3 NeurIPS papers. Kudos to our lab members for another productive year!
 {{< /newsEntry >}}
 
 
-=======
->>>>>>> 36e828c (update website)
 {{< newsEntry date="2025/06" >}}
 Hao was awarded with [Google ML and Systems Junior Faculty Award](https://datascience.ucsd.edu/hdsi-assistant-professor-hao-zhang-receives-google-junior-faculty-award/)!
 {{< /newsEntry >}}
 
-<<<<<<< HEAD
 
 {{< newsEntry date="2025/06" >}}
 Hao was norminated [2024 MIT Technology Review Innovators Under 35 (TR35), China List](https://www.innovatorsunder35.com/the-list/hao-zhang/)
@@ -55,8 +51,6 @@ AMD gifted our lab with a MI355x node!
 {{< /newsEntry >}}
 
 
-=======
->>>>>>> 36e828c (update website)
 {{< newsEntry date="2025/04" >}}
 NVIDIA gifted us a DGX B200! See [our recent post](https://x.com/haoailab/status/1914402516420440072) here.
 {{< /newsEntry >}}

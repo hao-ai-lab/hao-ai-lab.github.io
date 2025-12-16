@@ -1,6 +1,6 @@
 +++
 title = "JacobiForcing"
-date = 2025-12-14T12:00:00-08:00
+date = 2025-12-15T12:00:00-08:00
 authors = ["Lanxiang Hu*", "Siqi Kou*", "Yichao Fu", "Samyam Rajbhandari", "Tajana Rosing", "Yuxiong He", "Zhijie Deng", "Hao Zhang"]
 author = "Lanxiang Hu*, Siqi Kou*, Yichao Fu, Samyam Rajbhandari, Tajana Rosing, Yuxiong He, Zhijie Deng, Hao Zhang"
 ShowReadingTime = true
@@ -21,7 +21,7 @@ github = "hao-ai-lab/JacobiForcing"
 +++
 
 
-{{< socialBadges arxiv-index="xxxx" github="hao-ai-lab/JacobiForcing">}}
+{{< socialBadges arxiv-index="xxxx" github="hao-ai-lab/JacobiForcing" huggingface="https://huggingface.co/JacobiForcing">}}
 
 
 {{< justify >}}
