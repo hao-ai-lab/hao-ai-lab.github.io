@@ -118,11 +118,11 @@ Jacobi Forcing pushes this idea further: we keep the original causal attention a
 
 
 | Method        | Attention      | Parallelism                      | Training Cost | Single-model Decoding (no draft–verifier)   | Efficient KV Reuse        | Real Speedup | Generation Quality         |
-|----------------------|------------------------|-----------------------------------------------|------------------------------------|-------------------------------------------|----------------------|-------------------------------|---------------------------|
-| **AR**        | Causal | None                          | None                                            | No   |  Yes               |No            | Lossless            |
-| **SD** | Causal                 | Yes             | No to Small: Draft model FT        | $\textcolor{red}{\text{No}}$ | Yes     | $<3.5\times$ | Lossless            | 
-| **dLLMs**            | Non-causal    | Yes   | High: from scratch or heavy diffusion FT      | Yes | $\textcolor{red}{\text{No}}$ | $< 3\times$ | Low to near-AR quality |
-| **Jacobi Forcing**   | Causal                 | Yes   | Small: noise-conditioned FT on trajectories | $\textcolor{green}{\text{Yes}}$ |  $\textcolor{green}{\text{Yes}}$   |  $\sim3-4\times$    | near-AR quality   |
+|:----------------------:|:------------------------:|:-----------------------------------------------:|:------------------------------------:|:-------------------------------------------:|:----------------------:|:-------------------------------:|:---------------------------:|
+| **AR**        | Causal | 💔                          | 🆓                                            | 😃   |  😃               | 🐢            | 🏅️            |
+| **SD** | Causal                 | 😃             | 🆓/💰        | 💔 | 😃     | ⚡️/⚡️⚡️ |      🏅️       | 
+| **dLLMs**            | Non-causal    | 😃   | 💰/💰💰💰      | 😃 | 💔 | ⚡️ | 🥉/🥈 |
+| **Jacobi Forcing**   | Causal                 | 😃   | 💰 | 😃 |  😃   |  ⚡️⚡️⚡️    | 🥈/🏅️   |
 
 
 
