@@ -326,6 +326,8 @@ Our ablation study training models on a 10k subset of data shows that linear pro
 
 </div>
 
+{{< image src="" alt="" width="100%" title="Table 2: Ablation study on different noise schedules with 10k training examples.">}}
+
 
 
 ## Experiments
