@@ -52,12 +52,12 @@ Table 1 (row 2 and row 3) summarizes their pros and cons. At a high-level, dLLMs
 
 
 
-| Method        | Attention      | Parallelism                      | Training Cost | Single-model Decoding (no draft–verifier)   | Efficient KV Reuse        | Real Speedup | Generation Quality         |
-|:----------------------:|:------------------------:|:-----------------------------------------------:|:------------------------------------:|:-------------------------------------------:|:----------------------:|:-------------------------------:|:---------------------------:|
-| **AR**        | Causal | ❌                          | 🆓                                            | ✅   |  😃               | 🐢            | Lossless            |
-| **SD**        | Causal                 | ✅             | 💰        | ❌  | 😃     | ⚡️⚡️ |      Lossless       | 
-| **dLLMs**            | Non-causal    | ✅   | 💰💰💰      | ✅ | 💔 | ⚡️ | Low |
-| **Jacobi Forcing**   | Causal                 | ✅   | 💰 | ✅ |  😃   |  ⚡️⚡️⚡️    | High   |
+| Method        | Attention      | Parallelism                      | Training Cost | Single-model Decoding (no draft–verifier)         | Real Speedup | Generation Quality         |
+|:----------------------:|:------------------------:|:-----------------------------------------------:|:------------------------------------:|:-------------------------------------------:|:-------------------------------:|:---------------------------:|
+| **AR**             | Causal      | ❌     | 🆓        |  ✅    | 🐢    |   Lossless   |
+| **SD**             | Causal      | ✅     | 💰       |   ❌    |  ⚡️⚡️   |   Lossless   | 
+| **dLLMs**          | Non-causal  | ✅     | 💰💰💰    |   ✅   |   ⚡️    |   Low        |
+| **Jacobi Forcing** | Causal      | ✅     | 💰       |   ✅   |   ⚡️⚡️⚡️  |   High       |
 
 {{< image src="" alt="" width="100%" title="Table 1: Qualitative comparison of parallel decoding methods.">}}
 
@@ -96,9 +96,9 @@ As a result, end-to-end speedups therefore often plateau at around $2-3\times$ e
 
 {{< justify >}}
 Table 1 summarizes the trade-offs of all three families discussed above: 
-- **Standard AR decoding**: simple, high quality, but strictly serial.
-- **SD**: keeps AR quality but adds draft overhead and system complexity.
-- **dLLMs**: strongly parallel but require expensive non-causal post-training and custom infrastructure, and often lower quality.
+1. **Standard AR decoding**: simple, high quality, but strictly serial.
+2. **SD**: keeps AR quality but adds draft overhead and system complexity.
+3. **dLLMs**: strongly parallel but require expensive non-causal post-training and custom infrastructure, and often lower quality.
 {{< /justify >}}
 
 {{< justify >}}
@@ -118,20 +118,18 @@ Jacobi Forcing pushes this idea further: we keep the original causal attention a
 ### Noise schedule and Training Sequence Preparation
 
 
-
 {{< justify >}}
-Training with Jacobi Forcing starts from collecting Jacobi trajectories of the base AR model. For each prompt: (1) for all $N$ blocks of size $n$ in its generation, the base model runs Jacobi decoding on each block $i \in \{N\}$ to obtain intermediate states and the final fixed point that matches greedy AR decoding. (2) Treat each intermediate state as a “noisy” view of the fixed point, with an associated noise ratio $s_i^k (\text{number of unconverged tokens}/n)$ for the $k$-th Jacobi iteration.
+Jacobi Forcing starts by collecting Jacobi trajectories from a base AR model. The key intuition is to treat intermediate Jacobi states as “noisy views” of the final fixed point.
 
-To make learning feasible for large blocks, Jacobi Forcing packs the training sequences the following way and uses a **progressive noise schedule**:
+To make this learnable (especially for large blocks), it uses a progressive noise schedule within each packed training sequence:
 
-- We split the response into $N$ blocks of size $n$ and assign each block a target noise ratio $t_i \in [0, 1]$ taken from a small set $W$ denoted to the noise schedule, with a linear progressive noise schedule we have $W  = \{0, 1/w, 2/w, \dots, (w-1)/w\}$ (for some window size $w$). Noise ratios could repeat cyclically along the sequence: $t_i = W[i \bmod w]$.
+1. Split the response into blocks and assign each block a target noise level.
 
-- For each block’s Jacobi trajectory, we then find the intermediate state whose noise ratio $s_i^{(k)}$ is closest to $t_i$, and use that state as the **noisy block** for block $i$, with its fixed point as the **clean block**.
+2. For each block, pick the Jacobi intermediate state whose “how unconverged it is” best matches that target noise level.
 
-- Arrange time steps ${t_i}$ in short cyclic windows (from nearly clean to heavily noised), so a single packed training sequence always contains a structured mixture of easy (low-noise) and hard (high-noise) denoising subproblems across blocks, rather than long stretches of uniformly high noise.
+3. Pack blocks so that **noise levels cycle from easy to hard**, instead of creating long stretches of fully corrupted tokens.
 
-
-Progressive noise schedule shortens long runs of corrupted tokens and keeps each denoising problem local and learnable, especially when scaling the block size, while still covering a rich range of noise levels within every packed sequence as illustrated in Video 1.
+This keeps denoising local and learnable, while still covering a wide range of noise levels inside every sequence (see Video 1).
 {{< /justify >}}
 
 {{<youtube KQUiKdxHugs>}}
@@ -140,54 +138,23 @@ Progressive noise schedule shortens long runs of corrupted tokens and keeps each
 
 ### Noisy-Context Conditioned Training
 
-{{< justify >}} 
-Naively training on each Jacobi state would require many passes. Instead, Jacobi Forcing:
+{{< justify >}}
+Jacobi Forcing packs unconverged noisy blocks and their clean fixed-point targets into one long sequence, then use a noise-conditioned causal attention mask so the model can:
+
+1. For each block, distinguish noisy blocks from their fix-point counterparts.
+
+2. Make each noisy block see the prompt and earlier blocks at their assigned noise levels.
+
+3. Expose the clean blocks needed to compute a teacher distribution.
 
 
-- Packs **noisy blocks** $\tilde{\mathbf y}_i$ and their **fixed-point (clean) versions** $\mathbf y_i^{*}$ into a single long sequence: 
+Figure 3 shows the key difference: compared to “clean-context-only” training, the noisy-context mask lets one forward/backward pass cover many noise levels and many blocks at once. Conceptually, the objective has two parts:
 
-$$
-\tilde{\mathbf y}_{1:N} = (\tilde{\mathbf y}_1, \dots, \tilde{\mathbf y}_N) 
-\text{ and } \mathbf y^{*}_{1:N} = (\mathbf y^{*}_1, \dots, \mathbf y^{*}_N).
-$$
+- A progressive consistency distillation term $\mathcal{L}_{\text{pc}}(\theta)$: learn generating higher-quality drafts (by mapping all noisy blocks to clean blocks even when conditioning on noise)
 
-- Uses a **noise-conditioned causal attention mask** as shown in Figure 3 so each token:
-    - Sees the prompt and earlier blocks at their assigned noise levels.
-    - Knows which positions in its block are noisy or clean. 
-    - Exposes the fixed-point tokens needed to compute a teacher distribution.
+- An AR term $\mathcal{L}_{\text{AR}}(\theta)$: keep overall quality aligned with the model’s greedy AR behavior
 
-
-This lets a single forward–backward pass compute losses for multiple noise levels $t_i$ and blocks $i = 1,\dots,N$. Concretely, the training objective combines:
-
-- A **progressive consistency loss** that pushes the model to map noisy blocks $\tilde{\mathbf y}_i$ to their fixed points $\mathbf y_i^{*}$ in one Jacobi update:
-
-  $$
-  \mathcal L_{\text{pc}}(\theta)
-  = \mathbb E_{(\mathbf x, \tilde{\mathbf y}_{1:N}, \mathbf y^{*}_{1:N})}
-  \Biggl[
-      \frac{1}{N}
-      \sum_{i=1}^{N}
-      D_{\mathrm{KL}}\Bigl(
-        p_{\theta^-}(\cdot \mid \mathbf x, \mathbf y^{*}_{1:i})
-        \,\Big\|\, 
-        p_{\theta}(\cdot \mid \mathbf x, \tilde{\mathbf y}_{1:i})
-      \Bigr)
-  \Biggr],
-  $$ 
-  where $\tilde{\mathbf y}_{1:i} = (\tilde{\mathbf y}_1, \dots, \tilde{\mathbf y}_i)$ and $\mathbf y^{*}_{1:i} = (\mathbf y^{*}_1, \dots, \mathbf y^{*}_i)$.
-
-- A standard **AR loss** that keeps overall generation quality anchored to the base model’s greedy output $\mathbf l = (l_1,\dots,l_L)$:
-
-  $$
-  \mathcal{L}_{\text{AR}}(\theta)
-  = \mathbb{E}_{(\mathbf{x}, \mathbf{l})}
-  \big[
-    -\sum_{t=1}^{L}
-      \log p_{\theta}\big(l_t \mid \mathbf{x}, \mathbf{l}_{< t}\big)
-  \big]
-  $$
-
-The final objective is therefore: 
+Together, the final objective is therefore: 
   
   $$\mathcal{L}(\theta) = \mathcal{L}_{\text{pc}}(\theta) + \lambda \mathcal{L}_{\text{AR}}(\theta)
   $$
@@ -213,12 +180,9 @@ where $\lambda > 0$ balances progressive consistency and AR fidelity.
 After training, Jacobi Forcing model is still a standard AR checkpoint, but its Jacobi trajectories change qualitatively:
 
 
-- Intermediate Jacobi states now contain **long n-grams in the draft that already match the final greedy AR output**. 
-- Once an n-gram becomes correct, it tends to stay correct across later iterations, even if neighboring tokens are still wrong and the positions are wrong. 
+- Intermediate Jacobi states now contain **long n-grams in the draft that already match the final greedy AR output**. Such n-gram tends to stay correct across iterations, despite their positions might be wrong. 
 - As a result, we can cache these stable n-grams and reuse them at the right positions in subsequent verification steps for further speedup.
 
-
-This “stability under noisy futures” is precisely what the noise-conditioned training objective encourages and is what makes Jacobi Forcing model a strong self-speculative decoder without any extra model.
 {{< /justify >}}
 
 {{< image src="img/trajectory.png" alt="high_quality_draft_illustration" width="100%" title="Figure 4: Visualization of Jacobi Forcing model’s trajectory under vanilla Jacobi decoding. The figure shows a partial segment of the trajectory. Blue tokens denote accepted tokens that match the fixed point at their positions. Black tokens denote unconverged noisy tokens, and we highlight them in red if more than three consecutive tokens match the fixed point regardless of position.">}}
@@ -239,14 +203,14 @@ To better utilize the GPU, Jacobi Forcing model employs multiblock Jacobi decodi
 ### Rejection recycling
 
 {{< justify >}}
-Jacobi Forcing model also leverages **rejection recycling** to reuse high-quality n-grams from earlier iterations as illustrated in Figure 4 to expedite convergence:
+Jacobi Forcing model also leverages **rejection recycling** to reuse high-quality n-grams from earlier iterations as illustrated in Figure 4 to speedup decoding:
 
 - Cache promising n-grams, where its first token matches the last token in the committed KV, from previous Jacobi iterations in an n-gram pool.
-- Verify those candidate n-grams in parallel along the batch dimension during the next Jacobi step. 
-- Choose the path with the highest acceptance rate (TPF) count.
+- Verify those candidate n-grams in parallel along the batch dimension in the next Jacobi iteration. 
+- Choose the path with the highest TPF (tokens-per-forward) count.
 
 
-Because Jacobi Forcing model’s intermediate states are much higher quality than those of the base AR model, this recycling step becomes highly effective, turning previously “wasted” speculative work into real progress.
+Because Jacobi Forcing model’s intermediate states are much higher quality than those of the base AR model, this recycling step becomes highly effective, turning previously “wasted” compute into real progress.
 {{< /justify >}}
 
 {{<youtube 8t3oda5gnHs>}}
@@ -260,18 +224,16 @@ Because Jacobi Forcing model’s intermediate states are much higher quality tha
 
 We do not pick Jacobi Forcing model’s inference hyperparameters by trial-and-error alone. Instead, we tune the decoding configuration so that it sits near the compute–memory “knee” of the hardware roofline while still producing high-quality drafts.
 
-In our inference algorithm, the main knobs are:
+In our inference algorithm, the main knobs are: 
+- **Block size `n`** (how many tokens are updated in parallel)
+- **Number of blocks `K`** (max block count in multiblock decoding)
+- **Verification budget `pool_size`** (how many recycled candidates are verified per step)
+- **Activation ratio `r`** (how far a block should converge before we activate additional pseudo-active blocks).
 
-- **Block size $n$** (how many tokens are updated in parallel).
-- **Number of blocks $K$** (depth of multiblock decoding).
-- **Verification budget `pool_size`** (how many recycled candidates are checked per step).
-- **Activation ratio $r$** (how far a block should converge before we activate additional pseudo-active blocks).
+In practice, we fix `r = 0.85` and `K = 2`: if `r` is too low or `K` too high, later blocks are conditioned on overly noisy prefixes and produce overly low-quality drafts.
 
+With `r` and `K` fixed, we sweep `n` and `pool_size` (Figure 5) and pick `n = 64`, `pool_size = 4` as the optimal config, also aligning with roofline profiling with around 256 decoded tokens every step.
 
-In practice, we fix $r = 0.85$ and $K = 2$ as the heuristic optimal. The choices are constrained by training: later pseudo-active blocks must still see enough clean context to draft meaningful tokens that actually boost the acceptance rate. If we lower $r$ or increase $K$ too aggressively, later blocks are conditioned on overly noisy prefixes and tend to generate “trash” tokens that rarely get accepted, hurting both quality and speed.
-
-
-With $r$ and $K$ fixed, we then sweep over **block size** and **verification size** (Figure 5a) and find that the best tradeoff is achieved at block size $n = 64$ and verification size $= 4$. This configuration also aligns with the roofline profiling on H200 and B200 GPUs (Figure 5b), where these settings sit closest to the compute–memory roofline while keeping latency overhead modest.
 {{< /justify >}}
 
 {{< two_images
@@ -285,7 +247,7 @@ With $r$ and $K$ fixed, we then sweep over **block size** and **verification siz
 >}}
 
 {{< justify >}}
-While Figure 5 focuses on throughput in tokens-per-second (TPS), the same sweeps reveal that TPF for Jacobi Forcing scales almost monotonically as we spend more FLOPs on larger blocks and higher verification budgets. On B200, our default configuration ($n = 64$, `pool_size` = 4) already achieves a strong TPF at $4.2\times$, but pushing to a more aggressive setting with **block size $n = 256$ and verification size $= 16$** increases TPF further to **$4.57\times$**, at the cost of substantially higher per-step compute. We do not adopt this configuration as default today because, on current Blackwell-class hardware, it starts to move beyond the roofline “knee” and yields diminishing TPS gains for a given latency budget.
+If you optimize for TPF instead of TPS, larger `n` and `pool_size` usually increase TPF due to higher parallelism. For example, `n = 256`, `pool_size = 16` can push TPF higher (e.g., $4.6\times$ vs $4.2\times$ at the config for optimal TPS), but it tends to move past the roofline knee on current hardware, so it consumes a lot more compute for diminishing TPS gains.
 {{< /justify >}}
 
 ### Why Jacobi Forcing Works?
