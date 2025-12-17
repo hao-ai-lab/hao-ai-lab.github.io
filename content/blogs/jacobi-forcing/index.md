@@ -411,3 +411,16 @@ Because Jacobi Forcing model preserves the original AR architecture and KV layou
 {{< /justify >}}
 
 
+## Citation
+
+```
+@misc{hu2025fastaccuratecausalparallel,
+      title={Fast and Accurate Causal Parallel Decoding using Jacobi Forcing}, 
+      author={Lanxiang Hu and Siqi Kou and Yichao Fu and Samyam Rajbhandari and Tajana Rosing and Yuxiong He and Zhijie Deng and Hao Zhang},
+      year={2025},
+      eprint={2512.14681},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2512.14681}, 
+}
+```
