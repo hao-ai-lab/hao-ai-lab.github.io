@@ -23,7 +23,7 @@ draft = false
 
 
 {{< justify >}}
-**TL;DR**: Today’s Best LLMs mostly decode autoregressively from left-to-right, which gives great quality but is terribly slow. Diffusion LLM can decode many tokens in parallel thanks to their non-casual, any-order generation, but they must be trained from scratch, or heavily adapted from autoregressive (AR) checkpoints with a non-casual diffusion objective; we find this mismatch often hurts quality and breaks many effective KV-cache related serving optimizations. This blog introduces Jacobi Forcing, a new training technique that converts LLMs into native casual parallel decoders. Jacobi forcing keeps the casual AR backbone and fixes the AR-to-diffusion mismatch by training the model to handle noisy future blocks along its own Jacobi decoding trajectories. This yields an AR model which behaves like a diffusion-style decoder—decoding multiple tokens per pass, but still from left to right—with up to $4.5\times$ higher tokens-per-forward and $4\times$ wall-clock speedup on coding and math tasks, while retaining near-AR generation quality. 
+**TL;DR**: Today’s best LLMs mostly decode **autoregressively** from left-to-right, which gives great quality but is terribly slow. Diffusion LLM can decode many tokens in parallel thanks to their **non-casual, any-order** generation, but they must be trained from scratch, or expensively adapted from autoregressive (AR) checkpoints with a mismatched, non-casual diffusion objective; we find this mismatch often hurts quality and breaks many effective KV-cache related serving optimizations. This blog introduces **Jacobi Forcing**, a new training technique that converts LLMs into **native casual parallel decoders**. Jacobi forcing keeps the casual AR backbone and addresses the AR-to-diffusion mismatch by training the model to handle noisy future blocks along **its own** Jacobi decoding trajectories. This yields an AR model which behaves like a diffusion-style decoder—decoding multiple tokens per pass, but still from left to right—with up to $4.5\times$ higher tokens-per-forward and $4\times$ wall-clock speedup on coding and math, while retaining near-AR generation quality. 
 {{< /justify >}}
 
 
@@ -34,15 +34,13 @@ draft = false
     alt2="jacobi_forcing_demo"
     width1="50%"
     width2="50%"
-    title="Figure 1: Demo of on average more than $4\times$ speedup (181.8 TPS vs. 39.81 TPS) by Jacobi Forcing Model in comparison with the AR baseline (Qwen2.5-Coder-7B-Instruct) on coding sessions."
+    title="Figure 1: Demo of  $>4\times$ speedup (181.8 TPS vs. 39.81 TPS) by Jacobi Forcing Model in comparison with the AR baseline (Qwen2.5-Coder-7B-Instruct) on coding sessions."
 >}}
 
 ## Background
 
 {{< justify >}}
-Modern LLM inference has a simple but painful bottleneck: **decoding is mostly serial**. With autoregressive decoding, each new token depends on all previous ones, so we pay (roughly) one forward pass per token.
-
-Most existing work on faster decoding falls into two broad families: 
+Modern LLM inference has a simple but painful bottleneck: **decoding is mostly serial**. With autoregressive decoding, each new token depends on all previous ones, so we pay (roughly) one forward pass per token. Most existing work on faster decoding falls into two broad families: 
 
 1. **Diffusion-style LLMs (dLLMs):** use non-causal, often bidirectional attention and denoising objectives to update *many* tokens in parallel.
 
@@ -53,18 +51,29 @@ Table 1 (row 2 and row 3) summarizes their pros and cons. At a high-level, dLLMs
 
 
 
+
+| Method        | Attention      | Parallelism                      | Training Cost | Single-model Decoding (no draft–verifier)   | Efficient KV Reuse        | Real Speedup | Generation Quality         |
+|:----------------------:|:------------------------:|:-----------------------------------------------:|:------------------------------------:|:-------------------------------------------:|:----------------------:|:-------------------------------:|:---------------------------:|
+| **AR**        | Causal | ❌                          | 🆓                                            | ✅   |  😃               | 🐢            | Lossless            |
+| **SD**        | Causal                 | ✅             | 💰        | ❌  | 😃     | ⚡️⚡️ |      Lossless       | 
+| **dLLMs**            | Non-causal    | ✅   | 💰💰💰      | ✅ | 💔 | ⚡️ | Low |
+| **Jacobi Forcing**   | Causal                 | ✅   | 💰 | ✅ |  😃   |  ⚡️⚡️⚡️    | High   |
+
+{{< image src="" alt="" width="100%" title="Table 1: Qualitative comparison of parallel decoding methods.">}}
+
+
 ### Diffusion LLMs
 
 {{< justify >}}
 Diffusion-style dLLMs iteratively denoise entire token blocks with non-causal (often bidirectional) attention. At each step, the model sees a globally noised sequence and tries to predict a cleaner one, updating many positions in parallel. This offers a natural form of parallel decoding, but comes with several trade-offs.
 
-From a modeling perspective, the cleanest way to get a high-quality dLLM would be to pretrain it from scratch with a diffusion-style objective. But at today’s scales, fully training a non-causal dLLM to match a strong AR baseline (where we have invested multiple billions) is prohibitively expensive, so almost nobody does this in practice.
+From a modeling perspective, the cleanest way to get a high-quality dLLM would be to pretrain it from scratch with a diffusion-style objective. But at today’s scales, fully training a non-causal dLLM to match a strong AR baseline (where we have invested many GPU hours and infrastructures) is prohibitively expensive, so almost nobody does this in practice.
 Instead, most recent work starts from a strong AR-pretrained checkpoint and then converts it into a diffusion-style model by oftentimes heavy post-training with a denoising objective. This AR-to-dLLM conversion introduces two kinds of mismatch.
-- The first is a training objective mismatch. AR pre-training sees clean, causal prefixes, while diffusion-style post-training sees globally noised sequences and learns to denoise them. The model is now being asked to serve two different goals, and the resulting distribution shift makes it hard to fully recover AR-level quality.
-- The second is an attention and infrastructure mismatch. To denoise whole token blocks in parallel, these methods typically switch from causal masking to non-causal (often bidirectional) attention. That breaks exact KV-cache reuse and many low-level optimizations baked into today’s AR-optimized kernels and serving stacks, and it complicates batching and scheduling in production systems.
+- **Training objective mismatch**: AR pre-training sees clean, causal prefixes, while diffusion-style post-training sees globally noised sequences and learns to denoise them. The model is now being asked to serve two different goals, and the resulting distribution shift makes it hard to fully recover AR-level quality.
+- **Attention and infrastructure mismatch**: To denoise whole token blocks in parallel, these methods typically switch from causal masking to non-causal attention. That breaks exact KV-cache reuse and many low-level optimizations baked into today’s AR-optimized kernels and serving stacks, and it complicates batching and scheduling in production systems.
 
 
-In practice, recent dLLMs of this form often require billions to hundreds of billions of additional post-training tokens on top of AR pre-training, and still either lag behind strong AR baselines in accuracy or struggle to turn their theoretical parallelism into proportional wall-clock speedups.
+In practice, recent dLLMs of this form often require billions to hundreds of billions of additional post-training tokens on top of AR pre-training, and still either lag behind strong AR baselines in accuracy or struggle to turn their theoretical parallelism into proportional wall-clock speedups. See Figure 2 for a quantatitive comparison.
 {{< /justify >}}
 
 
@@ -76,17 +85,14 @@ In practice, recent dLLMs of this form often require billions to hundreds of bil
 ### Speculative Decoding
 
 {{< justify >}}
-**Speculative decoding (SD)** keeps the causal AR backbone and its lossless quality, but introduces an additional draft stage. A draft model (or draft head) proposes multiple future tokens. The target model (the main AR backbone) then verifies these proposals and accepts or rejects them in parallel. If drafting were free and most tokens were accepted, SD would give a clean speedup: multiple tokens per verification step without any loss in quality. In reality, SD introduces several overheads:
+**Speculative decoding (SD)** keeps the causal AR backbone and its lossless quality, but introduces an additional draft stage. A draft model (or draft head) proposes multiple future tokens. The target model (the main AR backbone) then verifies these proposals and accepts or rejects them in parallel. If drafting were free and most tokens were accepted, SD would give a clean speedup: multiple tokens per verification step without any loss in quality. In reality, SD introduces several major overheads:
 - The **draft model still consumes FLOPs, memory, and latency**. Strong SD methods like EAGLE-3 and HASS achieve impressive speedups, but  also involve training the draft models or draft heads and integrating them into the serving stack (see these GitHub issues as examples: [SGL-6949](https://github.com/sgl-project/sglang/issues/6949), [vLLM-9565](https://github.com/vllm-project/vllm/issues/9565), [vLLM-15025](https://github.com/vllm-project/vllm/issues/15025)).
 - Integrating SD into production serving systems adds **engineering complexity**: two-model orchestration, heuristics for drafting length, and extra complexity in batching and scheduling.
 
 
-As a result, end-to-end speedups therefore often plateau at around $2-3\times$ even when the "acceptance length per step" looks impressive.
+As a result, end-to-end speedups therefore often plateau at around $2-3\times$ even when the "acceptance length per step" looks impressive in papers.
 {{< /justify >}}
 
-
-
-### Where Does Jacobi Forcing Fit?
 
 {{< justify >}}
 Table 1 summarizes the trade-offs of all three families discussed above: 
@@ -96,41 +102,22 @@ Table 1 summarizes the trade-offs of all three families discussed above:
 {{< /justify >}}
 
 {{< justify >}}
-This leads to the central question behind Jacobi Forcing:
-
-Can we build a **native causal parallel decoder** that (i) runs fast like diffusion-style methods, (ii) preserves AR-level quality, and (iii) fits naturally into existing KV-cache-based serving systems without extra models or heavy architectural changes?
-
-**Jacobi Forcing answers "yes" to this question.**
+This leads to the central question behind Jacobi Forcing: Can we build a **native causal parallel decoder** that (i) runs fast like diffusion-style methods, (ii) preserves AR-level quality, and (iii) fits naturally into existing KV-cache-based serving systems without extra models or heavy architectural changes? **Jacobi Forcing answers "yes" to this question.**
 {{< /justify >}}
 
-### Can We Get both Quality and Parallelism using Jacobi Forcing?
+
+## Jacobi Forcing
 
 {{< justify >}}
-Jacobi forcing builds on top of jacobing decoding, which is a causal parallel decoding procedure that repeatedly updates all tokens in a block in parallel until they match the greedy AR output, tracing a parallel refinement trajectory while preserving the causal attention mechanism. See these papers ([Parallelizing feedforward with Jacobi iterations](https://arxiv.org/pdf/2002.03629), [Parallel Decoding](https://arxiv.org/pdf/2305.10427)) and blogpost ([Lookahead Decoding](https://lmsys.org/blog/2023-11-21-lookahead-decoding/)) describing Jacobi decoding in details. 
-
-Our prior work on CLLMs showed that fine-tuning on Jacobi trajectories can shorten this trajectory and enable faster decoding, but it did not fully exploit hardware constraints or longer-horizon noise.
+Jacobi forcing builds on top of [jacobing decoding](https://lmsys.org/blog/2023-11-21-lookahead-decoding/), which is a causal parallel decoding procedure that repeatedly updates all tokens in a block in parallel until they match the greedy AR output, tracing a parallel refinement trajectory while preserving the causal attention mechanism. See these papers ([1](https://arxiv.org/pdf/2002.03629), [2](https://arxiv.org/pdf/2305.10427), [3](https://lmsys.org/blog/2023-11-21-lookahead-decoding/)) describing Jacobi decoding in details. Our [prior work on CLLMs](https://hao-ai-lab.github.io/blogs/cllm/) showed that fine-tuning on Jacobi trajectories can shorten this trajectory and enable faster decoding, but it did not fully exploit hardware constraints or longer-horizon noise.
 
 Jacobi Forcing pushes this idea further: we keep the original causal attention and minimize pre-/post-train mismatch, and train the model so that Jacobi-style decoding **produces high-quality drafts that stay close to the AR distribution even under noisy long-horizon context**. This is realized via a noise-conditioned training, along with an inference algorithm that exploits high-quality n-grams appearing in the draft. as summarized in Figure 2, Jacobi Forcing turns standard AR models into highly efficient parallel decoders while retaining competitive AR-like quality.
 
 {{< /justify >}}
 
-
-
-
-| Method        | Attention      | Parallelism                      | Training Cost | Single-model Decoding (no draft–verifier)   | Efficient KV Reuse        | Real Speedup | Generation Quality         |
-|:----------------------:|:------------------------:|:-----------------------------------------------:|:------------------------------------:|:-------------------------------------------:|:----------------------:|:-------------------------------:|:---------------------------:|
-| **AR**        | Causal | 💔                          | 🆓                                            | 😃   |  😃               | 🐢            | 🏅️            |
-| **SD** | Causal                 | 😃             | 🆓/💰        | 💔 | 😃     | ⚡️/⚡️⚡️ |      🏅️       | 
-| **dLLMs**            | Non-causal    | 😃   | 💰/💰💰💰      | 😃 | 💔 | ⚡️ | 🥉/🥈 |
-| **Jacobi Forcing**   | Causal                 | 😃   | 💰 | 😃 |  😃   |  ⚡️⚡️⚡️    | 🥈/🏅️   |
-
-{{< image src="" alt="" width="100%" title="Table 1: Qualitative comparison of parallel decoding methods.">}}
-
-
-
-## Jacobi Forcing
-
 ### Noise schedule and Training Sequence Preparation
+
+
 
 {{< justify >}}
 Training with Jacobi Forcing starts from collecting Jacobi trajectories of the base AR model. For each prompt: (1) for all $N$ blocks of size $n$ in its generation, the base model runs Jacobi decoding on each block $i \in \{N\}$ to obtain intermediate states and the final fixed point that matches greedy AR decoding. (2) Treat each intermediate state as a “noisy” view of the fixed point, with an associated noise ratio $s_i^k (\text{number of unconverged tokens}/n)$ for the $k$-th Jacobi iteration.
@@ -377,12 +364,8 @@ Compared to **CLLM-style parallel decoders at the ssame 7B scales**, Jacobi Forc
 |       | **Jacobi Forcing model (MR)**   |causal parallel | **$3.7\times$** | 4.0  | 154.9 | 91.4% |
 
 
-{{< image src="" alt="" width="100%" title="Table 3: Generation quality and efficiency comparison among Jacobi Forcing model, baseline SD and baseline dLLM methods.">}}
+{{< image src="" alt="" width="100%" title="Table 3: Generation quality and efficiency comparison among Jacobi Forcing model, baseline SD and baseline dLLM methods. *Here we report the strongest checkpoints released by the authors; in principle EAGLE-3 and HASS are lossless in comparison with greedy AR checkpoints if they were trained with the Qwen2.5-7B backbone. Note that SD has a worse acceptance length (TPF) to TPS conversion ratio due to other overheads in the algorithm like token drafting using draft head, tree-like verification overhead, feature merging from different layers etc.">}}
 
-
-{{< justify >}}
-<small><em>Footnote<sup>*</sup>:</em> Here we report the strongest checkpoints released by the authors; in principle EAGLE-3 and HASS are lossless in comparison with greedy AR checkpoints if they were trained with the Qwen2.5-7B backbone. Note that SD has a worse acceptance length (TPF) to TPS conversion ratio due to other overheads in the algorithm like token drafting using draft head, tree-like verification overhead, feature merging from different layers etc. </small>
-{{< /justify >}}
 
 
 
