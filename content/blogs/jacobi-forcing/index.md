@@ -188,29 +188,21 @@ After training, Jacobi Forcing model is still a standard AR checkpoint, but its 
 {{< image src="img/trajectory.png" alt="high_quality_draft_illustration" width="100%" title="Figure 4: Visualization of Jacobi Forcing model’s trajectory under vanilla Jacobi decoding. The figure shows a partial segment of the trajectory. Blue tokens denote accepted tokens that match the fixed point at their positions. Black tokens denote unconverged noisy tokens, and we highlight them in red if more than three consecutive tokens match the fixed point regardless of position.">}}
 
 
-### Multiblock decoding
+### Multiblock decoding and Rejection recycling
 
 {{< justify >}}
 To better utilize the GPU, Jacobi Forcing model employs multiblock Jacobi decoding:
 
 - Maintain up to $K$ blocks in flight.
 - Mark one block as **real-active**, whose tokens are verified and committed into the KV cache.
-- Treat other blocks as **pseudo-active**: (1) They are updated under Jacobi iterations using the current prefix. (2) Their tokens are not committed to the KV cache yet.
+- Treat other blocks as **pseudo-active**: (i) They are updated under Jacobi iterations using the current prefix. (ii) Their tokens are not committed to the KV cache yet.
 - When the real-active block converges, it promotes a pseudo-active block and re-verify all of its tokens under the updated prefix with all tokens converged.
-{{< /justify >}}
 
+Orthogonally, Jacobi Forcing applies rejection recycling to avoid wasting good drafts (example in Figure 4):
 
-### Rejection recycling
+- Cache promising n-grams from earlier iterations into an n-gram pool (by matching committed suffix).
 
-{{< justify >}}
-Jacobi Forcing model also leverages **rejection recycling** to reuse high-quality n-grams from earlier iterations as illustrated in Figure 4 to speedup decoding:
-
-- Cache promising n-grams, where its first token matches the last token in the committed KV, from previous Jacobi iterations in an n-gram pool.
-- Verify those candidate n-grams in parallel along the batch dimension in the next Jacobi iteration. 
-- Choose the path with the highest TPF (tokens-per-forward) count.
-
-
-Because Jacobi Forcing model’s intermediate states are much higher quality than those of the base AR model, this recycling step becomes highly effective, turning previously “wasted” compute into real progress.
+- In the next iteration, verify many candidates in parallel (batch dimension) and keep the path with the best TPF (tokens-per-forward).
 {{< /justify >}}
 
 {{<youtube 8t3oda5gnHs>}}
@@ -225,14 +217,14 @@ Because Jacobi Forcing model’s intermediate states are much higher quality tha
 We do not pick Jacobi Forcing model’s inference hyperparameters by trial-and-error alone. Instead, we tune the decoding configuration so that it sits near the compute–memory “knee” of the hardware roofline while still producing high-quality drafts.
 
 In our inference algorithm, the main knobs are: 
-- **Block size `n`** (how many tokens are updated in parallel)
-- **Number of blocks `K`** (max block count in multiblock decoding)
+- **Block size $n$** (how many tokens are updated in parallel)
+- **Number of blocks $K$** (max block count in multiblock decoding)
 - **Verification budget `pool_size`** (how many recycled candidates are verified per step)
-- **Activation ratio `r`** (how far a block should converge before we activate additional pseudo-active blocks).
+- **Activation ratio $r$** (how far a block should converge before we activate additional pseudo-active blocks).
 
-In practice, we fix `r = 0.85` and `K = 2`: if `r` is too low or `K` too high, later blocks are conditioned on overly noisy prefixes and produce overly low-quality drafts.
+In practice, we fix $r = 0.85$ and $K = 2$: if $r$ is too low or $K$ too high, later blocks are conditioned on overly noisy prefixes and produce overly low-quality drafts.
 
-With `r` and `K` fixed, we sweep `n` and `pool_size` (Figure 5) and pick `n = 64`, `pool_size = 4` as the optimal config, also aligning with roofline profiling with around 256 decoded tokens every step.
+With $r$ and $K$ fixed, we sweep block size $n$ and `pool_size` (Figure 5) and pick $n = 64$, `pool_size = 4` as the optimal config, also aligning with roofline profiling with around 256 decoded tokens every step.
 
 {{< /justify >}}
 
@@ -247,7 +239,7 @@ With `r` and `K` fixed, we sweep `n` and `pool_size` (Figure 5) and pick `n = 64
 >}}
 
 {{< justify >}}
-If you optimize for TPF instead of TPS, larger `n` and `pool_size` usually increase TPF due to higher parallelism. For example, `n = 256`, `pool_size = 16` can push TPF higher (e.g., $4.6\times$ vs $4.2\times$ at the config for optimal TPS), but it tends to move past the roofline knee on current hardware, so it consumes a lot more compute for diminishing TPS gains.
+If you optimize for TPF instead of TPS, larger $n$ and `pool_size` usually increase TPF due to higher parallelism. For example, $n = 256$, `pool_size = 16` can push TPF higher (e.g., $4.6\times$ vs $4.2\times$ at the config for optimal TPS), but it tends to move past the roofline knee on current hardware, so it consumes a lot more compute for diminishing TPS gains.
 {{< /justify >}}
 
 ### Why Jacobi Forcing Works?
