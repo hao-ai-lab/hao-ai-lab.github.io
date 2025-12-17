@@ -21,7 +21,7 @@ github = "hao-ai-lab/JacobiForcing"
 +++
 
 
-{{< socialBadges arxiv-index="xxxx" github="hao-ai-lab/JacobiForcing" huggingface="https://huggingface.co/JacobiForcing">}}
+{{< socialBadges arxiv-index="2512.14681" github="hao-ai-lab/JacobiForcing" huggingface="https://huggingface.co/JacobiForcing">}}
 
 
 {{< justify >}}
