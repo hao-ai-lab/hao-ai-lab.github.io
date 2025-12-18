@@ -5,6 +5,13 @@ authors = ["Yonghao Zhuang*", "Junda Chen*", "Bo Pang", "Yi Gu", "Yibo Zhu", "Yi
 author = "Yonghao Zhuang*, Junda Chen*, Bo Pang, Yi Gu, Yibo Zhu, Yimin Jiang, Ion Stoica, Eric Xing, Hao Zhang"
 ShowReadingTime = true
 draft = false
+[socialIcons]
+    [[socialIcons.icon]]
+        name = "twitter"
+        url = "https://twitter.com"
+    [[socialIcons.icon]]
+        name = "github"
+        url = "https://github.com/hao-ai-lab/distca"
 [cover]
     image = "/img/distca.gif"
     alt = "DistCA"
@@ -12,7 +19,7 @@ draft = false
 
 +++
 
-{{< socialBadges arxiv-index="2401.09670" >}}
+{{< socialBadges arxiv-index="2401.09670" github="hao-ai-lab/distca">}}
 
 {{< justify >}}
 
