@@ -1,6 +1,6 @@
 +++
 title = "CAD: Disaggregating Core Attention for Efficient Long-context Language Model Training"
-date = 2023-12-17T12:00:00-08:00
+date = 2025-12-17T12:00:00-08:00
 authors = ["Yonghao Zhuang*", "Junda Chen*", "Bo Pang", "Yi Gu", "Yibo Zhu", "Yimin Jiang", "Ion Stoica", "Eric Xing", "Hao Zhang"]
 author = "Yonghao Zhuang*, Junda Chen*, Bo Pang, Yi Gu, Yibo Zhu, Yimin Jiang, Ion Stoica, Eric Xing, Hao Zhang"
 ShowReadingTime = true
