@@ -28,7 +28,7 @@ draft = false
 
 <div style="margin-top: -12px;"></div>
 
-In our study of open-source systems, we find a consistent accuracy–parallelism trade-off: pushing more tokens per forward pass almost always costs accuracy. We introduce Accuracy Under Parallelism (**AUP**), a hardware-robust metric that scores this trade-off in one number, and we present [d3LLM](https://github.com/hao-ai-lab/d3LLM), a distillation + decoding framework that improves AUP and narrows the gap to strong AR + speculative decoding baselines. Our d3LLM achieves up to 5× speedup over the AR baseline (Qwen-2.5-7B-it) on H100 GPU and 3.5× speedup on A100 GPU. Feel free to try 🕹️ [our demo](https://d3llm-team.github.io/).
+In our study of open-source systems, we find a consistent accuracy–parallelism trade-off: pushing more tokens per forward pass almost always costs accuracy. We introduce Accuracy Under Parallelism (**AUP**), a hardware-robust metric that scores this trade-off in one number, and we present [d3LLM](https://github.com/hao-ai-lab/d3LLM), a distillation + decoding framework that improves AUP and narrows the gap to strong AR + speculative decoding baselines. Our d3LLM achieves up to 5× speedup over the AR baseline (Qwen-2.5-7B-it) on H100 GPU and 3.6× speedup on A100 GPU. Feel free to try 🕹️ [our demo](https://d3llm-team.github.io/).
 
 
 
@@ -181,7 +181,7 @@ The intuition behind AUP is simple:
 **Choice of $\alpha$.** The hyperparameter $\alpha$ controls the penalty for accuracy degradation. A larger $\alpha$ increases sensitivity to performance drops, causing the contribution of throughput to decay exponentially with the error rate. In the ideal case, where a method improves parallelism without compromising accuracy, the AUP reduces to the standard area under the parallelism-accuracy curve (AUC). In our setting, we set $\alpha = 3$ as it balances the importance of parallelism and accuracy.
 
 **AUP is hardware-independent** because AUP is built on TPF (token per forward), not TPS (token per second). TPS is heavily affected by hardware generation (H100 vs A100), kernel fusion, cache implementation, and the inference framework. The same algorithm can look dramatically different depending on system details.
-For instance, in our experiments, our [d3LLM-LLaDA model](https://huggingface.co/d3LLM/d3LLM_LLaDA) (which will be introduced in the next section) demonstrates around 5× higher TPS than an AR baseline (Qwen-2.5-7B-it) on an NVIDIA H100 GPU (289 vs. 57 tokens/s). However, this advantage shrinks significantly on an NVIDIA A100 GPU (175 vs. 50 tokens/s). In contrast, the TPF captures the algorithmic parallelism: how many tokens you progress per forward pass. This is much more stable across hardware. Therefore, AUP gives a fairer view of algorithmic progress, without requiring everyone to run on the exact same GPU or inference engine, helping the community focus on algorithmic design without requiring access to particular GPUs.
+For instance, in our experiments, our [d3LLM-LLaDA model](https://huggingface.co/d3LLM/d3LLM_LLaDA) (which will be introduced in the next section) demonstrates around 5× higher TPS than an AR baseline (Qwen-2.5-7B-it) on an NVIDIA H100 GPU (289 vs. 57 tokens/s). However, this advantage shrinks significantly on an NVIDIA A100 GPU (183 vs. 50 tokens/s). In contrast, the TPF captures the algorithmic parallelism: how many tokens you progress per forward pass. This is much more stable across hardware. Therefore, AUP gives a fairer view of algorithmic progress, without requiring everyone to run on the exact same GPU or inference engine, helping the community focus on algorithmic design without requiring access to particular GPUs.
 
 {{< /justify >}}
 
@@ -199,7 +199,7 @@ Once we scored existing methods using AUP, the landscape became clearer (see Tab
 
 
 {{< justify >}}
-{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Figure 2. Demo of our d3LLM, which achieves up to 5× speedup over the AR (Qwen-2.5-7B-it) on H100 GPU and 3.5× speedup on A100 GPU. You can try 🕹️ [our demo](https://d3llm-team.github.io/).">}}
+{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Figure 2. Demo of our d3LLM, which achieves up to 5× speedup over the AR (Qwen-2.5-7B-it) on H100 GPU and 3.6× speedup on A100 GPU. You can try 🕹️ [our demo](https://d3llm-team.github.io/).">}}
 
 {{< /justify >}}
 
@@ -334,9 +334,9 @@ For the **LLaDA-based models**, we compare our *d3LLM-LLaDA* with _vanilla LLaDA
 
 <figure>
 <div class="responsive-img-grid">
-  <img src="img/data_llada_aup_curve_GSM8K-CoT.png" alt="LLaDA GSM8K-CoT" data-width="31">
+  <img src="img/data_llada_aup_curve_GSM8K-CoT.png" alt="LLaDA GSM8K-CoT" data-width="32.3">
   <img src="img/data_llada_aup_curve_HumanEval.png" alt="LLaDA HumanEval" data-width="31.7">
-  <img src="img/data_llada_aup_curve_MBPP.png" alt="LLaDA MBPP" data-width="29.8">
+  <img src="img/data_llada_aup_curve_MBPP.png" alt="LLaDA MBPP" data-width="30.9">
 </div>
 <div class="responsive-img-grid" style="margin-top: 20px;">
   <img src="img/data_llada_aup_curve_MATH.png" alt="LLaDA MATH" data-width="30.2">
@@ -361,13 +361,13 @@ For the **Dream-based models**, we compare our *d3LLM-Dream* with _vanilla Dream
 
 <figure>
 <div class="responsive-img-grid">
-  <img src="img/data_dream_aup_curve_GSM8K-CoT.png" alt="Dream GSM8K-CoT" data-width="32.8">
-  <img src="img/data_dream_aup_curve_HumanEval-Instruct.png" alt="Dream HumanEval_Instruct" data-width="30.5">
-  <img src="img/data_dream_aup_curve_MBPP-Instruct.png" alt="Dream MBPP_Instruct" data-width="30.2">
+  <img src="img/data_dream_aup_curve_GSM8K-CoT.png" alt="Dream GSM8K-CoT" data-width="31.8">
+  <img src="img/data_dream_aup_curve_HumanEval-Instruct.png" alt="Dream HumanEval_Instruct" data-width="29.7">
+  <img src="img/data_dream_aup_curve_MBPP-Instruct.png" alt="Dream MBPP_Instruct" data-width="31.9">
 </div>
 <div class="responsive-img-grid" style="margin-top: 20px;">
   <img src="img/data_dream_aup_curve_MATH.png" alt="Dream MATH" data-width="29.4">
-  <img src="img/data_dream_aup_curve_Long-GSM8K.png" alt="Dream Long-GSM8K" data-width="31.2">
+  <img src="img/data_dream_aup_curve_Long-GSM8K.png" alt="Dream Long-GSM8K" data-width="31.4">
 </div>
 <figcaption style="text-align: center; color: #808080; margin-top: 10px;">Figure 7: AUP curves for Dream-based models across five benchmark tasks (GSM8K-CoT, HumanEval_Instruct, MBPP_Instruct, MATH, and Long-GSM8K).</figcaption>
 </figure>
@@ -440,7 +440,7 @@ The results are presented below.
 | Fast-dLLM-LLaDA | 114.29     | 79.14      | 74.68 |
 | D2F             | 102.13     | 76.24      | 74.39 |
 | dParallel-LLaDA | 172.23     | 105.85     | 72.63 |
-| **d3LLM-LLaDA** | **288.73** | **174.57** | **73.10** |
+| **d3LLM-LLaDA** | **288.89** | **183.33** | **73.10** |
 
 {{< /table >}}
 
@@ -464,7 +464,7 @@ For the *Dream-7B-Instruct*, we again report speed and accuracy on GSM8K-CoT dat
 
 {{< justify >}}
 
-To summarize, our d3LLM framework achieves the highest AUP score with negligible performance degradation, successfully balancing both parallelism and accuracy and striking a balance between accuracy and parallelism. It delivers up to a **5× speedup** over autoregressive decoding (Qwen-2.5-7B-it) on H100 GPUs (288.73 TPS vs. 57.32 TPS), and approximately **3.5× speedup** on A100 GPUs (174.57 TPS vs. 50.36 TPS) with comparable performance. This makes dLLMs more practical for real-world deployment.
+To summarize, our d3LLM framework achieves the highest AUP score with negligible performance degradation, successfully balancing both parallelism and accuracy and striking a balance between accuracy and parallelism. It delivers up to a **5× speedup** over autoregressive decoding (Qwen-2.5-7B-it) on H100 GPUs (288.89 TPS vs. 57.32 TPS), and approximately **3.6× speedup** on A100 GPUs (174.57 TPS vs. 50.36 TPS) with comparable performance. This makes dLLMs more practical for real-world deployment.
 
 Note that all experiments are using the HuggingFace inference backend. System-level optimizations, including GPU kernel fusion and integration with vLLM, are left for future work to further improve TPS.
 
