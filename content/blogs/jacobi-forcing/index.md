@@ -188,7 +188,7 @@ After training, Jacobi Forcing model is still a standard AR checkpoint, but its 
 {{< image src="img/trajectory.png" alt="high_quality_draft_illustration" width="100%" title="Figure 4: Visualization of Jacobi Forcing model’s trajectory under vanilla Jacobi decoding. The figure shows a partial segment of the trajectory. Blue tokens denote accepted tokens that match the fixed point at their positions. Black tokens denote unconverged noisy tokens, and we highlight them in red if more than three consecutive tokens match the fixed point regardless of position.">}}
 
 
-### Multiblock decoding and Rejection recycling
+### Multiblock decoding and Rejection Recycling
 
 {{< justify >}}
 To better utilize the GPU, Jacobi Forcing model employs multiblock Jacobi decoding:
