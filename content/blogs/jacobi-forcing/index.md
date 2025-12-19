@@ -148,7 +148,7 @@ Jacobi Forcing packs unconverged noisy blocks and their clean fixed-point target
 3. Expose the clean blocks needed to compute a teacher distribution.
 
 
-Figure 3 shows the key difference: compared to “clean-context-only” training, the noisy-context mask lets one forward/backward pass cover many noise levels and many blocks at once. Conceptually, the objective has two parts:
+Figure 3 visualizes the attention implementation. The noisy-context mask lets one forward/backward pass cover many noise levels and many blocks at once. Conceptually, the objective has two parts:
 
 - A progressive consistency distillation term $\mathcal{L}_{\text{pc}}(\theta)$: learn generating higher-quality drafts (by mapping all noisy blocks to clean blocks even when conditioning on noise)
 
@@ -286,7 +286,7 @@ Compared to **dLLM baselines at 7B scale**, Jacobi Forcing model offers a much b
 - Similar trends hold on MBPP and MATH: Jacobi Forcing model matches or exceeds dLLMs’ speed while maintaining substantially higher task accuracy.
 
 
-Compared to **CLLM-style parallel decoders at the ssame 7B scales**, Jacobi Forcing model consistently provides ~1.7× higher throughput at similar or slightly lower accuracy, while keeping the pure AR backbone and KV reuse: 
+Compared to **CLLM-style parallel decoders at the ssame 7B scales**, Jacobi Forcing model consistently provides ~1.7× higher throughput at similar accuracy, while keeping the pure AR backbone and KV reuse: 
 
 - On HumanEval, CLLM achieves $2.5\times$ speedup with 88.0% accuracy, whereas Jacobi Forcing model (MR) achieves $4.0\times$ speedup with 82.3%.
 - On GSM8K and MATH, CLLM reaches about $2.1\times$ speedup; Jacobi Forcing model (MR) pushes this to $3.7\times$ with negligible accuracy change.
