@@ -19,7 +19,7 @@ draft = false
 
 +++
 
-{{< socialBadges arxiv-index="2401.09670" github="hao-ai-lab/distca">}}
+{{< socialBadges arxiv-index="2510.18121" github="hao-ai-lab/distca">}}
 
 {{< justify >}}
 
