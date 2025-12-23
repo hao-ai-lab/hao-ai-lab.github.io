@@ -109,7 +109,7 @@ Hao officially joined UCSD!
 &emsp;
 
 ### Sponsors
-Hao AI Lab is sponsored by HDSI, NVIDIA, Google, Snowflake, Lemonslice, and AMD. We are grateful for their support!
+Hao AI Lab is sponsored by HDSI, NVIDIA, Google, Snowflake, Lemonslice, AMD, Modal, and GMI. We are grateful for their support!
 {{< sponsor_grid >}}
   {{< sponsor imageDay="HDSI.png" imageNight="HDSI-dark.png" link="https://datascience.ucsd.edu/" >}}
   {{< sponsor imageDay="nvidia.png" imageNight="nvidia-dark.png" link="https://www.nvidia.com" >}}
@@ -117,4 +117,7 @@ Hao AI Lab is sponsored by HDSI, NVIDIA, Google, Snowflake, Lemonslice, and AMD.
   {{< sponsor imageDay="snow.png" imageNight="snow-dark.png" link="https://www.snowflake.com/en/" >}}
   {{< sponsor imageDay="lemonslice.png" imageNight="lemonslice.png" link="https://lemonslice.com/" >}}
   {{< sponsor imageDay="AMD.png" imageNight="AMD-dark.png" link="https://www.amd.com" >}}
+  {{< sponsor imageDay="Modal-Light.svg" imageNight="Modal-Dark.svg" link="https://modal.com/" >}}
+  {{< sponsor imageDay="gmi.svg" imageNight="gmi.svg" link="https://www.gmicloud.ai/" >}}
+
 {{< /sponsor_grid >}}
