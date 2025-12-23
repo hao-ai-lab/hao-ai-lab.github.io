@@ -33,14 +33,14 @@ We also develop and maintain open-source models, evaluations, and systems to dem
 <!-- <div class="news-year">2025</div> -->
 
 {{< newsEntry date="2025/12" >}}
+🎉🎉 In 2025, We have 3 ICLR, 1 ICML, 1 ACL, 1 TPAMI, and 3 NeurIPS papers. Kudos to our lab members for another productive year!
+{{< /newsEntry >}}
+
+
+{{< newsEntry date="2025/12" >}}
 AMD gifted our lab with a Mi350x node! See our [recent post](https://x.com/haoailab/status/1999559320007283063) here.
 {{< /newsEntry >}}
 
-
-
-{{< newsEntry date="2025/09" >}}
-🎉🎉 In 2025, We have 3 ICLR, 1 ICML, 1 ACL, 1 TPAMI, and 3 NeurIPS papers. Kudos to our lab members for another productive year!
-{{< /newsEntry >}}
 
 
 {{< newsEntry date="2025/06" >}}
