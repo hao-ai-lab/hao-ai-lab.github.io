@@ -226,7 +226,7 @@ Together, these techniques enable d3LLM to strike a balance between accuracy and
 
 {{< justify >}}
 
-- **Utilizing the Teacher dLLM's Pseudo-Trajectory (15%↑ TPF Improvement)**
+- **Utilizing the Teacher dLLM's Pseudo-Trajectory (18%↑ TPF Improvement)**
 
     <div style="margin-top: 2mm;"></div>
 
@@ -239,24 +239,24 @@ Together, these techniques enable d3LLM to strike a balance between accuracy and
 
     $$[\widetilde{\mathbf{y}}]_i= \begin{cases}[\mathbf{y}]_i & \text { if } i \leqslant s \text {  or  }\left[\mathcal{T}_{s+\lceil k t \rceil}\right]_i \neq \texttt{mask}, \\ {\texttt{mask} } & \text { if } i>s+k \text { or }\left[\mathcal{T}_{s+\lceil k t \rceil}\right]_i=\texttt{mask},\end{cases}$$
 
-    where \$\texttt{mask}\$ is the special mask token ID, and \$[\cdot]_i\$ denotes the \$i\$-th token in the trajectory sequence. This leads to a **15% improvement in TPF** compared to strategies that use random masking.
+    where \$\texttt{mask}\$ is the special mask token ID, and \$[\cdot]_i\$ denotes the \$i\$-th token in the trajectory sequence. This leads to a **18% improvement in TPF** compared to strategies that use random masking.
 
 {{< /justify >}}
 
 
 {{< justify >}}
 
-- **Progressive Noise Level (Further get 18%↑ TPF Improvement)**
+- **Curriculum Noise Level (Further get 12%↑ TPF Improvement)**
 
     <div style="margin-top: 2mm;"></div>
 
-  To preserve accuracy during distillation, we introduce a _progressive noise schedule_ by gradually increasing the mask ratio \$t\$ from 0.0 to 0.8 during the training process. This curriculum learning approach encourages the model to learn from easier to harder decoding scenarios, thereby enhancing its robustness and decoding efficiency while maintaining generation quality. Empirically, this strategy further improves the model's tokens-per-forward (TPF) by approximately **18%** compared to using a fixed mask ratio. Without this curriculum strategy, we observe that the distillation process becomes unstable and the model is more likely to suffer accuracy degradation.
+  To preserve accuracy during distillation, we introduce a _progressive noise schedule_ by gradually increasing the mask ratio \$t\$ from 0.0 to 0.8 during the training process. This curriculum learning approach encourages the model to learn from easier to harder decoding scenarios, thereby enhancing its robustness and decoding efficiency while maintaining generation quality. Empirically, this strategy further improves the model's tokens-per-forward (TPF) by approximately **12%** compared to using a fixed mask ratio. Without this curriculum strategy, we observe that the distillation process becomes unstable and the model is more likely to suffer accuracy degradation.
 
 {{< /justify >}}
 
 
 {{< justify >}}
-- **Progressive Window Size (Further 8%↑ TPF Improvement)**
+- **Curriculum Window Size (Further 8%↑ TPF Improvement)**
 
     <div style="margin-top: 2mm;"></div>
 
@@ -281,7 +281,7 @@ In addition to the distillation recipe, we also introduce an efficient decoding 
 
 {{< justify >}}
 
-- **Entropy-Based Multi-Block Parallel Decoding (20%↑ TPF Improvement)**
+- **Entropy-Based Multi-Block Parallel Decoding (30%↑ TPF Improvement)**
 
     <div style="margin-top: 2mm;"></div>
 
@@ -289,17 +289,17 @@ In addition to the distillation recipe, we also introduce an efficient decoding 
   
   <div style="margin-top: 2mm;"></div>
 
-  Each block can be in one of five states: `Inactive`, `Activated`, `Fully-Activated`, `Completed but Stabilizing`, and `Completed`. We create a new `Activated` block when its preceding block reaches 10% completion and employ a conservative decoding strategy for this block, generating tokens only when they meet the entropy threshold. When the preceding block reaches 95% completion, the `Activated` block transitions to a `Fully-Activated` state, where a more aggressive strategy is used by decoding at least one token per forward pass, regardless of the threshold. Once all tokens in a block are unmasked, the block enters the `Completed but Stabilizing` state, during which we perform forward passes without using the KV cache and refresh previous caches. After 1-2 rounds, the block becomes `Completed`, and we store its KV cache. In addition, we apply a periodic-refresh strategy that updates the KV cache every few rounds. This multi-block decoding strategy increases TPF by **20%**, and the KV-refresh mechanism helps maintain the accuracy.
+  Each block can be in one of five states: `Inactive`, `Activated`, `Fully-Activated`, `Completed but Stabilizing`, and `Completed`. We create a new `Activated` block when its preceding block reaches 10% completion and employ a conservative decoding strategy for this block, generating tokens only when they meet the entropy threshold. When the preceding block reaches 95% completion, the `Activated` block transitions to a `Fully-Activated` state, where a more aggressive strategy is used by decoding at least one token per forward pass, regardless of the threshold. Once all tokens in a block are unmasked, the block enters the `Completed but Stabilizing` state, during which we perform forward passes without using the KV cache and refresh previous caches. After 1-2 rounds, the block becomes `Completed`, and we store its KV cache. In addition, we apply a periodic-refresh strategy that updates the KV cache every few rounds. This multi-block decoding strategy increases TPF by **30%**, and the KV-refresh mechanism helps maintain the accuracy.
 
 {{< /justify >}}
 
 {{< justify >}}
 
-- **Multi-Block Decoding with KV-Cache and Refresh (20%↑ TPS under Long Contexts)**
+- **Multi-Block Decoding with KV-Cache and Refresh (35%↑ TPS under Long Contexts)**
 
     <div style="margin-top: 2mm;"></div>
 
-  To further improve decoding throughput while maintaining generation quality, particularly in long-context settings, we incorporate a _KV-cache_ mechanism alongside a periodic _KV-refresh_. Specifically, after completing each block, we introduce a short delay before caching its key–value states to ensure that the cache remains reliable and does not lead to performance degradation. Simultaneously, we perform full forward passes to refresh previous caches. This hybrid strategy maintains decoding accuracy while significantly improving TPS by approximately **20%** in long-context scenarios.
+  To further improve decoding throughput while maintaining generation quality, particularly in long-context settings, we incorporate a _KV-cache_ mechanism alongside a periodic _KV-refresh_. Specifically, after completing each block, we introduce a short delay before caching its key–value states to ensure that the cache remains reliable and does not lead to performance degradation. Simultaneously, we perform full forward passes to refresh previous caches. This hybrid strategy maintains decoding accuracy while significantly improving TPS by approximately **35%** in long-context scenarios.
 
 {{< /justify >}}
 
@@ -488,6 +488,20 @@ All our distillation code, data, model weights, and benchmark evaluation code ar
 {{< /justify >}}
 
 {{< justify >}}
+
+## Citation
+
+If you find our d3LLM or the AUP metric useful for your research, please star our [project](https://github.com/hao-ai-lab/d3LLM) and cite our work:
+
+```bibtex
+@article{arxiv'26:d3llm,
+  title   = {d3LLM: Ultra-Fast Diffusion LLM using Pseudo-Trajectory Distillation},
+  author  = {Yu-Yang Qian and Junda Su and Lanxiang Hu and Peiyuan Zhang and Zhijie Deng and Peng Zhao and Hao Zhang},
+  journal = {ArXiv preprint},
+  volume  = {arXiv:2601.07568},
+  year    = {2026}
+}
+```
 
 <!-- 
 ## Reference
