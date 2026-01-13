@@ -19,7 +19,7 @@ draft = false
       hidden = true
 +++
 
-{{< socialBadges github="hao-ai-lab/d3LLM" demo="https://d3llm-team.github.io/" huggingface="https://huggingface.co/d3LLM">}}
+{{< socialBadges arxiv-index="2601.07568" github="hao-ai-lab/d3LLM" demo="https://d3llm-team.github.io/" huggingface="https://huggingface.co/d3LLM">}}
 
 {{< justify >}}
 
@@ -473,7 +473,7 @@ Note that all experiments are using the HuggingFace inference backend. System-le
 
 ## 🏆 Diffusion LLM Leaderboard using AUP Score
 
-We present the leaderboard of diffusion LLMs, using the AUP score as the evaluation metric.
+We present the leaderboard of diffusion LLMs, using the AUP score as the evaluation metric. You can find the full leaderboard [here](https://huggingface.co/spaces/d3LLM/dLLM_Leaderboard).
 
 {{< dllm_leaderboard >}}
 
@@ -483,7 +483,7 @@ Our d3LLM-Coder achieves higher TPF and maintains the highest AUP score among al
 Notably, the state-of-the-art speculative decoding method, EAGLE-3 (with LLaMA-Instruct 3.1 8B), attains the top overall AUP score. This is expected, as speculative decoding includes an additional verification step and therefore does not suffer from accuracy degradation as in dLLMs under high parallelism. Moreover, our evaluation does not constrain total FLOPs, and speculative decoding methods may take more FLOPs than diffusion-based approaches. Nevertheless, our d3LLM framework substantially narrows the gap between diffusion-based models and SOTA speculative decoding methods, offering valuable insights for future research directions.
 
 
-All our distillation code, data, model weights, and benchmark evaluation code are available at [https://github.com/hao-ai-lab/d3LLM](https://github.com/hao-ai-lab/d3LLM). The full paper about AUP and our d3LLM framework will be released soon. Stay tuned!
+All our distillation code, data, model weights, and benchmark evaluation code are available at [https://github.com/hao-ai-lab/d3LLM](https://github.com/hao-ai-lab/d3LLM). We also publish a [dLLM leaderboard](https://huggingface.co/spaces/d3LLM/dLLM_Leaderboard). The full paper about AUP and our d3LLM framework can be find in [arXiv](https://arxiv.org/abs/2601.07568).
 
 {{< /justify >}}
 
