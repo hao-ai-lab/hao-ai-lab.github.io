@@ -7,7 +7,7 @@ ShowReadingTime = true
 draft = false
 
 [cover]
-image = "/img/videoscience/cover.png"
+image = "img/header.png"
 alt = "scientific reasoning in video world models"
 caption = "Video generations are getting impressively realistic, but scientific correctness is a different bar. VideoScience-Bench evaluates whether video models behave like faithful simulators, not just good renderers."
 
@@ -20,7 +20,24 @@ name = "github"
 url = "https://github.com/hao-ai-lab/VideoScience"
 +++
 
-{{< socialBadges arxiv-index="2512.02942" github="https://github.com/hao-ai-lab/VideoScience" huggingface="TBD" >}}
+<style>
+.post-cover,
+.post-cover img,
+figure.post-cover img,
+.cover-image,
+img[alt="scientific reasoning in video world models"] {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: block !important;
+  text-align: center !important;
+}
+
+.post-cover {
+  text-align: center !important;
+}
+</style>
+
+{{< socialBadges arxiv-index="2512.02942" github="hao-ai-lab/VideoScience" huggingface="TBD" >}}
 
 {{< justify >}}
 TL;DR: The golden age of AI video has mastered the "look" of reality, but it has yet to learn the laws of reality. Without adhering to rigorous scientific principles, even the most photorealistic model remains a high-fidelity hallucination engine rather than a reliable world simulator. To bridge this gap, we introduce VideoScience-Bench: the first benchmark specifically designed to move beyond "physical commonsense" and evaluate undergraduate-level scientific reasoning in video models.
@@ -29,13 +46,13 @@ This blog post introduces VideoScience-Bench, a benchmark designed to evaluate u
 {{< /justify >}}
 
 {{< two_images
-src1="img/phygenbench_eval3.gif"
+src1="img/phygenbench_3-4.gif"
 src2="img/vid_087_run_2.gif"
 alt1="physical_commonsense_world_modeling"
 alt2="scientific_reasoning_world_modeling"
 width1="50%"
 width2="50%"
-title="Figure 1: Left: a video model generating a physically plausible scene based on everyday commonsense (e.g., object motion and collision). Right: a video generation task that requires scientific reasoning, where correct outcomes depend on multiple interacting laws rather than visual plausibility alone."
+title="Figure 1: Left: A video model generating a physically plausible scene based on everyday commonsense ('A balloon is floating over a serene and mirror-like ocean.', Source: PhyGenBench). Right: A video generation task that requires scientific reasoning, where correct outcomes depend on multiple interacting laws rather than visual plausibility alone. ('A clear plastic water bottle has a small hole in its side, from which a smooth, laminar stream of water is flowing. A red laser pointer is aimed from the other side of the bottle, directly through the water and into the hole.', Source: VideoScience-Bench)."
 >}}
 
 ## Video Model Reasoning and World Modeling
@@ -54,7 +71,7 @@ This reasoning capability is most evident in spatial and puzzle-solving domains.
 
 <!-- {{< image src="https://raw.githubusercontent.com/giusha12i/Thinking-with-Video/refs/heads/main/assets/main_picture.png" alt="vrbench" width="85%" title="Examples from VRBench.">}} -->
 
-{{< image src="https://raw.githubusercontent.com/giusha12i/Thinking-with-Video/refs/heads/main/assets/main_picture.png" alt="thinking_with_video" width="75%" title="Thinking with Video: Examples from VideoThinkBench.">}}
+{{< image src="https://thinking-with-video.github.io/assets/main_picture.png" alt="thinking_with_video" width="75%" title="Thinking with Video: Examples from VideoThinkBench.">}}
 
 These achievements mark a pivotal shift: video models are no longer just generators, they're becoming reasoners.
 {{< /justify >}}
@@ -63,10 +80,8 @@ These achievements mark a pivotal shift: video models are no longer just generat
 
 {{< justify >}}
 In recent context [World Model Roadmap](https://world-model-roadmap.github.io/), [WorldSimBench](https://iranqin.github.io/WorldSimBench.github.io/), Video generation is increasingly framed as: implicit world model (physics + dynamics) + renderer (pixels). In this view, video models aren’t only content engines, they could be simulation engines. If the simulator is scientifically wrong, downstream systems trained on it can inherit those failures.
-{{< /justify >}}
 
-{{< justify >}}
-The stakes for scientific accuracy are highest in robotics, where models must evolve from simple visual generators into reliable world simulators. Industry leaders like 1X and NVIDIA are developing world models, such as 1X-WorldModel and Cosmos, that function as virtual simulators, leveraging raw sensor data to predict complex material interactions and envision potential futures. Because these systems generate the massive datasets used to train physical AI at scale, their adherence to scientific laws is a critical prerequisite for the safety and effectiveness of robots in the real world.
+The stakes for scientific accuracy are highest in robotics, where models must evolve from simple visual generators into reliable world simulators. Industry leaders like 1X and NVIDIA are developing world models, such as [1X-WorldModel](https://www.1x.tech/discover/1x-world-model) and [Cosmos](https://www.nvidia.com/en-us/ai/cosmos/), that function as virtual simulators, leveraging raw sensor data to predict complex material interactions and envision potential futures. Because these systems generate the massive datasets used to train physical AI at scale, their adherence to scientific laws is a critical prerequisite for the safety and effectiveness of robots in the real world.
 {{< /justify >}}
 
 ## Scientific Reasoning as the Next Step
@@ -114,19 +129,72 @@ This multidimensional framework enables us to pinpoint precisely where models su
 {{< justify >}}
 Across seven state-of-the-art models Sora-2, Veo-3, Kling-v2.5-Turbo-Pro, Wan-2.5-T2V-Preview, Seedance 1.0 Pro, Hailuo 2.3, Ray2, we often see a recurring pattern:
 
-Models know what a science experiment looks like (beakers, liquids, lab coats) and they can usually generate experiment setups correctly, but they don’t reliably follow the rules that govern the experiment.
+While these models have mastered the aesthetics of reality, they often fail to grasp the physics of reality. We tested top models on VideoScience-Bench, a benchmark of 200 undergraduate-level science experiments, and found that even the best models frequently “hallucinate” physics.
+
 {{< /justify >}}
 
-### Key Findings: Violations of Physical Dynamism
+#### The "Invisible Field" Failure: Great Visuals, Bad Physics
 
 {{< justify >}}
-Example 129, 145
-
-{{< image src="img/videoscience/129.png" alt="centrifugal_failure" width="85%" title="Figure 2: Example failure on Violations of Physical Dynamism.">}}
-
-{{< image src="img/videoscience/145.png" alt="centrifugal_failure" width="85%" title="Figure 2: Example failure on Violations of Physical Dynamism.">}}
-
+The video looks perfect. The lighting is realistic, the motion is almost smooth (high Spatio-Temporal Coherence), and the object remains consistent (high Immutability). Yet, the scientific outcome is completely wrong. This is a failure of Phenomenon Congruency, the model knows what the objects are, but not how they interact.
 {{< /justify >}}
+
+</div><div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
+  <div style="flex: 1;">
+    <img src="img/vid_095_run_1.gif" alt="The Spaghetti Mystery" style="width: 100%;">
+    <p>The Spaghetti Mystery</p>
+  </div>
+  <div style="flex: 1;">
+    <img src="img/vid_137_run_3.gif" alt="The Ball and Cart" style="width: 100%;">
+    <p>The Ball and Cart</p>
+  </div>
+</div>
+
+<p style="text-align: center; font-style: italic; color: #666;">
+  Failure Examples on Violations of Phenomenon Congruency.
+</p>
+
+#### The Universal Failure: When No One Gets It Right
+
+{{< justify >}}
+Some scenarios are so complex that they trigger a total collapse of reasoning across all models tested. These represent the current ceiling of zero-shot scientific reasoning.
+{{< /justify >}}
+
+<div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
+  <div style="flex: 1;">
+    <img src="img/vid_124_run_1.gif" alt="The Chemical Traffic Light " style="width: 100%;">
+    <p>The Chemical Traffic Light</p>
+  </div>
+  <div style="flex: 1;">
+    <img src="img/vid_087_run_2.gif" alt="The Laser Fiber Optic " style="width: 100%;">
+    <p>The Laser Fiber Optic</p>
+  </div>
+</div>
+
+<p style="text-align: center; font-style: italic; color: #666;">
+  Failure Examples on Violations of Prompt Conistency.
+</p>
+
+#### The "Complexity Collapse": Failing the Setup
+
+{{< justify >}}
+Before a model can simulate physics, it must build the setup. In sophisticated prompts, models often fail Prompt Consistency, they cannot even construct the experimental setup correctly, making the result inevitably wrong.
+{{< /justify >}}
+
+</div><div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
+  <div style="flex: 1;">
+    <img src="img/vid_226_run_2.gif" alt="The Heart Motor" style="width: 100%;">
+    <p>The Heart Motor</p>
+  </div>
+  <div style="flex: 1;">
+    <img src="img/vid_212_run_1.gif" alt="The Polymer Trick" style="width: 100%;">
+    <p>The Polymer Trick</p>
+  </div>
+</div>
+
+<p style="text-align: center; font-style: italic; color: #666;">
+  Failure Examples on Violations of Prompt Conistency.
+</p>
 
 #### Example Failure: Rotating Cups with Balls
 
