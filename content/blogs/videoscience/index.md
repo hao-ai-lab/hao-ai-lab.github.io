@@ -113,11 +113,11 @@ Unlike commonsense-based evaluations, each challenge in VideoScience-Bench requi
 </div><div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
   <div style="flex: 1;">
     <img src="img/vid_094_run_2.gif" alt="Prince Rupert's Drop Tail Break" style="width: 100%;">
-    <p style="font-size: 0.85em;"><strong>Prompt:</strong> "A teardrop-shaped piece of tempered glass is held at its bulbous head. Small pliers gently snip the thin tail end."<br><strong>Expected:</strong> The entire drop explosively shatters into powder as internal tension is released.</p>
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> A teardrop-shaped piece of tempered glass is held at its bulbous head. Small pliers gently snip the thin tail end.<br><strong>Expected:</strong> The entire drop explosively shatters into powder as internal tension is released.</p>
   </div>
   <div style="flex: 1;">
     <img src="img/vid_177_run_2.gif" alt="Polarized Plastic Fringes" style="width: 100%;">
-    <p style="font-size: 0.85em;"><strong>Prompt:</strong> "A clear plastic ruler is placed between two crossed polarizing filters and illuminated by a bright white light."<br><strong>Expected:</strong> The stressed plastic causes rotation of the light’s polarization plane in a wavelength-dependent way, yielding colored interference fringes.
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> A clear plastic ruler is placed between two crossed polarizing filters and illuminated by a bright white light.<br><strong>Expected:</strong> The stressed plastic causes rotation of the light’s polarization plane in a wavelength-dependent way, yielding colored interference fringes.
 </p>
   </div>
 </div>
@@ -156,18 +156,32 @@ While these models have mastered the aesthetics of reality, they often fail to g
 The video looks perfect. The lighting is realistic, the motion is almost smooth (high Spatio-Temporal Coherence), and the object remains consistent (high Immutability). Yet, the scientific outcome is completely wrong. This is a failure of Phenomenon Congruency, the model knows what the objects are, but not how they interact.
 {{< /justify >}}
 
-</div><div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
+<!-- </div><div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
   <div style="flex: 1;">
     <img src="img/vid_095_run_1.gif" alt="The Spaghetti Mystery" style="width: 100%;">
-    <p>The Spaghetti Mystery</p>
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> "A dry spaghetti stick is held at both ends and slowly bent until it breaks."<br><strong>Expected:</strong> The spaghetti breaks into three or more pieces rather than two, because stress waves from the first fracture cause additional breaks before the fragments separate.</p>
   </div>
   <div style="flex: 1;">
     <img src="img/vid_137_run_3.gif" alt="The Ball and Cart" style="width: 100%;">
-    <p>The Ball and Cart</p>
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> "A cart moves forward at a constant speed and launches a ball straight upward from its top."<br><strong>Expected:</strong> The ball travels upward and then downward in a parabolic path, but lands back on the moving cart because both the ball and the cart have the same horizontal velocity.</p>
   </div>
 </div>
 
 <p style="text-align: center; font-style: italic; color: #666;">
+  Failure Examples on Violations of Phenomenon Congruency.
+</p> -->
+<div style="display: flex; flex-direction: column; gap: 20px;">
+  <div style="text-align: center;">
+    <img src="img/vid_095_run_3.gif" alt="The Spaghetti Mystery" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
+    <p style="font-size: 0.85em; margin-top: 10px;"><strong>Prompt:</strong> A dry spaghetti stick is held at both ends and slowly bent until it breaks.<br><strong>Expected:</strong> The spaghetti breaks into three or more pieces rather than two, because stress waves from the first fracture cause additional breaks before the fragments separate.</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="img/vid_137_run_3.gif" alt="The Ball and Cart" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
+    <p style="font-size: 0.85em; margin-top: 10px;"><strong>Prompt:</strong> A cart moves forward at a constant speed and launches a ball straight upward from its top."<br><strong>Expected:</strong> The ball travels upward and then downward in a parabolic path, but lands back on the moving cart because both the ball and the cart have the same horizontal velocity.</p>
+  </div>
+</div>
+
+<p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
   Failure Examples on Violations of Phenomenon Congruency.
 </p>
 
@@ -177,19 +191,34 @@ The video looks perfect. The lighting is realistic, the motion is almost smooth 
 Some scenarios are so complex that they trigger a total collapse of reasoning across all models tested. These represent the current ceiling of zero-shot scientific reasoning.
 {{< /justify >}}
 
-<div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
+<!-- <div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
   <div style="flex: 1;">
     <img src="img/vid_124_run_1.gif" alt="The Chemical Traffic Light " style="width: 100%;">
-    <p>The Chemical Traffic Light</p>
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> "A flask containing a yellow solution of glucose, sodium hydroxide, and the indicator indigocarmine is shown. The person lifts and gently shakes the flask."<br><strong>Expected:</strong> The yellow solution rapidly shifts toward green as the flask is shaken, showing the indicator’s partial oxidation by oxygen introduced from the air. Continued shaking drives the oxidation further and the color moves from green to red. When agitation stops, dissolved glucose reduces the indicator and the solution relaxes back to yellow.</p>
   </div>
   <div style="flex: 1;">
     <img src="img/vid_087_run_2.gif" alt="The Laser Fiber Optic " style="width: 100%;">
-    <p>The Laser Fiber Optic</p>
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> "A clear plastic water bottle has a small hole in its side, from which a smooth, laminar stream of water is flowing. A red laser pointer is aimed from the other side of the bottle, directly through the water and into the hole."<br><strong>Expected:</strong> The laser beam enters the stream and becomes "trapped." It reflects repeatedly off the inner surface of the water stream, causing the entire parabolic arc of the falling water to glow red as if it were a fiber optic cable.</p>
   </div>
 </div>
 
 <p style="text-align: center; font-style: italic; color: #666;">
   Failure Examples on Violations of Prompt Conistency.
+</p> -->
+
+<div style="display: flex; flex-direction: column; gap: 20px;">
+  <div style="text-align: center;">
+    <img src="img/vid_124_run_1.gif" alt="The Chemical Traffic Light " style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> A flask containing a yellow solution of glucose, sodium hydroxide, and the indicator indigocarmine is shown. The person lifts and gently shakes the flask.<br><strong>Expected:</strong> The yellow solution rapidly shifts toward green as the flask is shaken, showing the indicator’s partial oxidation by oxygen introduced from the air. Continued shaking drives the oxidation further and the color moves from green to red. When agitation stops, dissolved glucose reduces the indicator and the solution relaxes back to yellow.</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="img/vid_087_run_2.gif" alt="The Laser Fiber Optic " style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> A clear plastic water bottle has a small hole in its side, from which a smooth, laminar stream of water is flowing. A red laser pointer is aimed from the other side of the bottle, directly through the water and into the hole.<br><strong>Expected:</strong> The laser beam enters the stream and becomes "trapped." It reflects repeatedly off the inner surface of the water stream, causing the entire parabolic arc of the falling water to glow red as if it were a fiber optic cable.</p>
+  </div>
+</div>
+
+<p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
+  Failure Examples on Violations of Phenomenon Congruency.
 </p>
 
 #### The "Complexity Collapse": Failing the Setup
@@ -198,22 +227,37 @@ Some scenarios are so complex that they trigger a total collapse of reasoning ac
 Before a model can simulate physics, it must build the setup. In sophisticated prompts, models often fail Prompt Consistency, they cannot even construct the experimental setup correctly, making the result inevitably wrong.
 {{< /justify >}}
 
-</div><div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
+<!-- </div><div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
   <div style="flex: 1;">
     <img src="img/vid_226_run_2.gif" alt="The Heart Motor" style="width: 100%;">
-    <p>The Heart Motor</p>
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> "Position a battery vertically on top of the three neodymium magnets so that the magnets contact the battery’s negative terminal. Place a heart-shaped copper wire so that it can touch both the top of the battery (positive terminal) and the sides of the magnets simultaneously."<br><strong>Expected:</strong> When the copper wire touches both ends of the circuit, it begins to spin or move continuously, creating a small, self-turning “heart motor.</p>
   </div>
   <div style="flex: 1;">
     <img src="img/vid_212_run_1.gif" alt="The Polymer Trick" style="width: 100%;">
-    <p>The Polymer Trick</p>
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> "Put Superabsorbent polymer powder into one of the three opaque cups, pour water in them, and flip the three cups one after another."<br><strong>Expected:</strong> Only the cup containing the polymer retains the liquid, demonstrating the strong water-absorbing and gel-forming property of the superabsorbent polymer.</p>
+  </div>
+</div> -->
+
+<!-- <p style="text-align: center; font-style: italic; color: #666;">
+  Failure Examples on Violations of Prompt Conistency.
+</p> -->
+
+<div style="display: flex; flex-direction: column; gap: 20px;">
+  <div style="text-align: center;">
+    <img src="img/vid_226_run_2.gif" alt="The Heart Motor" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> Position a battery vertically on top of the three neodymium magnets so that the magnets contact the battery’s negative terminal. Place a heart-shaped copper wire so that it can touch both the top of the battery (positive terminal) and the sides of the magnets simultaneously.<br><strong>Expected:</strong> When the copper wire touches both ends of the circuit, it begins to spin or move continuously, creating a small, self-turning “heart motor.</p>
+  </div>
+  <div style="flex: 1;">
+    <img src="img/vid_212_run_1.gif" alt="The Polymer Trick" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> Put Superabsorbent polymer powder into one of the three opaque cups, pour water in them, and flip the three cups one after another.<br><strong>Expected:</strong> Only the cup containing the polymer retains the liquid, demonstrating the strong water-absorbing and gel-forming property of the superabsorbent polymer.</p>
   </div>
 </div>
 
-<p style="text-align: center; font-style: italic; color: #666;">
-  Failure Examples on Violations of Prompt Conistency.
+<p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
+  Failure Examples on Violations of Phenomenon Congruency.
 </p>
 
-#### Example Failure: Rotating Cups with Balls
+<!-- #### Example Failure: Rotating Cups with Balls
 
 {{< justify >}}
 Sora-2 failed to correctly understand centrifugal force and was unable to simulate the expected phenomenon in the rotating cups with balls experiment testing for centrifugal force understanding. When the system is spun around its center, both balls are expected to move outward and press against the sides of their respective cups, which are incorrectly portrayed in the image above.
@@ -233,7 +277,7 @@ While Sora-2 rendered realistic textures, it failed to adhere to the underlying 
 
 Unable to correctly simulate physical commonsense (correct dynamism) in some weaker models
 
-{{< image src="img/videoscience/pretty_but_wrong_basic_physical_commonsense.png" alt="pretty_but_wrong" width="95%" title="Figure 4: “Pretty but wrong physical commonsense” examples.">}}
+{{< image src="img/videoscience/pretty_but_wrong_basic_physical_commonsense.png" alt="pretty_but_wrong" width="95%" title="Figure 4: “Pretty but wrong physical commonsense” examples.">}} -->
 
 #### Cross-Model Case Study: The Spectrum of Scientific Hallucination
 
