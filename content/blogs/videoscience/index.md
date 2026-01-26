@@ -58,13 +58,13 @@ title="Figure 1: Left: A video model generating a physically plausible scene bas
 ## Video Model Reasoning and World Modeling
 
 {{< justify >}}
-What makes this moment particularly exciting is that video models are exhibiting zero-shot reasoning abilities, tackling tasks that involve scientific, mathematical, and spatial reasoning (cite Veo-3, zero-shot paper). Unlike their predecessors (cite), which often exhibited hallucinations of object permanence (add examples), these models are beginning to demonstrate "Chain-of-Frames" reasoning, materializing thought as a sequence of frame-by-frame visual representations.
+What makes this moment particularly exciting is that video models are exhibiting zero-shot reasoning abilities, tackling tasks that involve scientific, mathematical, and spatial reasoning ([Veo 3](https://arxiv.org/abs/2509.20328)). Unlike their predecessors, which often exhibited hallucinations of object permanence, these models are beginning to demonstrate "Chain-of-Frames" reasoning, materializing thought as a sequence of frame-by-frame visual representations.
 {{< /justify >}}
 
 ### Spatial Reasoning and Puzzle Solving
 
 {{< justify >}}
-This reasoning capability is most evident in spatial and puzzle-solving domains. Recent benchmarks, such as [VR-Bench](https://imyangc7.github.io/VRBench_Web/) and [VideoThinkBench](https://thinking-with-video.github.io/) (cite), have demonstrated that video models can now solve mazes, mentally rotate objects, and handle spatial obstacle avoidance with surprising accuracy.
+This reasoning capability is most evident in spatial and puzzle-solving domains. Recent benchmarks, such as [VR-Bench](https://imyangc7.github.io/VRBench_Web/) and [VideoThinkBench](https://thinking-with-video.github.io/), have demonstrated that video models can now solve mazes, mentally rotate objects, and handle spatial obstacle avoidance with surprising accuracy.
 
 <!-- - Maze solving examples: https://imyangc7.github.io/VRBench_Web/ -->
 <!-- - Puzzle reasoning examples: https://thinking-with-video.github.io/ -->
@@ -79,7 +79,7 @@ These achievements mark a pivotal shift: video models are no longer just generat
 ### Simulation and Robotics Applications
 
 {{< justify >}}
-In recent context [World Model Roadmap](https://world-model-roadmap.github.io/), [WorldSimBench](https://iranqin.github.io/WorldSimBench.github.io/), Video generation is increasingly framed as: implicit world model (physics + dynamics) + renderer (pixels). In this view, video models aren’t only content engines, they could be simulation engines. If the simulator is scientifically wrong, downstream systems trained on it can inherit those failures.
+In recent context of [World Model Roadmap](https://world-model-roadmap.github.io/), [WorldSimBench](https://iranqin.github.io/WorldSimBench.github.io/), video generation is increasingly framed as: implicit world model (physics + dynamics) + renderer (pixels). In this view, video models aren’t only content engines, they could be simulation engines. If the simulator is scientifically wrong, downstream systems trained on it can inherit those failures.
 
 The stakes for scientific accuracy are highest in robotics, where models must evolve from simple visual generators into reliable world simulators. Industry leaders like 1X and NVIDIA are developing world models, such as [1X-WorldModel](https://www.1x.tech/discover/1x-world-model) and [Cosmos](https://www.nvidia.com/en-us/ai/cosmos/), that function as virtual simulators, leveraging raw sensor data to predict complex material interactions and envision potential futures. Because these systems generate the massive datasets used to train physical AI at scale, their adherence to scientific laws is a critical prerequisite for the safety and effectiveness of robots in the real world.
 {{< /justify >}}
@@ -109,6 +109,23 @@ Unlike commonsense-based evaluations, each challenge in VideoScience-Bench requi
 - Undergraduate-level knowledge: Spanning 103 concepts across 14 topics in physics and chemistry
 - Complex reasoning: Moving beyond single-principle scenarios to cascading effects where second-order dynamics matter
   {{< /justify >}}
+
+</div><div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
+  <div style="flex: 1;">
+    <img src="img/vid_094_run_2.gif" alt="Prince Rupert's Drop Tail Break" style="width: 100%;">
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> "A teardrop-shaped piece of tempered glass is held at its bulbous head. Small pliers gently snip the thin tail end."<br><strong>Expected:</strong> The entire drop explosively shatters into powder as internal tension is released.</p>
+  </div>
+  <div style="flex: 1;">
+    <img src="img/vid_177_run_2.gif" alt="Polarized Plastic Fringes" style="width: 100%;">
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> "A clear plastic ruler is placed between two crossed polarizing filters and illuminated by a bright white light."<br><strong>Expected:</strong> The stressed plastic causes rotation of the light’s polarization plane in a wavelength-dependent way, yielding colored interference fringes.
+</p>
+  </div>
+</div>
+
+<p style="text-align: center; font-style: italic; color: #666;">
+  Examples from VideoScience-Bench showing model-generated videos and expected phenomena.
+</p>
+
 
 ### Evaluation Metrics
 
