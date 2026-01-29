@@ -112,7 +112,6 @@ Unlike commonsense-based evaluations, each challenge in VideoScience-Bench requi
 
 {{< image src="img/science_atlas_category.png" alt="videoscience_categories" width="70%" title="Subcategory frequency of questions From VideoScience-Bench.">}}
 
-<figure>
 </div><div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
   <div style="flex: 1;">
     <img src="img/vid_094_run_2.gif" alt="Prince Rupert's Drop Tail Break" style="width: 100%;">
@@ -124,10 +123,9 @@ Unlike commonsense-based evaluations, each challenge in VideoScience-Bench requi
 </p>
   </div>
 </div>
-<figcaption style="text-align: center; font-style: italic; color: #666;">
+<p style="text-align: center; font-style: italic; color: #666;">
   Examples from VideoScience-Bench showing model-generated videos and expected phenomena.
-</figcaption>
-</figure>
+</p>
 
 
 ### Evaluation Metrics
