@@ -219,52 +219,42 @@ Before a model can simulate physics, it must build the setup. In sophisticated p
   Failure Examples on Violations of Prompt Congruency.
 </p>
 
-<!-- #### Example Failure: Rotating Cups with Balls
-
-{{< justify >}}
-Sora-2 failed to correctly understand centrifugal force and was unable to simulate the expected phenomenon in the rotating cups with balls experiment testing for centrifugal force understanding. When the system is spun around its center, both balls are expected to move outward and press against the sides of their respective cups, which are incorrectly portrayed in the image above.
-{{< /justify >}}
-
-{{< image src="img/videoscience/centrifugal_failure.png" alt="centrifugal_failure" width="85%" title="Figure 2: Example failure on centrifugal-force based generation.">}}
-
-#### Example Failure: Electrolysis of Copper Sulfate
-
-{{< justify >}}
-While Sora-2 rendered realistic textures, it failed to adhere to the underlying electrochemical laws governing the electrolysis of copper sulfate. The model erroneously conflated oxidation and reduction at one electrode, leading to a nonphysical overproduction of solid copper and a failure to respect standard reaction kinetics.
-{{< /justify >}}
-
-{{< image src="img/videoscience/electrolysis_failure.png" alt="electrolysis_failure" width="85%" title="Figure 3: Example failure on electrochemistry.">}}
-
-#### Example Failure: Setup Failure
-
-Unable to correctly simulate physical commonsense (correct dynamism) in some weaker models
-
-{{< image src="img/videoscience/pretty_but_wrong_basic_physical_commonsense.png" alt="pretty_but_wrong" width="95%" title="Figure 4: “Pretty but wrong physical commonsense” examples.">}} -->
 
 #### Cross-Model Case Study: The Spectrum of Scientific Hallucination
 
 {{< justify >}}
-Example 107
+The three state-of-the-art AI video models Sora 2, Veo 3 and Kling-v2.5, when tasked with simulating a controlled electrochemical experiment: copper sulfate electrolysis. The prompt: "Two copper wires connected to a battery are placed in a blue copper sulfate solution." Beyond visual aesthetics, the objective is to test adherence to electrochemical laws. In a real-world scenario, this setup drives electrolysis, which should result in specific observable phenomena: bubbles appearing on the anode, metallic copper slowly depositing on the cathode, and the blue solution becoming lighter near the cathode as Cu²⁺ ions are depleted. The following critiques detail how each model fails to accurately simulate these foundational physical and chemical interactions.
 {{</ justify >}}
 
 <div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
   <div style="flex: 1;">
-    <img src="img/videoscience/sora_centrifugal.gif" alt="Sora-2 Failure" style="width: 100%;">
-    <p><strong>Sora-2</strong><br><small>Static/No Motion</small></p>
+    <img src="img/vid_138_run_2_sora.gif" alt="Sora-2 Failure" style="width: 100%;">
+    <p><strong>Sora-2</strong><br><small>Wrong Redox</small></p>
   </div>
   <div style="flex: 1;">
-    <img src="img/videoscience/veo_centrifugal.gif" alt="Veo-3 Failure" style="width: 100%;">
-    <p><strong>Veo-3</strong><br><small>Inverse Physics</small></p>
+    <img src="img/vid_138_run_2_veo.gif" alt="Veo-3 Failure" style="width: 100%;">
+    <p><strong>Veo-3</strong><br><small>Physical Morphing</small></p>
   </div>
   <div style="flex: 1;">
-    <img src="img/videoscience/kling_centrifugal.gif" alt="Kling Failure" style="width: 100%;">
-    <p><strong>Kling-v2.5</strong><br><small>Boundary Violation</small></p>
+    <img src="img/vid_138_run_2_kling.gif" alt="Kling Failure" style="width: 100%;">
+    <p><strong>Kling-v2.5</strong><br><small>Object Hallucination</small></p>
   </div>
 </div>
 
 <p style="text-align: center; font-style: italic; color: #666;">
-  Qualitative comparison across models for the same centrifugal force prompt.
+  Qualitative comparison across models for the same "Electrolysis of Copper Sulfate" prompt.
 </p>
+
+{{< justify >}}
+While Sora-2 rendered realistic textures, it failed to adhere to the underlying electrochemical laws governing the electrolysis of copper sulfate. The model erroneously conflated oxidation and reduction at one electrode, leading to a nonphysical overproduction of solid copper and a failure to respect standard reaction kinetics.
+
+Kling achieved high fidelity in lighting and fluid rendering, it fundamentally misunderstood the prompt's physical setup. Instead of submerging copper wires acting as electrodes, the model hallucinated entire cylindrical batteries (or capacitors) and submerged them directly into the solution.
+
+Veo failed to maintain the physical rigidity required for solid electrodes and ignored the chemical reaction entirely. The generated video exhibits "dream-like" physics where the copper rods morph, bend, and intersect with the glass beaker impossible ways, violating basic object permanence and solidity.
+
+Ultimately, this experiment demonstrates that current video models operate on visual association rather than physical causation; while they can successfully render the di`stinct components of the setup—copper, glass, and solution—they fail to simulate the underlying electrochemical circuit, ignoring the flow of electrons and ions required to drive the specific redox reactions defined by the prompt.
+{{< /justify >}}
+
 
 #### Takeaways: The “Pretty but Wrong” Problem
 
@@ -317,8 +307,8 @@ We hope VideoScience-Bench helps push video models toward being not only compell
 ## Get started
 
 - GitHub: https://github.com/hao-ai-lab/VideoScience
-- Dataset: HF LINK TBD
-- Leaderboard: HF LINK TBD
+<!-- - Dataset: HF LINK TBD -->
+- Leaderboard: https://huggingface.co/spaces/lmgame/videoscience-bench
 
 ## Citation
 
