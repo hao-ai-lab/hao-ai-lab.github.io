@@ -124,9 +124,9 @@ Unlike commonsense-based evaluations, each challenge in VideoScience-Bench requi
 </p>
   </div>
 </div>
-<p style="text-align: center; font-style: italic; color: #666;">
+<figcaption style="text-align: center; font-style: italic; color: #666;">
   Examples from VideoScience-Bench showing model-generated videos and expected phenomena.
-</p>
+</figcaption>
 </figure>
 
 
