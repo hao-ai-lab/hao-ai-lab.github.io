@@ -112,7 +112,8 @@ Unlike commonsense-based evaluations, each challenge in VideoScience-Bench requi
 
 {{< image src="img/science_atlas_category.png" alt="videoscience_categories" width="70%" title="Subcategory frequency of questions From VideoScience-Bench.">}}
 
-{{</div><div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
+<figure>
+</div><div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
   <div style="flex: 1;">
     <img src="img/vid_094_run_2.gif" alt="Prince Rupert's Drop Tail Break" style="width: 100%;">
     <p style="font-size: 0.85em;"><strong>Prompt:</strong> A teardrop-shaped piece of tempered glass is held at its bulbous head. Small pliers gently snip the thin tail end.<br><strong>Expected:</strong> The entire drop explosively shatters into powder as internal tension is released.</p>
@@ -123,10 +124,10 @@ Unlike commonsense-based evaluations, each challenge in VideoScience-Bench requi
 </p>
   </div>
 </div>
-
 <p style="text-align: center; font-style: italic; color: #666;">
   Examples from VideoScience-Bench showing model-generated videos and expected phenomena.
-</p>}}
+</p>
+</figure>
 
 
 ### Evaluation Metrics
