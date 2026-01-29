@@ -110,7 +110,7 @@ Unlike commonsense-based evaluations, each challenge in VideoScience-Bench requi
 - Complex reasoning: Moving beyond single-principle scenarios to cascading effects where second-order dynamics matter
   {{< /justify >}}
 
-{{< image src="img/science_atlas_category.png" alt="videoscience_categories" width="95%" title="Subcategory frequency of questions From VideoScience-Bench.">}}
+{{< image src="img/science_atlas_category.png" alt="videoscience_categories" width="70%" title="Subcategory frequency of questions From VideoScience-Bench.">}}
 
 </div><div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
   <div style="flex: 1;">
