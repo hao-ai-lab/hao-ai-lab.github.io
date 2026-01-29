@@ -247,7 +247,7 @@ The three state-of-the-art AI video models Sora 2, Veo 3 and Kling-v2.5, when ta
 </div>
 
 <p style="text-align: center; font-style: italic; color: #666;">
-  Qualitative comparison across models for the same "Electrolysis of Copper Sulfate" prompt.
+  Qualitative comparison across models for "Electrolysis of Copper Sulfate" prompt.
 </p>
 
 {{< justify >}}
@@ -268,8 +268,8 @@ A central takeaway is that today’s best video generators can be photorealistic
 
 That mismatch is exactly what VideoScience-Bench is designed to reveal:
 
-- models can imitate visual surface statistics
-- without reliably internalizing the causal structure and constraints of scientific systems
+- Models can imitate visual surface statistics
+- Without reliably internalizing the causal structure and constraints of scientific systems
   {{< /justify >}}
 
 {{< image src="img/sciencecompass_modelwise_radar_dense_v9-1.png" alt="expert_label_ranking" width="75%" title="Expert annotated model performance on VideoScienceBench.">}}
