@@ -110,6 +110,8 @@ Unlike commonsense-based evaluations, each challenge in VideoScience-Bench requi
 - Complex reasoning: Moving beyond single-principle scenarios to cascading effects where second-order dynamics matter
   {{< /justify >}}
 
+{{< image src="img/science_atlas_category.png" alt="videoscience_categories" width="95%" title="Subcategory frequency of questions From VideoScience-Bench.">}}
+
 </div><div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
   <div style="flex: 1;">
     <img src="img/vid_094_run_2.gif" alt="Prince Rupert's Drop Tail Break" style="width: 100%;">
@@ -180,10 +182,13 @@ The video looks perfect. The lighting is realistic, the motion is almost smooth 
     <p style="font-size: 0.85em; margin-top: 10px;"><strong>Prompt:</strong> A cart moves forward at a constant speed and launches a ball straight upward from its top."<br><strong>Expected:</strong> The ball travels upward and then downward in a parabolic path, but lands back on the moving cart because both the ball and the cart have the same horizontal velocity.</p>
   </div>
 </div>
-
 <p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
   Failure Examples on Violations of Phenomenon Congruency.
 </p>
+
+{{< justify >}}
+These two examples perfectly illustrate the current "uncanny valley" of AI video generation: High Visual Fidelity, Low Physical Logic. In both the spaghetti and the cart simulations, the model achieves impressive "Spatio-Temporal Coherence"—the lighting is realistic, the motion is smooth, and object identity is stable. However, both fail primarily in Phenomenon Congruency. The video generation model operates as a pattern-matcher rather than a physics engine; it knows what a breaking stick or a launching ball looks like in isolation, but it lacks the underlying understanding of material science (the "snap-back" effect in spaghetti) or Newtonian mechanics (conservation of momentum in the cart). The result is a video that looks perfect at a glance but falls apart under scientific scrutiny, revealing that the model is hallucinating motion rather than simulating reality.
+{{< /justify >}}
 
 #### The Universal Failure: When No One Gets It Right
 
@@ -217,9 +222,13 @@ Some scenarios are so complex that they trigger a total collapse of reasoning ac
   </div>
 </div>
 
-<p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
+{{< justify >}}
+The failure of these generated clips represents more than just a visual glitch; it is a total collapse of scientific causality. In the 'Traffic Light' reaction, the model successfully renders the liquid's texture but fails to link physical agitation to the chemical redox cycle—ignoring the oxygen-driven transition from yellow to green. Similarly, in the laser experiment, the model treats light as a 2D overlay rather than a physical entity governed by refractive indices. It fails to 'trap' the beam within the water stream via Total Internal Reflection, proving that while AI can mimic the appearance of reality, it still lacks a foundational world model of the laws of physics and chemistry.
+{{< /justify >}}
+
+<!-- <p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
   Failure Examples on Violations of Phenomenon Congruency.
-</p>
+</p> -->
 
 #### The "Complexity Collapse": Failing the Setup
 
@@ -239,7 +248,7 @@ Before a model can simulate physics, it must build the setup. In sophisticated p
 </div> -->
 
 <!-- <p style="text-align: center; font-style: italic; color: #666;">
-  Failure Examples on Violations of Prompt Conistency.
+  Failure Examples on Violations of Prompt Congruency.
 </p> -->
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
@@ -254,7 +263,7 @@ Before a model can simulate physics, it must build the setup. In sophisticated p
 </div>
 
 <p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
-  Failure Examples on Violations of Phenomenon Congruency.
+  Failure Examples on Violations of Prompt Congruency.
 </p>
 
 <!-- #### Example Failure: Rotating Cups with Balls
@@ -315,7 +324,7 @@ That mismatch is exactly what VideoScience-Bench is designed to reveal:
 - without reliably internalizing the causal structure and constraints of scientific systems
   {{< /justify >}}
 
-{{< image src="img/videoscience/model_rankings_expert_labeled.png" alt="expert_label_ranking" width="95%" title="Figure 5: model rankings.">}}
+{{< image src="img/sciencecompass_modelwise_radar_dense_v9-1.png" alt="expert_label_ranking" width="95%" title="Expert annotated model performance on VideoScienceBench.">}}
 
 ### VideoScience-Judge: Scalable Expert-level Evaluation
 
@@ -329,7 +338,7 @@ Manual evaluation of scientific accuracy is labor-intensive and requires domain 
 Our experiments demonstrate that this method achieves a correlation of 0.89 with human expert ratings, significantly outperforming other evaluation methods.
 {{< /justify >}}
 
-{{< image src="img/videoscience/judge_and_human_ratings_correlation.png" alt="correlation_charts" width="90%" title="Figure 6: VideoScience-Judge (CL+CV) achieves a Spearman correlation of 0.96, significantly outperforming all other baselines. This indicates our logic-grounded verification aligns almost perfectly with human scientific evaluation..">}}
+{{< image src="img/vsci_judge_correlation_blog.png" alt="correlation_charts" width="90%" title="VideoScience-Judge (CL+CV) achieves a Spearman correlation of 0.96, significantly outperforming all other baselines. This indicates our logic-grounded verification aligns almost perfectly with human scientific evaluation..">}}
 
 ### The Bottom Line
 
