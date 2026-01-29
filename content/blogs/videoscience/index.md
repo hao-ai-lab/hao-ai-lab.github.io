@@ -201,7 +201,7 @@ The failure of these generated clips represents more than just a visual glitch; 
 #### The "Complexity Collapse": Failing the Setup
 
 {{< justify >}}
-Before a model can simulate physics, it must build the setup. In sophisticated prompts, models often fail Prompt Consistency, they cannot even construct the experimental setup correctly, making the result inevitably wrong.
+Current video generation models are masters of aesthetic mimicry, but they are often functionally illiterate when it comes to the laws of physics. Before a model can simulate gravity, electromagnetism, or optics, it must first "build" the experimental setup correctly. In sophisticated prompts, models often fail Prompt Consistency, they cannot even construct the experimental setup correctly, making the result inevitably wrong.
 {{< /justify >}}
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
@@ -210,14 +210,19 @@ Before a model can simulate physics, it must build the setup. In sophisticated p
     <p style="font-size: 0.85em;"><strong>Prompt:</strong> Position a battery vertically on top of the three neodymium magnets so that the magnets contact the battery’s negative terminal. Place a heart-shaped copper wire so that it can touch both the top of the battery (positive terminal) and the sides of the magnets simultaneously.<br><strong>Expected:</strong> When the copper wire touches both ends of the circuit, it begins to spin or move continuously, creating a small, self-turning “heart motor.</p>
   </div>
   <div style="flex: 1;">
-    <img src="img/vid_212_run_1.gif" alt="The Polymer Trick" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
-    <p style="font-size: 0.85em;"><strong>Prompt:</strong> Put Superabsorbent polymer powder into one of the three opaque cups, pour water in them, and flip the three cups one after another.<br><strong>Expected:</strong> Only the cup containing the polymer retains the liquid, demonstrating the strong water-absorbing and gel-forming property of the superabsorbent polymer.</p>
+    <img src="img/vid_173_run_1.gif" alt="Polarized Film Colors" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
+    <p style="font-size: 0.85em;"><strong>Prompt:</strong> A plastic film is placed between two crossed polarizing filters and illuminated by a white flashlight; the film is slowly twisted while being recorded.<br><strong>Expected:</strong> The film’s birefringence splits light into components that interfere after passing through the analyzer. Rotation changes retardation, producing colored interference fringes dependent on polarization angle.</p>
   </div>
 </div>
-
 <p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
   Failure Examples on Violations of Prompt Congruency.
 </p>
+
+{{< justify >}}
+While these AI models can render the "textures" of a laboratory—the glint of copper or the shimmer of a film—they fundamentally fail the "construction phase" of the experiment. In the first video, it renders a motor that cannot run because the model doesn't understand that a circuit must be closed; it places the wire near the battery rather than connecting it to the terminals. While the prompt asks for the copper wire to touch both the positive terminal and the magnets, the model renders the wire floating or balanced on the "shoulders" of the battery.
+
+In the second, it treats "birefringence" as a decorative skin on the plastic rather than an optical result of light passing through a specific sequence of filters. To see birefringence, the plastic must be sandwiched between two filters. Here, the film is held above two side-by-side filters that aren't even overlapping.
+{{< /justify >}}
 
 
 #### Cross-Model Case Study: The Spectrum of Scientific Hallucination
