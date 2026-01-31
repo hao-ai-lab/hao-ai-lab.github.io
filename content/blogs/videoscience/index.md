@@ -43,13 +43,13 @@ We also introduce VideoScience-Judge, a scalable VLM-as-a-judge pipeline that ev
 {{< /justify >}}
 
 {{< two_images
-src1="img/phygenbench_3-4.gif"
+src1="img/phygenbench_3-2.gif"
 src2="img/vid_087_run_2.gif"
 alt1="physical_commonsense_world_modeling"
 alt2="scientific_reasoning_world_modeling"
 width1="50%"
 width2="50%"
-title="Figure 1: Left: A video model generating a physically plausible scene based on everyday commonsense ('A balloon is floating over a serene and mirror-like ocean.', Source: PhyGenBench). Right: A video generation task that requires scientific reasoning, where correct outcomes depend on multiple interacting laws rather than visual plausibility alone. ('A clear plastic water bottle has a small hole in its side, from which a smooth, laminar stream of water is flowing. A red laser pointer is aimed from the other side of the bottle, directly through the water and into the hole.', Source: VideoScience-Bench)."
+title="Figure 1: Left: A video model generating a physically plausible scene based on commonsense ('A cup of oil is slowly poured out in the space station, releasing the liquid into the surrounding area', Source: PhyGenBench). Right: A video generation task that requires scientific reasoning, where correct outcomes depend on multiple interacting laws rather than visual plausibility alone. ('A clear plastic water bottle has a small hole in its side, from which a smooth, laminar stream of water is flowing. A red laser pointer is aimed from the other side of the bottle, directly through the water and into the hole.', Source: VideoScience-Bench)."
 >}}
 
 ## Video Model Reasoning and World Modeling
@@ -305,13 +305,11 @@ Video models are at an inflection point. If we want them to become reliable worl
 - enable safer and more capable robotics
 - power education and training tools
 - support rapid engineering prototyping and testing
+
+We hope VideoScience-Bench helps push video models toward being not only compelling generators, but faithful simulators that can reason about the laws governing our world.
 {{< /justify >}}
 
 {{< youtube Coy2TyBcT4g>}}
-
-{{< justify >}}
-We hope VideoScience-Bench helps push video models toward being not only compelling generators, but faithful simulators that can reason about the laws governing our world.
-{{< /justify >}}
 
 ## Get started
 
