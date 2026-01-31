@@ -305,9 +305,11 @@ Video models are at an inflection point. If we want them to become reliable worl
 - enable safer and more capable robotics
 - power education and training tools
 - support rapid engineering prototyping and testing
+{{< /justify >}}
 
 {{< youtube Coy2TyBcT4g>}}
 
+{{< justify >}}
 We hope VideoScience-Bench helps push video models toward being not only compelling generators, but faithful simulators that can reason about the laws governing our world.
 {{< /justify >}}
 
