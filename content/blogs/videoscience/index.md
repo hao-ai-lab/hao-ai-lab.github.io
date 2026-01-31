@@ -2,22 +2,19 @@
 title = "From Physical Commonsense to Scientific Reasoning: Why World Modeling in Video Matters"
 date = 2026-01-19T12:00:00-08:00
 authors = ["Lanxiang Hu", "Abhilash Shankarampeta", "Yixin Huang", "Zilin Dai", "Haoyang Yu", "Yujie Zhao", "Haoqiang Kang", "Daniel Zhao", "Tajana Rosing", "Hao Zhang"]
-
 ShowReadingTime = true
 draft = false
-
+[socialIcons]
+    [[socialIcons.icon]]
+      name = "twitter"
+      url = "https://twitter.com"
+    [[socialIcons.icon]]
+      name = "github"
+      url = "https://github.com/hao-ai-lab/VideoScience"
 [cover]
-image = "/img/header.png"
-alt = "scientific reasoning in video world models"
-caption = "Video generations are getting impressively realistic, but scientific correctness is a different bar. VideoScience-Bench evaluates whether video models behave like faithful simulators, not just good renderers."
-
-[[socialIcons.icon]]
-name = "twitter"
-url = "https://twitter.com"
-
-[[socialIcons.icon]]
-name = "github"
-url = "https://github.com/hao-ai-lab/VideoScience"
+  image = "img/header.png"
+  alt = "scientific reasoning in video world models"
+  caption = "Video generations are getting impressively realistic, but scientific correctness is a different bar. VideoScience-Bench evaluates whether video models behave like faithful simulators, not just good renderers."
 +++
 
 <style>
@@ -308,6 +305,8 @@ Video models are at an inflection point. If we want them to become reliable worl
 - enable safer and more capable robotics
 - power education and training tools
 - support rapid engineering prototyping and testing
+
+{{< youtube Coy2TyBcT4g>}}
 
 We hope VideoScience-Bench helps push video models toward being not only compelling generators, but faithful simulators that can reason about the laws governing our world.
 {{< /justify >}}
