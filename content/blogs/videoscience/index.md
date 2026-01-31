@@ -7,7 +7,7 @@ ShowReadingTime = true
 draft = false
 
 [cover]
-image = "img/header.png"
+image = "/img/header.png"
 alt = "scientific reasoning in video world models"
 caption = "Video generations are getting impressively realistic, but scientific correctness is a different bar. VideoScience-Bench evaluates whether video models behave like faithful simulators, not just good renderers."
 
@@ -42,7 +42,7 @@ img[alt="scientific reasoning in video world models"] {
 {{< justify >}}
 TL;DR: The golden age of AI video has mastered the "look" of reality, but it has yet to learn the laws of reality. Without adhering to rigorous scientific principles, even the most photorealistic model remains a high-fidelity hallucination engine rather than a reliable world simulator. To bridge this gap, we introduce VideoScience-Bench: the first benchmark specifically designed to move beyond "physical commonsense" and evaluate undergraduate-level scientific reasoning in video models.
 
-This blog post introduces VideoScience-Bench, a benchmark designed to evaluate undergraduate-level scientific understanding in video models, and VideoScience-Judge, a scalable VLM-as-a-judge pipeline that evaluates generated videos against rigorous scientific criteria. Correlation analysis shows that VideoScience-Judge achieves the strongest alignment with expert-rated rankings and best captures a video model’s scientific reasoning capability in comparison with existing benchmarks.
+We also introduce VideoScience-Judge, a scalable VLM-as-a-judge pipeline that evaluates generated videos against rigorous scientific criteria. Correlation analysis shows that VideoScience-Judge achieves the strongest alignment with expert-rated rankings and best captures a video model’s scientific reasoning capability in comparison with existing benchmarks.
 {{< /justify >}}
 
 {{< two_images
@@ -84,7 +84,7 @@ In recent context of [World Model Roadmap](https://world-model-roadmap.github.io
 The stakes for scientific accuracy are highest in robotics, where models must evolve from simple visual generators into reliable world simulators. Industry leaders like 1X and NVIDIA are developing world models, such as [1X-WorldModel](https://www.1x.tech/discover/1x-world-model) and [Cosmos](https://www.nvidia.com/en-us/ai/cosmos/), that function as virtual simulators, leveraging raw sensor data to predict complex material interactions and envision potential futures. Because these systems generate the massive datasets used to train physical AI at scale, their adherence to scientific laws is a critical prerequisite for the safety and effectiveness of robots in the real world.
 {{< /justify >}}
 
-## Scientific Reasoning as the Next Step
+## Scientific Reasoning as the Foundation of World Modeling
 
 {{< justify >}}
 Spatial reasoning and puzzles are an important leap forward, but to be broadly useful, video models must evolve from Physical Commonsense (everyday intuition) to Scientific Reasoning (the rigorous application of multiple interacting principles).
@@ -124,7 +124,7 @@ Unlike commonsense-based evaluations, each challenge in VideoScience-Bench requi
 </div>
 
 <p style="text-align: center; font-style: italic; color: #666;">
-  Examples from VideoScience-Bench showing model-generated videos and expected phenomena.
+  Examples from VideoScience-Bench showing Sora-2 generated videos and expected phenomena.
 </p>
 
 
@@ -168,7 +168,7 @@ The video looks perfect. The lighting is realistic, the motion is almost smooth 
   </div>
 </div>
 <p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
-  Failure Examples on Violations of Phenomenon Congruency.
+  Failure Examples on Violations of Phenomenon Congruency generated using Sora-2.
 </p>
 
 {{< justify >}}
@@ -192,6 +192,9 @@ Some scenarios are so complex that they trigger a total collapse of reasoning ac
     <p style="font-size: 0.85em;"><strong>Prompt:</strong> A clear plastic water bottle has a small hole in its side, from which a smooth, laminar stream of water is flowing. A red laser pointer is aimed from the other side of the bottle, directly through the water and into the hole.<br><strong>Expected:</strong> The laser beam enters the stream and becomes "trapped." It reflects repeatedly off the inner surface of the water stream, causing the entire parabolic arc of the falling water to glow red as if it were a fiber optic cable.</p>
   </div>
 </div>
+<p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
+  Failure Examples generated using Sora-2 on multi-concept scientific phenomena.
+</p>
 
 {{< justify >}}
 The failure of these generated clips represents more than just a visual glitch; it is a total collapse of scientific causality. In the 'Traffic Light' reaction, the model successfully renders the liquid's texture but fails to link physical agitation to the chemical redox cycle—ignoring the oxygen-driven transition from yellow to green. Similarly, in the laser experiment, the model treats light as a 2D overlay rather than a physical entity governed by refractive indices. It fails to 'trap' the beam within the water stream via Total Internal Reflection, proving that while AI can mimic the appearance of reality, it still lacks a foundational world model of the laws of physics and chemistry.
@@ -215,7 +218,7 @@ Current video generation models are masters of aesthetic mimicry, but they are o
   </div>
 </div>
 <p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
-  Failure Examples on Violations of Prompt Congruency.
+  Failure Examples on Violations of Prompt Congruency generated using Sora-2.
 </p>
 
 {{< justify >}}
@@ -312,7 +315,7 @@ We hope VideoScience-Bench helps push video models toward being not only compell
 ## Get started
 
 - GitHub: https://github.com/hao-ai-lab/VideoScience
-<!-- - Dataset: HF LINK TBD -->
+- Paper: https://arxiv.org/abs/2512.02942
 - Leaderboard: https://huggingface.co/spaces/lmgame/videoscience-bench
 
 ## Citation
