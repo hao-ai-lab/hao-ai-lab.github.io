@@ -49,7 +49,7 @@ alt1="physical_commonsense_world_modeling"
 alt2="scientific_reasoning_world_modeling"
 width1="50%"
 width2="50%"
-title="Figure 1: Left: A video model generating a physically plausible scene based on commonsense ('A cup of oil is slowly poured out in the space station, releasing the liquid into the surrounding area', Source: PhyGenBench). Right: A video generation task that requires scientific reasoning, where correct outcomes depend on multiple interacting laws rather than visual plausibility alone. ('A clear plastic water bottle has a small hole in its side, from which a smooth, laminar stream of water is flowing. A red laser pointer is aimed from the other side of the bottle, directly through the water and into the hole.', Source: VideoScience-Bench)."
+title="Figure 1: Left: A video model generating a physically plausible scene based on everyday commonsense ('A stone is gently placed on the surface of a pool filled with water.', Source: PhyGenBench). Right: A video generation task that requires scientific reasoning, where correct outcomes depend on multiple interacting laws rather than visual plausibility alone. ('A clear plastic water bottle has a small hole in its side, from which a smooth, laminar stream of water is flowing. A red laser pointer is aimed from the other side of the bottle, directly through the water and into the hole.', Source: VideoScience-Bench)."
 >}}
 
 ## Video Model Reasoning and World Modeling
