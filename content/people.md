@@ -8,7 +8,11 @@ summary: people
 
 <!-- {{< image src="/img/group-photos/thanksgiving-dinner-2024-orig.jpg" alt="Lab Group Photo" title="Hao AI Lab members enjoying Italian food in La Jolla Cove during Thanksgiving" width="70%" >}} -->
 
+<!-- 
 {{< image src="/img/group-photos/thanksgiving-dinner-2024-gpt.jpg" alt="Lab Group Photo" title="Hao AI Lab members enjoying Italian food in La Jolla Cove during Thanksgiving" width="70%" >}}
+ -->
+
+ {{< image src="/img/group-photos/eoy-dinner-2025.jpg" alt="Lab Group Photo" title="Hao AI Lab members enjoying Mediterranean food in San Diego before Christmas break" width="70%" >}}
 
 
 ### Lab Members
