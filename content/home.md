@@ -32,9 +32,15 @@ We also develop and maintain open-source models, evaluations, and systems to dem
 
 <!-- <div class="news-year">2025</div> -->
 
-{{< newsEntry date="2025/09" >}}
+{{< newsEntry date="2025/12" >}}
 🎉🎉 In 2025, We have 3 ICLR, 1 ICML, 1 ACL, 1 TPAMI, and 3 NeurIPS papers. Kudos to our lab members for another productive year!
 {{< /newsEntry >}}
+
+
+{{< newsEntry date="2025/12" >}}
+AMD gifted our lab with a Mi350x node! See our [recent post](https://x.com/haoailab/status/1999559320007283063) here.
+{{< /newsEntry >}}
+
 
 
 {{< newsEntry date="2025/06" >}}
@@ -44,10 +50,6 @@ Hao was awarded with [Google ML and Systems Junior Faculty Award](https://datasc
 
 {{< newsEntry date="2025/06" >}}
 Hao was norminated [2024 MIT Technology Review Innovators Under 35 (TR35), China List](https://www.innovatorsunder35.com/the-list/hao-zhang/)
-{{< /newsEntry >}}
-
-{{< newsEntry date="2025/05" >}}
-AMD gifted our lab with a MI355x node!
 {{< /newsEntry >}}
 
 
@@ -107,7 +109,7 @@ Hao officially joined UCSD!
 &emsp;
 
 ### Sponsors
-Hao AI Lab is sponsored by HDSI, NVIDIA, Google, Snowflake, Lemonslice, and AMD. We are grateful for their support!
+Hao AI Lab is sponsored by HDSI, NVIDIA, Google, Snowflake, Lemonslice, AMD, Modal, and GMI. We are grateful for their support!
 {{< sponsor_grid >}}
   {{< sponsor imageDay="HDSI.png" imageNight="HDSI-dark.png" link="https://datascience.ucsd.edu/" >}}
   {{< sponsor imageDay="nvidia.png" imageNight="nvidia-dark.png" link="https://www.nvidia.com" >}}
@@ -115,4 +117,7 @@ Hao AI Lab is sponsored by HDSI, NVIDIA, Google, Snowflake, Lemonslice, and AMD.
   {{< sponsor imageDay="snow.png" imageNight="snow-dark.png" link="https://www.snowflake.com/en/" >}}
   {{< sponsor imageDay="lemonslice.png" imageNight="lemonslice.png" link="https://lemonslice.com/" >}}
   {{< sponsor imageDay="AMD.png" imageNight="AMD-dark.png" link="https://www.amd.com" >}}
+  {{< sponsor imageDay="Modal-Light.svg" imageNight="Modal-Dark.svg" link="https://modal.com/" >}}
+  {{< sponsor imageDay="gmi.svg" imageNight="gmi.svg" link="https://www.gmicloud.ai/" >}}
+
 {{< /sponsor_grid >}}
