@@ -12,7 +12,7 @@ summary: people
 {{< image src="/img/group-photos/thanksgiving-dinner-2024-gpt.jpg" alt="Lab Group Photo" title="Hao AI Lab members enjoying Italian food in La Jolla Cove during Thanksgiving" width="70%" >}}
  -->
 
- {{< image src="/img/group-photos/eoy-dinner-2025.jpg" alt="Lab Group Photo" title="Hao AI Lab members enjoying Mediterranean food in San Diego before Christmas break" width="70%" >}}
+ {{< image src="/img/group-photos/eoy-dinner-2025.jpg" alt="Lab Group Photo" title="Hao AI Lab members enjoying Mediterranean food in San Diego before Christmas break in 2025" width="70%" >}}
 
 
 ### Lab Members
@@ -26,7 +26,7 @@ summary: people
 
 {{< lab_member name="Lanxiang Hu" role="PhD Student" image="lanxiang_hu.jpg" academic="https://snyhlxde1.github.io/" twitter="https://twitter.com/Lanxiang_Hu" >}}
 
-{{< lab_member name="Mingjia Huo" role="PhD Student (rotation)" image="mingjia_huo.jpg" academic="https://mignonjia.github.io/">}}
+{{< lab_member name="Mingjia Huo" role="PhD Student" image="mingjia_huo.jpg" academic="https://mignonjia.github.io/">}}
 
 {{< lab_member name="Will Lin" role="PhD Student" image="will_lin.png" academic="https://github.com/SolitaryThinker" twitter="https://x.com/wlsaidhi">}}
 
