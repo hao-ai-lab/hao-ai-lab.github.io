@@ -1,7 +1,7 @@
 +++
 title = "DistCA"
 description = "Core Attention Disaggregation for Efficient Long-context Language Model Training"
-date = 2025-10-17T12:00:00-08:00
+date = 2025-12-21T12:00:00-08:00
 authors = ["Yonghao Zhuang", "Junda Chen", "Bo Pang", "Yi Gu", "Yibo Zhu", "Yimin Jiang", "Ion Stoica", "Eric Xing", "Hao Zhang"]
 author = "Yonghao Zhuang, Junda Chen, Bo Pang, Yi Gu, Yibo Zhu, Yimin Jiang, Ion Stoica, Eric Xing, Hao Zhang"
 ShowReadingTime = true
