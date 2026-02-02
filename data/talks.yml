@@ -3,6 +3,14 @@
   url: "https://www.nvidia.com/en-us/on-demand/session/other25-dynamoday09/?playlistId=playList-e42aee58-4db9-4ce4-8a6f-c41d8e272d72"
   description: "The Future of AI Inference."
 
+- title: "Talk at Workshop on Next Practices in Video Generation and Evaluation @ NeurIPS 2025 12/2025"
+  url: "https://neurips.cc/virtual/2025/loc/san-diego/131807"
+  description: "Recent advances in video generation and evaluation."
+
+- title: "Talk at The First Workshop on Efficient Reasoning @ NeurIPS 2025 12/2025"
+  url: "https://neurips.cc/virtual/2025/loc/san-diego/136403"
+  description: "Reasoning with Confidence."
+
 - title: "Talk at GPU Mode: Lmgame 08/2025"
   url: "https://www.youtube.com/embed/Yb9MiSInuEs?si=Uvcvdq4beejR5iiC"
   description: "LLM/VLM gaming agents, model evaluation and training games."
