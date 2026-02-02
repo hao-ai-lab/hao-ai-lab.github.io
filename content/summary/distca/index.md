@@ -13,7 +13,7 @@ github = "hao-ai-lab/distca"
 [cover]
     image = "/img/distca.gif"
     alt = "DistCA"
-    caption = "DistCA eliminates core attention imbalance in long-context LLM training by disaggregates core attention from other components and treats core attention as an individual unit of work."
+    caption = "DistCA eliminates core attention imbalance in long-context LLM training by disaggregating core attention from other components and treats core attention as an individual unit of work."
 
 +++
 
