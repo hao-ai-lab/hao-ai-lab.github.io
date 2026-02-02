@@ -17,7 +17,7 @@ github = "hao-ai-lab/distca"
 
 +++
 
-{{< socialBadges arxiv-index="2401.09670" >}}
+{{< socialBadges arxiv-index="2510.18121" >}}
 
 {{< justify >}}
 
