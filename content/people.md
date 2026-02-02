@@ -32,7 +32,12 @@ summary: people
 
 {{< lab_member name="Peiyuan Zhang" role="PhD Student" image="peiyuan_zhang.png" academic="https://veiled-texture-20c.notion.site/Peiyuan-Zhang-ab24b48621c9491db767a76df860873a" twitter="https://x.com/py_z001?s=21&t=8b6Ok2N1qcsERbvXX588qA">}}
 
+{{< lab_member name="Yu-Yang Qian" role="Visiting PhD Student" image="yu_yang_qian.jpg" academic="https://www.lamda.nju.edu.cn/qianyy/" twitter="https://x.com/YuYangQian_ai" >}}
+
+<!-- 
 {{< lab_member name="Minghang Deng" role="Master's" image="minghang_deng.jpg" academic="https://www.linkedin.com/in/minghang-deng">}}
+pending alumni entry
+-->
 
 {{< lab_member name="Humaira Firdowse" role="Master's" image="humaira_mohammed.jpg" academic="https://github.com/humairafirdowse">}}
 
@@ -56,7 +61,6 @@ summary: people
 
 {{< lab_member name="Yiming Zhao" role="Master's" image="yiming_zhao.png" academic="https://www.linkedin.com/in/yiming-zhao-zym2002/" twitter="https://x.com/YimingBob">}}
 
-
 {{< lab_member name="Yu-hsiang Shao" role="Master's" image="yuhsiang_shao.jpg" academic="https://www.linkedin.com/in/yu-hsiang-shao-1b33251b6/" twitter="https://x.com/KyleShao2K">}}
 
 {{< lab_member name="Nikhil Paleti" role="Master's" image="Nikhil_Paleti.png" academic="https://nikhil-paleti.github.io/" twitter="https://x.com/nikhil2362">}}
@@ -79,14 +83,14 @@ summary: people
 {{< lab_member name="Haoyang Yu" role="Undergrad Intern" image="haoyang_yu.jpeg" academic="https://www.linkedin.com/in/haoyang-yu-8b1997257/">}}
 
 {{< lab_member name="Jerry Xu" role="Undergrad Intern" image="jerry_xu.jpg" academic="https://www.linkedin.com/in/jerry-xu-a8a905217/">}}
-{{< lab_member name="Wenxuan Tan" role="Undergrad Intern" image="wenxuan_tan.jpg" academic="https://github.com/Edenzzzz">}}
 
-{{< lab_member name="Yu-Yang Qian" role="Visiting PhD Student" image="yu_yang_qian.jpg" academic="https://www.lamda.nju.edu.cn/qianyy/" twitter="https://x.com/YuYangQian_ai" >}}
+{{< lab_member name="Wenxuan Tan" role="Undergrad Intern" image="wenxuan_tan.jpg" academic="https://github.com/Edenzzzz">}}
 
 {{< /lab_members_grid >}}
 
 ### Alumni
 {{< alumni >}}
+{{< alumni_entry name="Forrest Dai" description="Master's, now software engineer at Meta" homepage="https://www.linkedin.com/in/forrest-dai/">}}
 {{< alumni_entry name="Yongqi Chen" description="Research Intern, now at stealth mode startup" homepage="https://brianchen1129.github.io/">}}
 {{< alumni_entry name="Zheyu Fu" description="Master's, now software engineer at NVIDIA" homepage="https://www.linkedin.com/in/zheyu-fu-1b4667231/">}}
 {{< alumni_entry name="Runlong Su" description="Master's, now software engineer at Bytedance" homepage="https://www.linkedin.com/in/runlong-su-24132b317/">}}
