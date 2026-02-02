@@ -36,14 +36,14 @@ summary: people
 
 {{< lab_member name="Peiyuan Zhang" role="PhD Student" image="peiyuan_zhang.png" academic="https://veiled-texture-20c.notion.site/Peiyuan-Zhang-ab24b48621c9491db767a76df860873a" twitter="https://x.com/py_z001?s=21&t=8b6Ok2N1qcsERbvXX588qA">}}
 
-{{< lab_member name="Yu-Yang Qian" role="Visiting PhD Student" image="yu_yang_qian.jpg" academic="https://www.lamda.nju.edu.cn/qianyy/" twitter="https://x.com/YuYangQian_ai" >}}
-
 <!-- 
 {{< lab_member name="Minghang Deng" role="Master's" image="minghang_deng.jpg" academic="https://www.linkedin.com/in/minghang-deng">}}
 pending alumni entry
 -->
 
+<!-- 
 {{< lab_member name="Humaira Firdowse" role="Master's" image="humaira_mohammed.jpg" academic="https://github.com/humairafirdowse">}}
+-->
 
 <!-- 
 {{< lab_member name="Ashwin Ramachandran" role="Master's" image="ashwin_ramachandran.jpg" academic="https://ashwinramachandran2002.github.io/">}}
@@ -51,7 +51,9 @@ pending alumni entry
 
 {{< lab_member name="Yixin Huang" role="Master's" image="yixin_huang.jpg" academic="https://yixin-huang1.github.io/yixinhuang1.github.io/" twitter="https://x.com/Yixinhuang48">}}
 
-<!-- {{< lab_member name="Mathew Luo" role="Master's" image="mathew_luo.jpg" academic="https://www.linkedin.com/in/mathewluo/" >}} -->
+<!-- 
+{{< lab_member name="Mathew Luo" role="Master's" image="mathew_luo.jpg" academic="https://www.linkedin.com/in/mathewluo/" >}} 
+-->
 
 {{< lab_member name="Abhilash Shankarampeta" role="Master's" image="ABHILASH_SHANKARAMPETA.jpg" academic="https://abhilashreddys.github.io/" twitter="https://x.com/areddys53">}}
 
@@ -68,10 +70,6 @@ pending alumni entry
 {{< lab_member name="Yu-hsiang Shao" role="Master's" image="yuhsiang_shao.jpg" academic="https://www.linkedin.com/in/yu-hsiang-shao-1b33251b6/" twitter="https://x.com/KyleShao2K">}}
 
 {{< lab_member name="Nikhil Paleti" role="Master's" image="Nikhil_Paleti.png" academic="https://nikhil-paleti.github.io/" twitter="https://x.com/nikhil2362">}}
-
-<!--
-{{< lab_member name="Yongqi Chen" role="Research Intern" image="yongqi_chen.jpg" academic="https://brianchen1129.github.io/">}}
--->
 
 {{< lab_member name="Wei Zhou" role="Research Intern" image="wei_zhou.png" academic="https://www.linkedin.com/in/wei-zhou3/">}} 
 
@@ -94,6 +92,7 @@ pending alumni entry
 
 ### Alumni
 {{< alumni >}}
+{{< alumni_entry name="Yu-Yang Qian" description="Visiting PhD Student" homepage="https://www.lamda.nju.edu.cn/qianyy/">}}
 {{< alumni_entry name="Forrest Dai" description="Master's, now software engineer at Meta" homepage="https://www.linkedin.com/in/forrest-dai/">}}
 {{< alumni_entry name="Yongqi Chen" description="Research Intern, now at stealth mode startup" homepage="https://brianchen1129.github.io/">}}
 {{< alumni_entry name="Zheyu Fu" description="Master's, now software engineer at NVIDIA" homepage="https://www.linkedin.com/in/zheyu-fu-1b4667231/">}}
