@@ -43,13 +43,27 @@
     overflow: hidden;
   }
 
-  .video-container iframe {
+  .video-container iframe,
+  .video-container .talk-preview-img {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     border: 0;
+  }
+
+  .video-container .talk-preview-img {
+    object-fit: cover;
+  }
+
+  .video-container a.talk-preview-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
   }
 
   .card-body {
@@ -61,6 +75,15 @@
     font-size: 1.2em;
     margin-bottom: 10px;
     color: #333;
+  }
+
+  .card-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .card-title a:hover {
+    text-decoration: underline;
   }
 
   .card-description {
@@ -86,15 +109,21 @@
   {{ range .Site.Data.talks }}
   <div class="talk-card">
     <div class="video-container">
+      {{ if .preview_image }}
+      <a href="{{ .url }}" target="_blank" rel="noopener noreferrer" class="talk-preview-link">
+        <img src="{{ .preview_image }}" alt="{{ .title }}" class="talk-preview-img" loading="lazy" />
+      </a>
+      {{ else }}
       <iframe 
         src="{{ .url }}" 
         title="{{ .title }}" 
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
         allowfullscreen>
       </iframe>
+      {{ end }}
     </div>
     <div class="card-body">
-      <h4 class="card-title">{{ .title }}</h4>
+      <h4 class="card-title"><a href="{{ .url }}" target="_blank" rel="noopener noreferrer">{{ .title }}</a></h4>
       {{ with .description }}
       <p class="card-description">{{ . }}</p>
       {{ end }}

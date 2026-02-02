@@ -23,11 +23,9 @@
   url: "https://www.youtube.com/embed/tIPDwUepXcA?si=mvRaDhvQL6UTY8ux"
   description: "Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving"
 
-
 - title: "Talk at REFAI Seminar 04/22/25"
-  url: "https://www.youtube.com/watch?v=1KwVSEGt8bA"
+  url: "https://www.youtube.com/embed/1KwVSEGt8bA?si=7Jgu3MOPwAziGagr"
   description: "Fast Video Generation with Sliding Tile Attention"
-
 
 - title: "Talk at Faster LLM Inference Seminar @ Weizmann Institute of Science 02/2025"
   url: "https://www.youtube.com/embed/znd7o-EBSKU?si=ao755-0iUItpYAG6"
