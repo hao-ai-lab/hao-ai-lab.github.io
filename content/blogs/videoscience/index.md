@@ -173,6 +173,39 @@ The video looks perfect. The lighting is realistic, the motion is almost smooth 
   Failure Examples on Violations of Phenomenon Congruency generated using Sora-2.
 </p>
 
+<!-- <div style="display: flex; flex-direction: column; gap: 20px;">
+  <div style="display: flex; gap: 20px; align-items: flex-start;">
+    <div style="flex: 1; text-align: center;">
+      <img src="videos/vid_095_run_3.gif" alt="The Spaghetti Mystery" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;">
+      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Generated Video</strong></p>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <iframe width="100%" style="max-width: 600px; aspect-ratio: 16/9;" src="https://www.youtube.com/embed/ADD7QlQoFFI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Reference</strong></p>
+    </div>
+  </div>
+  <p style="font-size: 0.85em; text-align: center;"><strong>Prompt:</strong> A dry spaghetti stick is held at both ends and slowly bent until it breaks.<br><strong>Expected:</strong> The spaghetti breaks into three or more pieces rather than two, because stress waves from the first fracture cause additional breaks before the fragments separate.</p>
+  
+  <!-- <div style="display: flex; gap: 20px; align-items: flex-start; margin-top: 30px;">
+    <div style="flex: 1; text-align: center;">
+      <img src="videos/vid_137_run_3.gif" alt="The Ball and Cart" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;">
+      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Generated Video</strong></p>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <iframe width="100%" style="max-width: 600px; aspect-ratio: 16/9;" src="https://www.youtube.com/embed/VUGRV7YCoLs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Reference</strong></p>
+    </div>
+  </div>
+  <p style="font-size: 0.85em; text-align: center;"><strong>Prompt:</strong> A cart moves forward at a constant speed and launches a ball straight upward from its top."<br><strong>Expected:</strong> The ball travels upward and then downward in a parabolic path, but lands back on the moving cart because both the ball and the cart have the same horizontal velocity.</p> -->
+  <div style="text-align: center;">
+    <img src="videos/vid_137_run_3.gif" alt="The Ball and Cart" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
+    <p style="font-size: 0.85em; margin-top: 10px;"><strong>Prompt:</strong> A cart moves forward at a constant speed and launches a ball straight upward from its top."<br><strong>Expected:</strong> The ball travels upward and then downward in a parabolic path, but lands back on the moving cart because both the ball and the cart have the same horizontal velocity.</p>
+  </div>
+</div>
+<p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
+  Failure Examples on Violations of Phenomenon Congruency generated using Sora-2.
+</p> -->
+
 {{< justify >}}
 These two examples perfectly illustrate the current "uncanny valley" of AI video generation: High Visual Fidelity, Low Physical Logic. In both the spaghetti and the cart simulations, the model achieves impressive "Spatio-Temporal Coherence"—the lighting is realistic, the motion is smooth, and object identity is stable. However, both fail primarily in Phenomenon Congruency. The video generation model operates as a pattern-matcher rather than a physics engine; it knows what a breaking stick or a launching ball looks like in isolation, but it lacks the underlying understanding of material science (the "snap-back" effect in spaghetti) or Newtonian mechanics (conservation of momentum in the cart). The result is a video that looks perfect at a glance but falls apart under scientific scrutiny, revealing that the model is hallucinating motion rather than simulating reality.
 {{< /justify >}}
@@ -292,6 +325,16 @@ Our experiments demonstrate that this method achieves a correlation of 0.89 with
 {{< /justify >}}
 
 {{< image src="img/vsci_judge_correlation_blog.png" alt="correlation_charts" width="90%" title="VideoScience-Judge (CL+CV) achieves a Spearman correlation of 0.96, significantly outperforming all other baselines. This indicates our logic-grounded verification aligns almost perfectly with human scientific evaluation..">}}
+
+### Qualitative Comparison: VideoScience-Bench vs. Baselines
+
+| Evaluation Framework | Core Mechanism | Limitations on VideoScience-Bench |
+| :--- | :--- | :--- |
+| **T2V-CompBench** | **Attribute Binding**<br>Checks for the presence and consistent binding of object attributes. | • **Surface-Level:** Focuses on static attribute correctness rather than dynamic scientific validity.<br>• **Physics Blind:** Misses critical failures in temporal coherence, momentum, and physical plausibility. |
+| **LMArena-T2V** | **Crowdsourced ELO**<br>Aggregates human votes from a general user base. | • **Visual Bias:** Voters prioritize visual fidelity over logical correctness, often ignoring scientific inaccuracies.<br>• **Irrelevance:** Most prompts test daily scenarios rather than scientific reasoning. |
+| **PhyGenEval**<br>*(PhyGenBench)* | **Rule-Based / Binary**<br>Checks for discrete violations (e.g., "Did the object fall?"). | • **Lack of Nuance:** Fails to capture holistic physical realism like acceleration patterns, momentum, and causal relationships.<br>• **Rigidity:** Binary judgment cannot evaluate the "cascading effects" of multi-concept phenomena. |
+| **VideoScore2** | **General-Purpose VLM**<br>Trained on real-world prompts to assess "plausibility". | • **Everyday Bias:** Prioritizes "looking plausible" (everyday common sense) over rigorous domain-specific physical laws.<br>• **Data Gap:** Training data lacks complex scientific scenarios, causing it to accept scientifically inaccurate but visually "normal" videos. |
+| **VideoScience-Judge**<br>*(Ours)* | **Evidence-Based VLM**<br>Uses domain-specific checklists + Computer Vision (CV) tools. | • **Holistic Reasoning:** Explicitly evaluates *Phenomenon Congruency* and *Correct Dynamism* using extracted key frames.<br>• **Expert Alignment:** Achieves the highest correlation with human experts by grounding scores in concrete physical evidence. |
 
 ### The Bottom Line
 
