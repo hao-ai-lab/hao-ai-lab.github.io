@@ -27,10 +27,15 @@ img[alt="scientific reasoning in video world models"] {
   margin-right: auto !important;
   display: block !important;
   text-align: center !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  height: auto !important;
 }
 
 .post-cover {
   text-align: center !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
 }
 </style>
 
@@ -44,7 +49,7 @@ We also introduce VideoScience-Judge, a scalable VLM-as-a-judge pipeline that ev
 
 {{< two_images
 src1="img/phygenbench_3-2.gif"
-src2="img/vid_087_run_2.gif"
+src2="videos/vid_087_run_2.gif"
 alt1="physical_commonsense_world_modeling"
 alt2="scientific_reasoning_world_modeling"
 width1="50%"
@@ -68,7 +73,7 @@ This reasoning capability is most evident in spatial and puzzle-solving domains.
 
 <!-- {{< image src="https://raw.githubusercontent.com/giusha12i/Thinking-with-Video/refs/heads/main/assets/main_picture.png" alt="vrbench" width="85%" title="Examples from VRBench.">}} -->
 
-{{< image src="https://thinking-with-video.github.io/assets/main_picture.png" alt="thinking_with_video" width="75%" title="Thinking with Video: Examples from VideoThinkBench.">}}
+{{< image src="https://thinking-with-video.github.io/assets/main_picture.png" alt="thinking_with_video" width="150%" title="Thinking with Video: Examples from VideoThinkBench.">}}
 
 These achievements mark a pivotal shift: video models are no longer just generators, they're becoming reasoners.
 {{< /justify >}}
@@ -111,11 +116,11 @@ Unlike commonsense-based evaluations, each challenge in VideoScience-Bench requi
 
 <div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
   <div style="flex: 1;">
-   <img src="img/vid_094_run_2.gif" alt="Prince Rupert's Drop Tail Break" style="width: 100%;">
+   <img src="videos/vid_094_run_2.gif" alt="Prince Rupert's Drop Tail Break" style="width: 100%;">
     <p style="font-size: 0.85em;"><strong>Prompt:</strong> A teardrop-shaped piece of tempered glass is held at its bulbous head. Small pliers gently snip the thin tail end.<br><strong>Expected:</strong> The entire drop explosively shatters into powder as internal tension is released.</p>
   </div>
   <div style="flex: 1;">
-    <img src="img/vid_137_run_3.gif" alt="The Ball and Cart" style="width: 100%;">
+    <img src="videos/vid_177_run_2.gif" alt="Polarized Plastic Fringes" style="width: 100%;">
     <p style="font-size: 0.85em;"><strong>Prompt:</strong> A clear plastic ruler is placed between two crossed polarizing filters and illuminated by a bright white light.<br><strong>Expected:</strong> The stressed plastic causes rotation of the light's polarization plane in a wavelength-dependent way, yielding colored interference fringes.</p>
   </div>
 </div>
@@ -156,11 +161,11 @@ The video looks perfect. The lighting is realistic, the motion is almost smooth 
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
   <div style="text-align: center;">
-    <img src="img/vid_095_run_3.gif" alt="The Spaghetti Mystery" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
+    <img src="videos/vid_095_run_3.gif" alt="The Spaghetti Mystery" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
     <p style="font-size: 0.85em; margin-top: 10px;"><strong>Prompt:</strong> A dry spaghetti stick is held at both ends and slowly bent until it breaks.<br><strong>Expected:</strong> The spaghetti breaks into three or more pieces rather than two, because stress waves from the first fracture cause additional breaks before the fragments separate.</p>
   </div>
   <div style="text-align: center;">
-    <img src="img/vid_137_run_3.gif" alt="The Ball and Cart" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
+    <img src="videos/vid_137_run_3.gif" alt="The Ball and Cart" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
     <p style="font-size: 0.85em; margin-top: 10px;"><strong>Prompt:</strong> A cart moves forward at a constant speed and launches a ball straight upward from its top."<br><strong>Expected:</strong> The ball travels upward and then downward in a parabolic path, but lands back on the moving cart because both the ball and the cart have the same horizontal velocity.</p>
   </div>
 </div>
@@ -181,11 +186,11 @@ Some scenarios are so complex that they trigger a total collapse of reasoning ac
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
   <div style="text-align: center;">
-    <img src="img/vid_124_run_1.gif" alt="The Chemical Traffic Light " style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
+    <img src="videos/vid_124_run_1.gif" alt="The Chemical Traffic Light " style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
     <p style="font-size: 0.85em;"><strong>Prompt:</strong> A flask containing a yellow solution of glucose, sodium hydroxide, and the indicator indigocarmine is shown. The person lifts and gently shakes the flask.<br><strong>Expected:</strong> The yellow solution rapidly shifts toward green as the flask is shaken, showing the indicator’s partial oxidation by oxygen introduced from the air. Continued shaking drives the oxidation further and the color moves from green to red. When agitation stops, dissolved glucose reduces the indicator and the solution relaxes back to yellow.</p>
   </div>
   <div style="text-align: center;">
-    <img src="img/vid_087_run_2.gif" alt="The Laser Fiber Optic " style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
+    <img src="videos/vid_087_run_2.gif" alt="The Laser Fiber Optic " style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
     <p style="font-size: 0.85em;"><strong>Prompt:</strong> A clear plastic water bottle has a small hole in its side, from which a smooth, laminar stream of water is flowing. A red laser pointer is aimed from the other side of the bottle, directly through the water and into the hole.<br><strong>Expected:</strong> The laser beam enters the stream and becomes "trapped." It reflects repeatedly off the inner surface of the water stream, causing the entire parabolic arc of the falling water to glow red as if it were a fiber optic cable.</p>
   </div>
 </div>
@@ -206,11 +211,11 @@ Current video generation models are masters of aesthetic mimicry, but they are o
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
   <div style="text-align: center;">
-    <img src="img/vid_226_run_2.gif" alt="The Heart Motor" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
+    <img src="videos/vid_226_run_2.gif" alt="The Heart Motor" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
     <p style="font-size: 0.85em;"><strong>Prompt:</strong> Position a battery vertically on top of the three neodymium magnets so that the magnets contact the battery’s negative terminal. Place a heart-shaped copper wire so that it can touch both the top of the battery (positive terminal) and the sides of the magnets simultaneously.<br><strong>Expected:</strong> When the copper wire touches both ends of the circuit, it begins to spin or move continuously, creating a small, self-turning “heart motor.</p>
   </div>
   <div style="flex: 1;">
-    <img src="img/vid_173_run_1.gif" alt="Polarized Film Colors" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
+    <img src="videos/vid_173_run_1.gif" alt="Polarized Film Colors" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
     <p style="font-size: 0.85em;"><strong>Prompt:</strong> A plastic film is placed between two crossed polarizing filters and illuminated by a white flashlight; the film is slowly twisted while being recorded.<br><strong>Expected:</strong> The film’s birefringence splits light into components that interfere after passing through the analyzer. Rotation changes retardation, producing colored interference fringes dependent on polarization angle.</p>
   </div>
 </div>
@@ -233,15 +238,15 @@ The three state-of-the-art AI video models Sora 2, Veo 3 and Kling-v2.5, when ta
 
 <div style="display: flex; justify-content: space-between; gap: 10px; text-align: center;">
   <div style="flex: 1;">
-    <img src="img/vid_138_run_2_sora.gif" alt="Sora-2 Failure" style="width: 100%;">
+    <img src="videos/vid_138_run_2_sora.gif" alt="Sora-2 Failure" style="width: 100%;">
     <p><strong>Sora-2</strong><br><small>Wrong Redox</small></p>
   </div>
   <div style="flex: 1;">
-    <img src="img/vid_138_run_2_veo.gif" alt="Veo-3 Failure" style="width: 100%;">
+    <img src="videos/vid_138_run_2_veo.gif" alt="Veo-3 Failure" style="width: 100%;">
     <p><strong>Veo-3</strong><br><small>Physical Morphing</small></p>
   </div>
   <div style="flex: 1;">
-    <img src="img/vid_138_run_2_kling.gif" alt="Kling Failure" style="width: 100%;">
+    <img src="videos/vid_138_run_2_kling.gif" alt="Kling Failure" style="width: 100%;">
     <p><strong>Kling-v2.5</strong><br><small>Object Hallucination</small></p>
   </div>
 </div>
