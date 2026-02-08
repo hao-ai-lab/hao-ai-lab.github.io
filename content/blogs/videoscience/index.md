@@ -160,51 +160,33 @@ The video looks perfect. The lighting is realistic, the motion is almost smooth 
 {{< /justify >}}
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
-  <div style="text-align: center;">
-    <img src="videos/vid_095_run_3.gif" alt="The Spaghetti Mystery" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
-    <p style="font-size: 0.85em; margin-top: 10px;"><strong>Prompt:</strong> A dry spaghetti stick is held at both ends and slowly bent until it breaks.<br><strong>Expected:</strong> The spaghetti breaks into three or more pieces rather than two, because stress waves from the first fracture cause additional breaks before the fragments separate.</p>
-  </div>
-  <div style="text-align: center;">
-    <img src="videos/vid_137_run_3.gif" alt="The Ball and Cart" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
-    <p style="font-size: 0.85em; margin-top: 10px;"><strong>Prompt:</strong> A cart moves forward at a constant speed and launches a ball straight upward from its top."<br><strong>Expected:</strong> The ball travels upward and then downward in a parabolic path, but lands back on the moving cart because both the ball and the cart have the same horizontal velocity.</p>
-  </div>
-</div>
-<p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
-  Failure Examples on Violations of Phenomenon Congruency generated using Sora-2.
-</p>
-
-<!-- <div style="display: flex; flex-direction: column; gap: 20px;">
-  <div style="display: flex; gap: 20px; align-items: flex-start;">
+  <div style="display: flex; gap: 20px; align-items: stretch;">
     <div style="flex: 1; text-align: center;">
-      <img src="videos/vid_095_run_3.gif" alt="The Spaghetti Mystery" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;">
+      <img src="videos/vid_095_run_3.gif" alt="The Spaghetti Mystery" style="width: 100%; height: 300px; object-fit: contain; display: block; margin: 0 auto;">
       <p style="font-size: 0.85em; margin-top: 10px;"><strong>Generated Video</strong></p>
     </div>
     <div style="flex: 1; text-align: center;">
-      <iframe width="100%" style="max-width: 600px; aspect-ratio: 16/9;" src="https://www.youtube.com/embed/ADD7QlQoFFI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Reference</strong></p>
+      <img src="videos/vid_095_ref.gif" alt="The Spaghetti Mystery" style="width: 100%; height: 300px; object-fit: contain; display: block; margin: 0 auto;">
+      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Reference Video</strong></p>
     </div>
   </div>
   <p style="font-size: 0.85em; text-align: center;"><strong>Prompt:</strong> A dry spaghetti stick is held at both ends and slowly bent until it breaks.<br><strong>Expected:</strong> The spaghetti breaks into three or more pieces rather than two, because stress waves from the first fracture cause additional breaks before the fragments separate.</p>
   
-  <!-- <div style="display: flex; gap: 20px; align-items: flex-start; margin-top: 30px;">
+  <div style="display: flex; gap: 20px; align-items: stretch; margin-top: 30px;">
     <div style="flex: 1; text-align: center;">
-      <img src="videos/vid_137_run_3.gif" alt="The Ball and Cart" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;">
+      <img src="videos/vid_137_run_3.gif" alt="The Ball and Cart" style="width: 100%; height: 300px; object-fit: contain; display: block; margin: 0 auto;">
       <p style="font-size: 0.85em; margin-top: 10px;"><strong>Generated Video</strong></p>
     </div>
     <div style="flex: 1; text-align: center;">
-      <iframe width="100%" style="max-width: 600px; aspect-ratio: 16/9;" src="https://www.youtube.com/embed/VUGRV7YCoLs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Reference</strong></p>
+      <img src="videos/vid_137_ref.gif" alt="The Ball and Cart" style="width: 100%; height: 300px; object-fit: contain; display: block; margin: 0 auto;">
+      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Reference Video</strong></p>
     </div>
   </div>
-  <p style="font-size: 0.85em; text-align: center;"><strong>Prompt:</strong> A cart moves forward at a constant speed and launches a ball straight upward from its top."<br><strong>Expected:</strong> The ball travels upward and then downward in a parabolic path, but lands back on the moving cart because both the ball and the cart have the same horizontal velocity.</p> -->
-  <div style="text-align: center;">
-    <img src="videos/vid_137_run_3.gif" alt="The Ball and Cart" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
-    <p style="font-size: 0.85em; margin-top: 10px;"><strong>Prompt:</strong> A cart moves forward at a constant speed and launches a ball straight upward from its top."<br><strong>Expected:</strong> The ball travels upward and then downward in a parabolic path, but lands back on the moving cart because both the ball and the cart have the same horizontal velocity.</p>
-  </div>
+  <p style="font-size: 0.85em; text-align: center;"><strong>Prompt:</strong> A cart moves forward at a constant speed and launches a ball straight upward from its top."<br><strong>Expected:</strong> The ball travels upward and then downward in a parabolic path, but lands back on the moving cart because both the ball and the cart have the same horizontal velocity.</p>
 </div>
 <p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
   Failure Examples on Violations of Phenomenon Congruency generated using Sora-2.
-</p> -->
+</p>
 
 {{< justify >}}
 These two examples perfectly illustrate the current "uncanny valley" of AI video generation: High Visual Fidelity, Low Physical Logic. In both the spaghetti and the cart simulations, the model achieves impressive "Spatio-Temporal Coherence"—the lighting is realistic, the motion is smooth, and object identity is stable. However, both fail primarily in Phenomenon Congruency. The video generation model operates as a pattern-matcher rather than a physics engine; it knows what a breaking stick or a launching ball looks like in isolation, but it lacks the underlying understanding of material science (the "snap-back" effect in spaghetti) or Newtonian mechanics (conservation of momentum in the cart). The result is a video that looks perfect at a glance but falls apart under scientific scrutiny, revealing that the model is hallucinating motion rather than simulating reality.
@@ -216,16 +198,30 @@ These two examples perfectly illustrate the current "uncanny valley" of AI video
 Some scenarios are so complex that they trigger a total collapse of reasoning across all models tested. These represent the current ceiling of zero-shot scientific reasoning.
 {{< /justify >}}
 
-
 <div style="display: flex; flex-direction: column; gap: 20px;">
-  <div style="text-align: center;">
-    <img src="videos/vid_124_run_1.gif" alt="The Chemical Traffic Light " style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
-    <p style="font-size: 0.85em;"><strong>Prompt:</strong> A flask containing a yellow solution of glucose, sodium hydroxide, and the indicator indigocarmine is shown. The person lifts and gently shakes the flask.<br><strong>Expected:</strong> The yellow solution rapidly shifts toward green as the flask is shaken, showing the indicator’s partial oxidation by oxygen introduced from the air. Continued shaking drives the oxidation further and the color moves from green to red. When agitation stops, dissolved glucose reduces the indicator and the solution relaxes back to yellow.</p>
+  <div style="display: flex; gap: 20px; align-items: flex-start;">
+    <div style="flex: 1; text-align: center;">
+      <img src="videos/vid_124_run_1.gif" alt="The Chemical Traffic Light " style="width: 100%; max-width: 600px; display: block; margin: 0 auto;">
+      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Generated Video</strong></p>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <img src="videos/vid_124_ref.gif" alt="The Chemical Traffic Light " style="width: 100%; max-width: 600px; display: block; margin: 0 auto;">
+      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Reference Video</strong></p>
+    </div>
   </div>
-  <div style="text-align: center;">
-    <img src="videos/vid_087_run_2.gif" alt="The Laser Fiber Optic " style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
-    <p style="font-size: 0.85em;"><strong>Prompt:</strong> A clear plastic water bottle has a small hole in its side, from which a smooth, laminar stream of water is flowing. A red laser pointer is aimed from the other side of the bottle, directly through the water and into the hole.<br><strong>Expected:</strong> The laser beam enters the stream and becomes "trapped." It reflects repeatedly off the inner surface of the water stream, causing the entire parabolic arc of the falling water to glow red as if it were a fiber optic cable.</p>
+  <p style="font-size: 0.85em; text-align: center;"><strong>Prompt:</strong> A flask containing a yellow solution of glucose, sodium hydroxide, and the indicator indigocarmine is shown. The person lifts and gently shakes the flask.<br><strong>Expected:</strong> The yellow solution rapidly shifts toward green as the flask is shaken, showing the indicator’s partial oxidation by oxygen introduced from the air. Continued shaking drives the oxidation further and the color moves from green to red. When agitation stops, dissolved glucose reduces the indicator and the solution relaxes back to yellow.</p>
+  
+  <div style="display: flex; gap: 20px; align-items: flex-start; margin-top: 30px;">
+    <div style="flex: 1; text-align: center;">
+      <img src="videos/vid_087_run_2.gif" alt="The Laser Fiber Optic " style="width: 100%; max-width: 600px; display: block; margin: 0 auto;">
+      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Generated Video</strong></p>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <img src="videos/vid_087_ref.gif" alt="The Laser Fiber Optic " style="width: 100%; max-width: 600px; display: block; margin: 0 auto;">
+      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Reference Video</strong></p>
+    </div>
   </div>
+  <p style="font-size: 0.85em; text-align: center;"><strong>Prompt:</strong> A clear plastic water bottle has a small hole in its side, from which a smooth, laminar stream of water is flowing. A red laser pointer is aimed from the other side of the bottle, directly through the water and into the hole.<br><strong>Expected:</strong> The laser beam enters the stream and becomes "trapped." It reflects repeatedly off the inner surface of the water stream, causing the entire parabolic arc of the falling water to glow red as if it were a fiber optic cable.</p>
 </div>
 <p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
   Failure Examples generated using Sora-2 on multi-concept scientific phenomena.
@@ -243,14 +239,28 @@ Current video generation models are masters of aesthetic mimicry, but they are o
 {{< /justify >}}
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
-  <div style="text-align: center;">
-    <img src="videos/vid_226_run_2.gif" alt="The Heart Motor" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
-    <p style="font-size: 0.85em;"><strong>Prompt:</strong> Position a battery vertically on top of the three neodymium magnets so that the magnets contact the battery’s negative terminal. Place a heart-shaped copper wire so that it can touch both the top of the battery (positive terminal) and the sides of the magnets simultaneously.<br><strong>Expected:</strong> When the copper wire touches both ends of the circuit, it begins to spin or move continuously, creating a small, self-turning “heart motor.</p>
+  <div style="display: flex; gap: 20px; align-items: flex-start;">
+    <div style="flex: 1; text-align: center;">
+      <img src="videos/vid_226_run_2.gif" alt="The Heart Motor" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;">
+      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Generated Video</strong></p>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <img src="videos/vid_226_ref.gif" alt="The Heart Motor" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;">
+      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Reference Video</strong></p>
+    </div>
   </div>
-  <div style="flex: 1;">
-    <img src="videos/vid_173_run_1.gif" alt="Polarized Film Colors" style="width: 70%; max-width: 600px; display: block; margin: 0 auto;">
-    <p style="font-size: 0.85em;"><strong>Prompt:</strong> A plastic film is placed between two crossed polarizing filters and illuminated by a white flashlight; the film is slowly twisted while being recorded.<br><strong>Expected:</strong> The film’s birefringence splits light into components that interfere after passing through the analyzer. Rotation changes retardation, producing colored interference fringes dependent on polarization angle.</p>
+  <p style="font-size: 0.85em; text-align: center;"><strong>Prompt:</strong> Position a battery vertically on top of the three neodymium magnets so that the magnets contact the battery’s negative terminal. Place a heart-shaped copper wire so that it can touch both the top of the battery (positive terminal) and the sides of the magnets simultaneously.<br><strong>Expected:</strong> When the copper wire touches both ends of the circuit, it begins to spin or move continuously, creating a small, self-turning “heart motor.</p>
+  <div style="display: flex; gap: 20px; align-items: flex-start; margin-top: 30px;">
+    <div style="flex: 1; text-align: center;">
+      <img src="videos/vid_173_run_1.gif" alt="Polarized Film Colors" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;">
+      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Generated Video</strong></p>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <img src="videos/vid_173_ref.gif" alt="Polarized Film Colors" style="width: 100%; max-width: 600px; display: block; margin: 0 auto;">
+      <p style="font-size: 0.85em; margin-top: 10px;"><strong>Reference Video</strong></p>
+    </div>
   </div>
+  <p style="font-size: 0.85em; text-align: center;"><strong>Prompt:</strong> A plastic film is placed between two crossed polarizing filters and illuminated by a white flashlight; the film is slowly twisted while being recorded.<br><strong>Expected:</strong> The film’s birefringence splits light into components that interfere after passing through the analyzer. Rotation changes retardation, producing colored interference fringes dependent on polarization angle.</p>
 </div>
 <p style="text-align: center; font-style: italic; color: #666; margin-top: 20px;">
   Failure Examples on Violations of Prompt Congruency generated using Sora-2.
