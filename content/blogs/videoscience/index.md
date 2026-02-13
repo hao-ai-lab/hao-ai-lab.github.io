@@ -12,7 +12,7 @@ draft = false
       name = "github"
       url = "https://github.com/hao-ai-lab/VideoScience"
 [cover]
-  image = "img/videoscience/videoscience_header.png"
+  image = "img/videoscience/header.png"
   alt = "scientific reasoning in video world models"
   caption = "Video generations are getting impressively realistic, but scientific correctness is a different bar. VideoScience-Bench evaluates whether video models behave like faithful simulators, not just good renderers."
 +++
@@ -39,7 +39,7 @@ img[alt="scientific reasoning in video world models"] {
 }
 </style>
 
-{{< socialBadges arxiv-index="2512.02942" github="hao-ai-lab/VideoScience" huggingface="TBD" >}}
+{{< socialBadges arxiv-index="2512.02942" github="hao-ai-lab/VideoScience" huggingface="https://huggingface.co/datasets/lmgame/VideoScienceBench" >}}
 
 {{< justify >}}
 TL;DR: The golden age of AI video has mastered the "look" of reality, but it has yet to learn the laws of reality. Without adhering to rigorous scientific principles, even the most photorealistic model remains a high-fidelity hallucination engine rather than a reliable world simulator. To bridge this gap, we introduce VideoScience-Bench: the first benchmark specifically designed to move beyond "physical commonsense" and evaluate undergraduate-level scientific reasoning in video models.
