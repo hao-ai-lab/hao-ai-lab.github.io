@@ -1,6 +1,6 @@
 +++
 title = "From Physical Commonsense to Scientific Reasoning: Why World Modeling in Video Matters"
-date = 2026-01-19T12:00:00-08:00
+date = 2026-02-12T12:00:00-08:00
 authors = ["Lanxiang Hu", "Abhilash Shankarampeta", "Yixin Huang", "Zilin Dai", "Haoyang Yu", "Yujie Zhao", "Haoqiang Kang", "Daniel Zhao", "Tajana Rosing", "Hao Zhang"]
 ShowReadingTime = true
 draft = false
