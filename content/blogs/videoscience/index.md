@@ -12,7 +12,7 @@ draft = false
       name = "github"
       url = "https://github.com/hao-ai-lab/VideoScience"
 [cover]
-  image = "img/header.png"
+  image = "img/videoscience/videoscience_header.png"
   alt = "scientific reasoning in video world models"
   caption = "Video generations are getting impressively realistic, but scientific correctness is a different bar. VideoScience-Bench evaluates whether video models behave like faithful simulators, not just good renderers."
 +++
