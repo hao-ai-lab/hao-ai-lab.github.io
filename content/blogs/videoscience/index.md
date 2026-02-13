@@ -373,8 +373,9 @@ We hope VideoScience-Bench helps push video models toward being not only compell
 
 - GitHub: https://github.com/hao-ai-lab/VideoScience
 - Paper: https://arxiv.org/abs/2512.02942
+- Dataset: https://huggingface.co/datasets/lmgame/VideoScienceBench
 - Leaderboard: https://huggingface.co/spaces/lmgame/videoscience-bench
-
+  
 ## Citation
 
 ```bibtex
