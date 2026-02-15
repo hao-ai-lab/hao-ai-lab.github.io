@@ -1,10 +1,11 @@
-bseURL: 'https://aa0c-2603-8001-8d00-409c-4986-7e58-f887-434d.ngrok-free.app'
+baseURL: 'https://haoailab.com/'
 languageCode: en-us
 title: 'Hao AI Lab @ UCSD'
 theme: 'PaperMod'
 
 googleAnalytics: 'G-T4DXGLCH1D'
 
+enableRobotsTXT: true
 
 # Setup build timeout of hugo (in seconds)
 # FIXME: This is a workaround for rendering differnet sizes of the gif images.
@@ -31,6 +32,20 @@ markup:
 params:
   env: production
   math: true
+  description: "Hao AI Lab at UC San Diego — researching efficient and scalable machine learning systems, LLM serving, distributed training, and open-source AI infrastructure."
+  keywords:
+    - "Hao AI Lab"
+    - "UCSD"
+    - "machine learning systems"
+    - "LLM serving"
+    - "distributed systems"
+    - "AI research"
+    - "Hao Zhang"
+    - "large language models"
+    - "efficient inference"
+    - "open source AI"
+  images:
+    - "img/HAOAILAB_trimmed.jpg"
   label:
     icon: "img/HAOAILAB_trimmed.jpg"
   assets:
