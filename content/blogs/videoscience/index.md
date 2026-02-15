@@ -2,6 +2,7 @@
 title = "From Physical Commonsense to Scientific Reasoning: Why World Modeling in Video Matters"
 date = 2026-02-12T12:00:00-08:00
 authors = ["Lanxiang Hu", "Abhilash Shankarampeta", "Yixin Huang", "Zilin Dai", "Haoyang Yu", "Yujie Zhao", "Haoqiang Kang", "Daniel Zhao", "Tajana Rosing", "Hao Zhang"]
+author = "Lanxiang Hu, Abhilash Shankarampeta, Yixin Huang, Zilin Dai, Haoyang Yu, Yujie Zhao, Haoqiang Kang, Daniel Zhao, Tajana Rosing, Hao Zhang"
 ShowReadingTime = true
 draft = false
 [socialIcons]
@@ -42,7 +43,7 @@ img[alt="scientific reasoning in video world models"] {
 {{< socialBadges arxiv-index="2512.02942" github="hao-ai-lab/VideoScience" huggingface="https://huggingface.co/datasets/lmgame/VideoScienceBench" >}}
 
 {{< justify >}}
-The golden age of AI video has mastered the "look" of reality, but it has yet to learn the laws of reality. Without adhering to rigorous scientific principles, even the most photorealistic model remains a high-fidelity hallucination engine rather than a reliable world simulator. To bridge this gap, we introduce VideoScience-Bench: the first benchmark specifically designed to move beyond "physical commonsense" and evaluate undergraduate-level scientific reasoning in video models.
+**TL;DR:** The golden age of AI video has mastered the "look" of reality, but it has yet to learn the laws of reality. Without adhering to rigorous scientific principles, even the most photorealistic model remains a high-fidelity hallucination engine rather than a reliable world simulator. To bridge this gap, we introduce VideoScience-Bench: the first benchmark specifically designed to move beyond "physical commonsense" and evaluate undergraduate-level scientific reasoning in video models.
 
 We also introduce VideoScience-Judge, a scalable VLM-as-a-judge pipeline that evaluates generated videos against rigorous scientific criteria. Correlation analysis shows that VideoScience-Judge achieves the strongest alignment with expert-rated rankings and best captures a video model’s scientific reasoning capability in comparison with existing benchmarks.
 {{< /justify >}}
