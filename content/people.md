@@ -18,7 +18,7 @@ summary: people
 ### Lab Members
 
 {{< lab_members_grid >}}
-{{< lab_member name="Hao Zhang" role="Assistant Professor" image="hao_zhang.png" academic="https://cseweb.ucsd.edu/~haozhang/" twitter="https://twitter.com/haozhangml" >}}
+{{< lab_member name="Hao Zhang" role="Assistant Professor" image="hao_zhang.png" academic="https://haozhang.ai" twitter="https://twitter.com/haozhangml" >}}
 
 {{< lab_member name="Junda Chen" role="PhD Student" image="junda_chen.jpg" academic="https://github.com/GindaChen" twitter="https://twitter.com/Junda_Chen_" >}}
 

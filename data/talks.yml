@@ -2,14 +2,17 @@
 - title: "Talk at Dynamico Day 01/2026"
   url: "https://www.nvidia.com/en-us/on-demand/session/other25-dynamoday09/?playlistId=playList-e42aee58-4db9-4ce4-8a6f-c41d8e272d72"
   description: "The Future of AI Inference."
+  preview_image: "/img/talks/2026-01-dynamoday.png"
 
 - title: "Talk at Workshop on Next Practices in Video Generation and Evaluation @ NeurIPS 2025 12/2025"
   url: "https://neurips.cc/virtual/2025/loc/san-diego/131807"
   description: "Recent advances in video generation and evaluation."
+  preview_image: "/img/talks/2025-12-nvision.png"
 
 - title: "Talk at The First Workshop on Efficient Reasoning @ NeurIPS 2025 12/2025"
   url: "https://neurips.cc/virtual/2025/loc/san-diego/136403"
   description: "Reasoning with Confidence."
+  preview_image: "/img/talks/2025-12-reasoning.png"
 
 - title: "Talk at GPU Mode: Lmgame 08/2025"
   url: "https://www.youtube.com/embed/Yb9MiSInuEs?si=Uvcvdq4beejR5iiC"
@@ -23,11 +26,9 @@
   url: "https://www.youtube.com/embed/tIPDwUepXcA?si=mvRaDhvQL6UTY8ux"
   description: "Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving"
 
-
 - title: "Talk at REFAI Seminar 04/22/25"
-  url: "https://www.youtube.com/watch?v=1KwVSEGt8bA"
+  url: "https://www.youtube.com/embed/1KwVSEGt8bA?si=7Jgu3MOPwAziGagr"
   description: "Fast Video Generation with Sliding Tile Attention"
-
 
 - title: "Talk at Faster LLM Inference Seminar @ Weizmann Institute of Science 02/2025"
   url: "https://www.youtube.com/embed/znd7o-EBSKU?si=ao755-0iUItpYAG6"
