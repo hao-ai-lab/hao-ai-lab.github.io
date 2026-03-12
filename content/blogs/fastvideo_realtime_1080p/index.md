@@ -39,7 +39,7 @@ For the first time, we achieved **\~4.5-second** latency for 5-second video gene
 
 **![][image3]**
 
-**TODO: Insert I2V graph**
+**![][image4]**
 
 Achieving sub-5-second end-to-end latency for 1080p generation (see figures above) requires optimization across every layer of the stack: model implementation, kernels, low-bit precision, compilation, scheduling, and even the infrastructure around frame and audio processing. FastLTX-2.3 is specifically optimized for data-center grade Blackwell GPUs (B200/B300).
 
@@ -83,6 +83,7 @@ We thank [NVIDIA](https://www.nvidia.com/en-us/) and [Coreweave](https://www.cor
 [image1]: /img/fastvideo_realtime_1080p/t2v-price.png
 [image2]: /img/fastvideo_realtime_1080p/i2v-price.png
 [image3]: /img/fastvideo_realtime_1080p/t2v-latency.png
+[image4]: /img/fastvideo_realtime_1080p/i2v-latency.png
 
 
 [^cost]: We estimate video generation cost from GPU rental rates. At the time of this blog post, a B200 instance on Runpod costs \\$4.99/hour. With a T2V latency of 4.5 seconds per 5-second clip, generating 60 seconds of video requires 4.5 × 12 = 54 seconds of GPU time. The cost is therefore \\$4.99 / 3600 × 54 ≈ \\$0.075, or about \\$0.075 per 1-minute video.
