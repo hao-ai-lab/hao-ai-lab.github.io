@@ -21,7 +21,7 @@ We introduce [FastLTX-2.3](https://1080p.fastvideo.org/), a production-grade 108
 
 If you have the *need for speed (and quality)*, try our [demo](https://1080p.fastvideo.org/) for free.  
 
-### **Comparison Video** 
+### **TODO: Comparison Video** 
 
 The biggest bottleneck in video generation is no longer just model quality. It is the **broken feedback loop** during creative iteration. As a creator, designer, or builder working with AI video models, you don't want just a single generated video, you want to have the ability to explore with multiple generations. You want to try multiple ideas, change the framing, swap the style, adjust the motion, add a reference image, rerun, and keep going until perfection. This is how real creative work happens. But when each attempt takes minutes and hits your budget, the creation loop just collapses -- a tool is not effective if it becomes slower than your imagination\! For example, generating an 8-second video with Google's Veo-3 Fast takes about 55 seconds and costs around \$1.20. While Veo is an impressive model, it is still too slow and expensive for the rapid iteration that modern media generation workflows demand. If **generation is slower than the pace of ideation, then frequent iteration becomes impractical.** 
 
