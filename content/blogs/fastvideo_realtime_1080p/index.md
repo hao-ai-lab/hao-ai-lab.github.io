@@ -86,4 +86,4 @@ We thank [NVIDIA](https://www.nvidia.com/en-us/) and [Coreweave](https://www.cor
 [image4]: /img/fastvideo_realtime_1080p/i2v-latency.png
 
 
-[^cost]: We estimate video generation cost from GPU rental rates. At the time of this blog post, a B200 instance on Runpod costs \\$4.99/hour. With a T2V latency of 4.5 seconds per 5-second clip, generating 60 seconds of video requires 4.5 × 12 = 54 seconds of GPU time. The cost is therefore \\$4.99 / 3600 × 54 ≈ \\$0.075, or about \\$0.075 per 1-minute video (assuming full utilization of the GPU). Assuming a more reasonable GPU of 25%, this gives us a final cost of $0.075/min × 4 = $0.3/min  
+[^cost]: We estimate video generation cost from GPU rental rates. At the time of this blog post, a B200 instance on Runpod costs \\$4.99/hour. With a T2V latency of 4.5 seconds per 5-second clip, generating 60 seconds of video requires 4.5 × 12 = 54 seconds of GPU time. The cost is therefore \\$4.99 / 3600 × 54 ≈ \\$0.075, or about \\$0.075 per 1-minute video (assuming full utilization of the GPU). Assuming a more reasonable GPU of 25%, this gives us a final cost of \\$0.075/min × 4 = $0.3/min  
