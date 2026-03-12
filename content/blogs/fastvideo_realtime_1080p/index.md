@@ -12,11 +12,13 @@ draft = false
     hidden = true
 +++
 
+{{< socialBadges github="hao-ai-lab/FastVideo" demo="https://1080p.fastvideo.org/" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3sbq6wr37-TozNr4xtGHOoa4byxFXmPg" discord="https://discord.gg/Dm8F2peD3e" >}}
+
 **TL;DR:** If you work in media generation, you know the frustration: an idea pops into your mind, you type a prompt, maybe provide a reference image, and want to see the result immediately – *while the idea is still alive*. But today’s video generation APIs break the loop. You wait minutes for clips, and each costs enough to make your wallet wince. This is exactly the problem we fix.
 
 We introduce FastLTX-2.3, a production-grade 1080p TI2AV pipeline built on top of FastVideo: our unified post-training and inference framework for video diffusion models. We turn [LTX-2.3](https://ltx.io/model/ltx-2-3), a strong text-image-to-audio-video model into a single GPU speed machine for interactive media generation: it generates 5 second 1080p videos with audio with an end-to-end latency of **\~4.5 seconds** on a *single* B200 GPU. For the first time, we optimize 1080p video-audio generation to **\$0.075/min** (estimated), **32x lower** than the next cheapest option.[^cost] We believe this is a major turning point to make high-quality videogen fast and economic enough to feel interactive.[^code]
 
-If you have the *need for speed (and quality)*, try our demo (**TODO: LINK DEMO HERE**) for free.  
+If you have the *need for speed (and quality)*, try our [demo](https://1080p.fastvideo.org/) for free.  
 
 ### **Comparison Video** 
 
@@ -54,7 +56,7 @@ Achieving **sub-5-second end-to-end latency** for 1080p generation (see figures 
 
 ### Serving Optimizations
 
-The demo is served on a GB200 NVL72 (72x B200), with each GPU acting as a serving replica with load balancing. We also deploy Rust-based middleware for better serving efficiency. Due to capacity limits, we allow each user to interact for a limited amount of time. If you are interested in **dedicated serving capacity** or an **endpoint**, join our [waitlist](https://docs.google.com/forms/d/e/1FAIpQLSePSPqH5ZoLTn88LvLU7C-UM6EVxU3EODCIjhDsNisabFa7JA/viewform?usp=publish-editor).
+The [demo](https://1080p.fastvideo.org/) is served on a GB200 NVL72 (72x B200), with each GPU acting as a serving replica with load balancing. We also deploy Rust-based middleware for better serving efficiency. Due to capacity limits, we allow each user to interact for a limited amount of time. If you are interested in **dedicated serving capacity** or an **endpoint**, join our [waitlist](https://docs.google.com/forms/d/e/1FAIpQLSePSPqH5ZoLTn88LvLU7C-UM6EVxU3EODCIjhDsNisabFa7JA/viewform?usp=publish-editor).
 
 ### Outlook and Conclusion
 
