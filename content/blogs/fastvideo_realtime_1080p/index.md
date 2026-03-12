@@ -72,7 +72,7 @@ For products, it opens the door to entirely new classes of applications in **med
 
 And with continued advances in hardware and models, we believe **sub-5-second local generation on consumer devices** is coming sooner than most people expect.
 
-## About FastVideo
+### About FastVideo
 
 **FastVideo** is our unified framework for video diffusion post-training and inference. We build the system layers that turn cutting-edge generative media models into fast, deployable, real-world products. It powers the diffusion backend in the open ecosystems, including SGLang and Dynamo, and [techniques](https://arxiv.org/abs/2505.13389) created in FastVideo have been adopted by top frontier labs to train media generation models.
 
