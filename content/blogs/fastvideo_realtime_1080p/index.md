@@ -1,5 +1,5 @@
 +++
-title = "FastLTX-2.3: The Fastest and Cheapest 1080p TI2AV Pipeline Ever"
+title = "FastLTX-2.3: The Fastest and Cheapest 1080p Video Generation Ever"
 date = 2026-03-11T12:00:00-08:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
