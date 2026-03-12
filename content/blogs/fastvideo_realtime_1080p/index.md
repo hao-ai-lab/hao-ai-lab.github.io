@@ -1,5 +1,5 @@
 +++
-title = "FastLTX-2.3: The Fastest and Cheapest 1080p Video Generation Ever"
+title = "FastLTX-2.3: The Fastest and Most Economical 1080p Video Generation Ever"
 date = 2026-03-11T12:00:00-08:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -17,7 +17,7 @@ contentClass = "post-content-justified"
 
 **TL;DR:** If you work in media generation, you know the frustration: an idea pops into your mind, you type a prompt, maybe provide a reference image, and want to see the result immediately – **while the idea is still alive**. But today’s video generation APIs break the loop. You wait minutes for clips, and each costs enough to make your wallet wince. This is exactly the problem we fix.
 
-We introduce [FastLTX-2.3](https://1080p.fastvideo.org/), a production-grade 1080p text-image-to-audio-video (TI2AV) pipeline built on top of [FastVideo](https://github.com/hao-ai-lab/FastVideo): our unified post-training and inference framework for video generation models. We turn [LTX-2.3](https://ltx.io/model/ltx-2-3), a strong TI2AV model into a single GPU speed machine for **interactive media generation**: it generates 5 second 1080p videos with audio with an end-to-end latency of **\~4.5 seconds** on a *single* B200 GPU. For the first time, we optimize 1080p video-audio generation to **\$0.075/min** (estimated[^cost]), **32x lower** than the next cheapest option. We believe this is a major turning point to make high-quality videogen fast and economic enough to feel interactive. Code will be released in the near future.
+We introduce [FastLTX-2.3](https://1080p.fastvideo.org/), a production-grade 1080p text-image-to-audio-video (TI2AV) pipeline built on top of [FastVideo](https://github.com/hao-ai-lab/FastVideo): our unified post-training and inference framework for video generation models. We turn [LTX-2.3](https://ltx.io/model/ltx-2-3), a strong TI2AV model into a single GPU speed machine for **interactive media generation**: it generates 5 second 1080p videos with audio with an end-to-end latency of **\~4.5 seconds** on a *single* B200 GPU. For the first time, we optimize 1080p video-audio generation to **\$0.3/min** (estimated[^cost]), **8x lower** than the next cheapest option. We believe this is a major turning point to make high-quality videogen fast and economic enough to feel interactive. Code will be released in the near future.
 
 If you have the *need for speed (and quality)*, try our [demo](https://1080p.fastvideo.org/) for free.  
 
@@ -27,9 +27,9 @@ The biggest bottleneck in video generation is no longer just model quality. It i
 
 Recent research efforts have greatly reduced video generation latency, but most of these systems are still limited to [480p](https://haoailab.com/blogs/fastvideo_post_training/), or at best 720p, and often do not produce audio. **1080p is where things get serious.** It is where outputs become much more usable for storytelling, content creation, and real products -- but it is also where the systems challenges become much harder. The spatial workload grows dramatically, attention becomes more expensive, memory pressure rises, and every inefficiency in the stack gets amplified. Achieving **interactive latency** at full-HD resolution requires deep optimizations of model execution, scheduling, and kernel efficiency.
 
-In this post, we release the fastest and cheapest 1080p TI2AV pipeline ever. We show that 1080p video generation can be made ***interactive*** on a single NVIDIA B200 GPU with [FastVideo](https://github.com/hao-ai-lab/FastVideo). By combining full-stack optimization techniques, we reduced end-to-end latency by **3.9x**, and inference cost by **32x for T2V** and **31.2x for I2V** (see the two figures below).
+In this post, we release the fastest and cheapest 1080p TI2AV pipeline ever. We show that 1080p video generation can be made ***interactive*** on a single NVIDIA B200 GPU with [FastVideo](https://github.com/hao-ai-lab/FastVideo). By combining full-stack optimization techniques, we reduced end-to-end latency by **3.9x**, and inference cost by **8x for T2V** and **7.8x for I2V** (see the two figures below).
 
-For the first time, we achieved **\~4.5-second** latency for 5-second video generation at 1088 x 1920 resolution at 24 FPS, costing only \$0.075/min[^cost]\! We believe this is an important milestone that will truly unblock the potential of videogen in creative and interactive video generation: faster feedback, lower cost, and a much more seamless creative loop. 
+For the first time, we achieved **\~4.5-second** latency for 5-second video generation at 1088 x 1920 resolution at 24 FPS, costing only \$0.3/min[^cost]\! We believe this is an important milestone that will truly unblock the potential of videogen in creative and interactive video generation: faster feedback, lower cost, and a much more seamless creative loop. 
 
 ## **![][image1]**
 
@@ -86,4 +86,4 @@ We thank [NVIDIA](https://www.nvidia.com/en-us/) and [Coreweave](https://www.cor
 [image4]: /img/fastvideo_realtime_1080p/i2v-latency.png
 
 
-[^cost]: We estimate video generation cost from GPU rental rates. At the time of this blog post, a B200 instance on Runpod costs \\$4.99/hour. With a T2V latency of 4.5 seconds per 5-second clip, generating 60 seconds of video requires 4.5 × 12 = 54 seconds of GPU time. The cost is therefore \\$4.99 / 3600 × 54 ≈ \\$0.075, or about \\$0.075 per 1-minute video.
+[^cost]: We estimate video generation cost from GPU rental rates. At the time of this blog post, a B200 instance on Runpod costs \\$4.99/hour. With a T2V latency of 4.5 seconds per 5-second clip, generating 60 seconds of video requires 4.5 × 12 = 54 seconds of GPU time. The cost is therefore \\$4.99 / 3600 × 54 ≈ \\$0.075, or about \\$0.075 per 1-minute video (assuming full utilization of the GPU). Assuming a more reasonable GPU of 25%, this gives us a final cost of $0.075/min × 4 = $0.3/min  
