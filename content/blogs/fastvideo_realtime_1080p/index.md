@@ -80,7 +80,7 @@ If you are excited about the future of fast, interactive generative video, **ple
 
 ### Acknowledgement
 
-We thank [NVIDIA](https://www.nvidia.com/en-us/) and [Coreweave](https://www.coreweave.com/) for supporting the development and release of FastLTX-2.3, and [Lightricks](https://www.lightricks.com/) for creating a strong base model and open-sourcing it to the community. We are also excited to announce that NVIDIA's [Dynamo](https://docs.nvidia.com/dynamo/dev/user-guides/diffusion/fastvideo) supports FastVideo as a backend. Stay tuned for more development as this collaboration continues.  
+We thank [NVIDIA](https://www.nvidia.com/en-us/) and [Coreweave](https://www.coreweave.com/) for supporting the development and release of FastLTX-2.3, and [Lightricks](https://www.lightricks.com/) for creating a strong base model and open-sourcing it to the community. We are also excited to announce that NVIDIA's [Dynamo](https://docs.nvidia.com/dynamo/dev/user-guides/diffusion/fastvideo) supports FastVideo as a backend. Stay tuned for more developments as this collaboration continues!  
 
 ### The Team
 
