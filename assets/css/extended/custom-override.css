@@ -47,13 +47,6 @@
     border-radius: var(--radius);
 }
 
-.post-preview .post-image video {
-    width: 100%;
-    display: block;
-    object-fit: cover;
-    border-radius: var(--radius);
-}
-
 .post-preview .post-details {
     flex: 1;
     display: flex;

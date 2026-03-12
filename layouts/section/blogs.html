@@ -18,23 +18,12 @@
 {{- $paginator := .Paginate $pages -}}
 <div class="posts-list">
   {{- range $paginator.Pages -}}
-  {{- $post := . -}}
   <article class="post-preview">
+    {{- with .Params.cover.image -}} <!-- Updated path to access cover image -->
     <div class="post-image">
-      {{- with $post.Params.cover.video -}}
-      {{- $video := . -}}
-      {{- $videoSrc := cond (or (hasPrefix $video "http://") (hasPrefix $video "https://") (hasPrefix $video "/")) ($video | absURL) ((path.Join $post.RelPermalink $video) | absURL) -}}
-      {{- $poster := "" -}}
-      {{- with $post.Params.cover.image -}}
-      {{- $poster = cond (or (hasPrefix . "http://") (hasPrefix . "https://") (hasPrefix . "/")) (. | absURL) ((path.Join $post.RelPermalink .) | absURL) -}}
-      {{- end -}}
-      <video autoplay muted loop playsinline preload="metadata" class="post-image-media"{{ with $poster }} poster="{{ . }}"{{ end }}>
-        <source src="{{ $videoSrc }}" type="video/mp4">
-      </video>
-      {{- else if $post.Params.cover.image -}}
-      <img src="{{ $post.Params.cover.image | absURL }}" alt="{{ $post.Params.cover.alt }}"> <!-- Use absURL for proper path resolution -->
-      {{- end -}}
+      <img src="{{ . | absURL }}" alt="{{ $.Params.cover.alt }}"> <!-- Use absURL for proper path resolution -->
     </div>
+    {{- end -}}
     <div class="post-details">
       {{- if .Params.redirect_url -}}
         <h2><a href="{{ .Params.redirect_url }}" style="color: black !important;">{{ .Title }}</a></h2>
