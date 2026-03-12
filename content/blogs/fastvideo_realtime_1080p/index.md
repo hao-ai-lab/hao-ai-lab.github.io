@@ -19,7 +19,7 @@ contentClass = "post-content-justified"
 
 We introduce [FastLTX-2.3](https://1080p.fastvideo.org/), a production-grade 1080p text-image-to-audio-video (TI2AV) pipeline built on top of [FastVideo](https://github.com/hao-ai-lab/FastVideo): our unified post-training and inference framework for video generation models. We turn [LTX-2.3](https://ltx.io/model/ltx-2-3), a strong TI2AV model into a single GPU speed machine for **interactive media generation**: it generates 5 second 1080p videos with audio with an end-to-end latency of **\~4.5 seconds** on a *single* B200 GPU. For the first time, we optimize 1080p video-audio generation to **\$0.075/min** (estimated[^cost]), **32x lower** than the next cheapest option. We believe this is a major turning point to make high-quality videogen fast and economic enough to feel interactive. Code will be released in the near future.
 
-If you have the *need for speed (and quality)*, try our [demo (https://1080p.fastvideo.org/)](https://1080p.fastvideo.org/) for free.  
+If you have the *need for speed (and quality)*, try our [demo](https://1080p.fastvideo.org/) for free.  
 
 ### **Comparison Video** 
 
