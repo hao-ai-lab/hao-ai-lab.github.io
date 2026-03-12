@@ -54,7 +54,7 @@ Achieving **sub-5-second end-to-end latency** for 1080p generation (see figures 
 
 ### Serving Optimizations
 
-The demo is served on a GB200 NVL72 (72x B200), with each GPU acting as a serving replica. Due to capacity limits, we allow each user to interact for a limited amount of time. If you are interested in **dedicated serving capacity** or an **endpoint**, join our [waitlist](https://docs.google.com/forms/d/e/1FAIpQLSePSPqH5ZoLTn88LvLU7C-UM6EVxU3EODCIjhDsNisabFa7JA/viewform?usp=publish-editor).
+The demo is served on a GB200 NVL72 (72x B200), with each GPU acting as a serving replica with load balancing. We also deploy Rust-based middleware for better serving efficiency. Due to capacity limits, we allow each user to interact for a limited amount of time. If you are interested in **dedicated serving capacity** or an **endpoint**, join our [waitlist](https://docs.google.com/forms/d/e/1FAIpQLSePSPqH5ZoLTn88LvLU7C-UM6EVxU3EODCIjhDsNisabFa7JA/viewform?usp=publish-editor).
 **TODO: add a bit of detail about serving optimizations**
 
 ### Outlook and Conclusion
