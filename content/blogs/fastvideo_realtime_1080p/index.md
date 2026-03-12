@@ -7,6 +7,7 @@ ShowReadingTime = true
 draft = false
 [cover]
     image = "/img/fastvideo_realtime_1080p/t2v-price.png"
+    video = "Main_4.mp4"
     alt = "FastLTX-2.3 text-to-video pricing comparison"
     caption = "FastLTX-2.3 reduces 1080p text-to-video cost dramatically."
     hidden = true
