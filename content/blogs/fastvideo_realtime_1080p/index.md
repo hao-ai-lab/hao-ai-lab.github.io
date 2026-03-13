@@ -7,7 +7,7 @@ ShowReadingTime = true
 draft = false
 contentClass = "post-content-justified"
 [cover]
-    image = "/img/fastvideo_realtime_1080p/t2v-latency-nosora.png"
+    image = "/img/fastvideo_realtime_1080p/teaser.gif"
     alt = "Create a 5s 1080p Video in 4.5s with FastVideo on a Single GPU"
     caption = "Create a 5s 1080p Video in 4.5s with FastVideo on a Single GPU"
     hidden = true
