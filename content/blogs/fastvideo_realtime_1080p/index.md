@@ -81,5 +81,5 @@ We thank [NVIDIA](https://www.nvidia.com/en-us/) and [Coreweave](https://www.cor
 - [FastVideo Documentation](https://haoailab.com/FastVideo/)  
 - [FastVideo Roadmap for 26Q1](https://github.com/hao-ai-lab/FastVideo/issues/899)
 
-[image1]: /img/fastvideo_realtime_1080p/t2v-latency-nosora.png
-[image2]: /img/fastvideo_realtime_1080p/i2v-latency-nosora.png
+[image1]: /img/fastvideo_realtime_1080p/i2v_latency_comparison.png
+[image2]: /img/fastvideo_realtime_1080p/t2v_latency_comparison.png
