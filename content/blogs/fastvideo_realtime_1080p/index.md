@@ -21,7 +21,7 @@ The [FastVideo](https://github.com/hao-ai-lab/FastVideo) team has built a highly
 
 If you have the *need for speed (and quality)*, try our [demo](https://1080p.fastvideo.org/) for free.
 
-{{<youtube de27hQlylcU>}}
+{{<youtube qS_bHuSDQyY>}}
 
 <div style="margin-bottom: 1rem;"></div>
 
