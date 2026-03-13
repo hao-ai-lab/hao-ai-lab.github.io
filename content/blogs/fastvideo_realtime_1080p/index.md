@@ -23,11 +23,13 @@ If you have the *need for speed (and quality)*, try our [demo](https://1080p.fas
 
 {{<youtube de27hQlylcU>}}
 
+<div style="margin-bottom: 1rem;"></div>
+
 The biggest bottleneck in video generation is no longer just model quality. It is the **broken feedback loop** during creative iteration. As a creator, designer, or builder working with AI video models, you don't want just a single generated video, you want to have the ability to explore with multiple generations. You want to try multiple ideas, change the framing, swap the style, adjust the motion, add a reference image, rerun, and keep going until perfection. This is how real creative work happens. But when each attempt takes minutes and hits your budget, the creation loop just collapses -- a tool is not effective if it becomes slower than your imagination\! For example, generating an 8-second video with Google's Veo-3 Fast takes about 55 seconds. While Veo is an impressive model, it is still too slow and expensive for the rapid iteration that modern media-generation workflows demand. If **generation is slower than the pace of ideation, then frequent iteration becomes impractical.**
 
 Recent research efforts have greatly reduced video generation latency, but most of these systems are still limited to [480p](https://haoailab.com/blogs/fastvideo_post_training/), or at best 720p, and often do not produce audio. **1080p is where things get serious.** It is where outputs become much more usable for storytelling, content creation, and real products -- but it is also where the systems challenges become much harder. The spatial workload grows dramatically, attention becomes more expensive, memory pressure rises, and every inefficiency in the stack gets amplified. Achieving **interactive latency** at full-HD resolution requires deep optimizations of model execution, scheduling, and kernel efficiency.
 
-In this post, we release the fastest 1080p TI2AV pipeline ever. We show that 1080p video generation can be made ***interactive*** on a single NVIDIA B200 GPU with [FastVideo](https://github.com/hao-ai-lab/FastVideo). By combining full-stack optimization techniques, we reduced end-to-end latency by **3.9x** relative to the next-fastest option.
+In this post, we release the **fastest 1080p TI2AV pipeline ever**. We show that 1080p video generation can be made ***interactive*** on a single NVIDIA B200 GPU with [FastVideo](https://github.com/hao-ai-lab/FastVideo). By combining full-stack optimization techniques, we reduced end-to-end latency by **3.9x** relative to the next-fastest option.
 
 For the first time, we achieved a **\~4.55-second** end-to-end latency for 5-second video generation at 1088 x 1920 resolution at 24 FPS, on a single NVIDIA B200 GPU\! We believe this is an important milestone that will truly unlock the potential of creative and interactive video generation: faster feedback, lower cost, and a much more seamless creative loop.
 
@@ -72,7 +74,7 @@ We thank [NVIDIA](https://www.nvidia.com/en-us/) and [Coreweave](https://www.cor
 **Core contributors:** [Matthew Noto\*](https://github.com/RandNMR73), [Yechen Xu\*](https://github.com/XOR-op), [Junda Su\*](https://davids048.github.io/), [Will Lin\*](https://github.com/SolitaryThinker) (\* equal contribution)  
 **Contributors:** [Shao Duan](https://github.com/shaoxiongduan), [Kevin Lin](https://github.com/kevin314), [Minshen Zhang](https://github.com/alexzms), [Wei Zhou](https://github.com/JerryZhou54)  
 **Tech leads:** [Will Lin](https://github.com/SolitaryThinker), [Peiyuan Zhang](https://github.com/jzhang38), [Hao Zhang](https://haozhang.ai/)  
-**Advisors:** [Hao Zhang](https://haozhang.ai/) (corresponding), Danyang Zhuo, Eric Xing, Zhengzhong Liu
+**Advisors:** [Hao Zhang](https://haozhang.ai/) (corresponding), [Danyang Zhuo](https://danyangzhuo.com/), [Eric Xing](https://www.cs.cmu.edu/~epxing/), [Zhengzhong Liu](https://hunterhector.github.io/)
 
 ### **Learn More**
 
