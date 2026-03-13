@@ -1,6 +1,6 @@
 +++
 title = "FastLTX-2.3: Generating a 5s 1080p Video in 4.5s on a Single GPU"
-date = 2026-03-11T12:00:00-08:00
+date = 2028-03-11T12:00:00-08:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
 ShowReadingTime = true
