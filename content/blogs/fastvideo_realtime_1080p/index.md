@@ -1,5 +1,5 @@
 +++
-title = "FastLTX-2.3: Generating a 5s 1080p Video in 4.5s on a Single GPU"
+title = "Create a 5s 1080p Video in 4.5s with FastVideo on a Single GPU"
 date = 2026-03-11T12:00:00-08:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -8,8 +8,8 @@ draft = false
 contentClass = "post-content-justified"
 [cover]
     image = "/img/fastvideo_realtime_1080p/t2v-latency-nosora.png"
-    alt = "FastLTX-2.3 text-to-video latency comparison"
-    caption = "FastLTX-2.3 achieves the fastest 1080p text-to-video latency in this comparison."
+    alt = "Create a 5s 1080p Video in 4.5s with FastVideo on a Single GPU"
+    caption = "Create a 5s 1080p Video in 4.5s with FastVideo on a Single GPU"
     hidden = true
 +++
 
