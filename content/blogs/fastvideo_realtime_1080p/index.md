@@ -71,9 +71,9 @@ We thank [NVIDIA](https://www.nvidia.com/en-us/) and [Coreweave](https://www.cor
 
 ### **The Team**
 
-**Core contributors:** [Matthew Noto\*](https://github.com/RandNMR73), [Yechen Xu\*](https://github.com/XOR-op), [Junda Su\*](https://davids048.github.io/), [Will Lin\*](https://github.com/SolitaryThinker) (\* equal contribution)  
+**Core contributors:** [Matthew Noto\*](https://github.com/RandNMR73), [Yechen Xu\*](https://github.com/XOR-op), [Junda Su\*](https://davids048.github.io/), [Will Lin\*](https://solitarythinker.github.io/) (\* equal contribution)  
 **Contributors:** [Shao Duan](https://github.com/shaoxiongduan), [Kevin Lin](https://github.com/kevin314), [Minshen Zhang](https://github.com/alexzms), [Wei Zhou](https://github.com/JerryZhou54)  
-**Tech leads:** [Will Lin](https://github.com/SolitaryThinker), [Peiyuan Zhang](https://github.com/jzhang38), [Hao Zhang](https://haozhang.ai/)  
+**Tech leads:** [Will Lin](https://solitarythinker.github.io/), [Peiyuan Zhang](https://github.com/jzhang38), [Hao Zhang](https://haozhang.ai/)  
 **Advisors:** [Hao Zhang](https://haozhang.ai/) (corresponding), [Danyang Zhuo](https://danyangzhuo.com/), [Eric Xing](https://www.cs.cmu.edu/~epxing/), [Zhengzhong Liu](https://hunterhector.github.io/)
 
 ### **Learn More**
