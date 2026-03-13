@@ -32,11 +32,10 @@ In this post, we release the fastest 1080p TI2AV pipeline ever. We show that 108
 For the first time, we achieved a **\~4.55-second** end-to-end latency for 5-second video generation at 1088 x 1920 resolution at 24 FPS, on a single NVIDIA B200 GPU\! We believe this is an important milestone that will truly unlock the potential of creative and interactive video generation: faster feedback, lower cost, and a much more seamless creative loop.
 
 ### **FastVideo's New Real-Time Inference Stack**
+Achieving sub-5-second end-to-end latency for 1080p generation (see figures below) requires optimization across every layer of the stack: model implementation, kernels, low-bit precision, compilation, scheduling, and even the infrastructure around frame and audio processing. Our implementation is specifically optimized for data-center grade Blackwell GPUs (B200/B300).
 
 ![][image1]  
 ![][image2]
-
-Achieving sub-5-second end-to-end latency for 1080p generation (see figures above) requires optimization across every layer of the stack: model implementation, kernels, low-bit precision, compilation, scheduling, and even the infrastructure around frame and audio processing. Our implementation is specifically optimized for data-center grade Blackwell GPUs (B200/B300).
 
 **Fast attention for video generation.** Modern video generation models are dominated by [attention computation](https://arxiv.org/pdf/2505.13389). DiTs rely on 3D spatiotemporal attention so that tokens can exchange information across both space and time. That means attention is one of the biggest consumers of FLOPs in the entire system. FastVideo incorporates optimized attention kernels for NVIDIA's **SM100/SM103** architectures, which gives us the attention engine required to keep 1080p generation interactive.
 
@@ -56,7 +55,7 @@ Running high-quality 1080p video generation on a **single GPU** dramatically sim
 
 For creators, it means something even more important: **faster iteration**. You can test more ideas in less time, keep momentum in the creative loop, and actually use video generation as an interactive tool rather than a slow batch job. For products, it opens the door to entirely new classes of applications in **media generation**, including rapid creative ideation, interactive storytelling tools, and future on-device and local-generation workflows.
 
-And with continued advances in hardware and models, we believe **sub-5-second local generation on consumer devices** is coming sooner than most people expect. The FastVideo team is on it\!
+And with continued advances in hardware and models, we believe **sub-5-second local generation on consumer devices** is coming sooner than most people expect. We actively working on this. Stay tuned! 
 
 ### **About FastVideo**
 
