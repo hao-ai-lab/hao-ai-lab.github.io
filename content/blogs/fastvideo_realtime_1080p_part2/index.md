@@ -41,6 +41,20 @@ Vibe-directing is enabled by FastVideo's real-time inference stack: fast attenti
 
 As a unified framework for both post-training and inference, FastVideo provides a simple interface for integrating new models, performing step distillation, and applying heavy inference optimizations. We are also actively working on RTX 5090 support. Stay tuned for this!
 
+
+### **The Team**
+
+**Core contributors:** [Will Lin*](https://solitarythinker.github.io/), [Matthew Noto*](https://github.com/RandNMR73), [Junda Su*](https://davids048.github.io/), [Yechen Xu*](https://github.com/XOR-op), [Peiyuan Zhang*](https://github.com/jzhang38) (* equal contribution)
+
+**Contributors:** [Shao Duan](https://github.com/shaoxiongduan), [Minshen Zhang](alexzms.github.io), [Loay Rashid](https://github.com/loaydatrain), [Kevin Lin](https://github.com/kevin314)
+
+**UI:** [Tina Mai](https://tinabmai.com/)
+
+**Tech leads:** [Will Lin](https://solitarythinker.github.io/), [Hao Zhang](https://haozhang.ai/)
+
+**Advisors:** [Hao Zhang](https://haozhang.ai/) (corresponding), [Danyang Zhuo](https://danyangzhuo.com/), [Eric Xing](https://www.cs.cmu.edu/~epxing/), [Zhengzhong Liu](https://hunterhector.github.io/)
+
+
 ### **Learn More**
 
 - [FastVideo Documentation](https://haoailab.com/FastVideo/)
