@@ -17,7 +17,7 @@ contentClass = "post-content-justified"
 
 **TL;DR:** Our new real-time inference stack in FastVideo enables [Dreamverse](https://dreamverse.fastvideo.org/), a prototype for a new interface where users can **vibe direct** their own “multiverse” of videos. 
 
-**[TODO: Insert demo video]**
+{{<youtube HR1hDTnKZBA>}}
 
 AI video generation is already good enough to make a convincing clip. But real creative work is not about getting a clip in one shot. It’s about iteration. An idea appears, you test it: keep the subject, change the camera angle, continue the scene, and try again. The problem is that ideas move faster than generations. **If every attempt takes minutes, the creative loop breaks**; your imagination moves on before the video does.
 
