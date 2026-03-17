@@ -52,6 +52,5 @@ That is what vibe directing is all about. Step in the Dreamverse today with our 
 
 - [FastVideo Documentation](https://haoailab.com/FastVideo/)
 - [FastVideo Roadmap for 26Q1](https://github.com/hao-ai-lab/FastVideo/issues/899)
-- [Previous Update: Create a 5s 1080p Video in 4.5s with FastVideo on a Single GPU](https://haoailab.com/blogs/fastvideo_realtime_1080p/)
 
 *Note: The Dreamverse is not yet pushed to the public branch of FastVideo as we are still cleaning up the code.*
