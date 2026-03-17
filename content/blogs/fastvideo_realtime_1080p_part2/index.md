@@ -9,7 +9,7 @@ contentClass = "post-content-justified"
 [cover]
     image = ""
     alt = "Into the Dreamverse: Vibe Directing in FastVideo"
-    caption = "Vibed Into the VibeVerse: Interactive Vibe Directing in FastVideo"
+    caption = "Into the Dreamverse: Vibe Directing in FastVideoo"
     hidden = true
 +++
 
