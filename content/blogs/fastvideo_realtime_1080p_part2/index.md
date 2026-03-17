@@ -31,7 +31,7 @@ This kind of workflow is only possible when video generation is fast enough. Cur
 This matters because serious video creation is almost never perfect on the first try. A shot may look off. Motion may break halfway through. Characters may drift between frames. In addition, creators may have multiple versions of a scene and want to play them out to determine which is better. In practice, creators are constantly making small adjustments and trying again. When revisions are slow, it’s much more difficult to explore many ideas. However, when the next result comes back almost immediately, it becomes possible to quickly try many ideas rather than just one. Better creative work comes from a faster loop, not just a better model.
 
 We think this is where video generation is going: a way to direct the video as it unfolds. The best systems will not just generate impressive clips. They will let people explore ideas at the speed of their imagination.
-That is what vibe directing is all about. Step in the Dreamverse today with our free demo…
+That is what vibe directing is all about. Step in the Dreamverse today with our free [demo](https://dreamverse.fastvideo.org/)…
 
 **[TODO: Insert side-by-side gif comparison]**
 
