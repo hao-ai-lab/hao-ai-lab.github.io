@@ -1,5 +1,5 @@
 +++
-title = "Into The Dreamverse: Vibe Directing in FastVideo"
+title = "Into the Dreamverse: Vibe Directing in FastVideo"
 date = 2026-03-15T12:00:00-08:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -48,4 +48,4 @@ That is what vibe directing is all about. Step in the Dreamverse today with our 
 - [FastVideo Documentation](https://haoailab.com/FastVideo/)
 - [FastVideo Roadmap for 26Q1](https://github.com/hao-ai-lab/FastVideo/issues/899)
 
-*Note: The Dreamverse is not yet pushed to the public branch of FastVideo as we are still cleaning up the code.*
+*Note: Dreamverse is not yet pushed to the public branch of FastVideo as we are still cleaning up the code.*
