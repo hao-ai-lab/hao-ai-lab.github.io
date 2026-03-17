@@ -15,17 +15,17 @@ contentClass = "post-content-justified"
 
 {{< socialBadges github="hao-ai-lab/FastVideo" demo="https://1080p.fastvideo.org/" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3sbq6wr37-TozNr4xtGHOoa4byxFXmPg" discord="https://discord.gg/Dm8F2peD3e" >}}
 
-**TL;DR:** Real-time video generation enables Dreamverse, a prototype for a new interface where users can vibe-direct their own “multiverse” of videos. 
-
+**TL;DR:** Real-time video generation enables Dreamverse, a prototype for a new experience where users can vibe-direct their own “multiverse” of videos. 
+****
 **[TODO: Insert demo video]**
 
 AI video generation is already good enough to make a convincing clip. But real creative work is not about getting a clip in one shot. It’s about iteration. An idea appears, you test it: keep the subject, change the camera angle, continue the scene, and try again. The problem is that ideas move faster than generations. **If every attempt takes minutes, the creative loop breaks**; your imagination moves on before the video does.
 
 We think there is a better interface for AI video generation, which is why we created Dreamverse, an interface that enables a new workflow called vibe-directing. 
 
-Vibe directing is to video what vibe coding is to software. Instead of rewriting giant prompts from scratch, you talk to the system in natural language and steer the video through *fast* revision. Keep the subject, change the background, slow the camera, etc. Rather than jamming everything into a single prompt, iterate with multiple simple prompts. 
+Vibe directing is to video what vibe coding is to software. Instead of rewriting giant prompts from scratch, you talk to the system in natural language and steer the video through *fast* revision. Keep the subject, change the background, slow the camera, or anything else! Rather than jamming everything into a single prompt, iterate with multiple simple prompts. 
 
-This kind of workflow is only possible when video generation is fast enough. Current video generation models like Sora take 1-2 minutes to generate a 5 s 1080p clip. We can do it in [**~4.55 seconds**](https://haoailab.com/blogs/fastvideo_realtime_1080p/). In other words, our inference stack in FastVideo can generate a clip faster than you can watch it. This capability completely changes the feel of video generation inference; it stops feeling like a passive experience and **starts feeling like directing your own scenes**. This allows us to create a longer 30-second scene that unfolds as a chain of these 5-second clips, while the chat window stays open so you can keep directing in real time.
+This kind of workflow is only possible when video generation is fast enough. Current video generation models like OpenAI's Sora takes ~1 minute to generate a 5 s 1080p clip. We can do it in [**~4.55 seconds**](https://haoailab.com/blogs/fastvideo_realtime_1080p/). In other words, our inference stack in FastVideo can generate a clip faster than you can watch it. This capability completely changes the feel of video generation inference; it stops feeling like a passive experience and **starts feeling like directing your own scenes**. This allows us to create a longer 30-second scene that unfolds as a chain of these 5-second clips, while keeping a chat window open so you can keep directing in real time.
 
 
 This matters because serious video creation is almost never perfect on the first try. A shot may look off. Motion may break halfway through. Characters may drift between frames. In addition, creators may have multiple versions of a scene and want to play them out to determine which is better. In practice, creators are constantly making small adjustments and trying again. When revisions are slow, it’s much more difficult to explore many ideas. However, when the next result comes back almost immediately, it becomes possible to quickly try many ideas rather than just one. Better creative work comes from a faster loop, not just a better model.
