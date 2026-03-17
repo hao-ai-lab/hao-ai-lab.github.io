@@ -34,8 +34,6 @@ We think this is where video generation is going: a way to direct the video as i
 
 That is what vibe directing is all about. Step in the Dreamverse today with our [demo](https://dreamverse.fastvideo.org/).
 
-**[TODO: Insert side-by-side gif comparison]**
-
 ### **The Team**
 
 **Core contributors:** [Will Lin*](https://solitarythinker.github.io/), [Matthew Noto*](https://github.com/RandNMR73), [Junda Su*](https://davids048.github.io/), [Yechen Xu*](https://github.com/XOR-op), [Peiyuan Zhang*](https://github.com/jzhang38) (* equal contribution)  
