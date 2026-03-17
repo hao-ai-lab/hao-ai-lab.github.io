@@ -32,7 +32,7 @@ This matters because serious video creation is almost never perfect on the first
 
 We think this is where video generation is going: a way to direct the video as it unfolds. The best systems will not just generate impressive clips. They will let people explore ideas at the speed of their imagination.
 
-That is what vibe directing is all about. Step in the Dreamverse today with our [demo](https://dreamverse.fastvideo.org/).
+That is what vibe directing is all about. Step into the Dreamverse today with our [demo](https://dreamverse.fastvideo.org/).
 
 ### **The Team**
 
