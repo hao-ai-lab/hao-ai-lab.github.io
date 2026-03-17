@@ -33,18 +33,13 @@ This matters because serious video creation is almost never perfect on the first
 We think this is where video generation is going: a way to direct the video as it unfolds. The best systems will not just generate impressive clips. They will let people explore ideas at the speed of their imagination.
 That is what vibe directing is all about. Step in the Dreamverse today with our free [demo](https://dreamverse.fastvideo.org/)…
 
-**[TODO: Insert side-by-side gif comparison]**
 
 ### **The Team**
 
 **Core contributors:** [Will Lin*](https://solitarythinker.github.io/), [Matthew Noto*](https://github.com/RandNMR73), [Junda Su*](https://davids048.github.io/), [Yechen Xu*](https://github.com/XOR-op), [Peiyuan Zhang*](https://github.com/jzhang38) (* equal contribution)
-
 **Contributors:** [Shao Duan](https://github.com/shaoxiongduan), [Minshen Zhang](alexzms.github.io), [Loay Rashid](https://github.com/loaydatrain), [Kevin Lin](https://github.com/kevin314)
-
 **UI:** [Tina Mai](https://tinabmai.com/)
-
 **Tech leads:** [Will Lin](https://solitarythinker.github.io/), [Hao Zhang](https://haozhang.ai/)
-
 **Advisors:** [Hao Zhang](https://haozhang.ai/) (corresponding), [Danyang Zhuo](https://danyangzhuo.com/), [Eric Xing](https://www.cs.cmu.edu/~epxing/), [Zhengzhong Liu](https://hunterhector.github.io/)
 
 
