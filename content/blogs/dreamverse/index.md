@@ -34,6 +34,17 @@ We think this is where video generation is going: a way to direct the video as i
 
 That is what vibe directing is all about. Step into the Dreamverse today with our [demo](https://dreamverse.fastvideo.org/).
 
+### **Powered by K2-V2**
+
+We are excited to annouce that Dreamverse is powered by [K2-V2](https://ifm.ai/k2/), a 360-open foundation model that pairs strong general-purpose language capabilities with integrated long-context understanding and tool-augmented workflows. 
+
+### **Acknowledgement**
+
+We thank [NVIDIA](https://www.nvidia.com/en-us/), [Instituite for Foundation Models](https://ifm.ai/), [MBZUAI](https://mbzuai.ac.ae/) for supporting our development, and [Lightricks](https://www.lightricks.com/) for creating and open-sourcing LTX-2 to the community. We are also excited to co-announce that NVIDIA's [Dynamo](https://docs.nvidia.com/dynamo/dev/user-guides/diffusion/fastvideo) recently added support for FastVideo as a backend. Stay tuned for more developments as this collaboration continues\!
+
+
+
+
 ### **The Team**
 
 **Core contributors:** [Will Lin*](https://solitarythinker.github.io/), [Matthew Noto*](https://github.com/RandNMR73), [Junda Su*](https://davids048.github.io/), [Yechen Xu*](https://github.com/XOR-op), [Peiyuan Zhang*](https://github.com/jzhang38) (* equal contribution)  
