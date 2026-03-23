@@ -22,7 +22,7 @@ draft = false
 {{< socialBadges arxiv-index="2502.04507" github="hao-ai-lab/FastVideo" >}}
 
 {{< justify >}}
-**TL;DR:** Video generation with DiTs is **painfully slow** -- [HunyuanVideo](https://github.com/Tencent/HunyuanVideo) takes 16 minutes to generate just a 5-second video on an H100 with FlashAttention3. Our sliding tile attention (STA) slashes this to **5 minutes** with **zero quality loss, no extra training required**.
+**TL;DR:** Video generation with DiTs is **painfully slow** -- [HunyuanVideo](https://github.com/Tencent/HunyuanVideo) takes 16 minutes to generate just a 5-second video on an H100 with FlashAttention-3. Our sliding tile attention (STA) slashes this to **5 minutes** with **zero quality loss, no extra training required**.
 Specifically, STA accelerates attention alone by **2.8–17x** over FlashAttention-2 and **1.6–10x** over FlashAttention-3. 
 With STA and other optimizations, our solution boosts end-to-end generation speed by **2.98×** compared to the FA3 full attention baseline, without quality loss or the need for training. Enabling finetuning unlocks even greater speedups!
 
@@ -121,11 +121,11 @@ The video below demonstrates how STA works. For better illustration, we use a 2D
 {{<youtube D4gZ--LhZHs>}}
 
 {{< justify >}}
- STA can be efficiently implemented with FlexAttention, which provides enough functionality to skip all empty blocks and avoid adding unnecessary *intra-block* mask on the dense blocks. We can further optimize the sparse attention masks by *disaggregating* the *inter-block* mask logic from the compute kernels. Thus, we implement our attention kernels based on ThunderKittens and FlashAttention3 . 
+ STA can be efficiently implemented with FlexAttention, which provides enough functionality to skip all empty blocks and avoid adding unnecessary *intra-block* mask on the dense blocks. We can further optimize the sparse attention masks by *disaggregating* the *inter-block* mask logic from the compute kernels. Thus, we implement our attention kernels based on ThunderKittens and FlashAttention-3 . 
  
 ## Kernel-level Optimizations for STA
 
-Inpired by FlashAttention 3 and [ThunderKittens](https://github.com/HazyResearch/ThunderKittens), our implementation split the threadblock into compute warpgroups and data warpgroups, and the inter-block mask is completely managed by the data warpgroups. Each compute warpgroup is responsible for calculating one query block, which always resides in the SRAM (Split-Q). The data warpgroup is responsible for asynchronously loading the KV blocks from HBM to SRAM. For each block of query, the data warpgroup needs to decide which key and value blocks the query block will attend to in STA and only load those blocks. Since the data warpgroups are asynchronous, the overhead of calculating the inter-block mask in STA and deciding which data to load can be hidden with overlapping. On the other hand, the compute worker is completely oblivious of the sparse attention pattern. It performs attention computation with the key value blocks in shared memory loaded by data workers, and once all data is consumed in the circular cache, the computation is finished.
+Inpired by FlashAttention-3 and [ThunderKittens](https://github.com/HazyResearch/ThunderKittens), our implementation split the threadblock into compute warpgroups and data warpgroups, and the inter-block mask is completely managed by the data warpgroups. Each compute warpgroup is responsible for calculating one query block, which always resides in the SRAM (Split-Q). The data warpgroup is responsible for asynchronously loading the KV blocks from HBM to SRAM. For each block of query, the data warpgroup needs to decide which key and value blocks the query block will attend to in STA and only load those blocks. Since the data warpgroups are asynchronous, the overhead of calculating the inter-block mask in STA and deciding which data to load can be hidden with overlapping. On the other hand, the compute worker is completely oblivious of the sparse attention pattern. It performs attention computation with the key value blocks in shared memory loaded by data workers, and once all data is consumed in the circular cache, the computation is finished.
 
 {{< /justify >}}
 {{< image src="img/kernel_speed.png" alt="Kernel Speed" width="90%" title="Table 1. Forward speed of sparse attention kernels in a setup aligned with HunyuanVideo's inference configuration (bf16, 720P, 5s, 115.2K seq len, dhead = 128, # heads = 24). Config controls the window size of each sparse attention.">}}
