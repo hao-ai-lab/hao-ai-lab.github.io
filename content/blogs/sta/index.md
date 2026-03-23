@@ -26,7 +26,7 @@ draft = false
 Specifically, STA accelerates attention alone by **2.8–17x** over FlashAttention-2 and **1.6–10x** over FlashAttention-3. 
 With STA and other optimizations, our solution boosts end-to-end generation speed by **2.98×** compared to the FA3 full attention baseline, without quality loss or the need for training. Enabling finetuning unlocks even greater speedups!
 
-Can you spot the difference between videos from the original HunyuanVideo and our accelerated inference? 👉Try out kernel in our [FastVideo project](https://github.com/hao-ai-lab/FastVideo) project and we'd love to hear what you think!
+Can you spot the difference between videos from the original HunyuanVideo and our accelerated inference? 👉Try out the kernel in our [FastVideo project](https://github.com/hao-ai-lab/FastVideo) project and we'd love to hear what you think!
 {{< /justify >}}
 
 {{<youtube Cjur2htVuSk>}}
@@ -58,7 +58,7 @@ HunyuanVideo exhibits strong locality: a small local window (just 15.52% of the 
 
 {{< /justify >}}
 
-{{< image src="img/attn_is_sparse.png" alt="Attn Sparsity" width="100%" title="Figure 2. Left: Instead of attending to the entire image, the query (green dot)’ only attends to keys within a local window. Mid: Attention scores within the local window accouts for mojority of the entire attention. Right: Despite the different recall across heads, the standard deviation across prompts remains low.">}}
+{{< image src="img/attn_is_sparse.png" alt="Attn Sparsity" width="100%" title="Figure 2. Left: Instead of attending to the entire image, the query (green dot)’ only attends to keys within a local window. Mid: Attention scores within the local window accouts for the majority of the entire attention. Right: Despite the different recall across heads, the standard deviation across prompts remains low.">}}
 
 
 {{< justify >}}
