@@ -92,7 +92,7 @@ While dense and empty blocks work well with FA, mixed blocks introduce significa
 
 * **Wasted computation**: Since a block is the minimum compute unit, FA must compute the entire block before applying the mask, leading to unnecessary work.
 * **GPU-unfriendly masking**: The intra-block mask depends on both the user-defined attention pattern and the block’s location within the attention map. Worse, it cannot be precomputed—doing so would cause quadratic memory overhead. Even in [FlexAttention](https://pytorch.org/blog/flexattention/), a simple causal mask adds 15% overhead—in 3D SWA, masking overhead can exceed the cost of computing the block itself!
-That is why higher-order SWA is inherently GPU-unfriendly -- it produce too many mixed blocks! 
+That is why higher-order SWA is inherently GPU-unfriendly -- it produces too many mixed blocks! 
 
 To illustrate, we analyze NATTEN in Figure 3(a), a refined SWA variant that shifts window centers at image/video boundaries to ensure each query attends to a fixed number of keys. However, this leads to queries attending to distinct key groups, disrupting uniformity in the attention map and creating a flood of mixed blocks.
 To mitigate this, Tiled NATTEN reorders inputs to increase the number of dense blocks (Figure 3(b)). Yet, a significant portion of blocks remain mixed, making SWA fundamentally inefficient for GPUs.
