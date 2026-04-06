@@ -13,7 +13,7 @@ summary = "Attn-QAT is the first systematic study of 4-bit quantization-aware tr
 
 {{< socialBadges arxiv-index="2603.00040" github="hao-ai-lab/FastVideo" >}}
 
-**TL;DR:** FP4 hardware is finally here, and FP4 linear layers are already being used in production. However, FP4 attention still causes significant quality degradation, preventing true end-to-end FP4 serving and limiting full hardware utilization. In this work, we present **Attn-QAT**, the first systematic study of 4-bit quantization-aware training for attention. We identify two key principles for stable FP4 attention QAT: (1) matching low-precision recomputation of attention scores in the backward pass and (2) resolving implicit precision assumptions in FlashAttention's gradient calculation. Across video diffusion models and language models, Attn-QAT recovers the quality drop of 4-bit attention without the extra outlier-mitigation heuristics used by prior FP4 attention methods, while also delivering up to 1.5x higher throughput than SageAttention3 on an RTX 5090.
+**TL;DR:** FP4 hardware is finally here, and FP4 linear layers are already being used in production. However, FP4 attention still causes significant quality degradation, preventing true end-to-end FP4 serving and limiting full hardware utilization. In this work, we present **Attn-QAT**, the first systematic study of 4-bit quantization-aware training for attention. We identify two key principles for stable FP4 attention QAT: (1) matching low-precision recomputation of attention scores in the backward pass and (2) resolving implicit precision assumptions in FlashAttention's gradient calculation. Across video diffusion models and language models, Attn-QAT **recovers the quality drop** of 4-bit attention without the extra outlier-mitigation heuristics used by prior FP4 attention methods, while also delivering up to **1.5x** higher throughput than SageAttention3 on an RTX 5090.
 
 ## 4-bit attention remains unsolved
 
@@ -26,9 +26,7 @@ This is exactly why prior training-free FP4 attention methods such as SageAttent
 
 Instead of devising more sophisticated tricks to reduce quantization error in a training-free manner, we take a different approach: we employ quantization-aware training (QAT) for attention, which enables models to adapt to quantization error during training and thus preserve model quality. The goal of this work is simple: make FP4 attention work without any outlier-mitigation techniques. In the context of video generation, this means making FP4 attention produce videos that are indistinguishable in quality from BF16 videos at inference time.
 
-<div style="text-align: center;">
-  {{< image src="img/inference_algo.png" alt="attn-qat inference" width="50%">}}
-</div>
+{{< figure src="img/inference_algo.png" alt="attn-qat inference" width="50%" align="center" >}}
 
 ## The two fixes that make Attn-QAT work
 
@@ -130,18 +128,14 @@ Intuitively, $\mathbf{O}$ is the low-precision output used by the model, while $
 
 This small modification preserves the fully low-precision forward path while restoring correctness in the backward pass, eliminating the need for heuristic outlier-mitigation techniques.
 
-<div style="text-align: center;">
-  {{< image src="img/grad_norm.png" alt="grad norm" width="50%">}}
-</div>
+{{< figure src="img/grad_norm.png" alt="grad norm" width="50%" align="center" >}}
 
 ### 2. Recompute attention probabilities in the same low precision used in the forward pass
 
 In FlashAttention, the full attention probability matrix is not stored. It is recomputed during the backward pass from the saved log-sum-exp statistics. Under QAT, this recomputation must match the low-precision forward pass. Attn-QAT therefore fake-quantizes the recomputed attention probabilities in the backward pass, so gradients are computed with respect to the same quantized activations seen in the forward pass.
 
 
-<div style="text-align: center;">
-  {{< image src="img/training_algo.png" alt="attn-qat training" width="100%">}}
-</div>
+{{< figure src="img/training_algo.png" alt="attn-qat training" width="100%" align="center" >}}
 
 ## Experimental results: quality is recovered
 
@@ -164,9 +158,7 @@ Because Attn-QAT no longer needs the extra smoothing and two-level quantization 
 
 The paper implements Triton kernels for training and improved CUDA kernels for inference. On an RTX 5090, the Attn-QAT inference kernel achieves approximately 1.1x-1.5x higher throughput than SageAttention3, depending on the setup. The key reason is straightforward: by removing extra preprocessing for Q, K, and P, the kernel becomes lighter while preserving quality through training rather than inference heuristics.
 
-<div style="text-align: center;">
-  {{< image src="img/5090_speedup.png" alt="5090 speedup" width="50%">}}
-</div>
+{{< figure src="img/5090_speedup.png" alt="5090 speedup" width="50%" align="center" >}}
 
 
 ## What this paper really changes
@@ -208,9 +200,7 @@ Other implementation takeaways include:
 3. Interleaving quantization with register-to-TMEM copies does not resolve that pressure, though quantized PV may become more attractive on B300 and Rubin with improved FP16 exponential support.
 
 
-<div style="text-align: center;">
-  {{< image src="img/B200_plot.png" alt="B200 kernel" width="100%">}}
-</div>
+{{< figure src="img/B200_plot.png" alt="B200 kernel" width="100%" align="center" >}}
 
 ### Kernel performance
 
