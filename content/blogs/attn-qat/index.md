@@ -172,7 +172,7 @@ For a long time, quantization for attention has been treated mostly as an infere
 
 This work also enables the development of training recipes that support more extreme inference optimizations, such as combining few-step distillation and full end-to-end FP4 execution during inference. We are actively working on this.
 
-Please see [the paper](https://arxiv.org/abs/2603.00040) for more details. Code is available in [FastVideo](https://github.com/hao-ai-lab/FastVideo), our unified framework for video diffusion post-training and inference.
+Please see [the paper](https://arxiv.org/abs/2603.00040) for more details. Code is available in [FastVideo](https://github.com/hao-ai-lab/FastVideo), our unified framework for video diffusion post-training and [real-time inference inference](https://haoailab.com/blogs/fastvideo_realtime_1080p/).
 
 ## Citation
 
