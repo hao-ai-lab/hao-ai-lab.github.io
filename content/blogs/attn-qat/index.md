@@ -22,7 +22,10 @@ Native FP4 tensor core support on new NVIDIA GPUs makes 4-bit computation increa
 This is exactly why prior training-free FP4 attention methods such as SageAttention3 still suffer in quality. Even with specialized outlier-mitigation techniques such as Q/K smoothing and two-level quantization of attention probabilities, we find that FP4 attention still degrades video quality on Wan 2.1-14B.
 
 
+<div class="video-embed">
 {{<youtube t7axGk-ev3E>}}
+</div>
+
 
 Instead of devising more sophisticated tricks to reduce quantization error in a training-free manner, we take a different approach: we employ quantization-aware training (QAT) for attention, which enables models to adapt to quantization error during training and thus preserve model quality. The goal of this work is simple: make FP4 attention work without any outlier-mitigation techniques. In the context of video generation, this means making FP4 attention produce videos that are indistinguishable in quality from BF16 videos at inference time.
 
@@ -142,7 +145,9 @@ In FlashAttention, the full attention probability matrix is not stored. It is re
 The strongest evidence comes from video diffusion, where attention errors are immediately visible as degraded motion or temporal inconsistency. In the example videos below, we see that with Attn-QAT, FP4 attention produces videos comparable to BF16 attention, whereas SageAttention3 produces videos with artifacts, and naive NVFP4 attention without QAT and outlier mitigation produces blurry videos.
 
 
+<div class="video-embed">
 {{<youtube gZipc43qvNE>}}
+</div>
 
 
 We also evaluate Attn-QAT on LLMs in two settings: continued pretraining and supervised fine-tuning.

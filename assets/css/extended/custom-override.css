@@ -102,3 +102,9 @@
     text-justify: inter-word;
     hyphens: auto;
 }
+
+.post-content-justified .video-embed + p,
+.post-content-justified .video-embed + div > p {
+    text-indent: 0;
+    margin-top: var(--content-gap);
+}
