@@ -40,33 +40,95 @@ Attn-QAT stabilizes 4-bit attention by enforcing two forms of precision consiste
 
 ### 1. Store a high-precision attention output for gradient computation
 
-FlashAttention computes the softmax gradient using a memory-efficient identity. For one row,
 
-$$ \mathbf{P}_i = \mathrm{softmax}(\mathbf{S}_i) $$
+We first clarify notation. Let $\mathbf{Q}, \mathbf{K}, \mathbf{V} \in \mathbb{R}^{N \times d}$ denote the query, key, and value matrices, and define
 
-the gradient can be written as
+\[
+\mathbf{S} = \mathbf{Q}\mathbf{K}^\top / \sqrt{d}, \quad
+\mathbf{P} = \mathrm{softmax}(\mathbf{S}), \quad
+\mathbf{O} = \mathbf{P}\mathbf{V}.
+\]
 
-$$ \mathbf{dS}_i = \mathbf{P}_i \odot \mathbf{dP}_i - (\mathbf{P}_i^\top \mathbf{dP}_i)\mathbf{P}_i $$
+We use $(\cdot)^F$ to denote fake-quantized (FP4-simulated) tensors, e.g., $\mathbf{P}^F = \phi^{-1}(\phi(\mathbf{P}))$.
 
-The scalar term $ \mathbf{P}_i^\top \mathbf{dP}_i $ depends on the full attention row, which would require quadratic memory. FlashAttention avoids this by rewriting it as
+In FlashAttention, the backward pass relies on a memory-efficient formulation of the softmax gradient. For a single row $i$,
 
-$$ \mathbf{P}_i^\top \mathbf{dP}_i = \mathbf{dO}_i^\top \mathbf{O}_i $$
+\[
+\mathbf{P}_i = \mathrm{softmax}(\mathbf{S}_i),
+\]
 
-where $ \mathbf{O}_i = \sum_j \mathbf{P}_{ij}\mathbf{V}_j $.
+and the gradient can be written as
 
-However, under Attn-QAT, the forward pass uses quantized probabilities:
+\[
+\mathbf{dS}_i
+= \mathbf{P}_i \odot \mathbf{dP}_i
+= (\mathbf{P}_i^\top \mathbf{dP}_i)\mathbf{P}_i.
+\]
 
-$$ \mathbf{O}_i = \sum_j \mathbf{P}_{ij}^{F}\mathbf{V}_j^{F} $$
+The key difficulty is the scalar term $\mathbf{P}_i^\top \mathbf{dP}_i$, which naively requires access to the full attention row and thus quadratic memory.
 
-So the identity no longer holds as the backward pass depends on high-precision $ \mathbf{P} $, but the forward pass uses $ \mathbf{P}^{F} $. To fix this, we compute an additional output during the forward pass:
+FlashAttention avoids this by rewriting the scalar as
 
-$$ \mathbf{O}_i' = \sum_j \mathbf{P}_{ij}\mathbf{V}_j^{F} $$
+\[
+\begin{aligned}
+\mathbf{P}_i^\top \mathbf{dP}_i
+&= \sum_j \mathbf{P}_{ij} \, \mathbf{dP}_{ij} \\
+&= \sum_j \mathbf{P}_{ij} \, \mathbf{dO}_i^\top \mathbf{V}_j \\
+&= \mathbf{dO}_i^\top \sum_j \mathbf{P}_{ij} \mathbf{V}_j \\
+&= \mathbf{dO}_i^\top \mathbf{O}_i,
+\end{aligned}
+\]
 
-and use it in the backward pass:
+which reduces the computation to a dot product with the attention output $\mathbf{O}_i$.
 
-$$ \mathbf{P}_i^\top \mathbf{dP}_i = \mathbf{dO}_i^\top \mathbf{O}_i' $$
+This identity implicitly assumes that the forward pass computes
 
-Intuitively, we keep the forward pass fully low precision but store a small amount of high-precision information to ensure the gradient is correct. Without this, the backward pass becomes inconsistent and training is unstable.
+\[
+\mathbf{O}_i = \sum_j \mathbf{P}_{ij} \mathbf{V}_j.
+\]
+
+However, under Attn-QAT, the forward pass instead uses fake-quantized probabilities:
+
+\[
+\mathbf{O}_i = \sum_j \mathbf{P}_{ij}^{F} \mathbf{V}_j^{F}.
+\]
+
+This introduces a forward-backward mismatch: the backward derivation depends on high-precision $\mathbf{P}$, while the forward pass uses $\mathbf{P}^F$. As a result,
+
+\[
+\mathbf{dO}_i^\top \mathbf{O}_i \neq \mathbf{P}_i^\top \mathbf{dP}_i,
+\]
+
+which leads to incorrect gradients and unstable training.
+
+To resolve this, we compute an additional auxiliary output during the forward pass:
+
+\[
+\mathbf{O}_i' = \sum_j \mathbf{P}_{ij} \mathbf{V}_j^{F}.
+\]
+
+Here, $\mathbf{P}$ remains in high precision (FP32 softmax), while $\mathbf{V}^F$ is still fake-quantized. This adds only a small amount of extra storage, without materializing the full attention matrix.
+
+In the backward pass, we then replace the scalar term with
+
+\[
+\mathbf{P}_i^\top \mathbf{dP}_i = \mathbf{dO}_i^\top \mathbf{O}_i'.
+\]
+
+This restores the exact identity:
+
+\[
+\begin{aligned}
+\mathbf{P}_i^\top \mathbf{dP}_i
+&= \sum_j \mathbf{P}_{ij} \, \mathbf{dO}_i^\top \mathbf{V}_j^{F} \\
+&= \mathbf{dO}_i^\top \sum_j \mathbf{P}_{ij} \mathbf{V}_j^{F} \\
+&= \mathbf{dO}_i^\top \mathbf{O}_i'.
+\end{aligned}
+\]
+
+Intuitively, $\mathbf{O}$ is the low-precision output used by the model, while $\mathbf{O}'$ is a minimal high-precision correction that ensures the backward pass remains mathematically consistent. Without $\mathbf{O}'$, the gradient computation silently assumes a different forward computation than what actually occurred, which is the root cause of instability in naive FP4 QAT for attention.
+
+This small modification preserves the fully low-precision forward path while restoring correctness in the backward pass, eliminating the need for heuristic outlier-mitigation techniques.
 
 <div style="text-align: center;">
   {{< image src="img/grad_norm.png" alt="grad norm" width="50%">}}
