@@ -98,8 +98,7 @@
 .post-content-justified p,
 .post-content-justified li,
 .post-content-justified blockquote {
-    text-align: justify;
-    text-justify: inter-word;
+    text-align: left;
     hyphens: auto;
 }
 
