@@ -61,9 +61,11 @@ In FlashAttention, the backward pass relies on a memory-efficient formulation of
 and the gradient can be written as
 
 \[
+\begin{aligned}
 \mathbf{dS}_i
-= \mathbf{P}_i \odot \mathbf{dP}_i
-= (\mathbf{P}_i^\top \mathbf{dP}_i)\mathbf{P}_i.
+&= \left(\mathrm{diag}(\mathbf{P}_i) - \mathbf{P}_i \mathbf{P}_i^\top\right)\mathbf{dP}_i \\
+&= \mathbf{P}_i \odot \mathbf{dP}_i - (\mathbf{P}_i^\top \mathbf{dP}_i)\mathbf{P}_i.
+\end{aligned}
 \]
 
 The key difficulty is the scalar term $\mathbf{P}_i^\top \mathbf{dP}_i$, which naively requires access to the full attention row and thus quadratic memory.
