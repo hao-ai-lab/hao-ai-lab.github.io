@@ -194,13 +194,25 @@ Please see [the paper](https://arxiv.org/abs/2603.00040) for more details. Code 
 
 ## Appendix: B200/B300 FP4 attention kernel
 
-**TL;DR:** We release FlashAttention-4 FP4, an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to 1.39x speedup and 1801 TFLOPS, along with a deeper look at implementation challenges and NVIDIA hardware evolution.
+**TL;DR:** We release [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to 1.39x speedup and 1801 TFLOPS, along with a deeper look at implementation challenges and NVIDIA hardware evolution.
 
 ### FP4/FP8 support on Blackwell
 
-Blackwell is the first GPU generation to provide native FP4/FP8 GEMM support via the `tcgen05.mma.cta_group.kind.block_scale` instruction family. Previous quantization methods on Hopper (H100) and Ampere (A100), such as W4A8 (QServe) and W4A16 (AWQ), used software dequantization: the kernel allocates extra registers and CUDA cores to dequantize tensors group-wise after loading them into the kernel. On Blackwell, this is no longer practical because tensor core throughput roughly doubles relative to Hopper while CUDA core count stays roughly unchanged.
+Blackwell is the first GPU generation to provide native FP4/FP8 GEMM support via the `tcgen05.mma.cta_group.kind.block_scale` instruction family. Previous quantization methods on Hopper (H100) and Ampere (A100), such as W4A8 ([QServe](https://arxiv.org/pdf/2405.04532)) and W4A16 ([AWQ](https://arxiv.org/pdf/2306.00978)), used **software dequantization**: tensors are loaded and then dequantized group-wise (typical size 128) using CUDA cores and registers.
+
+On Blackwell, this approach is no longer optimal: the `tcgen05.mma` instruction bakes in MXFP8/MXFP4 and NVFP4 with finer group sizes (32 and 16, respectively), providing better precision and freeing registers.  It also enables FP8/FP6/FP4 GEMMs without block scales via the `tcgen05.mma.cta_group.kind` instruction, which can provide an additional speedup in exchange for reduced precision. 
+
+BF16 `tcgen05.mma` doubles the m tile size over Hopper (max shape `m64n256k16 -> m128`, thus the 2x throughput), and FP4 MMA further quadruples via 4x wider k data path (max `m128n256k64`)
+
+{{< figure src="img/SM.png" alt="SM" width="100%" align="center" >}}
+
+Unlike Hopper WGMMA instructions—where A/B reside in SMEM/registers and outputs stay in registers—B200 introduces **Tensor Memory (TMEM)** to hold MMA outputs. A may reside in SMEM/TMEM and B in SMEM, reducing register pressure for larger MMA tiles. This comes at the cost of complexity: outputs must be copied from TMEM → registers for softmax (T2R), then written back (R2T).
 
 The broader issue is that softmax remains the bottleneck while tensor-core throughput keeps rising. NVIDIA increases advertised TFLOPS primarily by scaling chip size and power, with most of the growth allocated to tensor cores [[1]](https://newsletter.semianalysis.com/p/nvidia-blackwell-perf-tco-analysis). Software tricks such as exponential approximation can only mitigate the problem. FA4 only applies them to 25% of the softmax scores before register spilling becomes a concern. The practical lesson is to design attention operators around the actual balance of available hardware units and their capacity.
+
+TMEM provides 128 lanes (across four warps) × 512 columns = **64K 32-bit cells**. We will see how this quickly becomes a limiting resource alongside registers.
+
+{{< figure src="img/TMEM.png" alt="SM" width="100%" align="center" >}}
 
 Other implementation takeaways include:
 
@@ -208,12 +220,36 @@ Other implementation takeaways include:
 2. Quantizing $ P $ does not help in the same way as quantizing Q, K, and V because it adds too much pressure to the softmax warps.
 3. Interleaving quantization with register-to-TMEM copies does not resolve that pressure, though quantized PV may become more attractive on B300 and Rubin with improved FP16 exponential support.
 
+### Overbloated Tensor Cores
+Even such a modest performance gain comes from **squeezing out room for other units to serve pure GEMMs**.
+In the above table, we see that BF16/FP8 Tensor Core throughput increased by roughly 2x on B200, while CUDA Cores and softmax (exp2) throughput remained unchanged. In [FlashAttention 4](https://arxiv.org/pdf/2603.05451), this leads to bf16 forward attention being bound by both softmax and GEMM (both take 1024 cycles at tile size `m128n128`).
+
+FA4 mitigates this by **warp specialization**, overlapping MMA and softmax across warp groups (WGs).
+
+{{< figure src="img/FA4.png" alt="B200 kernel" width="100%" align="center" >}}
+
+However, as in PP training, overlap is never perfect due to pipeline warmup (launching two QK MMAs in a row) and misc. overheads such as address computation, issuing MMA instructions, updating the softmax row max, and copying results across WGs, so we can still yield meaningful speedups by reducing either bottleneck.
+
+FA4 tries to mitigate the softmax bottleneck **using a polynomial approximation** of exp2; higher-degree polynomials maintain precision but incur additional register usage and CUDA core instructions, so it’s only applied to 10%-25% of the softmax scores. Despite this, softmax remains register-heavy and a persistent bottleneck.
+
+### TMEM overlap schedule
+To reduce GEMM costs, we analyzed the scale factor dataflow: turns out they must be loaded from GMEM -> SMEM (via TMA) -> TMEM and [duplicated across four warps in a WG](https://github.com/NVIDIA/cutlass/issues/2961#issuecomment-3771068790) via `tcgen05.cp` multicast to be usable by `tcgen05.mma`. 
+
+However, at tile size `m128n128`, FA4 already uses all the available TMEM:
+- S1 and S2 (QK outputs): 128 columns each
+- O1 and O2: remaining 256 columns
+
+To avoid conflicts, we introduced a TMEM overlap schedule to squeeze in the scale factors while minimizing pipeline stalls: we reuse S2 for sfqk 1 and S1 for sfqk 2. Because `tcgen05.mma` ops issued by a thread using the same shape are guaranteed to execute sequentially, we only insert barriers between S1 T2R and sfqk 2 load. sfvp 1 is guaranteed not to stomp on S1 due to being after QK2, and sfvp 2 again uses a barrier to wait for S2 copy out (which rarely fires due to having 2 MMAs between QK2 and PV2). 
+
+We also considered storing P in SMEM to free TMEM, but rejected it due to insufficient `ldmatrix` instruction shapes for R2S copy (max of 8x8 vs 32x16 for `tcgen05.st`)
 
 {{< figure src="img/B200_plot.png" alt="B200 kernel" width="100%" align="center" >}}
 
-### Kernel performance
+Despite careful scheduling, we still did not observe a speedup with quant PV due to the aforementioned softmax bottleneck. Quant PV requires computing group-wise scale factors and `cvt.rn.satfinite` quantization instructions, which adds to the hard bottleneck. 
 
-| Config                         | FP4 (ms) | FP4 TFLOPS | BF16 (ms) | BF16 TFLOPS | Speedup |
+Therefore, we choose to run NVFP4 QK and BF16 PV on B200 with a max of 1801 TFLOPS and 1.39x speedup over FA4. Note that this is **only a lower bound of the speedup**: we have yet to experiment NVFP4 QK + FP8 PV, which eliminates the group quant overhead in softmax WG. B300 doubles exp throughput, and Rubin quadruples it (w/ fp16 exp), which should make quant PV faster. We are excited to **test more QAT recipes for different hardware!**
+
+ | Config                         | FP4 (ms) | FP4 TFLOPS | BF16 (ms) | BF16 TFLOPS | Speedup |
 |--------------------------------|----------|------------|-----------|-------------|---------|
 | b=1 s=256 h=16 d=128           | 0.015    | 37         | 0.015     | 35          | 1.01x   |
 | b=1 s=1024 h=16 d=128          | 0.023    | 379        | 0.025     | 338         | 1.12x   |
@@ -229,7 +265,30 @@ Other implementation takeaways include:
 | b=1 s=32768 h=24 d=128         | 7.551    | 1747       | 10.061    | 1311        | 1.33x   |
 | b=1 s=32768 h=24 d=64          | 7.170    | 920        | 7.284     | 906         | 1.02x   |
 
+### Precision Results
+At the time of writing this blog, we received updates from an [FP8 non-block-scaled PR](https://github.com/Dao-AILab/flash-attention/pull/2109) in the FA4 repo, so we show the kernel-level precision comparison below. Despite using NVFP4, we can see that our kernel achieves a 2-2.5x lower max absolute error with a group size of 16, compared to their per-head group (e.g., 128).
 
-### Conclusion and future work
+| batch | seqlen | nheads | hdim | FP4 max | FP4 mean | FP8 max | FP8 mean |
+|-------|--------|--------|------|---------|----------|---------|----------|
+| 1 | 256 | 16 | 128 | 0.158 | 0.01058 | 0.352 | 0.00591 |
+| 1 | 512 | 16 | 128 | 0.148 | 0.00771 | 0.379 | 0.00555 |
+| 1 | 1024 | 16 | 128 | 0.070 | 0.00553 | 0.260 | 0.00463 |
+| 1 | 2048 | 16 | 128 | 0.078 | 0.00395 | 0.184 | 0.00372 |
+| 2 | 4096 | 16 | 128 | 0.068 | 0.00280 | 0.136 | 0.00286 |
+| 1 | 4096 | 24 | 128 | 0.043 | 0.00280 | 0.132 | 0.00284 |
+| 1 | 8192 | 24 | 128 | 0.033 | 0.00199 | 0.075 | 0.00213 |
+| 1 | 16384 | 16 | 128 | 0.025 | 0.00141 | 0.044 | 0.00157 |
+| 1 | 32768 | 16 | 128 | **0.011** | **0.00100** | 0.022 | 0.00114 |
+| 1 | 32768 | 24 | 128 | **0.016** | **0.00100** | 0.031 | 0.00114 |
 
-NVIDIA's headline FP4/FP8 GEMM TFLOPS increasingly come from allocating more silicon and power to tensor cores while other units scale more slowly. But long-context agentic serving and video generation are not purely GEMM-bound. Looking from Hopper to Blackwell and onward to Rubin, attention speed will likely improve more slowly as long as softmax and $ O(n^2) $ computation remain central to model capacity.
+### Agent-assisted Kernel Development
+During debugging, we found LLM-based tools (e.g., Claude) surprisingly effective—even for low-level PTX and CuTeDSL code. It found an obscure uninitialized register bug in FA4, and we confirmed that Tri fixed it a week before we found it (buried in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86)). Claude cut down at least 1-2 weeks of debugging time—these tools are particularly useful for SASS inspection (e.g. CuTeDSL -> PTX → SASS mapping), instruction dependency analysis, and guided performance debugging via structured task lists in a .md file.
+
+Designing SOTA kernels has been an extremely strenuous process even for the top experts (Tri’s FA3 came out a year after the Hopper release), as there are too many knobs to tune, and even a one-liner change can create a major diff. at the PTX level. We believe agents are **best suited for bisecting performance bottlenecks**.
+
+### What's next?
+NVIDIA’s headline FP4/FP8 (MMA) TFLOPS come from stacking units for pure GEMMs, while attention can take up the bulk of the wall-clock time in long-context agentic serving & video gen. Across Hopper -> Blackwell -> Rubin evolution, we see a trend **toward algorithm and hardware becoming increasingly tightly coupled** as hardware headroom diminishes.
+
+Moving forward, we are excited to experiment with **hardware-specific mixed-precision QAT recipes, and combining distillation and sparse attention with FP4**. Hopefully, there will be more collaborations between NVIDIA and algorithm researchers to find the right hardware tradeoffs for future generations  :) 
+
+Finally, if you’d like to play with more QAT recipes for your favorite model, check out [FastVideo](https://github.com/hao-ai-lab/FastVideo) and we’d love to collaborate!
