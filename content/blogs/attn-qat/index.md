@@ -104,6 +104,8 @@ This introduces a precision mismatch: a naive backward pass depends on high-prec
 
 which leads to incorrect gradients and unstable training.
 
+{{< figure src="img/grad_norm.png" alt="grad norm" width="50%" align="center" >}}
+
 To resolve this, we compute an additional auxiliary output during the forward pass:
 
 \[
@@ -133,7 +135,6 @@ Intuitively, $\mathbf{O}$ is the low-precision output used by the model, while $
 
 This small modification preserves the fully low-precision forward path while restoring correctness in the backward pass, eliminating the need for heuristic outlier-mitigation techniques.
 
-{{< figure src="img/grad_norm.png" alt="grad norm" width="50%" align="center" >}}
 
 ### 2. Recompute attention probabilities in the same low precision used in the forward pass
 
