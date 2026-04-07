@@ -23,7 +23,7 @@ This is exactly why prior training-free FP4 attention methods such as [SageAtten
 
 
 <div class="video-embed">
-{{<youtube t7axGk-ev3E>}}
+{{<youtube eHW78v2H4bU>}}
 </div>
 
 
@@ -150,7 +150,7 @@ The strongest evidence comes from video diffusion, where attention errors are im
 
 
 <div class="video-embed">
-{{<youtube gZipc43qvNE>}}
+{{<youtube 5_19ypV3E3o>}}
 </div>
 
 
