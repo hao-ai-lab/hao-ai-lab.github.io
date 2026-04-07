@@ -139,7 +139,7 @@ This small modification preserves the fully low-precision forward path while res
 
 ### 2. Recompute attention probabilities in the same low precision used in the forward pass
 
-In FlashAttention, the full attention probability matrix is not stored. It is recomputed during the backward pass from the saved log-sum-exp statistics. Under QAT, this recomputation must match the low-precision forward pass. Attn-QAT therefore fake-quantizes the recomputed attention probabilities in the backward pass, so gradients are computed with respect to the same quantized activations seen in the forward pass.
+In FlashAttention, the full attention probability matrix is not stored. It is recomputed during the backward pass from the saved [logsumexp statistics](https://arxiv.org/pdf/2307.08691). Under QAT, this recomputation **must match the low-precision forward pass**. Attn-QAT therefore fake-quantizes the recomputed attention probabilities in the backward pass, so gradients are computed with respect to the same quantized activations seen in the forward pass.
 
 
 {{< figure src="img/training_algo.png" alt="attn-qat training" width="100%" align="center" >}}
