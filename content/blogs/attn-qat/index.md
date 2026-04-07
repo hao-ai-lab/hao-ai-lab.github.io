@@ -221,7 +221,26 @@ Other implementation takeaways include:
 3. Interleaving quantization with register-to-TMEM copies does not resolve that pressure, though quantized PV may become more attractive on B300 and Rubin with improved FP16 exponential support.
 
 ### Overbloated Tensor Cores
-Even such a modest performance gain comes from **squeezing out room for other units to serve pure GEMMs**.
+| Spec | A100 (SXM4) | H100 (SXM5) | B200 (HGX) | B300 / GB300 | R200 |
+|---|---|---|---|---|---|
+| **Architecture** | Ampere | Hopper | Blackwell | Blackwell Ultra | Rubin |
+| **Year** | 2020 | 2022 | 2024 | 2025 | 2026 |
+| **Die Config** | 1 die, 826 mm² | 1 die, 814 mm² | 2× ~800 mm² ≈ 1,600 mm² | 2× ~800 mm² ≈ 1,600 mm² | 2× near-reticle + 2 I/O dies |
+| **Transistors** | 54.2B | 80B | 208B | 208B | 336B |
+| **TDP** | 400W | 700W | 1,000W | 1,100W (HGX) / 1,400W (GB300) | ~1,800W |
+| **SMs (enabled)** | 108 | 132 | 148 | 160 | 224 |
+| **CUDA Cores (FP32)** | 6,912 | 16,896 | 18,944 | 20,480 | TBD |
+| **BF16 Tensor TFLOPS (dense)** | 312 | 989 | 2,250 | ~2,500 | TBD |
+| **FP8 Tensor TFLOPS (dense)** | — | 1,979 | 4,500 | 5,000 | TBD |
+| **FP4 Tensor PFLOPS (dense)** | — | — | 9.0 | 14–15 | TBD |
+| **Registers/SM** | 64K × 32-bit | 64K × 32-bit | 64K × 32-bit | 64K × 32-bit | 64K x 32-bit (est.) |
+| **TMEM/SM** | — | — | 256 KB | 256 KB | 256 KB+ |
+| **Shared Mem/SM (max)** | 164 KB | 228 KB | 228 KB | 228 KB | TBD |
+| **MUFU EX2 ops/clk/SM** | **16** | **16** | **16** | **32** | **32(fp32)/64(fp16)** | 
+
+Over the past few years, most of NVIDIA’s marketed performance gains have come from **scaling out with better interconnects, increased chip size, and lower precision**. For example, while Jensen claimed up to 30x performance per GPU using Blackwell NVL72 over H100 at GTC 2024, SGLang was [only able to get ~4x speedup](https://www.lmsys.org/blog/2025-09-25-gb200-part-2/) after aggressive optimizations such as FP8 KV cache, NVFP4 MoE combine, large-scale EP, and two-batch communication-computation overlap to hide expert communication. 
+
+Such a performance gain comes from **allocating the bulk of the chip's growth to serving pure GEMMs**. 
 In the above table, we see that BF16/FP8 Tensor Core throughput increased by roughly 2x on B200, while CUDA Cores and softmax (exp2) throughput remained unchanged. In [FlashAttention 4](https://arxiv.org/pdf/2603.05451), this leads to bf16 forward attention being bound by both softmax and GEMM (both take 1024 cycles at tile size `m128n128`).
 
 FA4 mitigates this by **warp specialization**, overlapping MMA and softmax across warp groups (WGs).
