@@ -133,7 +133,7 @@ which restores the exact identity:
 
 Intuitively, $\mathbf{O}$ is the low-precision output used by the model, while $\mathbf{O}'$ is a minimal high-precision correction that ensures the backward pass remains mathematically consistent. Without $\mathbf{O}'$, the gradient computation silently assumes a different forward computation than what actually occurred, which is the root cause of instability in naive FP4 QAT for attention.
 
-This small modification preserves the fully low-precision forward path while restoring correctness in the backward pass, eliminating the need for heuristic outlier-mitigation techniques.
+This small modification preserves the fully low-precision forward path while restoring correctness in the backward pass, **eliminating the need for heuristic outlier-mitigation techniques**.
 
 
 ### 2. Recompute attention probabilities in the same low precision used in the forward pass
@@ -145,7 +145,7 @@ In FlashAttention, the full attention probability matrix is not stored. It is re
 
 ## Experimental results: quality is recovered
 
-The strongest evidence comes from video diffusion, where attention errors are immediately visible as degraded motion or temporal inconsistency. In the example videos below, we see that with Attn-QAT, FP4 attention produces videos comparable to BF16 attention, whereas SageAttention3 produces videos with artifacts, and naive NVFP4 attention without QAT and outlier mitigation produces blurry videos.
+The strongest evidence comes from video diffusion, where attention errors are immediately visible as degraded motion or temporal inconsistency. For the non-cherry picked example video below, we see that with Attn-QAT, FP4 attention produces videos comparable to BF16 attention, whereas SageAttention3 produces videos with artifacts, and naive NVFP4 attention without QAT and outlier mitigation produces blurry videos.
 
 
 <div class="video-embed">
