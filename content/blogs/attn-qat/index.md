@@ -139,14 +139,14 @@ This small modification preserves the fully low-precision forward path while res
 
 ### 2. Recompute attention probabilities in the same low precision used in the forward pass
 
-In FlashAttention, the full attention probability matrix is not stored. It is recomputed during the backward pass from the saved [logsumexp statistics](https://arxiv.org/pdf/2307.08691). Under QAT, this recomputation **must match the low-precision forward pass**. Attn-QAT therefore fake-quantizes the recomputed attention probabilities in the backward pass, so gradients are computed with respect to the same quantized activations seen in the forward pass.
+In FlashAttention, the full attention probability matrix is not stored. It is recomputed during the backward pass from the saved [logsumexp statistics](https://arxiv.org/pdf/2307.08691). Under QAT, this recomputation **must match the low-precision forward pass**. Attn-QAT therefore fake-quantizes the recomputed attention probabilities in the backward pass, so gradients are computed with respect to the same quantized activations seen in the forward pass. Empirically, we also found that this had the effect of stabilizing training dynamics. 
 
 
 {{< figure src="img/training_algo.png" alt="attn-qat training" width="100%" align="center" >}}
 
 ## Experimental results: quality is recovered
 
-The strongest evidence comes from video diffusion, where attention errors are immediately visible as degraded motion or temporal inconsistency. For the non-cherry picked example video below, we see that with Attn-QAT, FP4 attention produces videos comparable to BF16 attention, whereas SageAttention3 produces videos with artifacts, and naive NVFP4 attention without QAT and outlier mitigation produces blurry videos.
+The strongest evidence comes from video diffusion, where attention errors are immediately visible as degraded motion or temporal inconsistency. For the non-cherry picked example video below, we see that with Attn-QAT, FP4 attention **produces videos comparable to BF16 attention**, whereas SageAttention3 produces videos with artifacts, and naive NVFP4 attention without QAT and outlier mitigation produces blurry videos.
 
 
 <div class="video-embed">
