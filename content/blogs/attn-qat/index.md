@@ -33,9 +33,9 @@ Instead of devising more sophisticated tricks to reduce quantization error in a 
 
 ## The two fixes that make Attn-QAT work
 
-For linear layers, the QAT recipe is well known: simulate low-precision execution in the forward pass using fake quantization, keep the backward pass in higher precision, and train through the quantization noise. That works well for GEMMs. It does not work for attention.
+For linear layers, the [QAT recipe](https://pytorch.org/blog/quantization-aware-training/) is well known: simulate low-precision execution in the forward pass using fake quantization, keep the backward pass in higher precision, and train through the quantization noise. That works well for GEMMs. It does **not** work for attention.
 
-The reason is that FlashAttention-style kernels are heavily fused operators whose backward pass relies on recomputation and algebraic identities that quietly assume that forward and backward passes share the same numerical behavior.
+The reason is that FlashAttention-style kernels are **heavily fused operators** whose backward pass relies on recomputation and an algebraic identity that quietly assume that forward and backward passes share the same numerical behavior.
 
 Attn-QAT stabilizes 4-bit attention by enforcing two forms of precision consistency.
 
@@ -50,7 +50,7 @@ We first clarify notation. Let $\mathbf{Q}, \mathbf{K}, \mathbf{V} \in \mathbb{R
 \mathbf{O} = \mathbf{P}\mathbf{V}.
 \]
 
-We use $(\cdot)^F$ to denote fake-quantized (FP4-simulated) tensors, e.g., $\mathbf{P}^F = \phi^{-1}(\phi(\mathbf{P}))$.
+We use $(\cdot)^F$ to denote fake quantized (FP4-simulated) tensors, e.g., $\mathbf{P}^F = \phi^{-1}(\phi(\mathbf{P}))$.
 
 In FlashAttention, the backward pass relies on a memory-efficient formulation of the softmax gradient. For a single row $i$,
 
@@ -88,7 +88,7 @@ This identity implicitly assumes that the forward pass computes
 \mathbf{O}_i = \sum_j \mathbf{P}_{ij} \mathbf{V}_j.
 \]
 
-However, under Attn-QAT, the forward pass instead uses fake-quantized probabilities:
+However, under Attn-QAT, the forward pass instead uses fake quantized probabilities:
 
 \[
 \mathbf{O}_i = \sum_j \mathbf{P}_{ij}^{F} \mathbf{V}_j^{F}.
@@ -108,7 +108,7 @@ To resolve this, we compute an additional auxiliary output during the forward pa
 \mathbf{O}_i' = \sum_j \mathbf{P}_{ij} \mathbf{V}_j^{F}.
 \]
 
-Here, $\mathbf{P}$ remains in high precision (FP32 softmax), while $\mathbf{V}^F$ is still fake-quantized. This adds only a small amount of extra storage, without materializing the full attention matrix.
+Here, $\mathbf{P}$ remains in high precision (FP32 softmax), while $\mathbf{V}^F$ is still fake quantized. This adds only a small amount of extra storage, without materializing the full attention matrix.
 
 In the backward pass, we then replace the scalar term with
 
