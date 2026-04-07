@@ -68,9 +68,9 @@ the gradient can be written as
 \end{aligned}
 \]
 
-The key difficulty is the scalar term $\mathbf{P}_i^\top \mathbf{dP}_i$, which naively requires access to the full attention row and thus quadratic memory.
+The key difficulty is the scalar term $\mathbf{P}_i^\top \mathbf{dP}_i$, which naively requires access to the full attention row and thus $ O(n^2) $ memory in the sequence length.
 
-FlashAttention avoids this by rewriting the scalar as
+FlashAttention keeps memory $O(n)$ in the sequence length by rewriting the scalar as
 
 \[
 \begin{aligned}
@@ -90,13 +90,13 @@ This identity implicitly assumes that the forward pass computes
 \mathbf{O}_i = \sum_j \mathbf{P}_{ij} \mathbf{V}_j.
 \]
 
-However, under Attn-QAT, the forward pass instead uses fake quantized probabilities:
+However, under Attn-QAT, the forward pass instead uses **fake quantized probabilities and values**:
 
 \[
 \mathbf{O}_i = \sum_j \mathbf{P}_{ij}^{F} \mathbf{V}_j^{F}.
 \]
 
-This introduces a forward-backward mismatch: the backward derivation depends on high-precision $\mathbf{P}$, while the forward pass uses $\mathbf{P}^F$. As a result,
+This introduces a precision mismatch: a naive backward pass depends on high-precision $\mathbf{P}$, while the Attn-QAT forward pass uses $\mathbf{P}^F$. As a result,
 
 \[
 \mathbf{dO}_i^\top \mathbf{O}_i \neq \mathbf{P}_i^\top \mathbf{dP}_i,
@@ -110,15 +110,15 @@ To resolve this, we compute an additional auxiliary output during the forward pa
 \mathbf{O}_i' = \sum_j \mathbf{P}_{ij} \mathbf{V}_j^{F}.
 \]
 
-Here, $\mathbf{P}$ remains in high precision (FP32 softmax), while $\mathbf{V}^F$ is still fake quantized. This adds only a small amount of extra storage, without materializing the full attention matrix.
+Here, $\mathbf{P}$ remains in high precision (FP32 row-wise softmax over $\mathbf{S}$), while $\mathbf{V}^F$ is still fake quantized. This adds only a small amount (25% increase) of extra storage, while still preventing the need to materialize the full attention matrix.
 
 In the backward pass, we then replace the scalar term with
 
 \[
-\mathbf{P}_i^\top \mathbf{dP}_i = \mathbf{dO}_i^\top \mathbf{O}_i'.
+\mathbf{P}_i^\top \mathbf{dP}_i = \mathbf{dO}_i^\top \mathbf{O}_i',
 \]
 
-This restores the exact identity:
+which restores the exact identity:
 
 \[
 \begin{aligned}
