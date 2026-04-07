@@ -55,10 +55,10 @@ We use $(\cdot)^F$ to denote fake quantized (FP4-simulated) tensors, e.g., $\mat
 In FlashAttention, the backward pass relies on a memory-efficient formulation of the softmax gradient. For a single row $i$,
 
 \[
-\mathbf{P}_i = \mathrm{softmax}(\mathbf{S}_i),
+\mathbf{P}_i = \mathrm{softmax}(\mathbf{S}_i) \in \mathbb{R}^d,
 \]
 
-and the gradient can be written as
+the gradient can be written as
 
 \[
 \begin{aligned}
