@@ -7,7 +7,7 @@ ShowReadingTime = true
 draft = false
 math = true
 contentClass = "post-content-justified"
-description = "Attn-QAT makes FP4 attention trainable by enforcing precision consistency across FlashAttention's forward and backward passes during quantization-aware training."
+description = ""
 summary = "Attn-QAT is the first systematic study of 4-bit quantization-aware training for attention, recovering FP4 attention quality without inference-time outlier mitigation while also enabling faster kernels."
 +++
 
