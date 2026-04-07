@@ -19,7 +19,7 @@ summary = "Attn-QAT is the first systematic study of 4-bit quantization-aware tr
 
 Native FP4 tensor core support on new NVIDIA GPUs makes 4-bit computation increasingly attractive. In principle, FP4 offers lower memory traffic and up to 4x higher arithmetic intensity than higher-precision BF16 execution. But in practice, attention is much harder to quantize than linear layers. The reason is twofold. First, FP4 has an extremely small dynamic range and only a tiny set of representable values. Second, attention activations are [heavy-tailed](https://haoailab.com/blogs/sta/) and contain [more outliers](https://arxiv.org/pdf/2411.10958) than standard matrix multiplies. These two properties make attention much more sensitive to quantization error.
 
-This is exactly why prior training-free FP4 attention methods such as SageAttention3 still suffer in quality. Even with specialized outlier-mitigation techniques such as Q/K smoothing and two-level quantization of attention probabilities, we find that FP4 attention still results in video quality degradation on Wan 2.1-14B.
+This is exactly why prior training-free FP4 attention methods such as [SageAttention3](https://arxiv.org/pdf/2505.11594) still suffer in quality. Even with their use of specialized outlier-mitigation techniques such as Q/K smoothing and two-level quantization of attention probabilities, we find that FP4 attention still results in video quality degradation on Wan 2.1-14B.
 
 
 <div class="video-embed">
@@ -125,6 +125,7 @@ which restores the exact identity:
 \[
 \begin{aligned}
 \mathbf{P}_i^\top \mathbf{dP}_i
+&= \sum_j \mathbf{P}_{ij} \, \mathbf{dP}_{ij} \\
 &= \sum_j \mathbf{P}_{ij} \, \mathbf{dO}_i^\top \mathbf{V}_j^{F} \\
 &= \mathbf{dO}_i^\top \sum_j \mathbf{P}_{ij} \mathbf{V}_j^{F} \\
 &= \mathbf{dO}_i^\top \mathbf{O}_i'.
