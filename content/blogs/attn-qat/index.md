@@ -313,5 +313,3 @@ Designing SOTA kernels has been an extremely strenuous process even for the top 
 NVIDIA’s headline FP4/FP8 (MMA) TFLOPS come from stacking units for pure GEMMs, while attention can take up the bulk of the wall-clock time in long-context agentic serving & video gen. Across Hopper -> Blackwell -> Rubin evolution, we see a trend **toward algorithm and hardware becoming increasingly tightly coupled** as hardware headroom diminishes.
 
 Moving forward, we are excited to experiment with **hardware-specific mixed-precision QAT recipes, and combining distillation and sparse attention with FP4**. Hopefully, there will be more collaborations between NVIDIA and algorithm researchers to find the right hardware tradeoffs for future generations  :) 
-
-Finally, if you’d like to play with more QAT recipes for your favorite model, check out [FastVideo](https://github.com/hao-ai-lab/FastVideo) and we’d love to collaborate!
