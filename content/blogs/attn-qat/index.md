@@ -167,7 +167,7 @@ Because Attn-QAT no longer needs the extra smoothing and two-level quantization 
 
 The paper implements Triton kernels for training and improved CUDA kernels for inference. On an RTX 5090, the Attn-QAT inference kernel achieves approximately 1.1x-1.5x higher throughput than SageAttention3, depending on the setup. The key reason is straightforward: by removing extra preprocessing for Q, K, and P, the kernel becomes lighter while preserving quality through training rather than inference heuristics.
 
-{{< figure src="img/5090_speedup.png" alt="5090 speedup" width="50%" align="center" >}}
+{{< figure src="img/5090_speedup.png" alt="5090 speedup" width="60%" align="center" >}}
 
 
 ## What this paper really changes
