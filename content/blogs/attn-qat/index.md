@@ -13,7 +13,7 @@ summary = "Attn-QAT is the first systematic study of 4-bit quantization-aware tr
 
 {{< socialBadges arxiv-index="2603.00040" github="hao-ai-lab/FastVideo" >}}
 
-**TL;DR:** FP4 hardware is finally here, and FP4 linear layers are already being used in production. However, FP4 attention still causes significant quality degradation, preventing true end-to-end FP4 serving and limiting full hardware utilization. In this work, we present **Attn-QAT**, the first systematic study of 4-bit quantization-aware training for attention. We identify two key principles for stable FP4 attention QAT: (1) matching low-precision recomputation of attention scores in the backward pass and (2) resolving implicit precision assumptions in FlashAttention's gradient calculation. Across video diffusion models and language models, Attn-QAT **recovers the quality drop** of 4-bit attention without the extra outlier-mitigation heuristics used by prior FP4 attention methods, while also delivering **1.1x--1.5x** higher throughput than SageAttention3 on an RTX 5090.
+**TL;DR:** FP4 hardware is finally here, and FP4 linear layers are already being used in production. However, FP4 attention still causes significant quality degradation, preventing true end-to-end FP4 serving and limiting full hardware utilization. In this work, we present **Attn-QAT**, the first systematic study of 4-bit quantization-aware training for attention. We identify two key principles for stable FP4 attention QAT: (1) matching low-precision recomputation of attention scores in the backward pass and (2) resolving implicit precision assumptions in FlashAttention's gradient calculation. Across video diffusion models and language models, Attn-QAT **recovers the quality drop** of 4-bit attention without the extra outlier-mitigation heuristics used by prior FP4 attention methods, while also delivering **1.1x--1.5x** higher throughput than SageAttention3 on an RTX 5090 and up to a **1.39x** speedup over FlashAttention4 on a B200. 
 
 ## 4-bit attention remains unsolved
 
@@ -161,7 +161,7 @@ For continued pretraining, Attn-QAT recovers most of the quality loss caused by 
 For supervised fine-tuning, Attn-QAT can be used as a drop-in replacement for BF16 attention. On Qwen3-14B, it achieves nearly identical downstream benchmark performance to BF16. On Llama 3.1-70B, it remains close with a small gap. This is an important practical result: Attn-QAT is not only a specialized recovery stage for quantization, but can also be integrated directly into standard fine-tuning pipelines.
 
 
-## Faster kernels
+## Faster Inference on an RTX 5090
 
 Because Attn-QAT no longer needs the extra smoothing and two-level quantization overhead used by SageAttention3, it also enables a faster inference path.
 
@@ -169,32 +169,9 @@ The paper implements Triton kernels for training and improved CUDA kernels for i
 
 {{< figure src="img/5090_speedup.png" alt="5090 speedup" width="60%" align="center" >}}
 
+## For the GPU enjoyers: B200/B300 FP4 attention kernel
 
-## What this paper really changes
-
-For a long time, quantization for attention has been treated mostly as an inference problem: find better clipping, smoothing, calibration, or other post-hoc fixes. Attn-QAT argues that this view is incomplete. Since modern attention kernels are fused and precision-sensitive, training methods and low-bit kernels must be co-designed.
-
-This work also enables the development of training recipes that support more extreme inference optimizations, such as combining few-step distillation and full end-to-end FP4 execution during inference. We are actively working on this.
-
-Please see [the paper](https://arxiv.org/abs/2603.00040) for more details. Code is available in [FastVideo](https://github.com/hao-ai-lab/FastVideo), our unified framework for video diffusion post-training and [real-time inference inference](https://haoailab.com/blogs/fastvideo_realtime_1080p/).
-
-## Citation
-
-```bibtex
-@misc{zhang2026attnqat4bitattentionquantizationaware,
-  title={Attn-QAT: 4-Bit Attention With Quantization-Aware Training},
-  author={Peiyuan Zhang and Matthew Noto and Wenxuan Tan and Chengquan Jiang and Will Lin and Wei Zhou and Hao Zhang},
-  year={2026},
-  eprint={2603.00040},
-  archivePrefix={arXiv},
-  primaryClass={cs.LG},
-  url={https://arxiv.org/abs/2603.00040}
-}
-```
-
-## Part 2: B200/B300 FP4 attention kernel
-
-To make Attn-QAT **usable on data-center grade Blackwell GPUs (e.g. B200s/B300s)**, we're also releasing [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to 1.39x speedup and 1801 TFLOPS, along with a deeper look at implementation challenges and NVIDIA hardware evolution. 
+To make Attn-QAT **usable on data-center grade Blackwell GPUs (e.g. B200s/B300s)**, we're also releasing [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup and 1801 TFLOPS. We also discuss some implementation challenges and a deeper look at NVIDIA hardware evolution. 
 
 ### FP4/FP8 support on Blackwell
 
@@ -307,7 +284,27 @@ At the time of writing this blog, we received updates from an [FP8 non-block-sca
 ### Agent-assisted Kernel Development
 During debugging, we found LLM-based tools (e.g., Claude) surprisingly effective—even for low-level PTX and CuTeDSL code. It found an obscure uninitialized register bug in FA4, and we confirmed that Tri fixed it a week before we found it (buried in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86)). Claude cut down at least 1-2 weeks of debugging time—these tools are particularly useful for SASS inspection (e.g. CuTeDSL -> PTX → SASS mapping), instruction dependency analysis, and guided performance debugging via structured task lists in a .md file.
 
-### What's next?
-NVIDIA’s headline FP4/FP8 (MMA) TFLOPS come from stacking units for pure GEMMs, while attention can take up the bulk of the wall-clock time in long-context agentic serving & video generation. Across Hopper -> Blackwell -> Rubin evolution, we see a trend **toward algorithms and hardware becoming increasingly coupled** as hardware headroom diminishes.
+
+## What this paper really changes
+
+For a long time, quantization for attention has been treated mostly as an inference problem: find better clipping, smoothing, calibration, or other post-hoc fixes. Attn-QAT argues that this view is incomplete. Since modern attention kernels are fused and precision-sensitive, training methods and low-bit kernels must be co-designed.
+
+Furthermore, NVIDIA’s headline FP4/FP8 (MMA) TFLOPS come from stacking units for pure GEMMs, while attention can take up the bulk of the wall-clock time in long-context agentic serving & video generation. Across Hopper -> Blackwell -> Rubin evolution, we see a trend **toward algorithms and hardware becoming increasingly coupled** as hardware headroom diminishes.
 
 Moving forward, we are excited to experiment with **hardware-specific mixed-precision QAT recipes, and combining distillation and sparse attention with FP4**. Hopefully, there will be more collaborations between NVIDIA and algorithm researchers to find the right hardware tradeoffs for future generations  :) 
+
+Please see [the paper](https://arxiv.org/abs/2603.00040) for more details. Code is available in [FastVideo](https://github.com/hao-ai-lab/FastVideo), our unified framework for video diffusion post-training and [real-time inference inference](https://haoailab.com/blogs/fastvideo_realtime_1080p/). 
+
+## Citation
+
+```bibtex
+@misc{zhang2026attnqat4bitattentionquantizationaware,
+  title={Attn-QAT: 4-Bit Attention With Quantization-Aware Training},
+  author={Peiyuan Zhang and Matthew Noto and Wenxuan Tan and Chengquan Jiang and Will Lin and Wei Zhou and Hao Zhang},
+  year={2026},
+  eprint={2603.00040},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG},
+  url={https://arxiv.org/abs/2603.00040}
+}
+```
