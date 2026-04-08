@@ -192,7 +192,7 @@ Please see [the paper](https://arxiv.org/abs/2603.00040) for more details. Code 
 }
 ```
 
-## Appendix for GPU Enjoyers: B200/B300 FP4 attention kernel
+## Part 2: B200/B300 FP4 attention kernel
 
 To make Attn-QAT **usable on data-center grade Blackwell GPUs (e.g. B200s/B300s)**, we're also releasing [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to 1.39x speedup and 1801 TFLOPS, along with a deeper look at implementation challenges and NVIDIA hardware evolution. 
 
