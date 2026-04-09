@@ -196,7 +196,7 @@ Let A and B be the inputs for an MMA. Unlike the `wgmma` instruction on Hopper G
 
 {{< figure src="img/TMEM.png" alt="SM" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research Tutorial On Writing Blackwell GEMM Kernels](https://research.colfax-intl.com/cutlass-tutorial-writing-gemm-kernels-using-tensor-memory-for-nvidia-blackwell-gpus/)</span>" >}}
 
-### Softmax becomes the bottleneck
+### Overbloated Tensor Cores $\rightarrow$ Softmax Becomes A Bottleneck
 | Spec | A100 (SXM4) | H100 (SXM5) | B200 (HGX) | B300 / GB300 | R200 |
 |---|---|---|---|---|---|
 | **Architecture** | Ampere | Hopper | Blackwell | Blackwell Ultra | Rubin |
@@ -220,9 +220,10 @@ FA4 addresses this with a **warp specialized** pipeline that overlaps MMA and so
 
 {{< figure src="img/FA4.png" alt="B200 kernel" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research FlashAttention-4 Blog Post](https://research.colfax-intl.com/flashattention-4-algorithm-and-kernel-pipelining-co-design-for-asymmetric-hardware-scaling/)</span>" >}}
 
-The overlap is still imperfect because of pipeline warmup (launching two $\mathbf{Q}\mathbf{K}$ MMAs in a row) and bookkeeping overheads such as address computation, issuing MMA instructions, row-max updates, and cross-WG copies. FA4 also uses a software emulated [polynomial approximation of exp2](https://arxiv.org/pdf/2603.05451#page=8) to increase the effective exp throughput by utilizing FMA (fused multiply-add) units that would otherwise be underutilized.
+However, the overlap is never perfect because of pipeline warmup (launching two $\mathbf{Q}\mathbf{K}$ MMAs in a row) and bookkeeping overheads such as address computation, issuing MMA instructions, updating the softmax row-max, and copying results across WGs, so we can still yield meaningful speedups by reducing either bottleneck.
 
-This imbalance shows up most clearly in how Blackwell manages TMEM. Once softmax and MMA are both competing for a tightly constrained pipeline, the exact placement of intermediate tensors and scale factors starts to matter.
+FA4 tries to mitigate the softmax bottleneck by using a software emulated [polynomial approximation of exp2](https://arxiv.org/pdf/2603.05451#page=8) which increase the effective exp throughput by utilizing FMA (fused multiply-add) units in addition to the SFUs (special function units). The trade-off with this optimization is that higher-degree polynomials are more accurate but incur additional register usage and CUDA core instructions. Hence it’s only applied to 10%-25% of the softmax scores. Despite this, the softmax operation still remains register-heavy and a persistent bottleneck.
+
 
 ### TMEM overlap schedule
 The scale factors still need to travel GMEM -> SMEM (via TMA) -> TMEM and then be duplicated across four warps in a WG via `tcgen05.cp` multicast. At tile size `m128n128`, FA4 already uses all available TMEM: S1 and S2 hold the $\mathbf{Q}\mathbf{K}$ outputs, and O1/O2 use the remaining columns.
@@ -272,7 +273,7 @@ At the time of writing, the FA4 repo had received an [FP8 non-block-scaled PR](h
 | 1 | 32768 | 24 | 128 | **0.016** | **0.00100** | 0.031 | 0.00114 |
 
 ### Agent-assisted Kernel Development
-During debugging, we found LLMs like Claude useful even for CuTeDSL and low-level PTX. It surfaced an obscure uninitialized register bug in FA4, which had already been fixed in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86) before we found it; in practice, we estimate that LLMs saved us about 1-2 weeks and were especially helpful for SASS inspection, instruction dependency analysis, and structured performance debugging.
+During debugging, we found LLM-based tools (e.g., Claude) surprisingly effective—even for low-level PTX and CuTeDSL code. It found an obscure uninitialized register bug in FA4, and we confirmed that it was fixed a week before we found it (burried in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86)). We estimate that Claude cut down at least 1-2 weeks of debugging time. In particular, it was very useful for SASS inspection (e.g. CuTeDSL -> PTX → SASS mapping), instruction dependency analysis, and guided performance debugging via structured task lists in a .md file.
 
 
 ## What this paper really changes
