@@ -43,9 +43,9 @@ Attn-QAT stabilizes 4-bit attention by enforcing two forms of precision consiste
 We first clarify notation. Let $\mathbf{Q}, \mathbf{K}, \mathbf{V} \in \mathbb{R}^{N \times d}$ denote the query, key, and value matrices, and define
 
 \[
-\mathbf{S} = \mathbf{Q}\mathbf{K}^\top / \sqrt{d}, \quad
-\mathbf{P} = \mathrm{softmax}(\mathbf{S}), \quad
-\mathbf{O} = \mathbf{P}\mathbf{V}.
+\mathbf{S} = \mathbf{Q}\mathbf{K}^\top / \sqrt{d} \in \mathbb{R}^{N\times N}, \quad
+\mathbf{P} = \mathrm{softmax}(\mathbf{S}) \in \mathbb{R}^{N\times N}, \quad
+\mathbf{O} = \mathbf{P}\mathbf{V} \in \mathbb{R}^{N\times d}.
 \]
 
 We use $(\cdot)^F$ to denote fake quantized (FP4-simulated) tensors, e.g., $\mathbf{P}^F = \phi^{-1}(\phi(\mathbf{P}))$.
