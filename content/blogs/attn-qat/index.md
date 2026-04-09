@@ -257,7 +257,7 @@ We also considered storing $\mathbf{P}$ in SMEM to free up TMEM, but rejected it
 
 Despite careful scheduling, we still did not observe a speedup with NVFP4 block-scaled $\mathbf{P}\mathbf{V}$ GEMMs due to the aforementioned softmax bottleneck. Quantizing $\mathbf{P}$ and $\mathbf{V}$ requires computing group-wise scale factors and `cvt.rn.satfinite` quantization instructions, which adds to the existing softmax bottleneck. 
 
-Therefore, we choose to run block-scaled NVFP4 $\mathbf{Q}\mathbf{K}$ and BF16 $\mathbf{P}\mathbf{V}$ on a B200 which achieves up to 1801 TFLOPS and a 1.39x speedup over FA4.[^agent-kernel-dev] Note that this is **only a lower bound of the speedup**: we have yet to experiment with **NVFP4/MXFP8 + FP8** $\mathbf{P}\mathbf{V}$  (cutting MMA by 1/2 or to 1/4 hardly matters for a softmax-bound kernel), which eliminates the group quantization overhead in a softmax WG. 
+Therefore, we choose to run block-scaled NVFP4 $\mathbf{Q}\mathbf{K}$ and BF16 $\mathbf{P}\mathbf{V}$ on a B200 which achieves up to 1801 TFLOPS and a 1.39x speedup over FA4.[^agent-kernel-dev] Note that this is **only a lower bound of the speedup**: we have yet to experiment with **NVFP4** $\mathbf{Q}\mathbf{K}$ + FP8** $\mathbf{P}\mathbf{V}$  (cutting MMA by 1/2 or to 1/4 hardly matters for a softmax-bound kernel), which eliminates the group quantization overhead in a softmax WG. 
 
 Another detail worth mentioning is that a B300 GPU has 2x the exp throughput, and Rubin has 4x the exp throughput (w/ fp16 exp), which should make NVFP4 $\mathbf{P}\mathbf{V}$ GEMMs faster. **We are excited to test more QAT recipes for different hardware!**
 
