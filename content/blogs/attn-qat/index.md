@@ -102,6 +102,7 @@ This introduces a precision mismatch: a naive backward pass depends on the high-
 
 which leads to incorrect gradients and unstable training.
 
+<a id="grad-norm"></a>
 {{< figure src="img/grad_norm.png" alt="grad norm" width="50%" align="center" >}}
 
 To resolve this, we compute an additional auxiliary output during the forward pass:
@@ -137,7 +138,7 @@ This small modification preserves the fully low-precision forward path while res
 
 ### 2. Recompute attention probabilities in the same low precision used in the forward pass
 
-In FlashAttention, the full matrix $\mathbf{P}$ is not stored. It is recomputed during the backward pass from the saved [logsumexp statistics](https://arxiv.org/pdf/2307.08691#page=6). Under QAT, this recomputation **must match the low-precision forward pass**. Attn-QAT therefore fake-quantizes the recomputed attention probabilities in the backward pass, so gradients are computed with respect to the same quantized activations seen in the forward pass. Empirically, we found that this had the effect of stabilizing training dynamics. 
+In FlashAttention, the full matrix $\mathbf{P}$ is not stored. It is recomputed during the backward pass from the saved [logsumexp statistics](https://arxiv.org/pdf/2307.08691#page=6). Under QAT, this recomputation **must match the low-precision forward pass**. Attn-QAT therefore fake-quantizes the recomputed attention probabilities in the backward pass, so gradients are computed with respect to the same quantized activations seen in the forward pass. Empirically, we found that this had the effect of [stabilizing training dynamics](#grad-norm). 
 
 
 <a id="training-algo"></a>
