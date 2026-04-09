@@ -204,7 +204,7 @@ Let A and B be the inputs for an MMA. Unlike the `wgmma` instruction on Hopper G
 
 
 
-### Overbloated Tensor Cores $\rightarrow$ Softmax Becomes A Bottleneck
+### Bloated Tensor Cores $\rightarrow$ Softmax Becomes A Bottleneck
 | Spec | A100 (SXM4) | H100 (SXM5) | B200 (HGX) | B300 / GB300 | R200 |
 |---|---|---|---|---|---|
 | **Architecture** | Ampere | Hopper | Blackwell | Blackwell Ultra | Rubin |
