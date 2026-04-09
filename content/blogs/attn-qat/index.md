@@ -268,7 +268,7 @@ Another detail worth mentioning is that a B300 GPU has 2x the exp throughput, an
 | b=1 s=32768 h=24 d=64          | 7.170    | 920        | 7.284     | 906         | 1.02x   |
 
 ### Precision Results
-At the time of writing this blog, we received updates from an [FP8 non-block-scaled PR](https://github.com/Dao-AILab/flash-attention/pull/2109), in the FA4 repo, so we show the kernel-level precision comparison below. Despite using NVFP4, we can see that our kernel achieves a 2-2.5x lower max absolute error with a group size of 16, compared to their per-head group (e.g., 128).
+At the time of writing this blog, we received updates from an [FP8 non-block-scaled PR](https://github.com/Dao-AILab/flash-attention/pull/2109), in the FA4 repo, so we show the kernel-level precision comparison below. Despite using NVFP4, we can see that our kernel achieves a 2-2.5x lower max absolute error with a group size of 16, compared to their per-head group (e.g. group size of 128).
 
 | batch | seqlen | nheads | hdim | FP4 max | FP4 mean | FP8 max | FP8 mean |
 |-------|--------|--------|------|---------|----------|---------|----------|
