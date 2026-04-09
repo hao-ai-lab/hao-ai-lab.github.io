@@ -234,7 +234,7 @@ FA4 tries to mitigate the softmax bottleneck by using a software-emulated [polyn
 
 
 ### TMEM overlap schedule
-To leverage low-precision block-scaled MMAs to speedup the GEMMs in attention, understanding the data-flow of the scale factors is critical. On Blackwell GPUs, the scale factors must be loaded from GMEM $\rightarrow$ SMEM (via a TMA load) $\rightarrow$ TMEM and then must be [duplicated across four warps](https://github.com/NVIDIA/cutlass/issues/2961#issuecomment-3771068790) in a WG via a `tcgen05.cp` multicast in order to be usable by `tcgen05.mma`. 
+To leverage low-precision block-scaled MMAs to speed up the GEMMs in attention, understanding the data-flow of the scale factors is critical. On Blackwell GPUs, the scale factors must be loaded from GMEM $\rightarrow$ SMEM (via a TMA load) $\rightarrow$ TMEM and then must be [duplicated across four warps](https://github.com/NVIDIA/cutlass/issues/2961#issuecomment-3771068790) in a WG via a `tcgen05.cp` multicast in order to be usable by `tcgen05.mma`. 
 
 However, with 128x128 tiles, FA4's pipeline **already uses all available TMEM**: 
 - S1 and S2 ($\mathbf{Q}\mathbf{K}$ outputs): 128 columns each
