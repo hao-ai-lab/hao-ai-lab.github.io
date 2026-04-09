@@ -220,14 +220,8 @@ We also found that:
 | **Shared Mem/SM (max)** | 164 KB | 228 KB | 228 KB | 228 KB | TBD |
 | **MUFU EX2 ops/clk/SM** | **16** | **16** | **16** | **32** | **32 (fp32)/64 (fp16)** | 
 
-Over the past few years, most of NVIDIA’s marketed performance gains have come from **scaling out with better interconnects, increased chip size, and lower precision**. For example, while Jensen claimed up to 30x performance per GPU using Blackwell NVL72 over H100 at GTC 2024, SGLang was [only able to get ~4x speedup](https://www.lmsys.org/blog/2025-09-25-gb200-part-2/) after aggressive optimizations such as FP8 KV cache, NVFP4 MoE combine, large-scale EP, and two-batch communication-computation overlap to hide expert communication. 
-
-This comparison is inherently skewed: Hopper lacks native FP4 GEMM support;
-large-scale EP (e.g. EP48) only works when you have a batch size big enough to saturate the experts on each GPU; and NVL72 is a fully-connected 72-GPU NVLINK mesh with 2x P2P bandwidth (1.8 TB/s) over the 8-GPU NVLINK on H100. 
-In fact, SGLang reported only **1.9x per-GPU speedup w/o FP4/FP8, at the cost of 2x chip size and 1.6x TDP**—close to the 14% increase in FP16 TFLOPS per silicon area and 47% per GPU Watt [reported by Semianalysis](https://newsletter.semianalysis.com/p/nvidia-blackwell-perf-tco-analysis). 
-
-Such a performance gain comes from **allocating the bulk of the chip's growth to serving pure GEMMs**. 
-In the above table, we see that BF16/FP8 Tensor Core throughput increased by roughly 2x on B200, while CUDA Cores and softmax (exp2) throughput remained unchanged. In [FlashAttention-4](https://arxiv.org/pdf/2603.05451), this leads to bf16 forward attention being bound by both softmax and GEMM (both take 1024 cycles at tile size `m128n128`).
+Most of the performance gain on newer NVIDIA GPUs has come from **allocating the bulk of the chip's growth to serving pure GEMMs**. 
+In the above table, we see that BF16/FP8 Tensor Core throughput increased by ~2.27x from an H100 to a B200, while the CUDA core throughput only increases by a factor of 1.1x and the softmax (exp2) throughput remains unchanged. In [FlashAttention-4](https://arxiv.org/pdf/2603.05451), this leads to bf16 forward attention being bound by both softmax and GEMM (both take 1024 cycles at tile size `m128n128`).
 
 FA4 mitigates this by **warp specialization**, overlapping MMA and softmax across warp groups (WGs).
 
