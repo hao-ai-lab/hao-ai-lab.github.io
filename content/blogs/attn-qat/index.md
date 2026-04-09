@@ -168,15 +168,13 @@ For supervised fine-tuning, Attn-QAT can be used as a **drop-in replacement** fo
 
 ## Faster Inference on an RTX 5090
 
-Because Attn-QAT no longer needs the extra smoothing and two-level quantization overhead used by SageAttention3, it also enables a faster inference path.
-
-The paper implements Triton kernels for training and improved CUDA kernels for inference. On an RTX 5090, the Attn-QAT inference kernel achieves approximately 1.1x-1.5x higher throughput than SageAttention3, depending on the setup. The key reason is straightforward: by removing extra preprocessing for Q, K, and P, the kernel becomes lighter while preserving quality through training rather than inference heuristics.
+Because Attn-QAT eliminates the need for extra smoothing and two-level quantization overhead used by SageAttention3, this results in faster inference. On an RTX 5090, we're able to achieve approximately 1.1x-1.5x higher throughput than SageAttention3. The key reason is straightforward: by removing extra preprocessing for Q, K, and P, the kernel becomes lighter while preserving quality through training rather than inference heuristics.
 
 {{< figure src="img/5090_speedup.png" alt="5090 speedup" width="60%" align="center" >}}
 
 ## For the GPU enjoyers: B200/B300 FP4 attention kernel
 
-To make Attn-QAT **usable on data-center grade Blackwell GPUs (e.g. B200s/B300s)**, we're also releasing [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup and 1801 TFLOPS. We also discuss some implementation challenges and a deeper look at NVIDIA hardware evolution. 
+To make Attn-QAT **usable on data-center grade Blackwell GPUs (e.g. B200s/B300s)**, we're also releasing [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup over FA4 and 1801 TFLOPS. We also discuss some implementation challenges and a deeper look at NVIDIA hardware evolution. 
 
 ### FP4/FP8 support on Blackwell
 
