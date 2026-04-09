@@ -200,7 +200,7 @@ We also found that:
 
 1. A TMEM-overlapped schedule is required because a B200 is often TMEM-bound, which limits the effective MMA pipeline depth.
 2. Quantizing $ \mathbf{P} $ does not help in the same way as quantizing $\mathbf{Q}$, $\mathbf{K}$, and $\mathbf{V}$ because it adds too much pressure to the softmax warps.
-3. Interleaving quantization operations with register-to-TMEM copies does not alleviate that pressure. However, we note that a quantized $\mathbf{P}\mathbf{V}$ GEMM may become more attractive on B300s and Rubin GPUs with improved FP16 exponential support.
+3. Interleaving quantization operations with register-to-TMEM copies does not alleviate that pressure. However, we note that a quantized $\mathbf{P}\mathbf{V}$ GEMM may become more attractive on B300s and Rubin GPUs with improved FP16 exponential support (see table below).
 
 ### Overbloated Tensor Cores
 | Spec | A100 (SXM4) | H100 (SXM5) | B200 (HGX) | B300 / GB300 | R200 |
