@@ -11,7 +11,7 @@ description = ""
 summary = "Attn-QAT is the first systematic study of 4-bit quantization-aware training for attention, recovering FP4 attention quality without inference-time outlier mitigation while also enabling faster kernels."
 +++
 
-{{< socialBadges arxiv-index="2603.00040" github="hao-ai-lab/FastVideo" >}}
+{{< socialBadges arxiv-index="2603.00040" github="hao-ai-lab/FastVideo" huggingface="https://huggingface.co/FastVideo/14B_qat_400/tree/main">}}
 
 **TL;DR:** FP4 hardware is finally here, and FP4 linear layers are already being used in production. However, FP4 attention still causes significant quality degradation, preventing true end-to-end FP4 serving and limiting full hardware utilization. In this work, we present **Attn-QAT**, the first systematic study of 4-bit quantization-aware training for attention. We identify two key principles for stable FP4 attention QAT: (1) matching low-precision recomputation of attention probabilities in the backward pass and (2) resolving implicit precision assumptions in FlashAttention's gradient calculation. Across video diffusion models and language models, Attn-QAT **recovers the quality drop** of 4-bit attention without the extra outlier-mitigation heuristics used by prior FP4 attention methods, while also delivering a **1.1x--1.5x** speedup over SageAttention3 on an RTX 5090 and up to a **1.39x** speedup over FlashAttention-4 on a B200. 
 
@@ -221,7 +221,7 @@ We also found that:
 | **MUFU EX2 ops/clk/SM** | **16** | **16** | **16** | **32** | **32 (fp32)/64 (fp16)** | 
 
 Most of the performance gain on newer NVIDIA GPUs has come from **allocating the bulk of the chip's growth to serving pure GEMMs**. 
-In the above table, we see that BF16/FP8 Tensor Core throughput increased by ~2.27x from an H100 to a B200, while the CUDA core throughput only increases by a factor of 1.1x and the softmax (exp2) throughput remains unchanged. In [FlashAttention-4](https://arxiv.org/pdf/2603.05451), this leads to bf16 forward attention being bound by both softmax and GEMM (both take 1024 cycles at tile size `m128n128`).
+In the above table, we see that BF16/FP8 Tensor Core throughput increased by ~2.27x from an H100 to a B200, while the CUDA core throughput only increases by 1.1x and the softmax (exp2) throughput remains unchanged. In [FlashAttention-4](https://arxiv.org/pdf/2603.05451), this leads to a BF16 attention forward pass being bound by both the softmax and GEMMs (both taking 1024 cycles at tile size `m128n128`).
 
 FA4 mitigates this by **warp specialization**, overlapping MMA and softmax across warp groups (WGs).
 
