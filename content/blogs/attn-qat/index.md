@@ -218,7 +218,7 @@ Other implementation takeaways include:
 | **Registers/SM** | 64K × 32-bit | 64K × 32-bit | 64K × 32-bit | 64K × 32-bit | 64K x 32-bit (est.) |
 | **TMEM/SM** | — | — | 256 KB | 256 KB | 256 KB+ |
 | **Shared Mem/SM (max)** | 164 KB | 228 KB | 228 KB | 228 KB | TBD |
-| **MUFU EX2 ops/clk/SM** | **16** | **16** | **16** | **32** | **32(fp32)/64(fp16)** | 
+| **MUFU EX2 ops/clk/SM** | **16** | **16** | **16** | **32** | **32 (fp32)/64 (fp16)** | 
 
 Over the past few years, most of NVIDIA’s marketed performance gains have come from **scaling out with better interconnects, increased chip size, and lower precision**. For example, while Jensen claimed up to 30x performance per GPU using Blackwell NVL72 over H100 at GTC 2024, SGLang was [only able to get ~4x speedup](https://www.lmsys.org/blog/2025-09-25-gb200-part-2/) after aggressive optimizations such as FP8 KV cache, NVFP4 MoE combine, large-scale EP, and two-batch communication-computation overlap to hide expert communication. 
 
