@@ -11,7 +11,8 @@ enableRobotsTXT: true
 # FIXME: This is a workaround for rendering differnet sizes of the gif images.
 timeout: 90 # seconds
 
-paginate: 200
+pagination:
+  pagerSize: 200
 
 markup:
   goldmark:

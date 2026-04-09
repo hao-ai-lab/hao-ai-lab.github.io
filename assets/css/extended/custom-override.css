@@ -98,7 +98,12 @@
 .post-content-justified p,
 .post-content-justified li,
 .post-content-justified blockquote {
-    text-align: justify;
-    text-justify: inter-word;
+    text-align: left;
     hyphens: auto;
+}
+
+.post-content-justified .video-embed + p,
+.post-content-justified .video-embed + div > p {
+    text-indent: 0;
+    margin-top: var(--content-gap);
 }
