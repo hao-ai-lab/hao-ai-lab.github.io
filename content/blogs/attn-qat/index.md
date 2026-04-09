@@ -184,7 +184,7 @@ Blackwell is the first GPU generation to provide native FP4/FP8 GEMM support via
 
 On Blackwell, this approach is no longer optimal: the `tcgen05.mma` instruction bakes in MXFP8/MXFP4 and NVFP4 with finer group sizes (32 and 16, respectively), providing better precision and freeing registers.  It also enables FP8/FP6/FP4 GEMMs without block scales via the `tcgen05.mma.cta_group.kind` instruction, which can provide an additional speedup in exchange for reduced precision. 
 
-BF16 `tcgen05.mma` doubles the m tile size over Hopper (max shape `m64n256k16 -> m128`, thus the 2x throughput), and FP4 MMA further quadruples via 4x wider k data path (max `m128n256k64`)
+BF16 `tcgen05.mma` increases the max tile shape from `m64n256k16` (max tile shape for the Hopper `wgmma` instruction) to `m128n256k16`. The doubled m tile size results in 2x the throughput. Additionally, when the input data type is FP4, the `tcgen05.mma` instruction further quadruples the throughput via 4x wider k data path (max tile shape of `m128n256k64`).
 
 {{< figure src="img/SM.png" alt="SM" width="100%" align="center" >}}
 
