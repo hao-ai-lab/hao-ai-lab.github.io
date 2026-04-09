@@ -194,7 +194,7 @@ Equivalently, during the MMA, the hardware multiplies the quantized values by th
 
 The main design choice for block-scaled quantization is how many values share one scale: one scale per element is too expensive, while one scale for the whole matrix is often too coarse. Blackwell Tensor Cores support a middle ground, where each row or column is split into 16- or 32-element chunks along the reduction dimension, and each chunk gets its own scale.
 
-More specifically, o Blackwell, the `tcgen05.mma` instruction bakes in MXFP8/MXFP4 and NVFP4 GEMMs into the hardware with these finer group sizes (32 and 16, respectively), providing better precision and freeing registers. It also enables FP8/FP6/FP4 GEMM without block scales via `tcgen05.mma.cta_group.kind`. 
+More specifically, on Blackwell GPUs, the `tcgen05.mma` instruction bakes in MXFP8/MXFP4 and NVFP4 GEMMs into the hardware with these finer group sizes (32 and 16, respectively), providing better precision and freeing registers. It also enables FP8/FP6/FP4 GEMM without block scales via `tcgen05.mma.cta_group.kind`. 
 
 <!-- Blackwell is the first GPU generation to provide support for native block-scaled FP4/FP8 GEMMs via the `tcgen05.mma.cta_group.kind.block_scale` instruction family. Prior approaches on Hopper (H100) and Ampere (A100), such as 
 W4A8 and W4A16 (e.g, [QServe](https://arxiv.org/abs/2405.04532) and [AWQ](https://arxiv.org/abs/2306.00978)) use **software dequantization**: tensors are loaded and then dequantized group-wise (typical size 128) using CUDA cores and registers.  -->
