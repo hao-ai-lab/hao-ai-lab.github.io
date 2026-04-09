@@ -190,7 +190,7 @@ BF16 `tcgen05.mma` increases the max tile shape from `m64n256k16` (max tile shap
 
 Let the input matrices for an MMA (matrix multiply accumulate) be A and B. Unlike Hopper `wgmma` instructions—where A/B reside in SMEM/registers and outputs stays in registers, a B200 introduces **Tensor Memory (TMEM)** to hold MMA outputs. A may reside in SMEM/TMEM and B in SMEM, reducing register pressure for larger MMA tiles. However, this comes at the cost of complexity for attention kernels as outputs must be copied from TMEM → registers (T2R) for softmax, then written back from registers to TMEM (R2T).
 
-The broader issue is that the softmax computation remains the bottleneck, especially as tensor-core throughput continues to rise. NVIDIA increases advertised TFLOPS primarily by scaling chip size and power, with most of the growth allocated to larger tensor cores [[1]](https://newsletter.semianalysis.com/p/nvidia-blackwell-perf-tco-analysis). Software tricks such as exponential approximation can only mitigate the problem. FA4 only applies them to 25% of the softmax scores before register spilling becomes a concern. The practical lesson is to **design attention kernels around the actual balance of available hardware units** and their capacity.
+The broader issue is that the softmax computation remains the bottleneck, especially as tensor-core throughput continues to rise. NVIDIA increases advertised TFLOPS primarily by scaling chip size and power, with most of the growth allocated to larger tensor cores [[1]](https://newsletter.semianalysis.com/p/nvidia-blackwell-perf-tco-analysis). Software tricks such as exponential approximation can only mitigate the problem. FA4 only applies them to [25%](https://github.com/Dao-AILab/flash-attention/blob/main/flash_attn/cute/softmax.py#L264) of the softmax scores before register spilling becomes a concern. The practical lesson is to **design attention kernels around the actual balance of available hardware units** and their capacity.
 
 For example, TMEM provides 128 lanes (across four warps) × 512 columns = **64K 32-bit cells**. We will see how this quickly becomes a limiting resource alongside registers.
 
@@ -227,7 +227,7 @@ large-scale EP (e.g. EP48) only works when you have a batch size big enough to s
 In fact, SGLang reported only **1.9x per-GPU speedup w/o FP4/FP8, at the cost of 2x chip size and 1.6x TDP**—close to the 14% increase in FP16 TFLOPS per silicon area and 47% per GPU Watt [reported by Semianalysis](https://newsletter.semianalysis.com/p/nvidia-blackwell-perf-tco-analysis). 
 
 Such a performance gain comes from **allocating the bulk of the chip's growth to serving pure GEMMs**. 
-In the above table, we see that BF16/FP8 Tensor Core throughput increased by roughly 2x on B200, while CUDA Cores and softmax (exp2) throughput remained unchanged. In [FlashAttention 4](https://arxiv.org/pdf/2603.05451), this leads to bf16 forward attention being bound by both softmax and GEMM (both take 1024 cycles at tile size `m128n128`).
+In the above table, we see that BF16/FP8 Tensor Core throughput increased by roughly 2x on B200, while CUDA Cores and softmax (exp2) throughput remained unchanged. In [FlashAttention-4](https://arxiv.org/pdf/2603.05451), this leads to bf16 forward attention being bound by both softmax and GEMM (both take 1024 cycles at tile size `m128n128`).
 
 FA4 mitigates this by **warp specialization**, overlapping MMA and softmax across warp groups (WGs).
 
