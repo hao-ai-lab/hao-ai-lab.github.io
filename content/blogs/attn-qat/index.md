@@ -176,11 +176,11 @@ Because Attn-QAT eliminates the need for extra smoothing and two-level quantizat
 
 ## Blackwell FP4 attention kernel
 
-To make Attn-QAT practical on Blackwell GPUs, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL. It reaches up to a 1.39x speedup over FA4 and 1801 TFLOPS. The rest of this section explains the hardware constraints that shaped the kernel design.
+To make Attn-QAT practical on Blackwell GPUs, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL. It achieves up to a 1.39x speedup over FA4 and 1801 TFLOPS. The rest of this section explains the hardware constraints that shaped the kernel design.
 
 ### Blackwell FP4/FP8 support and TMEM
 
-Blackwell is the first GPU generation to provide native FP4/FP8 GEMM support via the `tcgen05.mma.cta_group.kind.block_scale` instruction family. Earlier quantization methods on Hopper (H100) and Ampere (A100), such as W4A8 ([QServe](https://arxiv.org/pdf/2405.04532)) and W4A16 ([AWQ](https://arxiv.org/pdf/2306.00978)), relied on **software dequantization**: tensors were loaded and then dequantized group-wise, typically at size 128, using CUDA cores and registers.
+Blackwell is the first GPU generation to provide native FP4/FP8 GEMM support via the `tcgen05.mma.cta_group.kind.block_scale` instruction family. Earlier quantization methods on Hopper (H100) and Ampere (A100), such as W4A8 ([QServe](https://arxiv.org/pdf/2405.04532)) and W4A16 ([AWQ](https://arxiv.org/pdf/2306.00978)), relied on **software dequantization**, whereby tensors were loaded and then dequantized group-wise, typically at size 128, using CUDA cores and registers.
 
 On Blackwell, that approach is no longer optimal. The `tcgen05.mma` instruction bakes in MXFP8/MXFP4 and NVFP4 with finer group sizes (32 and 16, respectively), which improves precision and frees registers. It also enables FP8/FP6/FP4 GEMMs without block scales via `tcgen05.mma.cta_group.kind`, trading a bit of precision for more throughput.
 
@@ -252,7 +252,7 @@ That speedup is a lower bound: we have not yet tested NVFP4 QK + FP8 PV, which r
 | b=1 s=32768 h=24 d=64          | 7.170    | 920        | 7.284     | 906         | 1.02x   |
 
 ### Precision Results
-At the time of writing this blog, we received updates from an [FP8 non-block-scaled PR](https://github.com/Dao-AILab/flash-attention/pull/2109) in the FA4 repo, so we show the kernel-level precision comparison below. Despite using NVFP4, we can see that our kernel achieves a 2-2.5x lower max absolute error with a group size of 16, compared to their per-head group (e.g., 128).
+At the time of writing, the FA4 repo had received an [FP8 non-block-scaled PR](https://github.com/Dao-AILab/flash-attention/pull/2109), so we compare kernel-level precision below. Even with NVFP4, our kernel achieves roughly 2-2.5x lower max absolute error with group size 16 than FA4's per-head grouping (e.g., 128).
 
 | batch | seqlen | nheads | hdim | FP4 max | FP4 mean | FP8 max | FP8 mean |
 |-------|--------|--------|------|---------|----------|---------|----------|
@@ -268,18 +268,18 @@ At the time of writing this blog, we received updates from an [FP8 non-block-sca
 | 1 | 32768 | 24 | 128 | **0.016** | **0.00100** | 0.031 | 0.00114 |
 
 ### Agent-assisted Kernel Development
-During debugging, we found LLM-based tools (e.g., Claude) surprisingly effective, even for low-level PTX and CuTeDSL code. It found an obscure uninitialized register bug in FA4, and we confirmed that it was fixed a week before we found it (buried in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86)). Claude cut down at least 1-2 weeks of debugging time—these tools are particularly useful for SASS inspection (e.g. CuTeDSL -> PTX → SASS mapping), instruction dependency analysis, and guided performance debugging via structured task lists in a .md file.
+During debugging, we found LLMs like Claude useful even for CuTeDSL and low-level PTX. It surfaced an obscure uninitialized register bug in FA4, which had already been fixed in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86) before we found it; in practice, we estimate that LLMs saved us about 1-2 weeks and were especially helpful for SASS inspection, instruction dependency analysis, and structured performance debugging.
 
 
 ## What this paper really changes
 
-Prior to this paper, quantization for attention has been treated as an inference problem: find better smoothing, calibration, or other post-hoc fixes. Attn-QAT argues that this view is incomplete. Since modern attention kernels are fused and precision-sensitive, **training methods and low-bit kernels must be co-designed**.
+Prior to this paper, attention quantization was mostly treated as an inference problem: improve smoothing, calibration, or other post-hoc fixes. Attn-QAT argues that this view is incomplete. Because modern attention kernels are fused and precision-sensitive, **training methods and low-bit kernels must be co-designed**.
 
-Furthermore, despite NVIDIA’s headline FP4/FP8 (MMA) TFLOPS coming from stacking hardware units for pure GEMMs, attention usually takes up the bulk of the wall-clock time in long-context agentic serving & video generation, making it the bottleneck. Across Hopper -> Blackwell -> Rubin evolution, we see a trend **toward algorithms and hardware becoming increasingly coupled** as hardware headroom diminishes.
+Despite NVIDIA’s headline FP4/FP8 (MMA) TFLOPS coming from scaling pure GEMMs, attention usually dominates wall-clock time in long-context agentic serving and video generation. Across Hopper -> Blackwell -> Rubin, algorithms and hardware are becoming increasingly coupled as headroom shrinks.
 
-Moving forward, we are excited to experiment with **hardware-specific mixed-precision QAT recipes, and combining distillation and sparse attention with FP4**. Hopefully, there will be more collaborations between NVIDIA and algorithm researchers to find the right hardware tradeoffs for future generations  :) 
+Moving forward, we are excited to try **hardware-specific mixed-precision QAT recipes** and combine distillation and sparse attention with FP4.
 
-For more details, please see [our paper](https://arxiv.org/abs/2603.00040). All code is available in [FastVideo](https://github.com/hao-ai-lab/FastVideo), our unified framework for video diffusion post-training and [real-time inference inference](https://haoailab.com/blogs/fastvideo_realtime_1080p/).  
+For more details, see [our paper](https://arxiv.org/abs/2603.00040). All code is available in [FastVideo](https://github.com/hao-ai-lab/FastVideo), our unified framework for video diffusion post-training and [real-time inference](https://haoailab.com/blogs/fastvideo_realtime_1080p/).  
 
 ## Citation
 
