@@ -170,7 +170,7 @@ For supervised fine-tuning, Attn-QAT can be used as a **drop-in replacement** fo
 
 ## Faster Inference on an RTX 5090
 
-Because Attn-QAT eliminates the need for extra smoothing and two-level quantization overhead used by SageAttention3, this results in faster inference. On an RTX 5090, we're able to achieve approximately 1.1x-1.5x higher throughput than SageAttention3. The key reason is straightforward: by removing extra preprocessing for Q, K, and P, the kernel becomes lighter while preserving quality through training rather than inference heuristics.
+Because Attn-QAT eliminates the need for extra smoothing and two-level quantization overhead used by SageAttention3, this results in faster inference. On an RTX 5090, we're able to achieve approximately **1.1x-1.5x** higher throughput than SageAttention3. The key reason is straightforward: by removing extra preprocessing for $\mathbf{Q}$, $\mathbf{K}$, and $\mathbf{P}$, the kernel becomes lighter while preserving quality through training rather than inference heuristics.
 
 {{< figure src="img/5090_speedup.png" alt="5090 speedup" width="60%" align="center" >}}
 
