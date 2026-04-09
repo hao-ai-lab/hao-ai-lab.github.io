@@ -176,11 +176,11 @@ Because Attn-QAT eliminates the need for extra smoothing and two-level quantizat
 
 ## For the GPU Enjoyers: B200/B300 FP4 Attention Kernel
 
-To make Attn-QAT **usable on data-center grade Blackwell GPUs (e.g. B200s/B300s)**, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup over FA4 and 1801 TFLOPS. The rest of this section explains hardware constraints, the Blackwell programming model and how they influenced kernel design and development.  
+To make Attn-QAT **usable on data-center grade Blackwell GPUs (e.g., B200s/B300s)**, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup over FA4 and 1801 TFLOPS. The rest of this section explains hardware constraints, the Blackwell programming model and how they influenced kernel design and development.  
 
 ### Block-scaled MMAs and TMEM
 
-Let $\mathbf{A}$ and $\mathbf{B}$ be quantized (e.g. NVFP4) matrices, $\mathbf{s}_{A}$ and $\mathbf{s}_{B}$ be the dequantizing scale factors for the two matrices, and $\mathbf{D}$ be the BF16 output matrix. A block-scaled MMA (matrix-multiply accumulate) is the following operation:
+Let $\mathbf{A}$ and $\mathbf{B}$ be quantized (e.g., NVFP4) matrices, $\mathbf{s}_{A}$ and $\mathbf{s}_{B}$ be the dequantizing scale factors for the two matrices, and $\mathbf{D}$ be the BF16 output matrix. A block-scaled MMA (matrix-multiply accumulate) is the following operation:
 
 \[
 \mathbf{D} = (\mathbf{A} \cdot \mathbf{s}_A) @ (\mathbf{B} \cdot \mathbf{s}_B) + \mathbf{C}.
@@ -268,7 +268,7 @@ Another detail worth mentioning is that a B300 GPU has 2x the exp throughput, an
 | b=1 s=32768 h=24 d=64          | 7.170    | 920        | 7.284     | 906         | 1.02x   |
 
 ### Precision Results
-At the time of writing this blog, we received updates from an [FP8 non-block-scaled PR](https://github.com/Dao-AILab/flash-attention/pull/2109), in the FA4 repo, so we show the kernel-level precision comparison below. Despite using NVFP4, we can see that our kernel achieves a 2-2.5x lower max absolute error with a group size of 16, compared to their per-head group (e.g. group size of 128).
+At the time of writing this blog, we received updates from an [FP8 non-block-scaled PR](https://github.com/Dao-AILab/flash-attention/pull/2109), in the FA4 repo, so we show the kernel-level precision comparison below. Despite using NVFP4, we can see that our kernel achieves a 2-2.5x lower max absolute error with a group size of 16, compared to their per-head group (e.g., group size of 128).
 
 | batch | seqlen | nheads | hdim | FP4 max | FP4 mean | FP8 max | FP8 mean |
 |-------|--------|--------|------|---------|----------|---------|----------|
