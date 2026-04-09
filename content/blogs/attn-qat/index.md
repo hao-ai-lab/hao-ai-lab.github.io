@@ -227,7 +227,7 @@ FA4 mitigates this by **warp specialization**, overlapping MMA and softmax acros
 
 {{< figure src="img/FA4.png" alt="B200 kernel" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research FlashAttention-4 Blog Post](https://research.colfax-intl.com/flashattention-4-algorithm-and-kernel-pipelining-co-design-for-asymmetric-hardware-scaling/)</span>" >}}
 
-However, as in PP training, overlap is never perfect due to pipeline warmup (launching two QK MMAs in a row) and misc. overheads such as address computation, issuing MMA instructions, updating the softmax row max, and copying results across WGs, so we can still yield meaningful speedups by reducing either bottleneck.
+However, overlap is never perfect due to pipeline warmup (launching two $\mathbf{Q}\mathbf{K}$ MMAs in a row) and misc. overheads such as address computation, issuing MMA instructions, updating the softmax row-max, and copying results across WGs, so we can still yield meaningful speedups by reducing either bottleneck.
 
 FA4 tries to mitigate the softmax bottleneck **using a polynomial approximation** of exp2; higher-degree polynomials maintain precision but incur additional register usage and CUDA core instructions, so it’s only applied to 10%-25% of the softmax scores. Despite this, softmax remains register-heavy and a persistent bottleneck.
 
