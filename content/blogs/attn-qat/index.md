@@ -1,6 +1,6 @@
 +++
 title = "Attn-QAT: Making 4-Bit Attention Actually Work"
-date = 2026-04-06T12:00:00-07:00
+date = 2026-04-08T12:00:00-07:00
 authors = ["Peiyuan Zhang", "Matthew Noto", "Wenxuan Tan", "Chengquan Jiang", "Will Lin", "Wei Zhou", "Hao Zhang"]
 author = "Peiyuan Zhang*, Matthew Noto*, Wenxuan Tan*, Chengquan Jiang, Will Lin, Wei Zhou, Hao Zhang"
 ShowReadingTime = true
