@@ -184,37 +184,31 @@ Because Attn-QAT eliminates the need for extra smoothing and two-level quantizat
 
 {{< figure src="img/5090_speedup.png" alt="5090 speedup" width="60%" align="center" >}}
 
-## For the GPU Enjoyers: B200/B300 FP4 Attention Kernel
+## Part 2 (for GPU hackers): B200/B300 FP4 Attention Kernel
 
-To make Attn-QAT **usable on data-center grade Blackwell GPUs (e.g., B200s/B300s)**, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup over FA4 and 1801 TFLOPS. The rest of this section explains hardware constraints, the Blackwell programming model and how they influenced kernel design and development.  
+To enable Attn-QAT **on data-center grade Blackwell GPUs (e.g., B200s/B300s)**, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup over FA4 and 1801 TFLOPS. The rest of this section explains the implementation challenges and what they reveal about the NVIDIA hardware evolution (predicament?).
 
 ### Block-scaled MMAs and TMEM
 
-Let $\mathbf{A}$ and $\mathbf{B}$ be quantized (e.g., NVFP4) matrices, $\mathbf{s}_{A}$ and $\mathbf{s}_{B}$ be the dequantizing scale factors for the two matrices, and $\mathbf{D}$ be the BF16 output matrix. Finally, let $@$ denote matrix multiplication and $\cdot$ element-wise multiplication. A block-scaled MMA (matrix-multiply accumulate) is the following operation:
+Blackwell is the first GPU generation to provide native block-scaled FP4/FP8 GEMM via the [tcgen05.mma.cta_group.kind.block_scale](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#tcgen05-mma-instructions-mma) instruction family, where Matrix Multiply-Accumulate (MMA) is performed directly on quantized inputs with per-group dequantization scales applied inside the Tensor Core.
 
-\[
-\mathbf{D} = (\mathbf{A} \cdot \mathbf{s}_A) @ (\mathbf{B} \cdot \mathbf{s}_B) + \mathbf{C}.
-\]
+Block scaling is necessary because directly quantizing tensors with widely varying values into lower ranges introduces large errors. Each group/block computes a scale from its dynamic range (e.g., for NVFP4 E2M1, $s_{\text{dec}} = \max(|A_{\text{group}}|)/6$), quantizes via $A_q = A \cdot s_{\text{enc}}$ with $s_{\text{enc}} = s_{\text{dec}}^{-1}$, and the Tensor Core applies the inverse scale during MMA, effectively computing $(A_q \cdot s_{\text{dec},A}) @ (B_q \cdot s_{\text{dec},B})$.
 
 {{< figure src="img/BS.png" alt="B200 kernel" width="70%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [NVIDIA PTX Docs](https://docs.nvidia.com/cuda/parallel-thread-execution/#tcgen05-mma-block-scaling)</span>" >}}
 
-FP4 and FP8 have limited dynamic range, so directly quantizing a tensor can introduce large errors when its values vary too much. Block scaling reduces this problem by assigning a scale to each group of values before quantization, so that each group can be mapped into a range that the low-precision format represents more accurately. 
-
-Equivalently, during the MMA, the hardware multiplies the quantized values by the corresponding dequantization scale; with the dequantization scale being the element-wise inverse of the scale factor used to quantize the matrix to low-precision. 
-
-The main design choice for block-scaled quantization is how many values share one scale: one scale per element is too expensive, while one scale for the whole matrix is often too coarse. Blackwell Tensor Cores support a middle ground, where each row or column is split into 16- or 32-element chunks along the reduction dimension, and each chunk gets its own scale.
-
-More specifically, on Blackwell GPUs, the `tcgen05.mma` instruction bakes in MXFP8/MXFP4 and NVFP4 GEMMs into the hardware with these finer group sizes (32 and 16, respectively), providing better precision and freeing registers. It also enables FP8/FP6/FP4 GEMM without block scales via `tcgen05.mma.cta_group.kind`. 
+Prior approaches on Hopper (H100) and Ampere (A100), such as 
+W4A8 and W4A16 (e.g., [QServe](https://arxiv.org/abs/2405.04532) and [AWQ](https://arxiv.org/abs/2306.00978)) use **software dequantization**: tensors are loaded and then dequantized group-wise (typical size 128) using CUDA cores and registers. 
+On Blackwell, this approach is no longer optimal: tcgen05.mma bakes in MXFP8/MXFP4 and NVFP4 with finer group sizes (32 and 16, respectively), providing better precision and freeing registers.  It also enables fp8/fp6/fp4 GEMM w/o block scales via [tcgen05.mma.cta_group.kind](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#tcgen05-mma-instructions). 
 
 {{< figure src="img/SM.png" alt="SM" width="70%" align="center" >}}
 
-Let A and B be the inputs for an MMA. Unlike the `wgmma` instruction on Hopper GPUs, where A/B live in SMEM/registers and the outputs stay in registers, Blackwell introduces **Tensor Memory (TMEM)** to hold MMA outputs. This reduces register pressure for larger tiles, but it also adds extra movement in attention kernels: outputs must be copied from TMEM to registers for softmax and then written back to TMEM. Note that TMEM consists of 128 lanes (across four warps) x 512 columns, which gives **64K 32-bit cells**. We will see how this quickly becomes a limiting resource alongside registers.
+Unlike the `wgmma` instruction on Hopper GPUs, where A/B live in SMEM/registers and the outputs stay in registers, Blackwell introduces **Tensor Memory (TMEM)** to hold MMA outputs. This reduces register pressure for larger tiles, but it also adds extra movement in attention kernels: outputs must be copied from TMEM to registers (T2R) for softmax and then written back to TMEM (R2T). Note that TMEM consists of 128 lanes (across four warps) x 512 columns, which gives **64K 32-bit cells**. We will see how this quickly becomes a limiting resource alongside registers.
 
-{{< figure src="img/TMEM.png" alt="SM" width="70%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research Tutorial On Writing Blackwell GEMM Kernels](https://research.colfax-intl.com/cutlass-tutorial-writing-gemm-kernels-using-tensor-memory-for-nvidia-blackwell-gpus/)</span>" >}}
+{{< figure src="img/TMEM.png" alt="SM" width="70%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [PTX docs](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#tensor-memory-addressing)</span>" >}}
 
 
 
-### Bloated Tensor Cores $\rightarrow$ Softmax Becomes A Bottleneck
+### Bloated Tensor Cores and the Softmax Bottleneck
 | Spec | A100 (SXM4) | H100 (SXM5) | B200 (HGX) | B300 / GB300 | R200 |
 |---|---|---|---|---|---|
 | **Architecture** | Ampere | Hopper | Blackwell | Blackwell Ultra | Rubin |
@@ -232,19 +226,23 @@ Let A and B be the inputs for an MMA. Unlike the `wgmma` instruction on Hopper G
 | **Shared Mem/SM (max)** | 164 KB | 228 KB | 228 KB | 228 KB | TBD |
 | **MUFU.EX2 ops/clk/SM** | **16** | **16** | **16** | **32** | **32 (fp32)/64 (fp16)** | 
 
-The performance gains of newer NVIDIA GPUs come mostly from **larger tensor cores**, which primarily accelerate GEMMs. In the above table, we see that BF16/FP8 Tensor Core throughput increases by ~2.27x from H100 to B200, while CUDA core throughput increases by only 1.1x and MUFU.EX2 throughput does not improve. Since the MUFU.EX2 instruction is used to compute `exp2` in softmax, in [FlashAttention-4](https://arxiv.org/pdf/2603.05451), attention is jointly bound by softmax and GEMM (both taking 1024 cycles for 128x128 tiles).
+Over the past few years, most of NVIDIA’s marketed performance gains have relied on **scaling out through better interconnects, larger chips, and lower precision** rather than single-chip efficiency. For example, while Jensen claimed [up to 30x performance per GPU using Blackwell NVL72](https://nvidianews.nvidia.com/news/nvidia-blackwell-platform-arrives-to-power-a-new-era-of-computing) over H100 at GTC 2024, [SGLang was only able to get 1.9x per-GPU speedup](https://www.lmsys.org/blog/2025-09-25-gb200-part-2/) w/o relying on FP4/FP8, at **the cost of 2x chip size and 1.6x TDP**--close to the 14% increase in FP16 TFLOPS per silicon area and 47% per GPU Watt [reported by Semianalysis](https://newsletter.semianalysis.com/p/nvidia-blackwell-perf-tco-analysis).
 
-FA4 addresses this with a **warp specialized** pipeline that overlaps MMA and softmax work across warp groups (WGs).
+Moreover, the increased chip size is mostly allocated to pure GEMMs. In the above table, we see that BF16/FP8 Tensor Core throughput increased by roughly 2x[^b200-bf16-peak-vs-sustained] on B200, while CUDA Core count and softmax (exp2, the `MUFU.EX2` instruction) throughput remained unchanged. In [FlashAttention-4](https://arxiv.org/pdf/2603.05451), attention is jointly bound by softmax and GEMM (both taking 1024 cycles for `m128n128` tiles).
 
-{{< figure src="img/FA4.png" alt="B200 kernel" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research FlashAttention-4 Blog Post](https://research.colfax-intl.com/flashattention-4-algorithm-and-kernel-pipelining-co-design-for-asymmetric-hardware-scaling/)</span>" >}}
+[^b200-bf16-peak-vs-sustained]: Peak spec sheets imply about **2.27×** higher BF16 Tensor TFLOPS than H100, but under TDP we measure closer to **2×** in sustained cuBLAS BF16 GEMM—**1400+ TFLOPS** versus **700+ TFLOPS**, with **~1700 TFLOPS** only in short bursts.
+
+FA4 mitigates this with **warp specialization**, overlapping MMA and softmax across warp groups (WGs; think of pipeline parallelism in distributed training).
+
+{{< figure src="img/FA4.png" alt="B200 kernel" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [FA4 paper](https://arxiv.org/pdf/2603.05451)</span>" >}}
 
 However, the overlap is never perfect because of pipeline warmup (launching two $\mathbf{Q}\mathbf{K}$ MMAs in a row) and bookkeeping overheads such as address computation, issuing MMA instructions, updating the softmax row-max, and copying results across WGs, so we can still yield meaningful speedups by reducing either bottleneck.
 
-FA4 tries to mitigate the softmax bottleneck by using a software-emulated [polynomial approximation of exp2](https://arxiv.org/pdf/2603.05451#page=8) which increases the effective exp throughput by utilizing FMA (fused multiply-add) units in addition to the SFUs (special function units) utilized by the MUFU.EX2 instruction. The trade-off with this optimization is that higher-degree polynomials are more accurate but incur additional register usage and CUDA core instructions. Hence it’s only applied to [10%-25% of the softmax scores](https://github.com/Dao-AILab/flash-attention/blob/main/flash_attn/cute/softmax.py#L264). Despite this, the softmax operation still remains register-heavy and a persistent bottleneck.
+FA4 tries to mitigate the softmax bottleneck using a [polynomial approximation of exp2](https://arxiv.org/pdf/2603.05451#page=8). Higher-degree polynomials improve approximation precision but incur additional register usage and CUDA core FMA instructions, so it’s only applied to 10%-25% of the softmax scores. Despite this, softmax still remains a register-heavy and persistent bottleneck.
 
 
 ### TMEM overlap schedule
-To leverage low-precision block-scaled MMAs to speed up the GEMMs in attention, understanding the data-flow of the scale factors is critical. On Blackwell GPUs, the scale factors must be loaded from GMEM $\rightarrow$ SMEM (via a TMA load) $\rightarrow$ TMEM and then must be [duplicated across four warps](https://github.com/NVIDIA/cutlass/issues/2961#issuecomment-3771068790) in a WG via a `tcgen05.cp` multicast in order to be usable by `tcgen05.mma`. 
+To accelerate GEMMs, we analyzed the scale factor dataflow on B200: turns out they must be loaded from GMEM $\rightarrow$ SMEM (via TMA) $\rightarrow$ TMEM and [duplicated across four warps](https://github.com/NVIDIA/cutlass/issues/2961#issuecomment-3771068790) in a WG via a `tcgen05.cp` multicast in order to be usable by `tcgen05.mma`. 
 
 However, with 128x128 tiles, FA4's pipeline **already uses all available TMEM**: 
 - S1 and S2 ($\mathbf{Q}\mathbf{K}$ outputs): 128 columns each
@@ -255,11 +253,11 @@ However, with 128x128 tiles, FA4's pipeline **already uses all available TMEM**:
 To avoid conflicts, we use a **TMEM overlap schedule** to squeeze in the scale factors while **minimizing pipeline stalls**: we reuse S2 for `sfqk 1` and S1 for `sfqk 2`. Because `tcgen05.mma` ops issued by a thread using the same shape are [guaranteed to execute sequentially](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html?highlight=tcgen05#tcgen05-memory-consistency-model-pipelined-instructions), we only insert barriers between S1 T2R and sfqk 2 load. Note that `sfvp 1` is guaranteed not to stomp on S1 due to being after QK2, and `sfvp 2` again uses a barrier to wait for S2 copy out (which rarely fires due to having 2 MMAs between QK2 and PV2). 
 We also considered storing $\mathbf{P}$ in SMEM to free up TMEM, but rejected it due to insufficient `ldmatrix` instruction shapes for an R2S copy (max of 8x8 vs 32x16 for `tcgen05.st`). 
 
-Despite careful scheduling, we still did not observe a speedup with NVFP4 block-scaled $\mathbf{P}\mathbf{V}$ GEMMs due to the aforementioned softmax bottleneck. Quantizing $\mathbf{P}$ and $\mathbf{V}$ requires computing group-wise scale factors and `cvt.rn.satfinite` quantization instructions, which adds to the existing softmax bottleneck. 
+Despite careful scheduling, using NVFP4 $\mathbf{P}\mathbf{V}$ MMA actually **slows the kernel down** due to the aforementioned softmax bottleneck. Quantizing $\mathbf{P}$ and $\mathbf{V}$ requires computing group-wise scale factors and `cvt.rn.satfinite` quantization instructions, which adds to the existing softmax bottleneck. 
 
-Therefore, we choose to run block-scaled NVFP4 $\mathbf{Q}\mathbf{K}$ and BF16 $\mathbf{P}\mathbf{V}$ on a B200 which achieves up to 1801 TFLOPS and a 1.39x speedup over FA4.[^agent-kernel-dev] Note that this is **only a lower bound of the speedup**: we have yet to experiment with **NVFP4/MXFP8 + FP8** $\mathbf{P}\mathbf{V}$  (cutting MMA by 1/2 or to 1/4 hardly matters for a softmax-bound kernel), which eliminates the group quantization overhead in a softmax WG. 
+Therefore, we choose to run block-scaled NVFP4 $\mathbf{Q}\mathbf{K}$ and BF16 $\mathbf{P}\mathbf{V}$ on a B200 which achieves up to **1801 TFLOPS** and a **1.39x speedup** over FA4.[^agent-kernel-dev] Note that this is **only a lower bound of the speedup**: we have yet to experiment with **NVFP4/MXFP8 $\mathbf{Q}\mathbf{K}$ + FP8 $\mathbf{P}\mathbf{V}$**  (cutting MMA by 1/2 or to 1/4 doesn't matter once it makes the kernel purely softmax-bound), which eliminates the group quantization overhead in a softmax WG. 
 
-Another detail worth mentioning is that a B300 GPU has 2x the exp throughput, and Rubin has 4x the exp throughput (w/ fp16 exp), which should make NVFP4 $\mathbf{P}\mathbf{V}$ GEMMs faster. **We are excited to test more QAT recipes for different hardware!**
+Additionally, B300 doubles the exp throughput, and Rubin quadruples it (w/ fp16 exp), which should make quantizing $\mathbf{P}\mathbf{V}$ faster. In the future, **we are excited to test more QAT recipes for different hardware!**
 
  | Config                         | FP4 (ms) | FP4 TFLOPS | BF16 (ms) | BF16 TFLOPS | Speedup |
 |--------------------------------|----------|------------|-----------|-------------|---------|
@@ -293,8 +291,10 @@ At the time of writing this blog, we received updates from an [FP8 non-block-sca
 | 1 | 32768 | 16 | 128 | **0.011** | **0.00100** | 0.022 | 0.00114 |
 | 1 | 32768 | 24 | 128 | **0.016** | **0.00100** | 0.031 | 0.00114 |
 
-[^agent-kernel-dev]: During debugging, we found LLM-based tools such as Claude surprisingly effective even for low-level PTX and CuTeDSL code. It surfaced an obscure uninitialized register bug in FA4, and we later confirmed that it had been fixed a week earlier in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86). We estimate that this cut at least 1-2 weeks off debugging time, especially for SASS inspection, CuTeDSL $\rightarrow$ PTX $\rightarrow$ SASS mapping, instruction dependency analysis, and structured performance debugging via `.md` task lists.
+### Agent Assisted Kernel Dev
+During debugging, we found agents such as Claude surprisingly effective even for low-level PTX and CuTeDSL code. It surfaced an obscure uninitialized register bug in FA4, which we confirmed to be fixed a week earlier by Tri Dao (buried in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86)). Claude cut down at least 1-2 weeks of debugging time—these tools are particularly useful for SASS inspection (e.g. CuTeDSL -> PTX → SASS mapping), instruction dependency analysis, and guided performance debugging via structured task lists in a .md file
 
+Designing SOTA kernels has been extremely time-consuming even for the top experts (Tri’s FA3 came out a year after the Hopper release), as there are too many knobs to tune, and even a one-liner can change the compiled PTX significantly. We believe **agents are best suited for bisecting bottlenecks** and accelerating kernel development.
 
 ## Final thoughts
 
@@ -302,9 +302,9 @@ Prior to this work, attention quantization was mostly treated as an inference pr
 
 While NVIDIA’s headline FP4/FP8 (MMA) TFLOPS come from stacking units for pure GEMMs, attention often takes up the bulk of the wall-clock time in long-context agentic serving and video generation workloads. Across the Hopper $\rightarrow$ Blackwell $\rightarrow$ Rubin evolution, we see a trend **toward algorithms and hardware becoming increasingly coupled as hardware headroom diminishes**.
 
-Moving forward, we are excited to try **hardware-specific mixed-precision QAT recipes** and combine distillation and sparse attention with FP4.
+Moving forward, we are excited to test **hardware-specific mixed-precision QAT recipes** and combine distillation and sparse attention with FP4 (we'd love to collaborate on this!).
 
-For more details, see [our paper](https://arxiv.org/abs/2603.00040). All code is available in [FastVideo](https://github.com/hao-ai-lab/FastVideo), our unified framework for video diffusion post-training and [real-time inference](https://haoailab.com/blogs/fastvideo_realtime_1080p/).  
+For more details, please see [our paper](https://arxiv.org/abs/2603.00040). All code is available in [FastVideo](https://github.com/hao-ai-lab/FastVideo), our unified framework for video diffusion post-training and [real-time inference](https://haoailab.com/blogs/fastvideo_realtime_1080p/).  
 
 ## Citation
 
