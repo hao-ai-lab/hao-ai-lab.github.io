@@ -230,7 +230,7 @@ FA4 addresses this with a **warp specialized** pipeline that overlaps MMA and so
 
 However, the overlap is never perfect because of pipeline warmup (launching two $\mathbf{Q}\mathbf{K}$ MMAs in a row) and bookkeeping overheads such as address computation, issuing MMA instructions, updating the softmax row-max, and copying results across WGs, so we can still yield meaningful speedups by reducing either bottleneck.
 
-FA4 tries to mitigate the softmax bottleneck by using a software emulated [polynomial approximation of exp2](https://arxiv.org/pdf/2603.05451#page=8) which increase the effective exp throughput by utilizing FMA (fused multiply-add) units in addition to the SFUs (special function units). The trade-off with this optimization is that higher-degree polynomials are more accurate but incur additional register usage and CUDA core instructions. Hence it’s only applied to 10%-25% of the softmax scores. Despite this, the softmax operation still remains register-heavy and a persistent bottleneck.
+FA4 tries to mitigate the softmax bottleneck by using a software emulated [polynomial approximation of exp2](https://arxiv.org/pdf/2603.05451#page=8) which increases the effective exp throughput by utilizing FMA (fused multiply-add) units in addition to the SFUs (special function units) utilized by the MUFU.EX2 instruction. The trade-off with this optimization is that higher-degree polynomials are more accurate but incur additional register usage and CUDA core instructions. Hence it’s only applied to 10%-25% of the softmax scores. Despite this, the softmax operation still remains register-heavy and a persistent bottleneck.
 
 
 ### TMEM overlap schedule
