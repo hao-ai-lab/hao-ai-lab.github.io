@@ -180,7 +180,7 @@ To make Attn-QAT practical on Blackwell GPUs, we also developed [FlashAttention-
 
 ### Block-scaled MMAs and TMEM
 
-A block-scaled MMA (matrix-multiply accumulate) is the following operation:
+Let $\mathbf{A}$ and $\mathbf{B}$ be quantized (e.g. NVFP4) matrices, $\mathbf{s}_{A}$ and $\mathbf{s}_{B}$ be the dequantizing scale factors for the two matrices, and $\mathbf{D}$ be the BF16 output matrix. A block-scaled MMA (matrix-multiply accumulate) is the following operation:
 
 \[
 \mathbf{D} = (\mathbf{A} \cdot \mathbf{s}_A) @ (\mathbf{B} \cdot \mathbf{s}_B) + \mathbf{C}.
@@ -190,11 +190,18 @@ A block-scaled MMA (matrix-multiply accumulate) is the following operation:
 
 Block scaling compensates for the limited dynamic range of FP4/FP8 formats. The scale factors map higher-precision weights or activations into a more uniform range before quantization. The main design choice is granularity: one scale per element is expensive, while one scale for the whole matrix is too coarse. Blackwell Tensor Cores support an intermediate scheme in which each row or column is split into 16- or 32-element chunks along the reduction dimension, with one scale per chunk.
 
-This matters for attention because Blackwell can consume both the quantized values and their scales directly in hardware through `tcgen05.mma.cta_group.kind.block_scale`. In practice, `tcgen05.mma` supports MXFP8/MXFP4 and NVFP4 block-scaled GEMMs, with group sizes of 32 for the MX formats and 16 for NVFP4. 
+Blackwell is the first GPU generation to provide support for native block-scaled FP4/FP8 GEMMs via the `tcgen05.mma.cta_group.kind.block_scale` instruction family. Prior approaches on Hopper (H100) and Ampere (A100), such as 
+W4A8 and W4A16 (e.g, [QServe](https://arxiv.org/abs/2405.04532) and [AWQ](https://arxiv.org/abs/2306.00978)) use **software dequantization**: tensors are loaded and then dequantized group-wise (typical size 128) using CUDA cores and registers. 
+
+On Blackwell, this approach is no longer optimal: the `tcgen05.mma` instruction bakes in MXFP8/MXFP4 and NVFP4 GEMMs into the hardware with finer group sizes (32 and 16, respectively), providing better precision and freeing registers.  It also enables FP8/FP6/FP4 GEMM without block scales via `tcgen05.mma.cta_group.kind`. 
+
+{{< figure src="img/SM.png" alt="SM" width="70%" align="center" >}}
 
 Let A and B be the inputs for an MMA. Unlike the `wgmma` instruction on Hopper GPUs, where A/B live in SMEM/registers and the outputs stay in registers, Blackwell introduces **Tensor Memory (TMEM)** to hold MMA outputs. This reduces register pressure for larger tiles, but it also adds extra movement in attention kernels: outputs must be copied from TMEM to registers for softmax and then written back to TMEM. Note that TMEM consists of 128 lanes (across four warps) x 512 columns, which gives **64K 32-bit cells**. We will see how this quickly becomes a limiting resource alongside registers.
 
-{{< figure src="img/TMEM.png" alt="SM" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research Tutorial On Writing Blackwell GEMM Kernels](https://research.colfax-intl.com/cutlass-tutorial-writing-gemm-kernels-using-tensor-memory-for-nvidia-blackwell-gpus/)</span>" >}}
+{{< figure src="img/TMEM.png" alt="SM" width="70%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research Tutorial On Writing Blackwell GEMM Kernels](https://research.colfax-intl.com/cutlass-tutorial-writing-gemm-kernels-using-tensor-memory-for-nvidia-blackwell-gpus/)</span>" >}}
+
+
 
 ### Overbloated Tensor Cores $\rightarrow$ Softmax Becomes A Bottleneck
 | Spec | A100 (SXM4) | H100 (SXM5) | B200 (HGX) | B300 / GB300 | R200 |
@@ -225,7 +232,7 @@ However, the overlap is never perfect because of pipeline warmup (launching two 
 FA4 tries to mitigate the softmax bottleneck by using a software emulated [polynomial approximation of exp2](https://arxiv.org/pdf/2603.05451#page=8) which increase the effective exp throughput by utilizing FMA (fused multiply-add) units in addition to the SFUs (special function units). The trade-off with this optimization is that higher-degree polynomials are more accurate but incur additional register usage and CUDA core instructions. Hence it’s only applied to 10%-25% of the softmax scores. Despite this, the softmax operation still remains register-heavy and a persistent bottleneck.
 
 
-### TMEM overlap schedule
+### Kernel pipeline TMEM overlap schedule
 To leverage low-precision block-scaled MMAs to speedup the GEMMs in attention, understanding the data-flow of the scale factors is critical. On Blackwell GPUs, the scale factors must be loaded from GMEM -> SMEM (via a TMA load) -> TMEM and then must be [duplicated across four warps](https://github.com/NVIDIA/cutlass/issues/2961#issuecomment-3771068790) in a WG via a `tcgen05.cp` multicast in order to be usable by `tcgen05.mma`. 
 
 However, with 128x128 tiles, FA4's pipeline **already uses all available TMEM**: 
