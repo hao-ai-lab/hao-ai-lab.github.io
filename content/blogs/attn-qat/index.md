@@ -247,7 +247,7 @@ We also considered storing $\mathbf{P}$ in SMEM to free up TMEM, but rejected it
 
 Despite careful scheduling, we still did not observe a speedup with NVFP4 block-scaled $\mathbf{P}\mathbf{V}$ GEMMs due to the aforementioned softmax bottleneck. Quantizing $\mathbf{P}$ and $\mathbf{V}$ requires computing group-wise scale factors and `cvt.rn.satfinite` quantization instructions, which adds to the existing softmax bottleneck. 
 
-Therefore, we choose to run block-scaled NVFP4 $\mathbf{Q}\mathbf{K}$ and BF16 $\mathbf{P}\mathbf{V}$ on a B200 which achieves a up to 1801 TFLOPS and a 1.39x speedup over FA4. Note that this is **only a lower bound of the speedup**: we have yet to experiment **NVFP4/MXFP8 + FP8** $\mathbf{P}\mathbf{V}$  (cutting MMA by ½ or to ¼ hardly matters for a softmax-bound kernel), which eliminates the group quantization overhead in a softmax WG. 
+Therefore, we choose to run block-scaled NVFP4 $\mathbf{Q}\mathbf{K}$ and BF16 $\mathbf{P}\mathbf{V}$ on a B200, which achieves up to 1801 TFLOPS and a 1.39x speedup over FA4.[^agent-kernel-dev] Note that this is **only a lower bound of the speedup**: we have yet to experiment with **NVFP4/MXFP8 + FP8** $\mathbf{P}\mathbf{V}$ (cutting MMA by 1/2 or to 1/4 hardly matters for a softmax-bound kernel), which eliminates the group quantization overhead in a softmax WG. 
 
 Another detail worth mentioning is that a B300 GPU has 2x the exp throughput, and Rubin has 4x the exp throughput (w/ fp16 exp), which should make NVFP4 $\mathbf{P}\mathbf{V}$ GEMMs faster. **We are excited to test more QAT recipes for different hardware!**
 
@@ -283,8 +283,7 @@ At the time of writing this blog, we received updates from an [FP8 non-block-sca
 | 1 | 32768 | 16 | 128 | **0.011** | **0.00100** | 0.022 | 0.00114 |
 | 1 | 32768 | 24 | 128 | **0.016** | **0.00100** | 0.031 | 0.00114 |
 
-### Agent-assisted Kernel Development
-During debugging, we found LLM-based tools (e.g., Claude) surprisingly effective—even for low-level PTX and CuTeDSL code. It found an obscure uninitialized register bug in FA4, and we confirmed that it was fixed a week before we found it (buried in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86)). We estimate that Claude cut down at least 1-2 weeks of debugging time. In particular, it was very useful for SASS inspection (e.g. CuTeDSL $\rightarrow$ PTX $\rightarrow$  SASS mapping), instruction dependency analysis, and guided performance debugging via structured task lists in a `.md` file.
+[^agent-kernel-dev]: During debugging, we found LLM-based tools such as Claude surprisingly effective even for low-level PTX and CuTeDSL code. It surfaced an obscure uninitialized register bug in FA4, and we later confirmed that it had been fixed a week earlier in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86). We estimate that this cut at least 1-2 weeks off debugging time, especially for SASS inspection, CuTeDSL $\rightarrow$ PTX $\rightarrow$ SASS mapping, instruction dependency analysis, and structured performance debugging via `.md` task lists.
 
 
 ## What this work really changes
