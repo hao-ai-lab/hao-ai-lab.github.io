@@ -27,7 +27,7 @@ Naively applying FP4 attention layers results in severely degraded video quality
 </div>
 
 
-Instead of devising more sophisticated tricks to reduce quantization errors in a training-free manner, we take a different approach: **employing quantization-aware training (QAT) for attention**, which enables models to adapt to quantization errors during training and thus preserve model quality. The goal of this work is simple: make FP4 attention work without any outlier-mitigation techniques. In the context of video generation, this means making FP4 attention produce videos that are indistinguishable in quality from those of BF16 attention at inference time.
+Instead of devising more sophisticated tricks to reduce quantization errors in a training-free manner, we take a different approach: **employing quantization-aware training (QAT) for attention**, which enables models to adapt to quantization errors during training and thus preserve model quality. The goal of this work is simple: make FP4 attention work without any outlier-mitigation techniques. In the context of video generation, this means making FP4 attention produce videos that are indistinguishable in quality from those of BF16 attention at inference time. For language models, our target will be for the benchmark scores of FP4 attention to match those of BF16 attention. 
 
 {{< figure src="img/inference_algo.png" alt="attn-qat inference" width="50%" align="center" >}}
 
