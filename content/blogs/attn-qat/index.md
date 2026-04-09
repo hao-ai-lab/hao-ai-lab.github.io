@@ -214,7 +214,7 @@ Let A and B be the inputs for an MMA. Unlike the `wgmma` instruction on Hopper G
 | **Shared Mem/SM (max)** | 164 KB | 228 KB | 228 KB | 228 KB | TBD |
 | **MUFU.EX2 ops/clk/SM** | **16** | **16** | **16** | **32** | **32 (fp32)/64 (fp16)** | 
 
-Recent NVIDIA gains come mostly from **larger tensor cores**, which primarily accelerate GEMMs. As the table shows, BF16/FP8 Tensor Core throughput jumps by ~2.27x from H100 to B200, while CUDA core throughput increases by only 1.1x and MUFU.EX2 throughput does not improve. Since the MUFU.EX2 instruction is used to compute `exp2` in softmax, it becomes an increasingly important bottleneck in attention kernels, alongside the GEMMs themselves (with both taking 1024 cycles for 128x128 tiles), as discussed in [FlashAttention-4](https://arxiv.org/pdf/2603.05451).
+The performance gains of newer NVIDIA GPUs come mostly from **larger tensor cores**, which primarily accelerate GEMMs. In the above table, we see that BF16/FP8 Tensor Core throughput increases by ~2.27x from H100 to B200, while CUDA core throughput increases by only 1.1x and MUFU.EX2 throughput does not improve. Since the MUFU.EX2 instruction is used to compute `exp2` in softmax, in [FlashAttention-4](https://arxiv.org/pdf/2603.05451), attention is jointly bound by softmax and GEMM (both taking 1024 cycles for 128x128 tiles).
 
 FA4 addresses this with a **warp specialized** pipeline that overlaps MMA and softmax work across warp groups (WGs).
 
