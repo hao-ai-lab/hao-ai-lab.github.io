@@ -188,7 +188,7 @@ BF16 `tcgen05.mma` increases the max tile shape from `m64n256k16` (max tile shap
 
 {{< figure src="img/SM.png" alt="SM" width="100%" align="center" >}}
 
-Let the input matrices for an MMA (matrix multiply accumulate) be A and B. Unlike Hopper `wgmma` instructions—where A/B reside in SMEM/registers and outputs stays in registers, a B200 introduces **Tensor Memory (TMEM)** to hold MMA outputs. A may reside in SMEM/TMEM and B in SMEM, reducing register pressure for larger MMA tiles. However, this comes at the cost of complexity for attention kernels as outputs must be copied from TMEM → registers (T2R) for softmax, then written back from registers to TMEM (R2T).
+Let the input matrices for an MMA (matrix multiply accumulate) be A and B. Unlike Hopper `wgmma` instructions—where A/B reside in SMEM/registers and outputs stays in registers, a B200 introduces **Tensor Memory (TMEM)** to hold MMA outputs. A may reside in SMEM/TMEM and B in SMEM, reducing register pressure for larger MMA tiles. However, this **comes at the cost of additional complexity for attention kernels** as outputs must be copied from TMEM → registers (T2R) for softmax, then written back from registers to TMEM (R2T).
 
 The broader issue is that the softmax computation remains the bottleneck, especially as tensor-core throughput continues to rise. NVIDIA increases advertised TFLOPS primarily by scaling chip size and power, with most of the growth allocated to larger tensor cores [[1]](https://newsletter.semianalysis.com/p/nvidia-blackwell-perf-tco-analysis). Software tricks such as exponential approximation can only mitigate the problem. FA4 only applies them to [25%](https://github.com/Dao-AILab/flash-attention/blob/main/flash_attn/cute/softmax.py#L264) of the softmax scores before register spilling becomes a concern. The practical lesson is to **design attention kernels around the actual balance of available hardware units** and their capacity.
 
@@ -196,7 +196,7 @@ For example, TMEM provides 128 lanes (across four warps) × 512 columns = **64K 
 
 {{< figure src="img/TMEM.png" alt="SM" width="100%" align="center" >}}
 
-Other implementation takeaways include:
+We also found that:
 
 1. A TMEM-overlapped schedule is required because B200 is often TMEM-bound, which limits effective MMA pipeline depth.
 2. Quantizing $ P $ does not help in the same way as quantizing Q, K, and V because it adds too much pressure to the softmax warps.
