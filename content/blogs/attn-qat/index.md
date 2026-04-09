@@ -290,7 +290,7 @@ At the time of writing this blog, we received updates from an [FP8 non-block-sca
 [^agent-kernel-dev]: During debugging, we found LLM-based tools such as Claude surprisingly effective even for low-level PTX and CuTeDSL code. It surfaced an obscure uninitialized register bug in FA4, and we later confirmed that it had been fixed a week earlier in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86). We estimate that this cut at least 1-2 weeks off debugging time, especially for SASS inspection, CuTeDSL $\rightarrow$ PTX $\rightarrow$ SASS mapping, instruction dependency analysis, and structured performance debugging via `.md` task lists.
 
 
-## What this work really changes
+## Final thoughts
 
 Prior to this work, attention quantization was mostly treated as an inference problem: improve smoothing, calibration, or other post-hoc fixes. Attn-QAT argues that this view is incomplete. Since modern attention kernels are fused and precision-sensitive, **training methods and low-bit kernels must be co-designed**.
 
