@@ -194,7 +194,7 @@ In attention, the broader issue is that the softmax computation remains the bott
 
 For example, TMEM provides 128 lanes (across four warps) × 512 columns = **64K 32-bit cells**. We will see how this quickly becomes a limiting resource alongside registers.
 
-{{< figure src="img/TMEM.png" alt="SM" width="100%" align="center" >}}
+{{< figure src="img/TMEM.png" alt="SM" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research's Tutorial On Writing Blackwell GEMM Kernels](https://research.colfax-intl.com/cutlass-tutorial-writing-gemm-kernels-using-tensor-memory-for-nvidia-blackwell-gpus/)</span>" >}}
 
 We also found that:
 
