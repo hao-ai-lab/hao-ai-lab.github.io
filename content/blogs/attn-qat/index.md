@@ -218,7 +218,7 @@ TMEM itself is also finite: 128 lanes across four warps times 512 columns gives 
 | **Shared Mem/SM (max)** | 164 KB | 228 KB | 228 KB | 228 KB | TBD |
 | **MUFU EX2 ops/clk/SM** | **16** | **16** | **16** | **32** | **32 (fp32)/64 (fp16)** | 
 
-Most of the gain in newer NVIDIA GPUs comes from **allocating chip growth to pure GEMMs**. Notice in the table above how BF16/FP8 Tensor Core throughput jumps by ~2.27x from H100 to B200, while CUDA cores rise only 1.1x and softmax (exp2) throughput stays flat. In [FlashAttention-4](https://arxiv.org/pdf/2603.05451), that leaves BF16 attention bounded by both softmax and GEMMs at tile size `m128n128`.
+Most of the gain in newer NVIDIA GPUs comes from **allocating chip growth to larger tensor cores** (making GEMMs faster). Notice in the table above how BF16/FP8 Tensor Core throughput jumps by ~2.27x from H100 to B200, while CUDA cores rise only 1.1x and softmax (exp2) throughput stays flat. In [FlashAttention-4](https://arxiv.org/pdf/2603.05451), that leaves BF16 attention bounded by both softmax and GEMMs at tile size `m128n128`.
 
 FA4 addresses this with **warp specialization**, overlapping MMA and softmax across warp groups (WGs).
 
