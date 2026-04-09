@@ -294,7 +294,7 @@ During debugging, we found LLM-based tools (e.g., Claude) surprisingly effective
 
 Prior to this paper, attention quantization was mostly treated as an inference problem: improve smoothing, calibration, or other post-hoc fixes. Attn-QAT argues that this view is incomplete. Since modern attention kernels are fused and precision-sensitive, **training methods and low-bit kernels must be co-designed**.
 
-Despite NVIDIA’s headline FP4/FP8 (MMA) TFLOPS come from stacking units for pure GEMMs, while attention can take up the bulk of the wall-clock time in long-context agentic serving & video gen. Across Hopper $\rightarrow$ Blackwell $\rightarrow$ Rubin evolution, we see a trend **toward algorithms and hardware becoming increasingly tightly coupled as hardware headroom diminishes**.
+Despite NVIDIA’s headline FP4/FP8 (MMA) TFLOPS come from stacking units for pure GEMMs, while attention can take up the bulk of the wall-clock time in long-context agentic serving & video gen. Across the Hopper $\rightarrow$ Blackwell $\rightarrow$ Rubin evolution, we see a trend **toward algorithms and hardware becoming increasingly tightly coupled as hardware headroom diminishes**.
 
 Moving forward, we are excited to try **hardware-specific mixed-precision QAT recipes** and combine distillation and sparse attention with FP4.
 
