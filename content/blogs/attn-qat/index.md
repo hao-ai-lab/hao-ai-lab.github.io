@@ -176,7 +176,7 @@ Because Attn-QAT eliminates the need for extra smoothing and two-level quantizat
 
 ## B200/B300 FP4 Attention Kernel
 
-To make Attn-QAT **usable on data-center grade Blackwell GPUs (e.g. B200s/B300s)**, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup over FA4 and 1801 TFLOPS. 
+To make Attn-QAT **usable on data-center grade Blackwell GPUs (e.g. B200s/B300s)**, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup over FA4 and 1801 TFLOPS. The rest of this section explains various hardware constraints and how they influenced kernel design.  
 
 ### Block-scaled MMAs and TMEM
 
