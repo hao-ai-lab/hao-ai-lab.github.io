@@ -187,6 +187,7 @@ On Blackwell, this approach is no longer optimal: the `tcgen05.mma` instruction 
 BF16 `tcgen05.mma` increases the max tile shape from `m64n256k16` (max tile shape for the Hopper `wgmma` instruction) to `m128n256k16`. The doubled m tile size results in 2x the throughput. Additionally, when the input data type is FP4, the `tcgen05.mma` instruction further quadruples the throughput via 4x wider k data path (max tile shape of `m128n256k64`).
 
 {{< figure src="img/SM.png" alt="SM" width="100%" align="center" >}}
+**TODO: FIX IMAGE**
 
 Let the input matrices for an MMA (matrix multiply accumulate) be A and B. Unlike Hopper `wgmma` instructions—where A/B reside in SMEM/registers and outputs stays in registers, a B200 introduces **Tensor Memory (TMEM)** to hold MMA outputs. A may reside in SMEM/TMEM and B in SMEM, reducing register pressure for larger MMA tiles. However, this **comes at the cost of additional complexity for attention kernels** as outputs must be copied from TMEM → registers (T2R) for softmax, then written back from registers to TMEM (R2T).
 
