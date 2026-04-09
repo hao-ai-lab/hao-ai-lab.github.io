@@ -192,7 +192,7 @@ Block scaling compensates for the limited dynamic range of FP4/FP8 formats. The 
 
 This matters for attention because Blackwell can consume both the quantized values and their scales directly in hardware through `tcgen05.mma.cta_group.kind.block_scale`. In practice, `tcgen05.mma` supports MXFP8/MXFP4 and NVFP4 block-scaled GEMMs, with group sizes of 32 for the MX formats and 16 for NVFP4. It also supports non-block-scaled FP8/FP6/FP4 GEMMs via `tcgen05.mma.cta_group.kind`, which can be faster but less accurate. BF16 `tcgen05.mma` increases the max tile shape from `m64n256k16` on Hopper `wgmma` to `m128n256k16`; with FP4 inputs, the k path widens further to `m128n256k64`.
 
-Unlike Hopper `wgmma`, where A/B live in SMEM/registers and the outputs stay in registers, Blackwell introduces **Tensor Memory (TMEM)** to hold MMA outputs. This reduces register pressure for larger tiles, but it also adds extra movement in attention kernels: outputs must be copied from TMEM to registers for softmax and then written back to TMEM. TMEM is also finite: 128 lanes across four warps times 512 columns gives **64K 32-bit cells**, so it quickly becomes a real resource constraint.
+Unlike Hopper `wgmma`, where A/B live in SMEM/registers and the outputs stay in registers, Blackwell introduces **Tensor Memory (TMEM)** to hold MMA outputs. This reduces register pressure for larger tiles, but it also adds extra movement in attention kernels: outputs must be copied from TMEM to registers for softmax and then written back to TMEM. TMEM consists of 128 lanes across four warps times 512 columns gives **64K 32-bit cells**, so it quickly becomes a real resource constraint.
 
 {{< figure src="img/TMEM.png" alt="SM" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research Tutorial On Writing Blackwell GEMM Kernels](https://research.colfax-intl.com/cutlass-tutorial-writing-gemm-kernels-using-tensor-memory-for-nvidia-blackwell-gpus/)</span>" >}}
 
@@ -221,6 +221,8 @@ FA4 addresses this with **warp specialization**, overlapping MMA and softmax wor
 {{< figure src="img/FA4.png" alt="B200 kernel" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research FlashAttention-4 Blog Post](https://research.colfax-intl.com/flashattention-4-algorithm-and-kernel-pipelining-co-design-for-asymmetric-hardware-scaling/)</span>" >}}
 
 The overlap is still imperfect because of pipeline warmup and bookkeeping overheads such as address computation, MMA issue, row-max updates, and cross-WG copies. FA4 also uses a [polynomial exp2 approximation](https://arxiv.org/pdf/2603.05451#page=8) to reduce softmax cost, but higher-degree polynomials increase register use and CUDA core pressure, so this optimization only applies to 10%-25% of the softmax scores.
+
+This imbalance shows up most clearly in how Blackwell manages TMEM. Once softmax and MMA are both competing for a tightly constrained pipeline, the exact placement of intermediate tensors and scale factors starts to matter.
 
 ### TMEM overlap schedule
 The scale factors still need to travel GMEM -> SMEM (via TMA) -> TMEM and then be duplicated across four warps in a WG via `tcgen05.cp` multicast. At tile size `m128n128`, FA4 already uses all available TMEM: S1 and S2 hold the QK outputs, and O1/O2 use the remaining columns.
