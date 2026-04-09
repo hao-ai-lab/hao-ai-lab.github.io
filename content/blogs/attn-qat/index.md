@@ -66,7 +66,7 @@ the gradient can be written as
 \end{aligned}
 \]
 
-The key difficulty is the scalar term $\mathbf{P}_i^\top \mathbf{dP}_i$, which naively requires access to the full attention row and thus $ O(n^2) $ memory in the sequence length.
+The key difficulty is the scalar term $\mathbf{P}_i^\top \mathbf{dP}_i$, which naively requires access to the full attention row and thus $ O(n^2) $ memory in the sequence length for the full matrix $\mathbf{P}$.
 
 FlashAttention keeps memory $O(n)$ in the sequence length by rewriting the scalar as
 
@@ -88,7 +88,7 @@ This identity implicitly assumes that the forward pass computes
 \mathbf{O}_i = \sum_j \mathbf{P}_{ij} \mathbf{V}_j.
 \]
 
-However, under Attn-QAT, the forward pass instead uses **fake quantized probabilities and values**:
+However, under Attn-QAT, the forward pass ([Algorithm 2](#training-algo)) instead uses **fake quantized probabilities and values**:
 
 \[
 \mathbf{O}_i = \sum_j \mathbf{P}_{ij}^{F} \mathbf{V}_j^{F}.
@@ -140,6 +140,7 @@ This small modification preserves the fully low-precision forward path while res
 In FlashAttention, the full attention probability matrix is not stored. It is recomputed during the backward pass from the saved [logsumexp statistics](https://arxiv.org/pdf/2307.08691). Under QAT, this recomputation **must match the low-precision forward pass**. Attn-QAT therefore fake-quantizes the recomputed attention probabilities in the backward pass, so gradients are computed with respect to the same quantized activations seen in the forward pass. Empirically, we also found that this had the effect of stabilizing training dynamics. 
 
 
+<a id="training-algo"></a>
 {{< figure src="img/training_algo.png" alt="attn-qat training" width="100%" align="center" >}}
 
 ## Experimental results: quality is recovered
