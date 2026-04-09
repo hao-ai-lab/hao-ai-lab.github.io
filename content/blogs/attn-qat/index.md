@@ -226,19 +226,22 @@ FA4 tries to mitigate the softmax bottleneck by using a software emulated [polyn
 
 
 ### TMEM overlap schedule
-The scale factors still need to travel GMEM -> SMEM (via TMA) -> TMEM and then be duplicated across four warps in a WG via `tcgen05.cp` multicast. At tile size `m128n128`, FA4 already uses all available TMEM: S1 and S2 hold the $\mathbf{Q}\mathbf{K}$ outputs, and O1/O2 use the remaining columns.
+To leverage low-precision block-scaled MMAs to speedup the GEMMs in attention, understanding the data-flow of the scale factors is critical. On Blackwell GPUs, the scale factors must be loaded from GMEM -> SMEM (via a TMA load) -> TMEM and then must be [duplicated across four warps](https://github.com/NVIDIA/cutlass/issues/2961#issuecomment-3771068790) in a WG via a `tcgen05.cp` multicast in order to be usable by `tcgen05.mma`. 
 
-To fit the scale factors without stalling the pipeline, we reuse S2 for `sfqk 1` and S1 for `sfqk 2`, adding barriers only where sequential execution is not guaranteed. We considered moving P to SMEM to free TMEM, but rejected that approach because the available `ldmatrix` shapes make the copy path too restrictive.
+However, with 128x128 tiles, FA4's pipeline **already uses all available TMEM**: 
+- S1 and S2 ($\mathbf{Q}\mathbf{K}$ outputs): 128 columns each
+- O1/O2 use the remaining columns: remaining 256 columns
 
-{{< figure src="img/B200_plot.png" alt="B200 kernel" width="100%" align="center" >}}
+{{< figure src="img/pipeline.png" alt="B200 kernel" width="100%" align="center" >}}
 
-A TMEM-overlapped schedule is required because B200 kernels are often TMEM-bound, which limits effective MMA pipeline depth. We also found that quantizing $ \mathbf{P} $ does not help in the same way as quantizing $\mathbf{Q}$, $\mathbf{K}$, and $\mathbf{V}$ because it adds too much pressure to the softmax warps. Interleaving quantization with register-to-TMEM copies does not fully relieve that pressure.
+To avoid conflicts, we use a **TMEM overlap schedule** to squeeze in the scale factors while **minimizing pipeline stalls**: we reuse S2 for `sfqk 1` and S1 for `sfqk 2`. Because `tcgen05.mma` ops issued by a thread using the same shape are [guaranteed to execute sequentially](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html?highlight=tcgen05#tcgen05-memory-consistency-model-pipelined-instructions), we only insert barriers between S1 T2R and sfqk 2 load. Note that `sfvp 1` is guaranteed not to stomp on S1 due to being after QK2, and `sfvp 2` again uses a barrier to wait for S2 copy out (which rarely fires due to having 2 MMAs between QK2 and PV2). 
+We also considered storing $\mathbf{P}$ in SMEM to free up TMEM, but rejected it due to insufficient `ldmatrix` instruction shapes for an R2S copy (max of 8x8 vs 32x16 for `tcgen05.st`). 
 
-### Results
+Despite careful scheduling, we still did not observe a speedup with NVFP4 block-scaled $\mathbf{P}\mathbf{V}$ GEMMs due to the aforementioned softmax bottleneck. Quantizing $\mathbf{P}$ and $\mathbf{V}$ requires computing group-wise scale factors and `cvt.rn.satfinite` quantization instructions, which adds to the existing softmax bottleneck. 
 
-Even with careful scheduling, quantized PV did not speed things up because softmax remains the dominant bottleneck. Computing group-wise scale factors and `cvt.rn.satfinite` quantization instructions adds enough overhead to erase the gain, so on B200 we use NVFP4 QK and BF16 PV. This reaches 1801 TFLOPS and 1.39x speedup over FA4.
+Therefore, we choose to run block-scaled NVFP4 $\mathbf{Q}\mathbf{K}$ and BF16 $\mathbf{P}\mathbf{V}$ on a B200 which achieves a up to 1801 TFLOPS and a 1.39x speedup over FA4. Note that this is **only a lower bound of the speedup**: we have yet to experiment **NVFP4/MXFP8 + FP8** $\mathbf{P}\mathbf{V}$  (cutting MMA by ½ or to ¼ hardly matters for a softmax-bound kernel), which eliminates the group quantization overhead in a softmax WG. 
 
-That number is still a lower bound: we have not yet tested NVFP4 QK + FP8 PV, which removes the group-quant overhead in the softmax WG. On B300 and Rubin, faster exp units should make quantized PV more attractive.
+Another detail worth mentioning is that a B300 GPU has 2x the exp throughput, and Rubin has 4x the exp throughput (w/ fp16 exp), which should make NVFP4 $\mathbf{P}\mathbf{V}$ GEMMs faster. **We are excited to test more QAT recipes for different hardware!**
 
  | Config                         | FP4 (ms) | FP4 TFLOPS | BF16 (ms) | BF16 TFLOPS | Speedup |
 |--------------------------------|----------|------------|-----------|-------------|---------|
@@ -257,7 +260,7 @@ That number is still a lower bound: we have not yet tested NVFP4 QK + FP8 PV, wh
 | b=1 s=32768 h=24 d=64          | 7.170    | 920        | 7.284     | 906         | 1.02x   |
 
 ### Precision Results
-At the time of writing, the FA4 repo had received an [FP8 non-block-scaled PR](https://github.com/Dao-AILab/flash-attention/pull/2109), so we compare kernel-level precision below. Even with NVFP4, our kernel achieves roughly 2-2.5x lower max absolute error with group size 16 than FA4's per-head grouping (e.g., 128).
+At the time of writing this blog, we received updates from an [FP8 non-block-scaled PR](https://github.com/Dao-AILab/flash-attention/pull/2109), in the FA4 repo, so we show the kernel-level precision comparison below. Despite using NVFP4, we can see that our kernel achieves a 2-2.5x lower max absolute error with a group size of 16, compared to their per-head group (e.g., 128).
 
 | batch | seqlen | nheads | hdim | FP4 max | FP4 mean | FP8 max | FP8 mean |
 |-------|--------|--------|------|---------|----------|---------|----------|
@@ -280,7 +283,7 @@ During debugging, we found LLM-based tools (e.g., Claude) surprisingly effective
 
 Prior to this paper, attention quantization was mostly treated as an inference problem: improve smoothing, calibration, or other post-hoc fixes. Attn-QAT argues that this view is incomplete. Since modern attention kernels are fused and precision-sensitive, **training methods and low-bit kernels must be co-designed**.
 
-Despite NVIDIA’s headline FP4/FP8 (MMA) TFLOPS coming from scaling pure GEMMs, attention usually dominates wall-clock time in long-context agentic serving and video generation. Across Hopper -> Blackwell -> Rubin, algorithms and hardware are becoming increasingly coupled as hardware headroom shrinks.
+Despite NVIDIA’s headline FP4/FP8 (MMA) TFLOPS come from stacking units for pure GEMMs, while attention can take up the bulk of the wall-clock time in long-context agentic serving & video gen. Across Hopper -> Blackwell -> Rubin evolution, we see a trend **toward algorithms and hardware becoming increasingly tightly coupled as hardware headroom diminishes**.
 
 Moving forward, we are excited to try **hardware-specific mixed-precision QAT recipes** and combine distillation and sparse attention with FP4.
 
