@@ -178,7 +178,7 @@ Because Attn-QAT eliminates the need for extra smoothing and two-level quantizat
 
 To make Attn-QAT **usable on data-center grade Blackwell GPUs (e.g. B200s/B300s)**, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup over FA4 and 1801 TFLOPS. We also discuss some implementation challenges and a deeper look at NVIDIA hardware evolution. 
 
-### FP4/FP8 support on Blackwell
+### A Primer on FP4/FP8 Blackwell support 
 
 Blackwell is the first GPU generation to provide native FP4/FP8 GEMM support via the `tcgen05.mma.cta_group.kind.block_scale` instruction family. Previous quantization methods on Hopper (H100) and Ampere (A100), such as W4A8 ([QServe](https://arxiv.org/pdf/2405.04532)) and W4A16 ([AWQ](https://arxiv.org/pdf/2306.00978)), used **software dequantization**: tensors are loaded and then dequantized group-wise (typical size 128) using CUDA cores and registers.
 
@@ -188,7 +188,7 @@ BF16 `tcgen05.mma` increases the max tile shape from `m64n256k16` (max tile shap
 
 {{< figure src="img/SM.png" alt="SM" width="100%" align="center" >}}
 
-Unlike Hopper WGMMA instructions—where A/B reside in SMEM/registers and outputs stay in registers—B200 introduces **Tensor Memory (TMEM)** to hold MMA outputs. A may reside in SMEM/TMEM and B in SMEM, reducing register pressure for larger MMA tiles. This comes at the cost of complexity: outputs must be copied from TMEM → registers for softmax (T2R), then written back (R2T).
+Unlike Hopper `wgmma` instructions—where A/B reside in SMEM/registers and outputs stay in registers, a B200 introduces **Tensor Memory (TMEM)** to hold MMA outputs. A may reside in SMEM/TMEM and B in SMEM, reducing register pressure for larger MMA tiles. This comes at the cost of complexity: outputs must be copied from TMEM → registers for softmax (T2R), then written back (R2T).
 
 The broader issue is that softmax remains the bottleneck while tensor-core throughput keeps rising. NVIDIA increases advertised TFLOPS primarily by scaling chip size and power, with most of the growth allocated to tensor cores [[1]](https://newsletter.semianalysis.com/p/nvidia-blackwell-perf-tco-analysis). Software tricks such as exponential approximation can only mitigate the problem. FA4 only applies them to 25% of the softmax scores before register spilling becomes a concern. The practical lesson is to design attention operators around the actual balance of available hardware units and their capacity.
 
