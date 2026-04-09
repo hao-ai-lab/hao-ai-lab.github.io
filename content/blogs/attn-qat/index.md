@@ -11,9 +11,7 @@ description = ""
 summary = "Attn-QAT is the first systematic study of 4-bit quantization-aware training for attention, recovering FP4 attention quality without inference-time outlier mitigation while also enabling faster kernels."
 +++
 
-{{< socialBadges arxiv-index="2603.00040" github="hao-ai-lab/FastVideo" >}}
-
-**TL;DR:** FP4 hardware is finally here, and FP4 linear layers are already being used in production. However, FP4 attention still causes significant quality degradation, preventing true end-to-end FP4 serving and limiting full hardware utilization. In this work, we present **Attn-QAT**, the first systematic study of 4-bit quantization-aware training for attention. We identify two key principles for stable FP4 attention QAT: (1) matching low-precision recomputation of attention scores in the backward pass and (2) resolving implicit precision assumptions in FlashAttention's gradient calculation. Across video diffusion models and language models, Attn-QAT **recovers the quality drop** of 4-bit attention without the extra outlier-mitigation heuristics used by prior FP4 attention methods, while also delivering **1.1x--1.5x** higher throughput than SageAttention3 on an RTX 5090 and up to a **1.39x** speedup over FlashAttention4 on a B200. 
+**TL;DR:** FP4 hardware is finally here, and FP4 linear layers are already being used in production. However, FP4 attention still causes significant quality degradation, preventing true end-to-end FP4 serving and limiting full hardware utilization. In this work, we present **Attn-QAT**, the first systematic study of 4-bit quantization-aware training for attention. We identify two key principles for stable FP4 attention QAT: (1) matching low-precision recomputation of attention probabilities in the backward pass and (2) resolving implicit precision assumptions in FlashAttention's gradient calculation. Across video diffusion models and language models, Attn-QAT **recovers the quality drop** of 4-bit attention without the extra outlier-mitigation heuristics used by prior FP4 attention methods, while also delivering a **1.1x--1.5x** speedup over SageAttention3 on an RTX 5090 and up to a **1.39x** speedup over FlashAttention4 on a B200. 
 
 ## 4-bit attention remains unsolved
 
@@ -293,7 +291,7 @@ Furthermore, NVIDIA’s headline FP4/FP8 (MMA) TFLOPS come from stacking units f
 
 Moving forward, we are excited to experiment with **hardware-specific mixed-precision QAT recipes, and combining distillation and sparse attention with FP4**. Hopefully, there will be more collaborations between NVIDIA and algorithm researchers to find the right hardware tradeoffs for future generations  :) 
 
-Please see [the paper](https://arxiv.org/abs/2603.00040) for more details. Code is available in [FastVideo](https://github.com/hao-ai-lab/FastVideo), our unified framework for video diffusion post-training and [real-time inference inference](https://haoailab.com/blogs/fastvideo_realtime_1080p/). 
+For more details, please see [our paper](https://arxiv.org/abs/2603.00040). Code is available in [FastVideo](https://github.com/hao-ai-lab/FastVideo), our unified framework for video diffusion post-training and [real-time inference inference](https://haoailab.com/blogs/fastvideo_realtime_1080p/).  
 
 ## Citation
 
