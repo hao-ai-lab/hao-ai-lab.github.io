@@ -185,7 +185,7 @@ To make Attn-QAT **usable on data-center grade Blackwell GPUs (e.g., B200s/B300s
 
 ### Block-scaled MMAs and TMEM
 
-Let $\mathbf{A}$ and $\mathbf{B}$ be quantized (e.g., NVFP4) matrices, $\mathbf{s}_{A}$ and $\mathbf{s}_{B}$ be the dequantizing scale factors for the two matrices, and $\mathbf{D}$ be the BF16 output matrix. A block-scaled MMA (matrix-multiply accumulate) is the following operation:
+Let $\mathbf{A}$ and $\mathbf{B}$ be quantized (e.g., NVFP4) matrices, $\mathbf{s}_{A}$ and $\mathbf{s}_{B}$ be the dequantizing scale factors for the two matrices, and $\mathbf{D}$ be the BF16 output matrix. Finally, let $@$ denote matrix multiplication and $\cdot$ element-wise multiplication. A block-scaled MMA (matrix-multiply accumulate) is the following operation:
 
 \[
 \mathbf{D} = (\mathbf{A} \cdot \mathbf{s}_A) @ (\mathbf{B} \cdot \mathbf{s}_B) + \mathbf{C}.
