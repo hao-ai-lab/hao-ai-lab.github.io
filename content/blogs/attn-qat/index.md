@@ -33,7 +33,7 @@ Instead of devising more sophisticated tricks to reduce quantization error in a 
 
 For linear layers, the [QAT recipe](https://pytorch.org/blog/quantization-aware-training/) is well known: simulate low-precision execution in the forward pass using fake quantization, keep the backward pass in higher precision (typically BF16), and train through the quantization noise. That works well for GEMMs. It does **not** work for attention.
 
-The reason is that FlashAttention-style kernels are **heavily fused operators** whose backward pass relies on recomputation and an algebraic identity that quietly assume that forward and backward passes share the same numerical behavior.
+The reason is that FlashAttention-style kernels are **heavily fused operators** whose backward pass relies on recomputation of attention scores and an algebraic identity that quietly assumes that the forward and backward passes share the same numerical behavior.
 
 Attn-QAT stabilizes 4-bit attention by enforcing two forms of precision consistency.
 
