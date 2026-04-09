@@ -194,7 +194,7 @@ In attention, the broader issue is that the softmax computation remains the bott
 
 For example, TMEM provides 128 lanes (across four warps) × 512 columns = **64K 32-bit cells**. We will see how this quickly becomes a limiting resource alongside registers.
 
-{{< figure src="img/TMEM.png" alt="SM" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research's Tutorial On Writing Blackwell GEMM Kernels](https://research.colfax-intl.com/cutlass-tutorial-writing-gemm-kernels-using-tensor-memory-for-nvidia-blackwell-gpus/)</span>" >}}
+{{< figure src="img/TMEM.png" alt="SM" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research Tutorial On Writing Blackwell GEMM Kernels](https://research.colfax-intl.com/cutlass-tutorial-writing-gemm-kernels-using-tensor-memory-for-nvidia-blackwell-gpus/)</span>" >}}
 
 We also found that:
 
@@ -231,7 +231,7 @@ In the above table, we see that BF16/FP8 Tensor Core throughput increased by rou
 
 FA4 mitigates this by **warp specialization**, overlapping MMA and softmax across warp groups (WGs).
 
-{{< figure src="img/FA4.png" alt="B200 kernel" width="100%" align="center" >}}
+{{< figure src="img/FA4.png" alt="B200 kernel" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research FlashAttention-4 Blog Post](https://research.colfax-intl.com/flashattention-4-algorithm-and-kernel-pipelining-co-design-for-asymmetric-hardware-scaling/)</span>" >}}
 
 However, as in PP training, overlap is never perfect due to pipeline warmup (launching two QK MMAs in a row) and misc. overheads such as address computation, issuing MMA instructions, updating the softmax row max, and copying results across WGs, so we can still yield meaningful speedups by reducing either bottleneck.
 
