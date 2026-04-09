@@ -174,7 +174,7 @@ Because Attn-QAT eliminates the need for extra smoothing and two-level quantizat
 
 {{< figure src="img/5090_speedup.png" alt="5090 speedup" width="60%" align="center" >}}
 
-## B200/B300 FP4 attention kernel
+## B200/B300 FP4 Attention Kernel
 
 To make Attn-QAT practical on Blackwell GPUs, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL. It reaches up to 1801 TFLOPS and 1.39x speedup over FA4. This section explains the hardware constraints that shaped the kernel.
 
@@ -192,7 +192,7 @@ Block scaling compensates for the limited dynamic range of FP4/FP8 formats. The 
 
 This matters for attention because Blackwell can consume both the quantized values and their scales directly in hardware through `tcgen05.mma.cta_group.kind.block_scale`. In practice, `tcgen05.mma` supports MXFP8/MXFP4 and NVFP4 block-scaled GEMMs, with group sizes of 32 for the MX formats and 16 for NVFP4. 
 
-Unlike the `wgmma` instruction on Hopper GPUs, where A/B live in SMEM/registers and the outputs stay in registers, Blackwell introduces **Tensor Memory (TMEM)** to hold MMA outputs. This reduces register pressure for larger tiles, but it also adds extra movement in attention kernels: outputs must be copied from TMEM to registers for softmax and then written back to TMEM. TMEM consists of 128 lanes across four warps times 512 columns gives **64K 32-bit cells**, so it quickly becomes a real resource constraint.
+Unlike the `wgmma` instruction on Hopper GPUs, where A/B live in SMEM/registers and the outputs stay in registers, Blackwell introduces **Tensor Memory (TMEM)** to hold MMA outputs. This reduces register pressure for larger tiles, but it also adds extra movement in attention kernels: outputs must be copied from TMEM to registers for softmax and then written back to TMEM. Note that TMEM consists of 128 lanes across four warps times 512 columns gives **64K 32-bit cells**, so it quickly becomes a real resource constraint.
 
 {{< figure src="img/TMEM.png" alt="SM" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research Tutorial On Writing Blackwell GEMM Kernels](https://research.colfax-intl.com/cutlass-tutorial-writing-gemm-kernels-using-tensor-memory-for-nvidia-blackwell-gpus/)</span>" >}}
 
