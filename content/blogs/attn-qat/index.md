@@ -188,7 +188,7 @@ Let $\mathbf{A}$ and $\mathbf{B}$ be quantized (e.g. NVFP4) matrices, $\mathbf{s
 
 {{< figure src="img/BS.png" alt="B200 kernel" width="70%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [NVIDIA PTX Docs](https://docs.nvidia.com/cuda/parallel-thread-execution/#tcgen05-mma-block-scaling)</span>" >}}
 
-Block scaling compensates for the limited dynamic range of FP4/FP8 formats. The scale factors map higher-precision weights or activations into a more uniform range before quantization. The main design choice is granularity: one scale per element is expensive, while one scale for the whole matrix is too coarse. Blackwell Tensor Cores support an intermediate scheme in which each row or column is split into 16- or 32-element chunks along the reduction dimension, with one scale per chunk.
+FP4 and FP8 have limited dynamic range, so directly quantizing a tensor can introduce large errors when its values vary too much. Block scaling reduces this problem by assigning a scale to each group of values before quantization, so that group can be mapped into a range that the low-precision format represents more accurately. Equivalently, during the MMA, the hardware multiplies the quantized values by the corresponding dequantization scale; under the usual convention, that dequantization scale is the inverse of the factor used to normalize the values before quantization. The main design choice is how many values share one scale: one scale per element is too expensive, while one scale for the whole matrix is often too coarse. Blackwell Tensor Cores support a middle ground, where each row or column is split into 16- or 32-element chunks along the reduction dimension, and each chunk gets its own scale.
 
 Blackwell is the first GPU generation to provide support for native block-scaled FP4/FP8 GEMMs via the `tcgen05.mma.cta_group.kind.block_scale` instruction family. Prior approaches on Hopper (H100) and Ampere (A100), such as 
 W4A8 and W4A16 (e.g, [QServe](https://arxiv.org/abs/2405.04532) and [AWQ](https://arxiv.org/abs/2306.00978)) use **software dequantization**: tensors are loaded and then dequantized group-wise (typical size 128) using CUDA cores and registers. 
@@ -286,7 +286,7 @@ At the time of writing this blog, we received updates from an [FP8 non-block-sca
 During debugging, we found LLM-based tools (e.g., Claude) surprisingly effective—even for low-level PTX and CuTeDSL code. It found an obscure uninitialized register bug in FA4, and we confirmed that it was fixed a week before we found it (burried in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86)). We estimate that Claude cut down at least 1-2 weeks of debugging time. In particular, it was very useful for SASS inspection (e.g. CuTeDSL -> PTX → SASS mapping), instruction dependency analysis, and guided performance debugging via structured task lists in a .md file.
 
 
-## What this paper really changes
+## What this work really changes
 
 Prior to this paper, attention quantization was mostly treated as an inference problem: improve smoothing, calibration, or other post-hoc fixes. Attn-QAT argues that this view is incomplete. Since modern attention kernels are fused and precision-sensitive, **training methods and low-bit kernels must be co-designed**.
 
