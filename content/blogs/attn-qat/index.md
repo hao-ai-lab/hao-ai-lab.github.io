@@ -237,7 +237,7 @@ FA4 tries to mitigate the softmax bottleneck by using a software emulated [polyn
 
 
 ### TMEM overlap schedule
-To leverage low-precision block-scaled MMAs to speedup the GEMMs in attention, understanding the data-flow of the scale factors is critical. On Blackwell GPUs, the scale factors must be loaded from GMEM -> SMEM (via a TMA load) -> TMEM and then must be [duplicated across four warps](https://github.com/NVIDIA/cutlass/issues/2961#issuecomment-3771068790) in a WG via a `tcgen05.cp` multicast in order to be usable by `tcgen05.mma`. 
+To leverage low-precision block-scaled MMAs to speedup the GEMMs in attention, understanding the data-flow of the scale factors is critical. On Blackwell GPUs, the scale factors must be loaded from GMEM $\rightarrow$ SMEM (via a TMA load) $\rightarrow$ TMEM and then must be [duplicated across four warps](https://github.com/NVIDIA/cutlass/issues/2961#issuecomment-3771068790) in a WG via a `tcgen05.cp` multicast in order to be usable by `tcgen05.mma`. 
 
 However, with 128x128 tiles, FA4's pipeline **already uses all available TMEM**: 
 - S1 and S2 ($\mathbf{Q}\mathbf{K}$ outputs): 128 columns each
@@ -287,14 +287,14 @@ At the time of writing this blog, we received updates from an [FP8 non-block-sca
 | 1 | 32768 | 24 | 128 | **0.016** | **0.00100** | 0.031 | 0.00114 |
 
 ### Agent-assisted Kernel Development
-During debugging, we found LLM-based tools (e.g., Claude) surprisingly effective—even for low-level PTX and CuTeDSL code. It found an obscure uninitialized register bug in FA4, and we confirmed that it was fixed a week before we found it (burried in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86)). We estimate that Claude cut down at least 1-2 weeks of debugging time. In particular, it was very useful for SASS inspection (e.g. CuTeDSL -> PTX → SASS mapping), instruction dependency analysis, and guided performance debugging via structured task lists in a .md file.
+During debugging, we found LLM-based tools (e.g., Claude) surprisingly effective—even for low-level PTX and CuTeDSL code. It found an obscure uninitialized register bug in FA4, and we confirmed that it was fixed a week before we found it (burried in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86)). We estimate that Claude cut down at least 1-2 weeks of debugging time. In particular, it was very useful for SASS inspection (e.g. CuTeDSL $\rightarrow$ PTX $\rightarrow$  SASS mapping), instruction dependency analysis, and guided performance debugging via structured task lists in a .md file.
 
 
 ## What this work really changes
 
 Prior to this paper, attention quantization was mostly treated as an inference problem: improve smoothing, calibration, or other post-hoc fixes. Attn-QAT argues that this view is incomplete. Since modern attention kernels are fused and precision-sensitive, **training methods and low-bit kernels must be co-designed**.
 
-Despite NVIDIA’s headline FP4/FP8 (MMA) TFLOPS come from stacking units for pure GEMMs, while attention can take up the bulk of the wall-clock time in long-context agentic serving & video gen. Across Hopper -> Blackwell -> Rubin evolution, we see a trend **toward algorithms and hardware becoming increasingly tightly coupled as hardware headroom diminishes**.
+Despite NVIDIA’s headline FP4/FP8 (MMA) TFLOPS come from stacking units for pure GEMMs, while attention can take up the bulk of the wall-clock time in long-context agentic serving & video gen. Across Hopper $\rightarrow$ Blackwell $\rightarrow$ Rubin evolution, we see a trend **toward algorithms and hardware becoming increasingly tightly coupled as hardware headroom diminishes**.
 
 Moving forward, we are excited to try **hardware-specific mixed-precision QAT recipes** and combine distillation and sparse attention with FP4.
 
