@@ -94,7 +94,7 @@ However, under Attn-QAT, the forward pass ([Algorithm 2](#training-algo)) instea
 \mathbf{O}_i = \sum_j \mathbf{P}_{ij}^{F} \mathbf{V}_j^{F}.
 \]
 
-This introduces a precision mismatch: a naive backward pass depends on high-precision $\mathbf{P}$, while the Attn-QAT forward pass uses $\mathbf{P}^F$. As a result,
+This introduces a precision mismatch: a naive backward pass depends on the high-precision $\mathbf{P}$ matrix, while the Attn-QAT forward pass uses $\mathbf{P}^F$. As a result,
 
 \[
 \mathbf{dO}_i^\top \mathbf{O}_i \neq \mathbf{P}_i^\top \mathbf{dP}_i,
@@ -110,7 +110,7 @@ To resolve this, we compute an additional auxiliary output during the forward pa
 \mathbf{O}_i' = \sum_j \mathbf{P}_{ij} \mathbf{V}_j^{F}.
 \]
 
-Here, $\mathbf{P}$ remains in high precision (FP32 row-wise softmax over $\mathbf{S}$), while $\mathbf{V}^F$ is still fake quantized. This adds only a small amount (25% increase) of extra storage, while still preventing the need to materialize the full attention matrix.
+Here, $\mathbf{P}$ remains in high precision (FP32 row-wise softmax over $\mathbf{S}$), while $\mathbf{V}^F$ is still fake quantized (and stored in BF16 precision). This adds only a small amount (25% increase) of extra storage, while still preventing the need to materialize the full attention matrix.
 
 In the backward pass, we then replace the scalar term with
 
