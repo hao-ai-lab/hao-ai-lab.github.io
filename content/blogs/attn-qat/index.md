@@ -282,7 +282,7 @@ At the time of writing this blog, we received updates from an [FP8 non-block-sca
 | 1 | 32768 | 24 | 128 | **0.016** | **0.00100** | 0.031 | 0.00114 |
 
 ### Agent-assisted Kernel Development
-During debugging, we found LLM-based tools (e.g., Claude) surprisingly effective, even for low-level PTX and CuTeDSL code. It found an obscure uninitialized register bug in FA4, and we confirmed that Tri fixed it a week before we found it (buried in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86)). Claude cut down at least 1-2 weeks of debugging time—these tools are particularly useful for SASS inspection (e.g. CuTeDSL -> PTX → SASS mapping), instruction dependency analysis, and guided performance debugging via structured task lists in a .md file.
+During debugging, we found LLM-based tools (e.g., Claude) surprisingly effective, even for low-level PTX and CuTeDSL code. It found an obscure uninitialized register bug in FA4, and we confirmed that it was fixed a week before we found it (buried in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86)). Claude cut down at least 1-2 weeks of debugging time—these tools are particularly useful for SASS inspection (e.g. CuTeDSL -> PTX → SASS mapping), instruction dependency analysis, and guided performance debugging via structured task lists in a .md file.
 
 
 ## What this paper really changes
