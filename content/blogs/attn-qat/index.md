@@ -214,13 +214,13 @@ Unlike the `wgmma` instruction on Hopper GPUs, where A/B live in SMEM/registers 
 | **Shared Mem/SM (max)** | 164 KB | 228 KB | 228 KB | 228 KB | TBD |
 | **MUFU.EX2 ops/clk/SM** | **16** | **16** | **16** | **32** | **32 (fp32)/64 (fp16)** | 
 
-Recent NVIDIA gains come mostly from **larger tensor cores**, which primarily accelerate GEMMs. As the table shows, BF16/FP8 Tensor Core throughput jumps by ~2.27x from H100 to B200, while CUDA core throughput increases by only 1.1x and MUFU.EX2 throughput does not improve. Since MUFU.EX2 is used to compute `exp2` in softmax, softmax becomes an increasingly important bottleneck in attention kernels, alongside the GEMMs themselves, as discussed in [FlashAttention-4](https://arxiv.org/pdf/2603.05451).
+Recent NVIDIA gains come mostly from **larger tensor cores**, which primarily accelerate GEMMs. As the table shows, BF16/FP8 Tensor Core throughput jumps by ~2.27x from H100 to B200, while CUDA core throughput increases by only 1.1x and MUFU.EX2 throughput does not improve. Since the MUFU.EX2 instruction is used to compute `exp2` in softmax, it becomes an increasingly important bottleneck in attention kernels, alongside the GEMMs themselves (with both taking 1024 cycles for 128x128 tiles), as discussed in [FlashAttention-4](https://arxiv.org/pdf/2603.05451).
 
-FA4 addresses this with **warp specialization**, overlapping MMA and softmax work across warp groups (WGs).
+FA4 addresses this with a **warp specialized** pipeline that overlaps MMA and softmax work across warp groups (WGs).
 
 {{< figure src="img/FA4.png" alt="B200 kernel" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research FlashAttention-4 Blog Post](https://research.colfax-intl.com/flashattention-4-algorithm-and-kernel-pipelining-co-design-for-asymmetric-hardware-scaling/)</span>" >}}
 
-The overlap is still imperfect because of pipeline warmup and bookkeeping overheads such as address computation, MMA issue, row-max updates, and cross-WG copies. FA4 also uses a [polynomial exp2 approximation](https://arxiv.org/pdf/2603.05451#page=8) to reduce softmax cost, but higher-degree polynomials increase register use and CUDA core pressure, so this optimization only applies to 10%-25% of the softmax scores.
+The overlap is still imperfect because of pipeline warmup (launching two $\mathbf{Q}\mathbf{K}$ MMAs in a row) and bookkeeping overheads such as address computation, issuing MMA instructions, row-max updates, and cross-WG copies. FA4 also uses a software emulated [polynomial approximation of exp2](https://arxiv.org/pdf/2603.05451#page=8) to increase the effective exp throughput by utilizing FMA (fused multiply-add) units that would otherwise be underutilized.
 
 This imbalance shows up most clearly in how Blackwell manages TMEM. Once softmax and MMA are both competing for a tightly constrained pipeline, the exact placement of intermediate tensors and scale factors starts to matter.
 
