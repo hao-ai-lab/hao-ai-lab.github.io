@@ -174,11 +174,11 @@ Because Attn-QAT eliminates the need for extra smoothing and two-level quantizat
 
 {{< figure src="img/5090_speedup.png" alt="5090 speedup" width="60%" align="center" >}}
 
-## For the GPU enjoyers: B200/B300 FP4 attention kernel
+## B200/B300 FP4 attention kernel
 
-To make Attn-QAT **usable on data-center grade Blackwell GPUs (e.g. B200s/B300s)**, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup over FA4 and 1801 TFLOPS. The rest of this section explains the hardware constraints that shaped the kernel design.
+To make Attn-QAT practical on Blackwell GPUs, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL. It reaches up to 1801 TFLOPS and 1.39x speedup over FA4. This section explains the hardware constraints that shaped the kernel.
 
-### Blackwell block-scaled MMAs and TMEM
+### Block-scaled MMAs and TMEM
 
 A block-scaled MMA (matrix-multiply accumulate) is the following operation:
 
@@ -188,19 +188,15 @@ A block-scaled MMA (matrix-multiply accumulate) is the following operation:
 
 {{< figure src="img/BS.png" alt="B200 kernel" width="70%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [NVIDIA PTX Docs](https://docs.nvidia.com/cuda/parallel-thread-execution/#tcgen05-mma-block-scaling)</span>" >}}
 
-Block scaling is used to compensate for the limited dynamic range of FP4/FP8 formats. The scale factors map originally higher-precision weights or activations into a more uniform range before quantization. The main design choice for the scale factor is granularity: one could use a separate scale for every element, or a single scale for the whole matrix. Blackwell Tensor Cores support an intermediate scheme, where each row or column is split into 16- or 32-element chunks along the reduction dimension, and each chunk gets its own associated scale factor. In other words, the hardware supports one scale per 16- or 32-element vector along the reduction dimension.
+Block scaling compensates for the limited dynamic range of FP4/FP8 formats. The scale factors map higher-precision weights or activations into a more uniform range before quantization. The main design choice is granularity: one scale per element is expensive, while one scale for the whole matrix is too coarse. Blackwell Tensor Cores support an intermediate scheme in which each row or column is split into 16- or 32-element chunks along the reduction dimension, with one scale per chunk.
 
-This matters for attention because Blackwell can consume both the quantized values and their scales directly in hardware through `tcgen05.mma.cta_group.kind.block_scale`. In practice, `tcgen05.mma` supports MXFP8/MXFP4 and NVFP4 block-scaled GEMMs, with group sizes of 32 for the MX formats and 16 for NVFP4. It also supports non-block-scaled FP8/FP6/FP4 GEMMs via `tcgen05.mma.cta_group.kind`, which can be faster but gives up some of the precision benefits of block scaling. BF16 `tcgen05.mma` also increases the max tile shape from `m64n256k16` on Hopper `wgmma` to `m128n256k16`; with FP4 inputs, the k path widens further to `m128n256k64`.
+This matters for attention because Blackwell can consume both the quantized values and their scales directly in hardware through `tcgen05.mma.cta_group.kind.block_scale`. In practice, `tcgen05.mma` supports MXFP8/MXFP4 and NVFP4 block-scaled GEMMs, with group sizes of 32 for the MX formats and 16 for NVFP4. It also supports non-block-scaled FP8/FP6/FP4 GEMMs via `tcgen05.mma.cta_group.kind`, which can be faster but less accurate. BF16 `tcgen05.mma` increases the max tile shape from `m64n256k16` on Hopper `wgmma` to `m128n256k16`; with FP4 inputs, the k path widens further to `m128n256k64`.
 
-Unlike Hopper `wgmma` instructions, where A/B reside in SMEM/registers and outputs stay in registers, Blackwell introduces **Tensor Memory (TMEM)** to hold MMA outputs. That reduces register pressure for larger tiles, but it also adds extra traffic for attention kernels: outputs must be copied from TMEM → registers (T2R) for softmax and then written back from registers to TMEM (R2T).
-
-The main bottleneck is still the softmax computation. NVIDIA increases advertised TFLOPS primarily by scaling chip size and power, while softmax throughput grows much more slowly. As a result, even with FA4 warp specialization, the kernel remains constrained by both MMAs and softmax work. FA4 mitigates this with a polynomial exp2 approximation, but that only applies to a subset of the softmax scores before register pressure becomes too high.
-
-TMEM itself is also finite: 128 lanes across four warps times 512 columns gives **64K 32-bit cells**, so it can become a limiting resource alongside registers.
+Unlike Hopper `wgmma`, where A/B live in SMEM/registers and the outputs stay in registers, Blackwell introduces **Tensor Memory (TMEM)** to hold MMA outputs. This reduces register pressure for larger tiles, but it also adds extra movement in attention kernels: outputs must be copied from TMEM to registers for softmax and then written back to TMEM. TMEM is also finite: 128 lanes across four warps times 512 columns gives **64K 32-bit cells**, so it quickly becomes a real resource constraint.
 
 {{< figure src="img/TMEM.png" alt="SM" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research Tutorial On Writing Blackwell GEMM Kernels](https://research.colfax-intl.com/cutlass-tutorial-writing-gemm-kernels-using-tensor-memory-for-nvidia-blackwell-gpus/)</span>" >}}
 
-### Oversized Tensor Cores
+### Softmax becomes the bottleneck
 | Spec | A100 (SXM4) | H100 (SXM5) | B200 (HGX) | B300 / GB300 | R200 |
 |---|---|---|---|---|---|
 | **Architecture** | Ampere | Hopper | Blackwell | Blackwell Ultra | Rubin |
@@ -216,30 +212,30 @@ TMEM itself is also finite: 128 lanes across four warps times 512 columns gives 
 | **Registers/SM** | 64K × 32-bit | 64K × 32-bit | 64K × 32-bit | 64K × 32-bit | 64K x 32-bit (est.) |
 | **TMEM/SM** | — | — | 256 KB | 256 KB | 256 KB+ |
 | **Shared Mem/SM (max)** | 164 KB | 228 KB | 228 KB | 228 KB | TBD |
-| **MUFU EX2 ops/clk/SM** | **16** | **16** | **16** | **32** | **32 (fp32)/64 (fp16)** | 
+| **MUFU.EX2 ops/clk/SM** | **16** | **16** | **16** | **32** | **32 (fp32)/64 (fp16)** | 
 
-Most of the gain in newer NVIDIA GPUs comes from **allocating chip growth to larger tensor cores** (making GEMMs faster). Notice in the table above how BF16/FP8 Tensor Core throughput jumps by ~2.27x from H100 to B200, while CUDA cores rise only 1.1x and softmax (exp2) throughput stays flat. In [FlashAttention-4](https://arxiv.org/pdf/2603.05451), that leaves BF16 attention bounded by both softmax and GEMMs at tile size `m128n128`.
+Recent NVIDIA gains come mostly from **larger tensor cores**, which primarily accelerate GEMMs. As the table shows, BF16/FP8 Tensor Core throughput jumps by ~2.27x from H100 to B200, while CUDA core throughput increases by only 1.1x and MUFU.EX2 throughput does not improve. Since MUFU.EX2 is used to compute `exp2` in softmax, softmax becomes an increasingly important bottleneck in attention kernels, alongside the GEMMs themselves, as discussed in [FlashAttention-4](https://arxiv.org/pdf/2603.05451).
 
-FA4 addresses this with **warp specialization**, overlapping MMA and softmax across warp groups (WGs).
+FA4 addresses this with **warp specialization**, overlapping MMA and softmax work across warp groups (WGs).
 
 {{< figure src="img/FA4.png" alt="B200 kernel" width="100%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [Colfax Research FlashAttention-4 Blog Post](https://research.colfax-intl.com/flashattention-4-algorithm-and-kernel-pipelining-co-design-for-asymmetric-hardware-scaling/)</span>" >}}
 
-Overlap is still imperfect because of pipeline warmup and bookkeeping overheads such as address computation, MMA issue, row-max updates, and cross-WG copies, so reducing either bottleneck still matters. FA4 also uses a polynomial exp2 approximation to reduce softmax cost, but higher-degree polynomials increase register use and CUDA core pressure, so it only applies to 10%-25% of the softmax scores.
+The overlap is still imperfect because of pipeline warmup and bookkeeping overheads such as address computation, MMA issue, row-max updates, and cross-WG copies. FA4 also uses a [polynomial exp2 approximation](https://arxiv.org/pdf/2603.05451#page=8) to reduce softmax cost, but higher-degree polynomials increase register use and CUDA core pressure, so this optimization only applies to 10%-25% of the softmax scores.
 
 ### TMEM overlap schedule
-The scale factors still need to travel GMEM -> SMEM (via TMA) -> TMEM and then be duplicated across four warps in a WG via `tcgen05.cp` multicast. At tile size `m128n128`, FA4 already consumes all available TMEM: S1 and S2 hold the QK outputs, and O1/O2 use the remaining columns.
+The scale factors still need to travel GMEM -> SMEM (via TMA) -> TMEM and then be duplicated across four warps in a WG via `tcgen05.cp` multicast. At tile size `m128n128`, FA4 already uses all available TMEM: S1 and S2 hold the QK outputs, and O1/O2 use the remaining columns.
 
-To fit the scale factors without stalling the pipeline, we reuse S2 for `sfqk 1` and S1 for `sfqk 2`, with barriers only where sequential execution is not guaranteed. We considered moving P to SMEM to free TMEM, but rejected it because the available `ldmatrix` shapes make the copy path too restrictive.
+To fit the scale factors without stalling the pipeline, we reuse S2 for `sfqk 1` and S1 for `sfqk 2`, adding barriers only where sequential execution is not guaranteed. We considered moving P to SMEM to free TMEM, but rejected that approach because the available `ldmatrix` shapes make the copy path too restrictive.
 
 {{< figure src="img/B200_plot.png" alt="B200 kernel" width="100%" align="center" >}}
 
-We found that a TMEM-overlapped schedule is required because B200 kernels are often TMEM-bound, which limits the effective MMA pipeline depth. We also observed that quantizing $ \mathbf{P} $ does not help in the same way as quantizing $\mathbf{Q}$, $\mathbf{K}$, and $\mathbf{V}$ because it adds too much pressure to the softmax warps. Interleaving quantization operations with register-to-TMEM copies does not fully relieve this pressure.
+A TMEM-overlapped schedule is required because B200 kernels are often TMEM-bound, which limits effective MMA pipeline depth. We also found that quantizing $ \mathbf{P} $ does not help in the same way as quantizing $\mathbf{Q}$, $\mathbf{K}$, and $\mathbf{V}$ because it adds too much pressure to the softmax warps. Interleaving quantization with register-to-TMEM copies does not fully relieve that pressure.
 
 ### Results
 
-Even with careful scheduling, quant PV did not speed things up because the softmax bottleneck remains dominant. Computing group-wise scale factors and `cvt.rn.satfinite` quantization instructions adds enough overhead to erase the gain, so we use NVFP4 QK and BF16 PV on B200, which reaches 1801 TFLOPS and 1.39x speedup over FA4.
+Even with careful scheduling, quantized PV did not speed things up because softmax remains the dominant bottleneck. Computing group-wise scale factors and `cvt.rn.satfinite` quantization instructions adds enough overhead to erase the gain, so on B200 we use NVFP4 QK and BF16 PV. This reaches 1801 TFLOPS and 1.39x speedup over FA4.
 
-That speedup is still a lower bound: we have not yet tested NVFP4 QK + FP8 PV, which removes the group-quant overhead in the softmax WG. On B300 and Rubin, the faster exp units should make quant PV more attractive.
+That number is still a lower bound: we have not yet tested NVFP4 QK + FP8 PV, which removes the group-quant overhead in the softmax WG. On B300 and Rubin, faster exp units should make quantized PV more attractive.
 
  | Config                         | FP4 (ms) | FP4 TFLOPS | BF16 (ms) | BF16 TFLOPS | Speedup |
 |--------------------------------|----------|------------|-----------|-------------|---------|
