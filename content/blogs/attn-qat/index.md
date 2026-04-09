@@ -167,6 +167,8 @@ For continued pretraining, Attn-QAT recovers most of the quality loss caused by 
 
 For supervised fine-tuning, Attn-QAT can be used as a **drop-in replacement** for BF16 attention. On Qwen3-14B, it achieves nearly identical downstream benchmark performance to BF16 attention. On Llama 3.1-70B, it remains close with a small gap. This is an important practical result: Attn-QAT is not only a specialized recovery stage for quantization, but can also be **integrated directly into standard fine-tuning pipelines**.
 
+<a id="qwen-sft"></a>
+{{< figure src="img/sft.png" alt="sft" width="50%" align="center" >}}
 
 ## Faster Inference on an RTX 5090
 
