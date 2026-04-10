@@ -189,7 +189,7 @@ Block scaling is necessary because directly quantizing tensors with widely varyi
 
 Prior approaches on Hopper (H100) and Ampere (A100), such as
 W4A8 and W4A16 (e.g., [QServe](https://arxiv.org/abs/2405.04532) and [AWQ](https://arxiv.org/abs/2306.00978)) use **software dequantization**: tensors are loaded and then dequantized group-wise (typical size 128) using CUDA cores and registers.
-On Blackwell, this approach is no longer optimal: `tcgen05.mma` bakes in MXFP8/MXFP4 and NVFP4 with finer group sizes (32 and 16, respectively), providing better precision and freeing registers. It also enables fp8/fp6/fp4 GEMM w/o block scales via [tcgen05.mma.cta_group.kind](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#tcgen05-mma-instructions).
+On Blackwell, this approach is no longer optimal: `tcgen05.mma` bakes in MXFP8/MXFP4 and NVFP4 with finer group sizes (32 and 16, respectively), providing better precision and freeing registers. It also enables FP8/FP6/FP4 GEMMs without block scales via [`tcgen05.mma.cta_group.kind`](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#tcgen05-mma-instructions).
 
 {{< figure src="img/SM.png" alt="SM" width="70%" align="center" >}}
 
