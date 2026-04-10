@@ -218,7 +218,7 @@ Unlike the `wgmma` instruction on Hopper GPUs, where A/B live in SMEM/registers 
 
 Over the past few years, most of NVIDIA’s marketed performance gains have relied on **scaling out through better interconnects, larger chips, and lower precision** rather than single-chip efficiency. For example, while Jensen claimed [up to 30x performance per GPU using Blackwell NVL72](https://nvidianews.nvidia.com/news/nvidia-blackwell-platform-arrives-to-power-a-new-era-of-computing) over H100 at GTC 2024, [SGLang was only able to get 1.9x per-GPU speedup](https://www.lmsys.org/blog/2025-09-25-gb200-part-2/) without relying on FP4/FP8, at **the cost of 2x chip size and 1.6x TDP**--close to the 14% increase in FP16 TFLOPS per silicon area and 47% per GPU Watt [reported by Semianalysis](https://newsletter.semianalysis.com/p/nvidia-blackwell-perf-tco-analysis).
 
-Moreover, the increased chip size is mostly allocated to pure GEMMs. In the above table, we see that BF16/FP8 Tensor Core throughput increased by roughly 2x[^b200-bf16-peak-vs-sustained] on a B200, while CUDA Core count and softmax (exp2, the `MUFU.EX2` instruction) throughput remained unchanged. In [FlashAttention-4](https://arxiv.org/pdf/2603.05451), attention is jointly bound by softmax and GEMM (both taking 1024 cycles for `m128n128` tiles).
+Moreover, the increased chip size is mostly allocated to pure GEMMs. In the above table, we see that BF16/FP8 Tensor Core throughput increased by roughly 2x[^b200-bf16-peak-vs-sustained] on a B200, while CUDA core count and softmax (exp2, the `MUFU.EX2` instruction) throughput remained unchanged. In [FlashAttention-4](https://arxiv.org/pdf/2603.05451), attention is jointly bound by softmax and GEMM (both taking 1024 cycles for `m128n128` tiles).
 
 [^b200-bf16-peak-vs-sustained]: Peak spec sheets imply about **2.27×** higher BF16 Tensor TFLOPS than H100, but under TDP we measure closer to **2×** in sustained cuBLAS BF16 GEMM—**1400+ TFLOPS** versus **700+ TFLOPS**, with **~1700 TFLOPS** only in short bursts.
 
@@ -232,7 +232,7 @@ FA4 tries to mitigate the softmax bottleneck using a [polynomial approximation o
 
 ### TMEM overlap schedule
 
-To accelerate GEMMs, we analyzed the scale factor dataflow on B200: turns out they must be loaded from GMEM $\rightarrow$ SMEM (via TMA) $\rightarrow$ TMEM and [duplicated across four warps](https://github.com/NVIDIA/cutlass/issues/2961#issuecomment-3771068790) in a WG via a `tcgen05.cp` multicast in order to be usable by `tcgen05.mma`.
+To accelerate GEMMs, we analyzed the scale factor dataflow on a B200. We found that they must be loaded from GMEM $\rightarrow$ SMEM (via TMA) $\rightarrow$ TMEM and [duplicated across four warps](https://github.com/NVIDIA/cutlass/issues/2961#issuecomment-3771068790) in a WG via a `tcgen05.cp` multicast in order to be usable by `tcgen05.mma`.
 
 However, with 128x128 tiles, FA4's pipeline **already uses all available TMEM**:
 
@@ -241,7 +241,7 @@ However, with 128x128 tiles, FA4's pipeline **already uses all available TMEM**:
 
 {{< figure src="img/pipeline.png" alt="B200 kernel" width="100%" align="center" >}}
 
-To avoid conflicts, we use a **TMEM overlap schedule** to squeeze in the scale factors while **minimizing pipeline stalls**: we reuse S2 for `sfqk 1` and S1 for `sfqk 2`. Because `tcgen05.mma` ops issued by a thread using the same shape are [guaranteed to execute sequentially](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html?highlight=tcgen05#tcgen05-memory-consistency-model-pipelined-instructions), we only insert barriers between S1 T2R and sfqk 2 load. Note that `sfvp 1` is guaranteed not to stomp on S1 due to being after QK2, and `sfvp 2` again uses a barrier to wait for S2 copy out (which rarely fires due to having 2 MMAs between QK2 and PV2).
+To avoid conflicts, we use a **TMEM overlap schedule** to squeeze in the scale factors while **minimizing pipeline stalls**: we reuse S2 for `sfqk 1` and S1 for `sfqk 2`. Because `tcgen05.mma` ops issued by a thread using the same shape are [guaranteed to execute sequentially](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html?highlight=tcgen05#tcgen05-memory-consistency-model-pipelined-instructions), we only insert barriers between S1 T2R and `sfqk 2` load. Note that `sfvp 1` is guaranteed not to stomp on S1 due to being after QK2, and `sfvp 2` again uses a barrier to wait for S2 copy out (which rarely fires due to having 2 MMAs between QK2 and PV2).
 We also considered storing $\mathbf{P}$ in SMEM to free up TMEM, but rejected it due to insufficient `ldmatrix` instruction shapes for an R2S copy (max of 8x8 vs 32x16 for `tcgen05.st`).
 
 Despite careful scheduling, using NVFP4 $\mathbf{P}\mathbf{V}$ MMA actually **slows the kernel down** due to the aforementioned softmax bottleneck. Quantizing $\mathbf{P}$ and $\mathbf{V}$ requires computing group-wise scale factors and `cvt.rn.satfinite` quantization instructions, which adds to the existing softmax bottleneck.
