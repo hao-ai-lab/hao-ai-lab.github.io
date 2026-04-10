@@ -287,7 +287,7 @@ At the time of writing this blog, we received updates from an [FP8 non-block-sca
 
 During debugging, we found agents such as Claude surprisingly effective even for low-level PTX and CuTeDSL code. It surfaced an obscure uninitialized register bug in FA4, which we confirmed to be fixed a week earlier by Tri Dao (buried in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86)). Claude cut down at least 1-2 weeks of debugging time—these tools are particularly useful for SASS inspection (e.g. CuTeDSL -> PTX → SASS mapping), instruction dependency analysis, and guided performance debugging via structured task lists in a .md file
 
-Designing SOTA kernels has been extremely time-consuming even for the top experts (Tri’s FA3 came out a year after the Hopper release), as there are too many knobs to tune, and even a one-liner can change the compiled PTX significantly. We believe **agents are best suited for bisecting bottlenecks** and accelerating kernel development.
+Designing SOTA kernels has been extremely time-consuming even for the top experts (e.g. FlashAttention3 came out a year after the Hopper release), as there are too many knobs to tune, and even a one-liner can change the compiled PTX significantly. We believe **agents are best suited for bisecting bottlenecks** and accelerating kernel development.
 
 ## Final thoughts
 
