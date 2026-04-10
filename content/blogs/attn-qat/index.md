@@ -54,16 +54,16 @@ We use $(\cdot)^F$ to denote fake quantized (FP4-simulated) tensors, e.g., $\mat
 In FlashAttention, the backward pass relies on a memory-efficient formulation of the softmax gradient. For a single row $i$,
 
 \[
-\mathbf{P}\_i = \mathrm{softmax}(\mathbf{S}\_i) \in \mathbb{R}^d,
+\mathbf{P}_i = \mathrm{softmax}(\mathbf{S}_i) \in \mathbb{R}^d,
 \]
 
 the gradient can be written as
 
 \[
 \begin{aligned}
-\mathbf{dS}\_i
-&= \left(\mathrm{diag}(\mathbf{P}\_i) - \mathbf{P}\_i \mathbf{P}\_i^\top\right)\mathbf{dP}\_i \\
-&= \mathbf{P}\_i \odot \mathbf{dP}\_i - (\mathbf{P}\_i^\top \mathbf{dP}\_i)\mathbf{P}\_i.
+\mathbf{dS}_i
+&= \left(\mathrm{diag}(\mathbf{P}_i) - \mathbf{P}_i \mathbf{P}_i^\top\right)\mathbf{dP}_i \\
+&= \mathbf{P}_i \odot \mathbf{dP}_i - (\mathbf{P}_i^\top \mathbf{dP}_i)\mathbf{P}_i.
 \end{aligned}
 \]
 
@@ -75,9 +75,9 @@ FlashAttention keeps memory $O(n)$ in the sequence length by rewriting the scala
 \begin{aligned}
 \mathbf{P}_i^\top \mathbf{dP}\_i
 &= \sum_j \mathbf{P}_{ij} \, \mathbf{dP}_{ij} \\
-&= \sum_j \mathbf{P}_{ij} \, \mathbf{dO}_i^\top \mathbf{V}\_j \\
-&= \mathbf{dO}\_i^\top \sum_j \mathbf{P}_{ij} \mathbf{V}\_j \\
-&= \mathbf{dO}\_i^\top \mathbf{O}\_i,
+&= \sum_j \mathbf{P}_{ij} \, \mathbf{dO}_i^\top \mathbf{V}_j \\
+&= \mathbf{dO}_i^\top \sum_j \mathbf{P}_{ij} \mathbf{V}_j \\
+&= \mathbf{dO}_i^\top \mathbf{O}\_i,
 \end{aligned}
 \]
 
@@ -86,19 +86,19 @@ which reduces the computation to a dot product with the attention output $\mathb
 This identity implicitly assumes that the forward pass computes
 
 \[
-\mathbf{O}_i = \sum_j \mathbf{P}_{ij} \mathbf{V}\_j.
+\mathbf{O}_i = \sum_j \mathbf{P}_{ij} \mathbf{V}_j.
 \]
 
 However, under Attn-QAT, the forward pass ([Algorithm 2](#training-algo)) instead uses **fake quantized probabilities and values**:
 
 \[
-\mathbf{O}_i = \sum_j \mathbf{P}_{ij}^{F} \mathbf{V}\_j^{F}.
+\mathbf{O}_i = \sum_j \mathbf{P}_{ij}^{F} \mathbf{V}_j^{F}.
 \]
 
 This introduces a precision mismatch: a naive backward pass depends on the high-precision $\mathbf{P}$ matrix, while the Attn-QAT forward pass uses $\mathbf{P}^F$. As a result,
 
 \[
-\mathbf{dO}\_i^\top \mathbf{O}\_i \neq \mathbf{P}\_i^\top \mathbf{dP}\_i,
+\mathbf{dO}_i^\top \mathbf{O}_i \neq \mathbf{P}_i^\top \mathbf{dP}_i,
 \]
 
 which leads to incorrect gradients and unstable training.
@@ -109,7 +109,7 @@ which leads to incorrect gradients and unstable training.
 To resolve this, we compute an additional auxiliary output during the forward pass:
 
 \[
-\mathbf{O}_i' = \sum_j \mathbf{P}_{ij} \mathbf{V}\_j^{F}.
+\mathbf{O}_i' = \sum_j \mathbf{P}_{ij} \mathbf{V}_j^{F}.
 \]
 
 Here, $\mathbf{P}$ remains in high precision (FP32 row-wise softmax over $\mathbf{S}$), while $\mathbf{V}^F$ is still fake quantized (and stored in BF16 precision). This adds only a small amount (25% increase) of extra storage, while still preventing the need to materialize the full attention matrix.
@@ -117,18 +117,18 @@ Here, $\mathbf{P}$ remains in high precision (FP32 row-wise softmax over $\mathb
 In the backward pass, we then replace the scalar term with
 
 \[
-\mathbf{P}\_i^\top \mathbf{dP}\_i = \mathbf{dO}\_i^\top \mathbf{O}\_i',
+\mathbf{P}_i^\top \mathbf{dP}_i = \mathbf{dO}_i^\top \mathbf{O}_i',
 \]
 
 which restores the exact identity:
 
 \[
 \begin{aligned}
-\mathbf{P}_i^\top \mathbf{dP}\_i
+\mathbf{P}_i^\top \mathbf{dP}_i
 &= \sum_j \mathbf{P}_{ij} \, \mathbf{dP}_{ij} \\
-&= \sum_j \mathbf{P}_{ij} \, \mathbf{dO}_i^\top \mathbf{V}\_j^{F} \\
-&= \mathbf{dO}\_i^\top \sum_j \mathbf{P}_{ij} \mathbf{V}\_j^{F} \\
-&= \mathbf{dO}\_i^\top \mathbf{O}\_i'.
+&= \sum_j \mathbf{P}_{ij} \, \mathbf{dO}_i^\top \mathbf{V}_j^{F} \\
+&= \mathbf{dO}_i^\top \sum_j \mathbf{P}_{ij} \mathbf{V}_j^{F} \\
+&= \mathbf{dO}_i^\top \mathbf{O}_i'.
 \end{aligned}
 \]
 
