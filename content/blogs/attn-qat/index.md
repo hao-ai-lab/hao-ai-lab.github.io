@@ -181,7 +181,7 @@ To enable Attn-QAT **on data-center grade Blackwell GPUs (e.g., B200s/B300s)**, 
 
 ### Block-scaled MMAs and TMEM
 
-Blackwell is the first GPU generation to provide native block-scaled FP4/FP8 GEMM via the [tcgen05.mma.cta_group.kind.block_scale](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#tcgen05-mma-instructions-mma) instruction family, where Matrix Multiply-Accumulate (MMA) is performed directly on quantized inputs with per-group dequantization scales applied inside the Tensor Core.
+Blackwell is the first GPU generation to provide native block-scaled FP4/FP8 GEMM via the [`tcgen05.mma.cta_group.kind.block_scale`](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#tcgen05-mma-instructions-mma) instruction family, where Matrix Multiply-Accumulate (MMA) is performed directly on quantized inputs with per-group dequantization scales applied inside the Tensor Core.
 
 Block scaling is necessary because directly quantizing tensors with widely varying values into lower ranges introduces large errors. Each group/block computes a scale from its dynamic range (e.g., for NVFP4 E2M1, $s_{\text{dec}} = \max(|A_{\text{group}}|)/6$), quantizes via $A_q = A \cdot s_{\text{enc}}$ with $s_{\text{enc}} = s_{\text{dec}}^{-1}$, and the Tensor Core applies the inverse scale during MMA, effectively computing $(A_q \cdot s_{\text{dec},A}) @ (B_q \cdot s_{\text{dec},B})$.
 
@@ -189,7 +189,7 @@ Block scaling is necessary because directly quantizing tensors with widely varyi
 
 Prior approaches on Hopper (H100) and Ampere (A100), such as
 W4A8 and W4A16 (e.g., [QServe](https://arxiv.org/abs/2405.04532) and [AWQ](https://arxiv.org/abs/2306.00978)) use **software dequantization**: tensors are loaded and then dequantized group-wise (typical size 128) using CUDA cores and registers.
-On Blackwell, this approach is no longer optimal: tcgen05.mma bakes in MXFP8/MXFP4 and NVFP4 with finer group sizes (32 and 16, respectively), providing better precision and freeing registers. It also enables fp8/fp6/fp4 GEMM w/o block scales via [tcgen05.mma.cta_group.kind](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#tcgen05-mma-instructions).
+On Blackwell, this approach is no longer optimal: `tcgen05.mma` bakes in MXFP8/MXFP4 and NVFP4 with finer group sizes (32 and 16, respectively), providing better precision and freeing registers. It also enables fp8/fp6/fp4 GEMM w/o block scales via [tcgen05.mma.cta_group.kind](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#tcgen05-mma-instructions).
 
 {{< figure src="img/SM.png" alt="SM" width="70%" align="center" >}}
 
