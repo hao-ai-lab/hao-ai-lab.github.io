@@ -186,7 +186,7 @@ Because Attn-QAT eliminates the need for extra smoothing and two-level quantizat
 
 ## Part 2 (for GPU hackers): B200/B300 FP4 Attention Kernel
 
-To enable Attn-QAT **on data-center grade Blackwell GPUs (e.g., B200s/B300s)**, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup over FA4 and 1801 TFLOPS. The rest of this section explains the implementation challenges and what they reveal about the NVIDIA hardware evolution (predicament?).
+To enable Attn-QAT **on data-center grade Blackwell GPUs (e.g., B200s/B300s)**, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup over FA4 and 1801 TFLOPS. The rest of this section explains the implementation challenges and what they reveal about the NVIDIA hardware evolution.
 
 ### Block-scaled MMAs and TMEM
 
@@ -246,7 +246,7 @@ To accelerate GEMMs, we analyzed the scale factor dataflow on B200: turns out th
 
 However, with 128x128 tiles, FA4's pipeline **already uses all available TMEM**: 
 - S1 and S2 ($\mathbf{Q}\mathbf{K}$ outputs): 128 columns each
-- O1/O2 use the remaining columns: remaining 256 columns
+- O1/O2 use the remaining 256 columns
 
 {{< figure src="img/pipeline.png" alt="B200 kernel" width="100%" align="center" >}}
 
