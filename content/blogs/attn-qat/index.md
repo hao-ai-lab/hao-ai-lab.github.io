@@ -193,7 +193,7 @@ On Blackwell, this approach is no longer optimal: `tcgen05.mma` bakes in MXFP8/M
 
 {{< figure src="img/SM.png" alt="SM" width="70%" align="center" >}}
 
-Unlike the `wgmma` instruction on Hopper GPUs, where A/B live in SMEM/registers and the outputs stay in registers, Blackwell introduces **Tensor Memory (TMEM)** to hold MMA outputs. This reduces register pressure for larger tiles, but it also adds extra movement in attention kernels: outputs must be copied from TMEM to registers (T2R) for softmax and then written back to TMEM (R2T). Note that TMEM consists of 128 lanes (across four warps) x 512 columns, which gives **64K 32-bit cells**. We will see how this quickly becomes a limiting resource alongside registers.
+Unlike the `wgmma` instruction on Hopper GPUs, where A/B live in SMEM/registers and the outputs stay in registers, Blackwell introduces **Tensor Memory (TMEM)** to hold MMA outputs. This reduces register pressure for larger tiles, but it also adds extra memory traffic in attention kernels: outputs must be copied from TMEM to registers (T2R) for softmax and then written back to TMEM (R2T). Note that TMEM consists of 128 lanes (across four warps) x 512 columns, which gives **64K 32-bit cells**. We will see how this quickly becomes a limiting resource alongside registers.
 
 {{< figure src="img/TMEM.png" alt="SM" width="70%" align="center" caption="<span style=\"display:block; text-align:center;\">Source: [PTX docs](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#tensor-memory-addressing)</span>" >}}
 
