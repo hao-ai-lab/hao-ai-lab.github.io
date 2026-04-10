@@ -181,7 +181,7 @@ To enable Attn-QAT **on data-center grade Blackwell GPUs (e.g., B200s/B300s)**, 
 
 ### Block-scaled MMAs and TMEM
 
-Blackwell is the first GPU generation to provide native block-scaled FP4/FP8 GEMM via the [`tcgen05.mma.cta_group.kind.block_scale`](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#tcgen05-mma-instructions-mma) instruction family, where Matrix Multiply-Accumulate (MMA) is performed directly on quantized inputs with per-group dequantization scales applied inside the Tensor Core.
+Blackwell is the first GPU generation to provide native block-scaled FP4/FP8 GEMMs via the [`tcgen05.mma.cta_group.kind.block_scale`](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#tcgen05-mma-instructions-mma) instruction family, where Matrix Multiply-Accumulate (MMA) is performed directly on quantized inputs with per-group dequantization scales applied inside the Tensor Core.
 
 Block scaling is necessary because directly quantizing tensors with widely varying values into lower ranges introduces large errors. Each group/block computes a scale from its dynamic range (e.g., for NVFP4 E2M1, $s_{\text{dec}} = \max(|A_{\text{group}}|)/6$), quantizes via $A_q = A \cdot s_{\text{enc}}$ with $s_{\text{enc}} = s_{\text{dec}}^{-1}$, and the Tensor Core applies the inverse scale during MMA, effectively computing $(A_q \cdot s_{\text{dec},A}) @ (B_q \cdot s_{\text{dec},B})$.
 
