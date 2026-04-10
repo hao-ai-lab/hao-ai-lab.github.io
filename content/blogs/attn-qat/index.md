@@ -291,7 +291,7 @@ Designing SOTA kernels has been extremely time-consuming even for the top expert
 
 ## Final thoughts
 
-Prior to this work, attention quantization was mostly treated as an inference problem: improve smoothing, calibration, or other post-hoc fixes. Attn-QAT argues that this view is incomplete. Since modern attention kernels are fused and precision-sensitive, **training methods and low-bit kernels must be co-designed**.
+Prior to this work, attention quantization was mostly treated as an inference problem: improve smoothing, calibration, or use other post-hoc fixes. Attn-QAT argues that this view is incomplete. Since modern attention kernels are fused and precision-sensitive, **training methods and low-bit kernels must be co-designed**.
 
 While NVIDIA’s headline FP4/FP8 (MMA) TFLOPS come from stacking units for pure GEMMs, attention often takes up the bulk of the wall-clock time in long-context agentic serving and video generation workloads. Across the Hopper $\rightarrow$ Blackwell $\rightarrow$ Rubin evolution, we see a trend **toward algorithms and hardware becoming increasingly coupled as hardware headroom diminishes**.
 
