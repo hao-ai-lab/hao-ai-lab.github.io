@@ -73,11 +73,11 @@ FlashAttention keeps memory $O(n)$ in the sequence length by rewriting the scala
 
 \[
 \begin{aligned}
-\mathbf{P}_i^\top \mathbf{dP}\_i
+\mathbf{P}_i^\top \mathbf{dP}_i
 &= \sum_j \mathbf{P}_{ij} \, \mathbf{dP}_{ij} \\
 &= \sum_j \mathbf{P}_{ij} \, \mathbf{dO}_i^\top \mathbf{V}_j \\
 &= \mathbf{dO}_i^\top \sum_j \mathbf{P}_{ij} \mathbf{V}_j \\
-&= \mathbf{dO}_i^\top \mathbf{O}\_i,
+&= \mathbf{dO}_i^\top \mathbf{O}_i,
 \end{aligned}
 \]
 
