@@ -177,7 +177,7 @@ Because Attn-QAT eliminates the need for extra smoothing and two-level quantizat
 
 ## Part 2 (for GPU hackers): B200/B300 FP4 Attention Kernel
 
-To enable Attn-QAT **on data-center grade Blackwell GPUs (e.g., B200s/B300s)**, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup over FA4 and 1801 TFLOPS. The rest of this section explains the implementation challenges and what they reveal about the evolution of NVIDIA's hardware.
+To enable Attn-QAT **on data-center grade Blackwell GPUs (e.g., B200s/B300s)**, we also developed [FlashAttention-4 FP4](https://github.com/hao-ai-lab/flash-attention-fp4), an NVFP4-quantized FA4 kernel implemented in CuTeDSL, achieving up to a 1.39x speedup over FA4 and 1801 TFLOPS. The rest of this section explains the implementation challenges and what they reveal about NVIDIA's hardware evolution.
 
 ### Block-scaled MMAs and TMEM
 
@@ -237,7 +237,7 @@ To accelerate GEMMs, we analyzed the scale factor dataflow on a B200. We found t
 However, with 128x128 tiles, FA4's pipeline **already uses all available TMEM**:
 
 - S1 and S2 ($\mathbf{Q}\mathbf{K}$ outputs): 128 columns each
-- O1/O2 use the remaining columns: remaining 256 columns
+- O1/O2 use the remaining 256 columns
 
 {{< figure src="img/pipeline.png" alt="B200 kernel" width="100%" align="center" >}}
 
@@ -285,7 +285,7 @@ At the time of writing this blog, we received updates from an [FP8 non-block-sca
 
 ### Agent Assisted Kernel Dev
 
-During debugging, we found agents such as Claude surprisingly effective even for low-level PTX and CuTeDSL code. It surfaced an obscure uninitialized register bug in FA4, which we confirmed to be fixed a week earlier by Tri Dao (buried in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86)). Claude cut down at least 1-2 weeks of debugging time—these tools are particularly useful for SASS inspection (e.g. CuTeDSL -> PTX → SASS mapping), instruction dependency analysis, and guided performance debugging via structured task lists in a `.md` file
+During debugging, we found agents such as Claude surprisingly effective even for low-level PTX and CuTeDSL code. It surfaced an obscure [uninitialized register bug in FA4](https://github.com/Dao-AILab/flash-attention/blob/02931551ece7eb7f36e94302ad79daee6beda2e6/flash_attn/cute/blackwell_helpers.py#L316), which we confirmed to be fixed a week earlier by Tri Dao (buried in a [large commit](https://github.com/Dao-AILab/flash-attention/commit/c79976218fb71f282f76cb959a5aad48a2d23e86)). Claude cut down at least 1-2 weeks of debugging time—these tools are particularly useful for SASS inspection (e.g. CuTeDSL -> PTX → SASS mapping), instruction dependency analysis, and guided performance debugging via structured task lists in a `.md` file
 
 Designing SOTA kernels has been extremely time-consuming even for the top experts (e.g. FlashAttention3 came out a year after the Hopper release), as there are too many knobs to tune, and even a one-liner can change the compiled PTX significantly. We believe **agents are best suited for bisecting bottlenecks** and accelerating kernel development.
 
