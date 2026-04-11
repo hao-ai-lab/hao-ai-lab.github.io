@@ -304,7 +304,7 @@ While Sora-2 rendered realistic textures, it failed to adhere to the underlying 
 
 Kling achieved high fidelity in lighting and fluid rendering, it fundamentally misunderstood the prompt's physical setup. Instead of submerging copper wires acting as electrodes, the model hallucinated entire cylindrical batteries (or capacitors) and submerged them directly into the solution.
 
-Veo failed to maintain the physical rigidity required for solid electrodes and ignored the chemical reaction entirely. The generated video exhibits "dream-like" physics where the copper rods morph, bend, and intersect with the glass beaker impossible ways, violating basic object permanence and solidity.
+Veo failed to maintain the physical rigidity required for solid electrodes and ignored the chemical reaction entirely. The generated video exhibits "dream-like" physics where the copper rods morph, bend, and intersect with the glass beaker in impossible ways, violating basic object permanence and solidity.
 
 Ultimately, this experiment demonstrates that current video models operate on visual association rather than physical causation; while they can successfully render the di`stinct components of the setup—copper, glass, and solution—they fail to simulate the underlying electrochemical circuit, ignoring the flow of electrons and ions required to drive the specific redox reactions defined by the prompt.
 {{< /justify >}}
