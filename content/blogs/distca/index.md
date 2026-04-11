@@ -23,7 +23,7 @@ draft = false
 
 {{< justify >}}
 
-TL;DR: Workload imbalance is one of the major problems in training long-context LLM models. Imbalance among data parallel (DP) and pipeline parallel (PP) workers introduces stragglers or bubbles that causes severe slowdown, and the problem becomes more severe as we scale to longer context lengths or more GPUs.
+**TL;DR:** Workload imbalance is one of the major problems in training long-context LLM models. Imbalance among data parallel (DP) and pipeline parallel (PP) workers introduces stragglers or bubbles that causes severe slowdown, and the problem becomes more severe as we scale to longer context lengths or more GPUs.
 
 We believe that one of the major reasons for this slowdown is that the **core attention**, i.e., the $\text{softmax}(QK^T)V$ kernel, colocates with the other linear parts. We argue that by disaggregating the quadratic part of the core attention computation from the linear part of the rest, we can fundamentally eliminate the imbalance and achieve near-linear scaling for long-context LLM training. 
 
@@ -37,7 +37,7 @@ LLMs with long-context ability have become the norm and the backbone of many mod
 
 To understand this imbalance, let’s dive deeper and revisit what happens during LLM training.
 
-**LLM architecture and core attention (CA).** Figure 1 shows the structure of a typical LLM model within a layer, and Figure 2 clarifies our terminology around core attention. Slightly different from other literature, we explicitly use the term **core attention (CA)** to refer only to the computation after QKV projection and before O projection (e.g., FlashAttention). CA only contains the \(O(n^2)\) computational component. It is important to distinguish **core attention** and **attention** from the standard literature. When people refer to attention, they include the QKVO projection \- the linear computation components \- as well. Core attention, in contrast, only performs the computation after the QKV tensors are prepared and only produces a small output tensor.
+**LLM architecture and core attention (CA).** Figure 1 shows the structure of a typical LLM model within a layer, and Figure 2 clarifies our terminology around core attention. Slightly different from other literature, we explicitly use the term **core attention (CA)** to refer only to the computation after QKV projection and before O projection (e.g., FlashAttention). Thus, CA only contains the $O(n^2)$ computational component. It is important to distinguish **core attention** and **attention** from the standard literature. When people refer to attention, they include the QKVO projection \- the linear computation components \- as well. Core attention, in contrast, only performs the computation after the QKV tensors are prepared and only produces a small output tensor.
 
 <!-- Add footnote referring the "core attention" concept to Megatron-LM code: https://github.com/NVIDIA/Megatron-LM/blob/5af715b861fe4c0a201be219fa3195fbf0880287/megatron/core/transformer/attention.py#L938-L996 -->
 
