@@ -248,7 +248,7 @@ Despite careful scheduling, using NVFP4 $\mathbf{P}\mathbf{V}$ MMA actually **sl
 
 Therefore, we choose to run block-scaled NVFP4 $\mathbf{Q}\mathbf{K}$ and BF16 $\mathbf{P}\mathbf{V}$ on a B200 which achieves up to **1801 TFLOPS** and a **1.39x speedup** over FA4. Note that this is **only a lower bound of the speedup**: we have yet to experiment with **NVFP4/MXFP8 $\mathbf{Q}\mathbf{K}$ + FP8 $\mathbf{P}\mathbf{V}$** (cutting MMA by 1/2 or to 1/4 doesn't matter once it makes the kernel purely softmax-bound), which eliminates the group quantization overhead in a softmax WG.
 
-Additionally, B300 doubles the exp throughput, and Rubin quadruples it (w/ fp16 exp), which should make quantizing $\mathbf{P}\mathbf{V}$ faster. In the future, **we are excited to test more QAT recipes for different hardware!**
+Additionally, B300 doubles the exp throughput, and Rubin quadruples it (w/ fp16 exp), which should make a quantized $\mathbf{P}\mathbf{V}$ GEMM faster. In the future, **we are excited to test more QAT recipes for different hardware!**
 
 | Config                 | FP4 (ms) | FP4 TFLOPS | BF16 (ms) | BF16 TFLOPS | Speedup |
 | ---------------------- | -------- | ---------- | --------- | ----------- | ------- |
