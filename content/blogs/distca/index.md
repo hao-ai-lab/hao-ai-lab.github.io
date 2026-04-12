@@ -97,17 +97,17 @@ At first glance, disaggregation seems to introduce some additional overheads: (1
 {{< image src="img/distca-arch.png" alt="distca-arch" width="100%" title="Figure 6. DistCA architecture. DistCA disaggregates core attention from other components and treats core attention as an individual unit of work (attention task) to be scheduled on different devices (attention server).">}}
 
 
-**1/ CA kernel can be divided and re-combined (almost arbitrarily).** In modern attention kernels (e.g., FlashAttention), each GPU thread block is assigned a tile of the core attention computation. The kernel can sustain high MFU on variable-length fused sequences, provided its size is larger than this tile. As shown in Figure 7, if each CA shard length reaches 128 or more, the CA kernel throughput will be near peak throughput. This means attention tasks (documents) can be arbitrarily sharded, then recombined into a single high‑occupancy CA kernel without hurting kernel efficiency. Therefore, disaggregation does not introduce extra overhead for balanced attention tasks.
+**1. CA kernel can be divided and re-combined (almost arbitrarily).** In modern attention kernels (e.g., FlashAttention), each GPU thread block is assigned a tile of the core attention computation. The kernel can sustain high MFU on variable-length fused sequences, provided its size is larger than this tile. As shown in Figure 7, if each CA shard length reaches 128 or more, the CA kernel throughput will be near peak throughput. This means attention tasks (documents) can be arbitrarily sharded, then recombined into a single high‑occupancy CA kernel without hurting kernel efficiency. Therefore, disaggregation does not introduce extra overhead for balanced attention tasks.
 
 
 {{< image src="img/attn-throughput.png" alt="attn-throughput" width="50%" title="Figure 7. CA kernel throughput is near peak throughput when each CA shard length reaches 128 or more.">}}
 
-**2/ CA communication cost can be much lower than context parallel.** Sending attention to/from the attention server seems to introduce more overhead compared to context parallel. But we observe the opposite: unlike all-gather that sends all the KVs to each device, rebalancing CA only requires sending the necessary QKV to other devices to effectively balance the computation. As shown in the animation, CAD can shard the long document and only move the shard large enough to achieve compute balance across different batches. This makes CAD’s network communication much lower compared to context parallel.
+**2. CA communication cost can be much lower than context parallel.** Sending attention to/from the attention server seems to introduce more overhead compared to context parallelism. But we observe the opposite: unlike an all-gather, which sends all the KVs to each device, rebalancing CA only requires sending the necessary QKV tensors to other devices to effectively balance the computation. As shown in the animation, CAD can shard a long document and only move the shard large enough to achieve compute balance across different batches. This makes CAD’s network communication much lower compared to context parallel.
 
 <!-- cad-network-less.gif -->
 {{< image src="img/cad-network-less.gif" alt="cad-network-less" width="100%" title="Figure 8. CAD can shard the long document and only move the shard large enough to achieve compute balance across different batches, making network communication much lower compared to context parallel.">}}
 
-**3/ Ping-pong pipelining can hide communication (almost entirely).**
+**3. Ping-pong pipelining can hide communication (almost entirely).**
 
 One may have observed that despite the smaller volume of communication, CAD still introduces two all-to-all communications for each layer in the forward (and backward) passes, and this additional synchronization may seem to offset the communication savings. Fortunately, LLM training typically uses large batch sizes (>= 2) to maximize throughput, and this enables us to use **ping-pong pipelining** to overlap communication with computation, thereby eliminating the additional all-to-all communication overhead.
 As Figure 9 shows, we take a multiple of 2 microbatches (mb) every iteration, and at the end of a stage of the first mb (e.g., Pre.0), we take the second mb to run its computation (Pre.1) and launch the network communication for the output of Pre.0 (the green box underneath Pre.1).
@@ -116,7 +116,7 @@ In practice, as we scale to larger context length, the latency of computation wi
 <!-- pingpong-schedule.png -->
 {{< image src="img/pingpong-schedule.png" alt="pingpong-schedule" width="100%" title="Figure 9. Ping-pong parallel can effectively hide the communication overhead.">}}
 
-**4/ Imbalanced attention tasks can move across PP stages for balanced computation.** 
+**4. Imbalanced attention tasks can move across PP stages for balanced computation.** 
 
 Another major advantage of CAD is that GPUs from different pipeline-parallel (PP) ranks can now jointly balance core attention (CA) workloads. With CAD, we can design PP to alternate cleanly between CA and non-CA components. Since CA operates without weight parameters, its computation can be dynamically dispatched to GPUs in other PP ranks, thereby balancing the computation across PP stages. As shown in Figure 10a (micro-view), within one forward layer, CAD can dispatch CA workloads to (1) idle GPUs in different PP ranks, or (2) rebalance CA tasks to different PP ranks. As shown in Figure 10b (macro-view), we remove most pipeline bubbles (\!) in pipeline parallelism without incurring extra overhead. Note that this is hard to do in conventional pipeline parallel schedules, because workload dispatch is confined within each stage, preventing cross-stage coordination. As the pipeline becomes deeper, this imbalance between microbatches amplifies even more and makes pipeline bubbles become increasingly difficult to eliminate.
 
