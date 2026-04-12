@@ -45,7 +45,7 @@ We then treat the other components within a layer as **pre core attention** and 
 
 {{< image src="img/llm-arch.png" alt="llm-arch" width="100%" title="Figure 1. A typical LLM model within a layer.">}}
 
-{{< image src="img/ca-vs-attn.png" alt="ca-vs-attn" width="100%" title="Figure 2. Core attention vs Attention. Core attention (CA) only contains the $O(n^2)$ computational component, whereas the attention includes the QKVO projection (the linear computation components) and the O(n^2) core attention computation.">}}
+{{< image src="img/ca-vs-attn.png" alt="ca-vs-attn" width="100%" title="Figure 2. Core attention vs Attention. Core attention (CA) only contains the $O(n^2)$ computational component, whereas attention includes the QKVO projection (the linear computation components) and the $O(n^2)$ core attention computation.">}}
 
 It turns out that the fundamental imbalance is mainly caused when we have to run core attention, which has quadratic complexity, with other linear components on the same devices, given that training documents might have different lengths, as we will explain next. 
 
