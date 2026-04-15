@@ -250,7 +250,7 @@ Therefore, we choose to run block-scaled NVFP4 $\mathbf{Q}\mathbf{K}$ and BF16 $
 
 Additionally, B300 doubles the exp throughput, and Rubin quadruples it (w/ fp16 exp), which should make a quantized $\mathbf{P}\mathbf{V}$ GEMM faster. In the future, **we are excited to test more QAT recipes for different hardware!**
 
-| Config                 | FP4 (ms) | FP4 TFLOPS | BF16 (ms) | BF16 TFLOPS | Speedup |
+| Config (causal=False)  | FP4 (ms) | FP4 TFLOPS | BF16 (ms) | BF16 TFLOPS | Speedup |
 | ---------------------- | -------- | ---------- | --------- | ----------- | ------- |
 | b=1 s=256 h=16 d=128   | 0.015    | 37         | 0.015     | 35          | 1.01x   |
 | b=1 s=1024 h=16 d=128  | 0.023    | 379        | 0.025     | 338         | 1.12x   |
