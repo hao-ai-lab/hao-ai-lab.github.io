@@ -32,6 +32,14 @@ We also develop and maintain open-source models, evaluations, and systems to dem
 
 <!-- <div class="news-year">2025</div> -->
 
+{{< newsEntry date="2026/03" >}}
+We released the [Dreamverse project](blogs/dreamverse): vibe-direct 1080p / 30s videos in real time.
+{{< /newsEntry >}}
+
+{{< newsEntry date="2026/02" >}}
+Hao was awarded the [Sloan Research Fellow](https://sloan.org/fellowships/2026-Fellows) in 2026.
+{{< /newsEntry >}}
+
 {{< newsEntry date="2025/12" >}}
 🎉🎉 In 2025, We have 3 ICLR, 1 ICML, 1 ACL, 1 TPAMI, and 3 NeurIPS papers. Kudos to our lab members for another productive year!
 {{< /newsEntry >}}

@@ -24,13 +24,18 @@
             aspect-ratio: 1 / 1; /* Adjust this value to change the aspect ratio */
             object-fit: cover; /* Ensures the image covers the area, cropping as necessary */
         }
+
+        .lab-member img.fit-contain {
+            object-fit: contain;
+            background: #f7f7f7;
+        }
     </style>
     <!-- Include Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 
 <div class="lab-member">
-    <img src="/img/members/{{ .Get "image" }}" alt="{{ .Get "name" }}" style="lab-member">
+    <img src="/img/members/{{ .Get "image" }}" alt="{{ .Get "name" }}" class="{{ if eq (.Get "fit") "contain" }}fit-contain{{ end }}" style="lab-member">
     <h3>{{ .Get "name" }}</h3>
     <p>{{ .Get "role" }}</p>
     <div class="social-links">
