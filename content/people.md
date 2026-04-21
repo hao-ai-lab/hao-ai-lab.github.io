@@ -44,7 +44,7 @@ summary: people
 
 {{< lab_member name="Loay Rashid" role="Master Intern" image="llama_placeholder.png" academic="https://github.com/loaydatrain">}}
 
-{{< lab_member name="Kaiqin Kong" role="Master Intern" image="llama_placeholder.png" academic="https://github.com/H1yori233">}}
+{{< lab_member name="Kaiqin Kong" role="Master Intern" image="kaiqin_kong.jpg" academic="https://github.com/H1yori233" twitter="https://x.com/kaiqin_kong">}}
 
 {{< lab_member name="Alex Zhang" role="Master Intern" image="llama_placeholder.png" academic="https://github.com/alexzms">}}
 
