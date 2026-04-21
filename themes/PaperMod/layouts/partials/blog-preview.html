@@ -1,5 +1,8 @@
 <div class="blog-preview card">
-    <img src="{{ .Params.cover.image }}" class="card-img-top" alt="{{ .Params.cover.alt }}">
+    {{- with .Params.cover.image -}}
+    {{- $coverURL := partial "cover-url.html" (dict "page" $ "image" .) -}}
+    <img src="{{ $coverURL }}" class="card-img-top" alt="{{ $.Params.cover.alt | default $.Title }}">
+    {{- end -}}
     <div class="card-body">
       <h5 class="card-title">{{ .Title }}</h5>
       <p class="card-text">{{ .Params.summary | default "No summary available." }}</p>

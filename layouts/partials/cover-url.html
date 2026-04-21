@@ -1,0 +1,29 @@
+{{- $page := .page -}}
+{{- $image := .image -}}
+{{- $coverURL := "" -}}
+
+{{- with $page.Resources.GetMatch $image -}}
+  {{- $coverURL = .Permalink -}}
+{{- end -}}
+
+{{- if not $coverURL -}}
+  {{- with $page.Resources.GetMatch (printf "*%s*" $image) -}}
+    {{- $coverURL = .Permalink -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if not $coverURL -}}
+  {{- with (resources.ByType "image").GetMatch (printf "*%s*" $image) -}}
+    {{- $coverURL = .Permalink -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if not $coverURL -}}
+  {{- if eq $page.Params.cover.relative true -}}
+    {{- $coverURL = (path.Join $page.RelPermalink $image) | absURL -}}
+  {{- else -}}
+    {{- $coverURL = $image | absURL -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $coverURL -}}

@@ -7,7 +7,8 @@ ShowReadingTime = true
 draft = false
 contentClass = "post-content-justified"
 [cover]
-    image = ""
+    image = "img/dreamverse.png"
+    relative = true
     alt = "Into the Dreamverse: Vibe Directing in FastVideo"
     caption = "Into the Dreamverse: Vibe Directing in FastVideo"
     hidden = true
