@@ -23,7 +23,7 @@ draft = false
 
 
 {{< justify >}}
-**TL;DR**: Today’s best LLMs mostly decode **autoregressively** from left-to-right, which gives great quality but is terribly slow. Diffusion LLM can decode many tokens in parallel thanks to their **non-causal, any-order** generation, but they must be trained from scratch, or expensively adapted from autoregressive (AR) checkpoints with a mismatched, non-causal diffusion objective; we find this mismatch often hurts quality and breaks many effective KV-cache related serving optimizations. This blog introduces **Jacobi Forcing**, a new training technique that converts LLMs into **native causal parallel decoders**. Jacobi forcing keeps the causal AR backbone and addresses the AR-to-diffusion mismatch by training the model to handle noisy future blocks along **its own** Jacobi decoding trajectories. This yields an AR model which behaves like a diffusion-style decoder—decoding multiple tokens per pass, but still from left to right—with up to $4.5\times$ higher tokens-per-forward and $4\times$ wall-clock speedup on coding and math, while retaining near-AR generation quality. 
+**TL;DR**: Today’s best LLMs mostly decode **autoregressively** from left-to-right, which gives great quality but is terribly slow. Diffusion LLMs can decode many tokens in parallel thanks to their **non-causal, any-order** generation, but they must be trained from scratch, or expensively adapted from autoregressive (AR) checkpoints with a mismatched, non-causal diffusion objective; we find this mismatch often hurts quality and breaks many effective KV-cache related serving optimizations. This blog introduces **Jacobi Forcing**, a new training technique that converts LLMs into **native causal parallel decoders**. Jacobi forcing keeps the causal AR backbone and addresses the AR-to-diffusion mismatch by training the model to handle noisy future blocks along **its own** Jacobi decoding trajectories. This yields an AR model which behaves like a diffusion-style decoder—decoding multiple tokens per pass, but still from left to right—with up to $4.5\times$ higher tokens-per-forward and $4\times$ wall-clock speedup on coding and math, while retaining near-AR generation quality. 
 {{< /justify >}}
 
 
@@ -67,7 +67,7 @@ Table 1 (row 2 and row 3) summarizes their pros and cons. At a high-level, dLLMs
 {{< justify >}}
 Diffusion-style dLLMs iteratively denoise entire token blocks with non-causal (often bidirectional) attention. At each step, the model sees a globally noised sequence and tries to predict a cleaner one, updating many positions in parallel. This offers a natural form of parallel decoding, but comes with several trade-offs.
 
-From a modeling perspective, the cleanest way to get a high-quality dLLM would be to pretrain it from scratch with a diffusion-style objective. But at today’s scales, fully training a non-causal dLLM to match a strong AR baseline (where we have invested many GPU hours and infrastructures) is prohibitively expensive, so almost nobody does this in practice.
+From a modeling perspective, the cleanest way to get a high-quality dLLM would be to pretrain it from scratch with a diffusion-style objective. But at today’s scales, fully training a non-causal dLLM to match a strong AR baseline (where we have invested many GPU hours and lots of infrastructure) is prohibitively expensive, so almost nobody does this in practice.
 Instead, most recent work starts from a strong AR-pretrained checkpoint and then converts it into a diffusion-style model by oftentimes heavy post-training with a denoising objective. This AR-to-dLLM conversion introduces two kinds of mismatch.
 - **Training objective mismatch**: AR pre-training sees clean, causal prefixes, while diffusion-style post-training sees globally noised sequences and learns to denoise them. The model is now being asked to serve two different goals, and the resulting distribution shift makes it hard to fully recover AR-level quality.
 - **Attention and infrastructure mismatch**: To denoise whole token blocks in parallel, these methods typically switch from causal masking to non-causal attention. That breaks exact KV-cache reuse and many low-level optimizations baked into today’s AR-optimized kernels and serving stacks, and it complicates batching and scheduling in production systems.
@@ -78,7 +78,7 @@ In practice, recent dLLMs of this form often require billions to hundreds of bil
 
 
 
-{{< image src="img/baselines_comparison.png" alt="comparison_plot" width="60%" title="Figure 2: Comparison across various diffusion LLMs techniques with speed and accuracy trade-off (as well as associated training cost).">}}
+{{< image src="img/baselines_comparison.png" alt="comparison_plot" width="60%" title="Figure 2: Comparison across various diffusion LLM techniques with speed and accuracy trade-off (as well as associated training cost).">}}
 
 
 
