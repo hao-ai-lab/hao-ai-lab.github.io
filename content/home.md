@@ -33,7 +33,7 @@ We also develop and maintain open-source models, evaluations, and systems to dem
 <!-- <div class="news-year">2025</div> -->
 
 {{< newsEntry date="2026/03" >}}
-We released the [Dreamverse project](blogs/dreamverse): vibe-direct 1080p / 30s videos in real time.
+We released [Dreamverse](https://haoailab.com/blogs/dreamverse/): vibe direct 1080p 30s videos in real time.
 {{< /newsEntry >}}
 
 {{< newsEntry date="2026/02" >}}
