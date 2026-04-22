@@ -34,7 +34,7 @@ summary: people
 
 {{< lab_member name="Junli Wang" role="PhD Student" image="junli_wang.png" academic="https://junliwang.tech/" twitter="https://x.com/JunliWang2021" >}}
 
-{{< lab_member name="Yu-Yang Qian" role="Visiting PhD Student" image="yu_yang_qian.jpg" academic="https://www.lamda.nju.edu.cn/qianyy/">}}
+{{< lab_member name="Yu-Yang Qian" role="Visiting PhD Student" image="yu_yang_qian.jpg" academic="https://www.lamda.nju.edu.cn/qianyy/" twitter="https://x.com/YuYangQian_ai">}}
 
 {{< lab_member name="Yixin Huang" role="Master Intern" image="yixin_huang.jpg" academic="https://github.com/yixin-huang1" twitter="https://x.com/Yixinhuang48">}}
 
