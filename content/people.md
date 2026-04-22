@@ -46,7 +46,7 @@ summary: people
 
 {{< lab_member name="Kaiqin Kong" role="Master Intern" image="llama_placeholder.png" academic="https://github.com/H1yori233">}}
 
-{{< lab_member name="Alex Zhang" role="Master Intern" image="llama_placeholder.png" academic="https://github.com/alexzms">}}
+{{< lab_member name="Alex Zhang" role="Master Intern" image="alex_zhang.jpg" academic="https://alexzms.github.io/" twitter="https://x.com/AlexZhang152005">}}
 
 {{< lab_member name="Jinzhe Pan" role="Undergrad Intern" image="llama_placeholder.png" academic="https://github.com/Eigensystem">}}
 
