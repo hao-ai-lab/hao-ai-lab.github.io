@@ -42,7 +42,7 @@ summary: people
 
 {{< lab_member name="Yiming Zhao" role="Master's" image="yiming_zhao.png" academic="https://www.linkedin.com/in/yiming-zhao-zym2002/" twitter="https://x.com/YimingBob">}}
 
-{{< lab_member name="Loay Rashid" role="Master Intern" image="llama_placeholder.png" academic="https://github.com/loaydatrain">}}
+{{< lab_member name="Loay Rashid" role="Master Intern" image="loay_rashid.jpg" academic="https://www.linkedin.com/in/loayrashid/" twitter="https://x.com/l0ayrashid">}}
 
 {{< lab_member name="Kaiqin Kong" role="Master Intern" image="kaiqin_kong.jpg" academic="https://github.com/H1yori233" twitter="https://x.com/kaiqin_kong">}}
 
