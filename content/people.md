@@ -38,7 +38,7 @@ summary: people
 
 {{< lab_member name="Yixin Huang" role="Master Intern" image="yixin_huang.jpg" academic="https://yixinhuang48.github.io" twitter="https://x.com/Yixinhuang48">}}
 
-{{< lab_member name="Yuxuan Zhang" role="Master's" image="yuxuan_zhang.jpg" academic="https://yuxuan-zhang-dexter.github.io/">}}
+{{< lab_member name="Yuxuan Zhang" role="Master Intern" image="yuxuan_zhang.jpg" academic="https://yuxuandexter.github.io/" twitter="https://x.com/Yuxuan_Zhang13">}}
 
 {{< lab_member name="Yiming Zhao" role="Master's" image="yiming_zhao.png" academic="https://www.linkedin.com/in/yiming-zhao-zym2002/" twitter="https://x.com/YimingBob">}}
 
