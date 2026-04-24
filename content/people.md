@@ -50,7 +50,7 @@ summary: people
 
 {{< lab_member name="Jinzhe Pan" role="Undergrad Intern" image="llama_placeholder.png" academic="https://github.com/Eigensystem">}}
 
-{{< lab_member name="Shao Duan" role="Undergrad Intern" image="llama_placeholder.png" academic="https://github.com/shaoxiongduan">}}
+{{< lab_member name="Shao Duan" role="Undergrad Intern" image="shao.png" academic="https://github.com/shaoxiongduan">}}
 
 {{< lab_member name="Zihang Min" role="Undergrad Intern" image="llama_placeholder.png" academic="https://github.com/minzh23">}}
 
