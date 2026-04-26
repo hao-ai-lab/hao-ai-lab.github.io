@@ -12,15 +12,52 @@
 
 .pagination {
     display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 40px 0;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-.pagination a {
-    color: var(--theme);
-    font-size: 13px;
+.pagination .page-item {
+    margin: 0;
+}
+
+.pagination a, .pagination span.page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 14px;
     line-height: 36px;
-    background: var(--primary);
+    min-width: 36px;
+    height: 36px;
+    background: var(--theme);
+    border: 1px solid var(--border, var(--tertiary));
     border-radius: calc(36px / 2);
-    padding: 0 16px;
+    padding: 0 12px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.pagination a:hover {
+    background: var(--tertiary);
+    border-color: var(--secondary);
+}
+
+.pagination .active a, .pagination .active span.page-link {
+    background: var(--primary);
+    color: var(--theme);
+    border-color: var(--primary);
+    font-weight: 600;
+}
+
+.pagination .disabled a, .pagination .disabled span.page-link {
+    color: var(--secondary);
+    opacity: 0.6;
+    pointer-events: none;
 }
 
 .pagination .next {
