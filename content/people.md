@@ -61,7 +61,7 @@ summary: people
 {{< alumni_entry name="Wei Zhou" description="Master's, now at Luma AI" homepage="https://www.linkedin.com/in/wei-zhou3/">}}
 {{< alumni_entry name="Matthew Noto" description="Undergrad Intern, now at xAI" homepage="https://www.linkedin.com/in/notomatthew/">}}
 {{< alumni_entry name="Wenxuan Tan" description="Undergrad Intern, now at Bytedance" homepage="https://github.com/Edenzzzz">}}
-{{< alumni_entry name="Abhilash Shankarampeta" description="Master's, now at Cisco" homepage="https://www.linkedin.com/in/abhilashreddys/">}}
+{{< alumni_entry name="Abhilash Shankarampeta" description="Master's, now at Cisco WebEx" homepage="https://www.linkedin.com/in/abhilashreddys/">}}
 {{< alumni_entry name="Rui Ge" description="Undergrad Intern, now at UT Austin" homepage="https://motigrez.github.io/">}}
 {{< alumni_entry name="Susan Li" description="Undergrad Intern, now at NUS">}}
 {{< alumni_entry name="Peiyuan Zhang" description="PhD Student (Master out), now at Bytedance" homepage="https://veiled-texture-20c.notion.site/Peiyuan-Zhang-ab24b48621c9491db767a76df860873a">}}
@@ -82,4 +82,5 @@ summary: people
 {{< alumni_entry name="Forrest Dai" description="Master's, now software engineer at Meta" homepage="https://www.linkedin.com/in/forrest-dai/">}}
 {{< alumni_entry name="Nan Jiang" description="Undergrad Intern, now PhD Student at UChicago" homepage="https://www.nanjiangwill.com/">}}
 {{< alumni_entry name="Zhongdongming Dai" description="Master's, now software engineer at NVIDIA" homepage="https://www.linkedin.com/in/andy-dai-says-hi/">}}
+{{< alumni_entry name="Humaira Mohammed" description="Graduated, now at RapiFire AI" >}}
 {{< /alumni >}}
