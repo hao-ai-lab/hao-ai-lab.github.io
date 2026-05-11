@@ -52,6 +52,8 @@ summary: people
 
 {{< lab_member name="Shao Duan" role="Undergrad Intern" image="shao.png" academic="https://github.com/shaoxiongduan">}}
 
+{{< lab_member name="Yulun Wu" role="Undergrad Intern" image="yulun_wu.jpg" academic="https://memset0.github.io">}}
+
 {{< lab_member name="Zihang Min" role="Undergrad Intern" image="llama_placeholder.png" academic="https://github.com/minzh23">}}
 
 {{< /lab_members_grid >}}
