@@ -48,6 +48,8 @@ summary: people
 
 {{< lab_member name="Alex Zhang" role="Master Intern" image="alex_zhang.jpg" academic="https://alexzms.github.io/" twitter="https://x.com/AlexZhang152005">}}
 
+{{< lab_member name="Satyam Srivastava" role="Master Intern" image="satyam_srivastava.jpg" academic="https://satyam-53.github.io/" linkedin="https://www.linkedin.com/in/satyam-srivastava-981491203/">}}
+
 {{< lab_member name="Jinzhe Pan" role="Undergrad Intern" image="llama_placeholder.png" academic="https://github.com/Eigensystem">}}
 
 {{< lab_member name="Shao Duan" role="Undergrad Intern" image="shao.png" academic="https://github.com/shaoxiongduan">}}
