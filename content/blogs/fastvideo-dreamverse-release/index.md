@@ -18,12 +18,6 @@ tags = ["FastVideo", "Dreamverse", "Video Generation"]
 
 {{< socialBadges github="hao-ai-lab/FastVideo" demo="https://dreamverse.fastvideo.org/" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" discord="https://discord.gg/Dm8F2peD3e" >}}
 
-**Video generation should keep creators in the loop, not pull them out of it.** In our previous [Dreamverse post](https://haoailab.com/blogs/dreamverse/), we introduced **vibe directing**: a workflow for steering video generation through fast, natural-language iteration. Today, FastVideo is making that workflow open source by releasing the Dreamverse frontend and backend as a reference application for real-time generative video systems. Dreamverse is based on a version of LTX’s open weights diffusion model, [LTX-2](https://ltx.io/model/ltx-2). Optimized for a single NVIDIA B200 GPU, Dreamverse gives developers the full stack to build their own real-time generative video applications on FastVideo.
-
-## What Is FastVideo’s Dreamverse?
-
-Dreamverse is a real-time video generation workspace for vibe directing. It is to video what vibe coding is to software: start from a simple idea, watch the result, and keep steering with natural language. Keep the subject, change the camera, continue the scene, or try another direction, all within a quick iteration loop.
-
 <style>
 .post-content figure.align-center > figcaption > p {
     color: var(--primary);
@@ -33,9 +27,15 @@ Dreamverse is a real-time video generation workspace for vibe directing. It is t
 }
 </style>
 
+**Video generation should keep creators in the loop, not pull them out of it.** In our previous [Dreamverse post](https://haoailab.com/blogs/dreamverse/), we introduced **vibe directing**: a workflow for steering video generation through fast, natural-language iteration. Today, FastVideo is making that workflow open source by releasing the Dreamverse frontend and backend as a reference application for real-time generative video systems. Dreamverse is based on a version of LTX’s open weights diffusion model, [LTX-2](https://ltx.io/model/ltx-2). Optimized for a single NVIDIA B200 GPU, Dreamverse gives developers the full stack to build their own real-time generative video applications on FastVideo.
+
+## What Is FastVideo’s Dreamverse?
+
+Dreamverse is a real-time video generation workspace for vibe directing. It is to video what vibe coding is to software: start from a simple idea, watch the result, and keep steering with natural language. Keep the subject, change the camera, continue the scene, or try another direction, all within a quick iteration loop.
+
 {{< figure src="gif/timeline.gif" alt="Dreamverse timeline" width="90%" align="center" caption="Edit Video Background" >}}
 
-{{< figure src="gif/edit.gif" alt="Dreamverse edit" width=90%" align="center" caption="Edit Video Character" >}}
+{{< figure src="gif/edit.gif" alt="Dreamverse edit" width="90%" align="center" caption="Edit Video Character" >}}
 
 {{< figure src="gif/history.gif" alt="Dreamverse history" width="90%" align="center" caption="View history generations from Gallery" >}}
 
@@ -125,7 +125,7 @@ Lastly, the streaming layer turns generated frames and audio into fragmented MP4
 
 ## Next Steps
 
-We are actively expanding Dreamverse to support new models, system optimizations, and video editing features. In particular, we are exploring training-aware methods such as [Attn-QAT with NVFP4 attention](https://arxiv.org/abs/2603.00040).
+We are actively expanding Dreamverse to support new models, system optimizations, and video editing features. In particular, we are exploring training-aware methods such as [Attn-QAT with NVFP4 attention](https://arxiv.org/abs/2603.00040) to support Dreamverse on NVIDIA RTX 5090s, 4090s, and even 3090s, stay tuned!
 
 We welcome and value any feedback, contributions, and collaboration. If you have a feature or model request for Dreamverse, feel free to join [our Slack channel](https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ) or submit an issue at [our repo](https://github.com/hao-ai-lab/FastVideo/issues) (tag `scope:dreamverse`). To contribute, please check out [Contributing to FastVideo](https://haoailab.com/FastVideo/contributing/overview/) for how to get involved!
 
@@ -135,8 +135,9 @@ We thank NVIDIA, Institute for Foundation Models, MBZUAI for supporting our deve
 
 ## FastVideo Team
 
-**Core contributors:** [Junda Su*](https://davids048.github.io/), [Minshen Zhang*](https://alexzms.github.io), [Will Lin*](https://solitarythinker.github.io/)(* equal contribution)
-**Contributors:** , [Matthew Noto*](https://github.com/RandNMR73), [Yechen Xu*](https://github.com/XOR-op), [Peiyuan Zhang*](https://github.com/jzhang38), [Shao Duan](https://github.com/shaoxiongduan),  [Loay Rashid](https://github.com/loaydatrain), [Kevin Lin](https://github.com/kevin314), [Kaiqin Kong](https://github.com/H1yori233)
+
+**Core contributors:** [Junda Su*](https://davids048.github.io/), [Minshen Zhang*](https://alexzms.github.io), [Will Lin*](https://solitarythinker.github.io/) (* equal contribution)  
+**Contributors:** [Matthew Noto*](https://github.com/RandNMR73), [Yechen Xu*](https://github.com/XOR-op), [Peiyuan Zhang*](https://github.com/jzhang38), [Shao Duan](https://github.com/shaoxiongduan), [Loay Rashid](https://github.com/loaydatrain), [Kevin Lin](https://github.com/kevin314), [Kaiqin Kong](https://github.com/H1yori233)  
 **UI:** [Tina Mai](https://tinabmai.com/)  
 **Tech leads:** [Will Lin](https://solitarythinker.github.io/), [Hao Zhang](https://haozhang.ai/)  
 **Advisors:** [Hao Zhang](https://haozhang.ai/) (corresponding), [Danyang Zhuo](https://danyangzhuo.com/), [Eric Xing](https://www.cs.cmu.edu/~epxing/), [Zhengzhong Liu](https://hunterhector.github.io/)
