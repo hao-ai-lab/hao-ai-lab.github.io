@@ -24,7 +24,20 @@ tags = ["FastVideo", "Dreamverse", "Video Generation"]
 
 Dreamverse is a real-time video generation workspace for vibe directing. It is to video what vibe coding is to software: start from a simple idea, watch the result, and keep steering with natural language. Keep the subject, change the camera, continue the scene, or try another direction, all within a quick iteration loop.
 
-![Dreamverse interface](/blogs/dreamverse/img/dreamverse.png)
+<style>
+.post-content figure.align-center > figcaption > p {
+    color: var(--primary);
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+}
+</style>
+
+{{< figure src="gif/timeline.gif" alt="Dreamverse timeline" width="90%" align="center" caption="Edit Video Background" >}}
+
+{{< figure src="gif/edit.gif" alt="Dreamverse edit" width=90%" align="center" caption="Edit Video Character" >}}
+
+{{< figure src="gif/history.gif" alt="Dreamverse history" width="90%" align="center" caption="View history generations from Gallery" >}}
 
 With this release, Dreamverse becomes not only a runnable product prototype, but also a sample architecture for the FastVideo community building real-time video generation and editing applications.
 
@@ -41,6 +54,7 @@ FastVideo designed Dreamverse to be a self-hostable application inside the FastV
 ## How To Run Dreamverse
 
 Running Dreamverse is meant to be simple. Dreamverse is supported on NVIDIA B200 GPUs for the real-time generation path, and each Dreamverse worker occupies one NVIDIA B200 GPU for its workload. We also provide a Docker image for simple deployment with the generation dependencies already installed.
+Dreamverse deploys on a local GPU, a self-hosted B200 server over SSH, Docker, or serverless Modal — for detailed instructions and scripts, see the [Dreamverse README](https://github.com/hao-ai-lab/FastVideo/blob/main/apps/dreamverse/README.md).
 
 To start the backend Dreamverse server, simply run:
 
@@ -73,6 +87,11 @@ dreamverse-mock-server --latency 200 --port 8009
 
 ## How Dreamverse Works
 
+
+The browser workspace is where you direct the scene. You type prompts, review generated clips, edit the prompt sequence, and ask Dreamverse to rewrite the rollout. The browser sends those requests to the Dreamverse runtime, then plays each new video segment as it streams back.
+
+The Dreamverse runtime is the bridge between the browser workspace and the backend generation stack. It manages the frontend-backend message queue, the current session working memory, prompt memory, prompt enhancer, prompt rewriter, prompt safety, and the lifecycle of GPU workers. When the browser sends a request, the runtime decides which backend component should handle it and what prompt sequence is accepted for generation.
+
 ```text
 User
   |
@@ -95,10 +114,6 @@ fMP4 streaming layer
   v
 Browser playback
 ```
-
-The browser workspace is where you direct the scene. You type prompts, review generated clips, edit the prompt sequence, and ask Dreamverse to rewrite the rollout. The browser sends those requests to the Dreamverse runtime, then plays each new video segment as it streams back.
-
-The Dreamverse runtime is the bridge between the browser workspace and the backend generation stack. It manages the frontend-backend message queue, the current session working memory, prompt memory, prompt enhancer, prompt rewriter, prompt safety, and the lifecycle of GPU workers. When the browser sends a request, the runtime decides which backend component should handle it and what prompt sequence is accepted for generation.
 
 After a user prompt reaches the runtime, the prompt pipeline can run safety checks and rewriting before generation. The safety filter uses fastText classifiers for NSFW and hate-speech detection when enabled. The prompt rewriter then expands the user’s instruction into a detailed prompt for the next segment. Dreamverse provides a curated system prompt and a continuation prompt for this job, preserving user intent while adding details such as camera movement, actor movements, and scene context. This makes each continuation smoother and more logical while still letting the user steer at the level of intent. To keep that rewriting step inside the real-time loop, Dreamverse uses low-latency LLM endpoints from providers such as GroqCloud, powered by first generation LPUs.
 
