@@ -1,5 +1,5 @@
 +++
-title = "FastWan-QAD: Generating a 5-Second Video in 1.78 Seconds on a Single NVIDIA RTX 5090 via Quantization-Aware Distillation"
+title = "FastWan-QAD: FastVideo generates a 5-Second Video in 1.78 Seconds on a Single NVIDIA RTX 5090 via Quantization-Aware Distillation"
 date = 2026-06-15T12:00:00-07:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
