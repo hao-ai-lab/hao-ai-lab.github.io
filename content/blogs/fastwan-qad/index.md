@@ -4,7 +4,7 @@ date = 2026-06-15T12:00:00-07:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
 ShowReadingTime = true
-draft = true
+draft = false
 contentClass = "post-content-justified"
 [socialIcons]
     [[socialIcons.icon]]
