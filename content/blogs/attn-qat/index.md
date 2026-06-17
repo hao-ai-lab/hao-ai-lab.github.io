@@ -9,6 +9,12 @@ math = true
 contentClass = "post-content-justified"
 description = ""
 summary = "Attn-QAT is the first systematic study of 4-bit quantization-aware training for attention, recovering FP4 attention quality without inference-time outlier mitigation while also enabling faster kernels."
+[cover]
+    image = "img/attn_qat.png"
+    relative = true
+    alt = "making 4-bit attention actually work"
+    caption = "Performance comparison of different fp4 attn kernels"
+    hidden = true
 +++
 
 {{< socialBadges arxiv-index="2603.00040" github="hao-ai-lab/FastVideo" huggingface="https://huggingface.co/FastVideo/14B_qat_400/tree/main">}}

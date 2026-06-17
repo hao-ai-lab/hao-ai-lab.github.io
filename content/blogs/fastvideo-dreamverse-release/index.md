@@ -9,7 +9,7 @@ contentClass = "post-content-justified"
 summary = "FastVideo is open-sourcing Dreamverse, a self-hostable frontend and backend reference application for real-time generative video systems on NVIDIA B200 GPUs."
 tags = ["FastVideo", "Dreamverse", "Video Generation"]
 [cover]
-    image = "img/dreamverse.png"
+    image = "img/dreamverse_demo.png"
     relative = true
     alt = "Open-sourcing FastVideo Dreamverse: Real-Time Vibe Directing with LTX-2 on a single NVIDIA B200 GPU"
     caption = "Open-sourcing FastVideo Dreamverse: Real-Time Vibe Directing with LTX-2 on a single NVIDIA B200 GPU"
