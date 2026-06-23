@@ -1,5 +1,5 @@
 +++
-title = "FastWan-QAD: FastVideo generates a 5-Second Video in 1.78 Seconds on a Single NVIDIA RTX 5090 via Quantization-Aware Distillation"
+title = "FastWan-QAD: FastVideo generates a 5-Second Video in 1.9 Seconds on a Single NVIDIA GeForce RTX 5090 via Quantization-Aware Distillation"
 date = 2026-06-15T12:00:00-07:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -15,15 +15,15 @@ contentClass = "post-content-justified"
       url = "https://github.com/hao-ai-lab/FastVideo"
 [cover]
     image = "img/latency_graph.png"
-    alt = "FastWan-QAD generates a 5-second 480p video in 1.78s on a single RTX 5090"
-    caption = "FastWan-QAD generates a 5-second 480p video in 1.78s on a single RTX 5090"
+    alt = "FastWan-QAD generates a 5-second 480p video in 1.9s on a single RTX 5090"
+    caption = "FastWan-QAD generates a 5-second 480p video in 1.9s on a single RTX 5090"
     hidden = true
 +++
 
 {{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-412taon6b-~Ijpdj2UCeJPDjdgve~r3A" discord="https://discord.gg/Dm8F2peD3e" huggingface="https://huggingface.co/FastVideo" >}}
 
-**TL;DR:** **5 seconds of video. 1.78 seconds of generation. One RTX 5090.** 
-FastVideo introduces **FastWan-QAD**, a family of video generation models trained with a new recipe we term **Quantization-Aware Distillation (QAD)**. Powered by FastVideo, we push a single RTX 5090 to its absolute limit: generating a 5-second 480P video in **1.78s end-to-end**, outperforming both TurboDiffusion and LightX2V. Our flagship model targets native NVFP4 for the RTX 5090. We are concurrently releasing a second model utilizing FP8 linear layers to extend support to the RTX 4090 architecture.
+**TL;DR:** **5 seconds of video. 1.9 seconds of generation. One RTX 5090.** 
+FastVideo introduces **FastWan-QAD**, a family of video generation models trained with a new recipe we term **Quantization-Aware Distillation (QAD)**. Powered by FastVideo, we push a single RTX 5090 to its absolute limit: generating a 5-second 480P video in **1.9s end-to-end**, outperforming both TurboDiffusion and LightX2V. Our flagship model targets native NVFP4 for the RTX 5090. We are concurrently releasing a second model utilizing FP8 linear layers to extend support to the RTX 4090 architecture.
 
 {{< image src="img/latency_graph.png" alt="End-to-end latency comparison" width="100%" >}}
 
@@ -31,7 +31,7 @@ FastVideo introduces **FastWan-QAD**, a family of video generation models traine
 
 We are excited to release three distilled checkpoints of Wan2.1-T2V-1.3B, alongside our full QAD training recipe and inference code:
 
-- **FastWan-QAD-1.3B**: Designed for NVIDIA GPUs with native NVFP4 tensor cores. It combines NVFP4 linear layers with our modified SageAttention3 FP4 backend, achieving an incredible **1.78 seconds** end-to-end for a 5-second 480p video.
+- **FastWan-QAD-1.3B**: Designed for NVIDIA GPUs with native NVFP4 tensor cores. It combines NVFP4 linear layers with our modified SageAttention3 FP4 backend, achieving an incredible **1.9 seconds** end-to-end for a 5-second 480p video.
 - **FastWan-QAD-1.3B-SA2**: Also utilizing NVFP4 linear layers, this variant integrates SageAttention2++ instead, achieving a **2 second** end-to-end generation for a 5-second 480p video while achieving higher quality than the SageAttention3 variant.
 - **FastWan-QAD-FP8-1.3B**: Built for previous-generation GPUs lacking FP4 tensor cores, specifically the RTX 4090. It swaps in FP8 linear layers alongside SageAttention2++, trained using the exact same QAD recipe as the Blackwell models.
 
@@ -41,7 +41,7 @@ All resources, including weights and scripts, are released under the **Apache-2.
 
 | Model Name | Checkpoint | Target Hardware | Precision (Linear + Attn) | Tier |
 | :--------- | :--------: | :-------------: | :-----------------------: | :--- |
-| `FastWan-QAD-1.3B`     | [Huggingface Model](https://huggingface.co/FastVideo/FastWan-QAD-1.3B) | RTX 5090 | FP4 + FP4 | **Flagship**: minimal latency via native NVFP4, 1.78s for a 5s 480p video. |
+| `FastWan-QAD-1.3B`     | [Huggingface Model](https://huggingface.co/FastVideo/FastWan-QAD-1.3B) | RTX 5090 | FP4 + FP4 | **Flagship**: minimal latency via native NVFP4, 1.9s for a 5s 480p video. |
 | `FastWan-QAD-1.3B-SA2` | [Huggingface Model](https://huggingface.co/FastVideo/FastWan-QAD-1.3B-SA2) | RTX 5090 | FP4 + FP8 | **Alternative**: sharpest video quality at minimal latency cost, 2.01s for a 5s 480p video. |
 | `FastWan-QAD-FP8-1.3B` | [Huggingface Model](https://huggingface.co/FastVideo/FastWan-QAD-FP8-1.3B) | RTX 4090 | FP8 + FP8 | **Compatibility**: full 8-bit pipeline fallback, 3.4s for a 5s 480p video. |
 
@@ -57,7 +57,7 @@ We achieve our excellent performance by attacking every layer of the stack: prec
 
 **Kernel Fusion.** A large fraction of wall-clock time in a small DiT is the "glue" around the matmuls: ops like LayerNorm, AdaLN modulation, residual adds, and gating. We fuse these into single kernels: one pass for the pre-attention modulated norm, and a combined gated-residual-add + norm + scale + shift for the post-attention path. This collapses what were many small memory-bound launches per block into a couple of fused ops. On top of this, the DiT, text encoder, and decoder are fully compiled to eliminate launch and Python runtime overhead.
 
-**Fast Decoding and No CFG.** For decoding we swap the full Wan VAE for [TAEHV](https://github.com/madebyollin/taehv), a tiny autoencoder, removing the VAE as a latency bottleneck. We run those 3 steps with CFG disabled, halving the per-step transformer cost — the final ingredient that brings the full pipeline to 1.78 seconds.
+**Fast Decoding and No CFG.** For decoding we swap the full Wan VAE for [TAEHV](https://github.com/madebyollin/taehv), a tiny autoencoder, removing the VAE as a latency bottleneck. We run those 3 steps with CFG disabled, halving the per-step transformer cost — the final ingredient that brings the full pipeline to 1.9 seconds.
 
 ## Comparison
 
@@ -70,7 +70,7 @@ We evaluate video generation on **a single RTX 5090 GPU**. End-to-end times belo
 | Original Wan2.1-1.3B | 170s |
 | TurboDiffusion | 6.10s |
 | LightX2V Wan-NVFP4 | 6.91s |
-| **FastWan-QAD (Ours)** | **1.78s** |
+| **FastWan-QAD (Ours)** | **1.9s** |
 
 {{</ table >}}
 
