@@ -139,7 +139,7 @@ git fetch && git checkout main
 # build fastvideo-kernel
 cd fastvideo-kernels/ && ./build.sh && cd ..
 git clone https://github.com/madebyollin/taehv
-uv pip install taevh
+uv pip install ./taevh
 
 # run generation:
 FASTVIDEO_DISABLE_ATTENTION_COMPILE=0 FASTVIDEO_ATTENTION_BACKEND=ATTN_QAT_INFER python examples/inference/optimizations/FastWan_QAD_TAEHV.py --model FastVideo/FastWan-QAD-1.3B --distilled_model "" --taehv_checkpoint taehv/taew2_1.pth
