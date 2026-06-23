@@ -22,11 +22,11 @@ draft = false
 {{< socialBadges arxiv-index="2502.04507" github="hao-ai-lab/FastVideo" >}}
 
 {{< justify >}}
-**TL;DR:** Video generation with DiTs is **painfully slow** -- [HunyuanVideo](https://github.com/Tencent/HunyuanVideo) takes 16 minutes to generate just a 5-second video on an H100 with FlashAttention3. Our sliding tile attention (STA) slashes this to **5 minutes** with **zero quality loss, no extra training required**.
+**TL;DR:** Video generation with DiTs is **painfully slow** -- [HunyuanVideo](https://github.com/Tencent/HunyuanVideo) takes 16 minutes to generate just a 5-second video on an H100 with FlashAttention-3. Our sliding tile attention (STA) slashes this to **5 minutes** with **zero quality loss, no extra training required**.
 Specifically, STA accelerates attention alone by **2.8–17x** over FlashAttention-2 and **1.6–10x** over FlashAttention-3. 
 With STA and other optimizations, our solution boosts end-to-end generation speed by **2.98×** compared to the FA3 full attention baseline, without quality loss or the need for training. Enabling finetuning unlocks even greater speedups!
 
-Can you spot the difference between videos from the original HunyuanVideo and our accelerated inference? 👉Try out kernel in our [FastVideo project](https://github.com/hao-ai-lab/FastVideo) project and we'd love to hear what you think!
+Can you spot the difference between videos from the original HunyuanVideo and our accelerated inference? 👉Try out the kernel in our [FastVideo project](https://github.com/hao-ai-lab/FastVideo) project and we'd love to hear what you think!
 {{< /justify >}}
 
 {{<youtube Cjur2htVuSk>}}
@@ -58,7 +58,7 @@ HunyuanVideo exhibits strong locality: a small local window (just 15.52% of the 
 
 {{< /justify >}}
 
-{{< image src="img/attn_is_sparse.png" alt="Attn Sparsity" width="100%" title="Figure 2. Left: Instead of attending to the entire image, the query (green dot)’ only attends to keys within a local window. Mid: Attention scores within the local window accouts for mojority of the entire attention. Right: Despite the different recall across heads, the standard deviation across prompts remains low.">}}
+{{< image src="img/attn_is_sparse.png" alt="Attn Sparsity" width="100%" title="Figure 2. Left: Instead of attending to the entire image, the query (green dot)’ only attends to keys within a local window. Mid: Attention scores within the local window accouts for the majority of the entire attention. Right: Despite the different recall across heads, the standard deviation across prompts remains low.">}}
 
 
 {{< justify >}}
@@ -92,7 +92,7 @@ While dense and empty blocks work well with FA, mixed blocks introduce significa
 
 * **Wasted computation**: Since a block is the minimum compute unit, FA must compute the entire block before applying the mask, leading to unnecessary work.
 * **GPU-unfriendly masking**: The intra-block mask depends on both the user-defined attention pattern and the block’s location within the attention map. Worse, it cannot be precomputed—doing so would cause quadratic memory overhead. Even in [FlexAttention](https://pytorch.org/blog/flexattention/), a simple causal mask adds 15% overhead—in 3D SWA, masking overhead can exceed the cost of computing the block itself!
-That is why higher-order SWA is inherently GPU-unfriendly -- it produce too many mixed blocks! 
+That is why higher-order SWA is inherently GPU-unfriendly -- it produces too many mixed blocks! 
 
 To illustrate, we analyze NATTEN in Figure 3(a), a refined SWA variant that shifts window centers at image/video boundaries to ensure each query attends to a fixed number of keys. However, this leads to queries attending to distinct key groups, disrupting uniformity in the attention map and creating a flood of mixed blocks.
 To mitigate this, Tiled NATTEN reorders inputs to increase the number of dense blocks (Figure 3(b)). Yet, a significant portion of blocks remain mixed, making SWA fundamentally inefficient for GPUs.
@@ -121,17 +121,17 @@ The video below demonstrates how STA works. For better illustration, we use a 2D
 {{<youtube D4gZ--LhZHs>}}
 
 {{< justify >}}
- STA can be efficiently implemented with FlexAttention, which provides enough functionality to skip all empty blocks and avoid adding unnecessary *intra-block* mask on the dense blocks. We can further optimize the sparse attention masks by *disaggregating* the *inter-block* mask logic from the compute kernels. Thus, we implement our attention kernels based on ThunderKittens and FlashAttention3 . 
+ STA can be efficiently implemented with FlexAttention, which provides enough functionality to skip all empty blocks and avoid adding unnecessary *intra-block* mask on the dense blocks. We can further optimize the sparse attention masks by *disaggregating* the *inter-block* mask logic from the compute kernels. Thus, we implement our attention kernels based on ThunderKittens and FlashAttention-3 . 
  
 ## Kernel-level Optimizations for STA
 
-Inpired by FlashAttention 3 and [ThunderKittens](https://github.com/HazyResearch/ThunderKittens), our implementation split the threadblock into compute warpgroups and data warpgroups, and the inter-block mask is completely managed by the data warpgroups. Each compute warpgroup is responsible for calculating one query block, which always resides in the SRAM (Split-Q). The data warpgroup is responsible for asynchronously loading the KV blocks from HBM to SRAM. For each block of query, the data warpgroup needs to decide which key and value blocks the query block will attend to in STA and only load those blocks. Since the data warpgroups are asynchronous, the overhead of calculating the inter-block mask in STA and deciding which data to load can be hidden with overlapping. On the other hand, the compute worker is completely oblivious of the sparse attention pattern. It performs attention computation with the key value blocks in shared memory loaded by data workers, and once all data is consumed in the circular cache, the computation is finished.
+Inpired by FlashAttention-3 and [ThunderKittens](https://github.com/HazyResearch/ThunderKittens), our implementation split the threadblock into compute warpgroups and data warpgroups, and the inter-block mask is completely managed by the data warpgroups. Each compute warpgroup is responsible for calculating one query block, which always resides in the SRAM (Split-Q). The data warpgroup is responsible for asynchronously loading the KV blocks from HBM to SRAM. For each block of query, the data warpgroup needs to decide which key and value blocks the query block will attend to in STA and only load those blocks. Since the data warpgroups are asynchronous, the overhead of calculating the inter-block mask in STA and deciding which data to load can be hidden with overlapping. On the other hand, the compute worker is completely oblivious of the sparse attention pattern. It performs attention computation with the key value blocks in shared memory loaded by data workers, and once all data is consumed in the circular cache, the computation is finished.
 
 {{< /justify >}}
 {{< image src="img/kernel_speed.png" alt="Kernel Speed" width="90%" title="Table 1. Forward speed of sparse attention kernels in a setup aligned with HunyuanVideo's inference configuration (bf16, 720P, 5s, 115.2K seq len, dhead = 128, # heads = 24). Config controls the window size of each sparse attention.">}}
 
 ### Kernel Performance
-We report our kernel performance in Table 1. The results show that existing local attention methods struggle with efficiency. For example, while CLEAR reduces FLOPs to 15.65, it actually slows down inference by 14%. NATTEN also falls short—despite achieving 91% sparsity, its basic version is 15% slower than full attention, and even the optimized tiled variant in FlexAttention only speeds things up by 1.27×. Among current options, [Swin](https://arxiv.org/abs/2103.14030) is the only kernel with a memory utilization factor (MFU) above 40% and kernel efficiency above 60%, but it sacrifices flexibility in the attention mechanism -- Swin is not a local attention variant, and we will show in the next section that applying swin the video generation models significantly degrades performance. 
+We report our kernel performance in Table 1. The results show that existing local attention methods struggle with efficiency. For example, while CLEAR reduces FLOPs to 15.65, it actually slows down inference by 14%. NATTEN also falls short—despite achieving 91% sparsity, its basic version is 15% slower than full attention, and even the optimized tiled variant in FlexAttention only speeds things up by 1.27×. Among current options, [Swin](https://arxiv.org/abs/2103.14030) is the only kernel with a memory utilization factor (MFU) above 40% and kernel efficiency above 60%, but it sacrifices flexibility in the attention mechanism -- Swin is not a local attention variant, and we will show in the next section that applying swin to video generation models significantly degrades their performance. 
 
 In contrast, when tested in FlexAttention, **STA improves MFU from 8.20% to 41.03% compared to Tiled NATTEN**. 
 With further kernel optimizations, STA achieves a **10.45×** speedup over full attention. Even at 58.33% sparsity, it still delivers 2.37× faster processing. 

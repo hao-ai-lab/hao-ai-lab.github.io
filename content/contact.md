@@ -10,7 +10,7 @@ summary: contact
 {{< justify >}}
 
 Thank you for your interest in our lab at UC San Diego! If you work on machine learning and systems, and are interested in joining us, please [**read the page**](https://haozhang.ai/prospective_student) on how to get involved. 
-In general, please first [**fill out this form**](https://forms.cloud.microsoft/r/RYpEJHqJgs). 
+In general, please first [**fill out this form**](https://docs.google.com/forms/d/e/1FAIpQLScjH_OmxxVck2BDgxBoVQPNbqscb7j4RKQjWxsuHGuoFqMSYw/viewform). 
 After submitting the form, please drop an email to Prof. Hao Zhang (haozhang@ucsd.edu).
 
 {{< /justify >}}

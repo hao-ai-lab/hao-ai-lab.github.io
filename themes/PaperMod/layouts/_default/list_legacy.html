@@ -19,16 +19,18 @@
 {{- if .IsHome -}}
 <div class="posts-list"> <!-- Changed class name for clarity -->
   {{- range $paginator.Pages -}}
+  {{- $post := . -}}
   <article class="post-preview">
-    {{- with .Params.cover.image -}}
+    {{- with $post.Params.cover.image -}}
+    {{- $coverURL := partial "cover-url.html" (dict "page" $post "image" .) -}}
     <div class="post-image">
-      <img src="{{ . | absURL }}" alt="{{ .Title }}"> <!-- Changed to <img> for better control -->
+      <img src="{{ $coverURL }}" alt="{{ $post.Params.cover.alt | default $post.Title }}">
     </div>
     {{- end -}}
     <div class="post-details" style="text-align: justify;"> <!-- Changed class name for clarity -->
-      <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
-      <time datetime="{{ .Date }}">{{ .Date.Format "January 2, 2006" }}</time>
-      <p>{{ .Summary }}</p>
+      <h2><a href="{{ $post.Permalink }}">{{ $post.Title }}</a></h2>
+      <time datetime="{{ $post.Date }}">{{ $post.Date.Format "January 2, 2006" }}</time>
+      <p>{{ $post.Summary }}</p>
     </div>
   </article>
   {{- end -}}

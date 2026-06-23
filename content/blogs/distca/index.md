@@ -23,7 +23,7 @@ draft = false
 
 {{< justify >}}
 
-TL;DR: Workload imbalance is one of the major problems in training long-context LLM models. Imbalance among data parallel (DP) and pipeline parallel (PP) workers introduces stragglers or bubbles that causes severe slowdown, and the problem becomes more severe as we scale to longer context lengths or more GPUs.
+**TL;DR:** Workload imbalance is one of the major problems in training long-context LLM models. Imbalance among data parallel (DP) and pipeline parallel (PP) workers introduces stragglers or bubbles that causes severe slowdown, and the problem becomes more severe as we scale to longer context lengths or more GPUs.
 
 We believe that one of the major reasons for this slowdown is that the **core attention**, i.e., the $\text{softmax}(QK^T)V$ kernel, colocates with the other linear parts. We argue that by disaggregating the quadratic part of the core attention computation from the linear part of the rest, we can fundamentally eliminate the imbalance and achieve near-linear scaling for long-context LLM training. 
 
@@ -37,7 +37,7 @@ LLMs with long-context ability have become the norm and the backbone of many mod
 
 To understand this imbalance, let’s dive deeper and revisit what happens during LLM training.
 
-**LLM architecture and core attention (CA).** Figure 1 shows the structure of a typical LLM model within a layer, and Figure 2 clarifies our terminology around core attention. Slightly different from other literature, we explicitly use the term **core attention (CA)** to refer only to the computation after QKV projection and before O projection (e.g., FlashAttention). CA only contains the \(O(n^2)\) computational component. It is important to distinguish **core attention** and **attention** from the standard literature. When people refer to attention, they include the QKVO projection \- the linear computation components \- as well. Core attention, in contrast, only performs the computation after the QKV tensors are prepared and only produces a small output tensor.
+**LLM architecture and core attention (CA).** Figure 1 shows the structure of a typical LLM model within a layer, and Figure 2 clarifies our terminology around core attention. Slightly different from other literature, we explicitly use the term **core attention (CA)** to refer only to the computation after QKV projection and before O projection (e.g., FlashAttention). Thus, CA only contains the $O(n^2)$ computational component. It is important to distinguish **core attention** and **attention** from the standard literature. When people refer to attention, they include the QKVO projection \- the linear computation components \- as well. Core attention, in contrast, only performs the computation after the QKV tensors are prepared and only produces a small output tensor.
 
 <!-- Add footnote referring the "core attention" concept to Megatron-LM code: https://github.com/NVIDIA/Megatron-LM/blob/5af715b861fe4c0a201be219fa3195fbf0880287/megatron/core/transformer/attention.py#L938-L996 -->
 
@@ -45,7 +45,7 @@ We then treat the other components within a layer as **pre core attention** and 
 
 {{< image src="img/llm-arch.png" alt="llm-arch" width="100%" title="Figure 1. A typical LLM model within a layer.">}}
 
-{{< image src="img/ca-vs-attn.png" alt="ca-vs-attn" width="100%" title="Figure 2. core attention vs Attention. core attention (CA) only contains the O(n^2) computational component, whereas the attention includes the QKVO projection (the linear computation components) and the O(n^2) core attention computation.">}}
+{{< image src="img/ca-vs-attn.png" alt="ca-vs-attn" width="100%" title="Figure 2. Core attention vs Attention. Core attention (CA) only contains the $O(n^2)$ computational component, whereas attention includes the QKVO projection (the linear computation components) and the $O(n^2)$ core attention computation.">}}
 
 It turns out that the fundamental imbalance is mainly caused when we have to run core attention, which has quadratic complexity, with other linear components on the same devices, given that training documents might have different lengths, as we will explain next. 
 
@@ -64,22 +64,22 @@ Even worse, this imbalance will become much more pronounced when we push context
 
 **Parallelism Strategy in Distributed LLM Training Systems**. 
 
-Designing the right parallelism strategy is crucial for large-scale distributed LLM training, and people usually choose to use 4D parallelism: Tensor Parallel (TP), Pipeline Parallel (PP), Data Parallel (DP), and Context Parallel (CP). In practice, a substantial amount of effort is spent tuning these parallelism dimensions, yet inefficiencies such as stragglers and pipeline bubbles often persist.
+Designing the right parallelism strategy is crucial for large-scale distributed LLM training, and people usually choose to use 4D parallelism: Tensor Parallelism (TP), Pipeline Parallelism (PP), Data Parallelism (DP), and Context Parallelism (CP). In practice, a substantial amount of effort is spent tuning these parallelism dimensions, yet inefficiencies such as stragglers and pipeline bubbles often persist.
 
 We found that blindly scaling DP, PP, or CP will amplify the imbalance and make overhead dominant very quickly.
 
-**Data parallel** introduces stragglers when DP ranks process microbatches with uneven core attention workload (and the same total token length). In DP, a training iteration has an optimizer step that synchronizes the gradients (all-reduce) from all ranks. When different DP ranks process microbatches with uneven core attention workload, the latency of the optimizer step is bound by the slowest worker (with the most core attention workload within its microbatch). Figure 5a shows the total percentage of time that GPUs are unutilized because of stragglers as a proxy to measure the aggregate waste of GPU hours. The number grows very quickly from \~2% in DP2 to an astounding 55% in DP8, as a direct result of stragglers in the DP rank with more attention computation.
+**Data parallelism** introduces stragglers when DP ranks process microbatches with uneven core attention workloads (and the same total token length). In DP, a training iteration has an optimizer step that synchronizes the gradients (all-reduce) from all ranks. When different DP ranks process microbatches with uneven core attention workloads, the latency of the optimizer step is bound by the slowest worker (with the largest core attention workload within its microbatch). Figure 5a shows the total percentage of time that GPUs are unutilized because of stragglers as a proxy to measure the aggregate waste of GPU hours. The number grows very quickly from \~2% in DP2 to an astounding 55% in DP8, as a direct result of stragglers in the DP rank with more attention computation.
 
 
 {{< image src="img/parallel-dp.png" alt="parallel-dp" width="100%" title="Figure 5a. Data parallel introduces stragglers when DP ranks process microbatches with uneven core attention workload.">}}
 
-**Pipeline parallel** further amplifies the imbalance problem. In PP, microbatches with uneven CA computation propagate along the pipeline, causing cascading amplification of the latency. Figure 5b shows such an example in a simple 1F1B schedule: when one microbatch (microbatch \#1) has a much heavier computation, it affects the later microbatch schedule and introduces much more severe pipeline bubbles across stages. Techniques such as variable-length sharding\*(1) try to mitigate this by putting documents from a compute-heavy batch into less-heavy batches, but this invites significant memory imbalance across the microbatches and cannot mitigate imbalance across PP stages. This shows that naively scaling DP or PP will make imbalance more pronounced.
+**Pipeline parallelism** further amplifies the imbalance problem. In PP, microbatches with uneven CA workloads propagate along the pipeline, causing cascading amplification of the latency. Figure 5b shows such an example in a simple 1F1B schedule: when one microbatch (microbatch \#1) has a much heavier computation, it affects the later microbatch schedule and introduces much more severe pipeline bubbles across stages. Techniques such as variable-length sharding\*(1) try to mitigate this by putting documents from a compute-heavy batch into less-heavy batches, but this invites significant memory imbalance across the microbatches and cannot mitigate imbalance across PP stages. This shows that naively scaling DP or PP will make imbalance more pronounced.
 
 
-{{< image src="img/parallel-pp.png" alt="parallel-pp" width="100%" title="Figure 5b. Pipeline parallel amplifies the imbalance of core attention workload across different pipeline stages.">}}
+{{< image src="img/parallel-pp.png" alt="parallel-pp" width="100%" title="Figure 5b. Pipeline parallelism amplifies the imbalance of core attention workload across different pipeline stages.">}}
 
 
-As an alternative, **Context parallel** (and variants such as per-doc context parallel sharding\*(2)) shards each document (q-tensor) across context parallel workers in a way that has equal FLOPS. However, to compute the CA, each q-tensor shard also needs to have its associated KV tensors. This means context parallel also needs to all-gather the KV tensors across all GPUs, whose latency can quickly become dominant. Figure 5c shows that as we scale CP degree, the latency of all-gather increases from 2% (CP2) of the total latency to 50% (CP32). Worse, the memory consumption of all-gather also increases significantly \- from just \<5% (CP2) of total memory to \~20% (CP16) just for storing the global KV tensors. Therefore, naively scaling CP will introduce a significant compute and memory overhead that prohibits further scaling.
+As an alternative, **Context parallelism** (and variants such as per-doc context parallel sharding\*(2)) shards each document (q-tensor) across context parallel workers in a way that has equal FLOPS. However, to compute the CA, each q-tensor shard also needs to have its associated KV tensors. This means context parallel also needs to all-gather the KV tensors across all GPUs, whose latency can quickly become dominant. Figure 5c shows that as we scale CP degree, the latency of all-gather increases from 2% (CP2) of the total latency to 50% (CP32). Worse, the memory consumption of all-gather also increases significantly \- from just \<5% (CP2) of total memory to \~20% (CP16) just for storing the global KV tensors. Therefore, naively scaling CP will introduce a significant compute and memory overhead that prohibits further scaling.
 
 
 {{< image src="img/parallel-cp.png" alt="parallel-cp" width="100%" title="Figure 5c. Context parallel introduces overhead of all-gather as we scale the context parallel degree.">}}
@@ -97,17 +97,17 @@ At first glance, disaggregation seems to introduce some additional overheads: (1
 {{< image src="img/distca-arch.png" alt="distca-arch" width="100%" title="Figure 6. DistCA architecture. DistCA disaggregates core attention from other components and treats core attention as an individual unit of work (attention task) to be scheduled on different devices (attention server).">}}
 
 
-**1/ CA kernel can be divided and re-combined (almost arbitrarily).** In modern attention kernels (e.g., FlashAttention), each GPU thread block is assigned a tile of the core attention computation. The kernel can sustain high MFU on variable-length fused sequences, provided its size is larger than this tile. As shown in Figure 7, if each CA shard length reaches 128 or more, the CA kernel throughput will be near peak throughput. This means attention tasks (documents) can be arbitrarily sharded, then recombined into a single high‑occupancy CA kernel without hurting kernel efficiency. Therefore, disaggregation does not introduce extra overhead for balanced attention tasks.
+**1. CA kernel can be divided and re-combined (almost arbitrarily).** In modern attention kernels (e.g., FlashAttention), each GPU thread block is assigned a tile of the core attention computation. The kernel can sustain high MFU on variable-length fused sequences, provided its size is larger than this tile. As shown in Figure 7, if each CA shard length reaches 128 or more, the CA kernel throughput will be near peak throughput. This means attention tasks (documents) can be arbitrarily sharded, then recombined into a single high‑occupancy CA kernel without hurting kernel efficiency. Therefore, disaggregation does not introduce extra overhead for balanced attention tasks.
 
 
 {{< image src="img/attn-throughput.png" alt="attn-throughput" width="50%" title="Figure 7. CA kernel throughput is near peak throughput when each CA shard length reaches 128 or more.">}}
 
-**2/ CA communication cost can be much lower than context parallel.** Sending attention to/from the attention server seems to introduce more overhead compared to context parallel. But we observe the opposite: unlike all-gather that sends all the KVs to each device, rebalancing CA only requires sending the necessary QKV to other devices to effectively balance the computation. As shown in the animation, CAD can shard the long document and only move the shard large enough to achieve compute balance across different batches. This makes CAD’s network communication much lower compared to context parallel.
+**2. CA communication cost can be much lower than context parallel.** Sending attention to/from the attention server seems to introduce more overhead compared to context parallelism. But we observe the opposite: unlike an all-gather, which sends all the KVs to each device, rebalancing CA only requires sending the necessary QKV tensors to other devices to effectively balance the computation. As shown in the animation, CAD can shard a long document and only move the shard large enough to achieve compute balance across different batches. This makes CAD’s network communication much lower compared to context parallel.
 
 <!-- cad-network-less.gif -->
 {{< image src="img/cad-network-less.gif" alt="cad-network-less" width="100%" title="Figure 8. CAD can shard the long document and only move the shard large enough to achieve compute balance across different batches, making network communication much lower compared to context parallel.">}}
 
-**3/ Ping-pong pipelining can hide communication (almost entirely).**
+**3. Ping-pong pipelining can hide communication (almost entirely).**
 
 One may have observed that despite the smaller volume of communication, CAD still introduces two all-to-all communications for each layer in the forward (and backward) passes, and this additional synchronization may seem to offset the communication savings. Fortunately, LLM training typically uses large batch sizes (>= 2) to maximize throughput, and this enables us to use **ping-pong pipelining** to overlap communication with computation, thereby eliminating the additional all-to-all communication overhead.
 As Figure 9 shows, we take a multiple of 2 microbatches (mb) every iteration, and at the end of a stage of the first mb (e.g., Pre.0), we take the second mb to run its computation (Pre.1) and launch the network communication for the output of Pre.0 (the green box underneath Pre.1).
@@ -116,7 +116,7 @@ In practice, as we scale to larger context length, the latency of computation wi
 <!-- pingpong-schedule.png -->
 {{< image src="img/pingpong-schedule.png" alt="pingpong-schedule" width="100%" title="Figure 9. Ping-pong parallel can effectively hide the communication overhead.">}}
 
-**4/ Imbalanced attention tasks can move across PP stages for balanced computation.** 
+**4. Imbalanced attention tasks can move across PP stages for balanced computation.** 
 
 Another major advantage of CAD is that GPUs from different pipeline-parallel (PP) ranks can now jointly balance core attention (CA) workloads. With CAD, we can design PP to alternate cleanly between CA and non-CA components. Since CA operates without weight parameters, its computation can be dynamically dispatched to GPUs in other PP ranks, thereby balancing the computation across PP stages. As shown in Figure 10a (micro-view), within one forward layer, CAD can dispatch CA workloads to (1) idle GPUs in different PP ranks, or (2) rebalance CA tasks to different PP ranks. As shown in Figure 10b (macro-view), we remove most pipeline bubbles (\!) in pipeline parallelism without incurring extra overhead. Note that this is hard to do in conventional pipeline parallel schedules, because workload dispatch is confined within each stage, preventing cross-stage coordination. As the pipeline becomes deeper, this imbalance between microbatches amplifies even more and makes pipeline bubbles become increasingly difficult to eliminate.
 

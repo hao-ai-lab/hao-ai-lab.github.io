@@ -18,24 +18,26 @@
 {{- $paginator := .Paginate $pages -}}
 <div class="posts-list">
   {{- range $paginator.Pages -}}
+  {{- $post := . -}}
   <article class="post-preview">
-    {{- with .Params.cover.image -}} <!-- Updated path to access cover image -->
+    {{- with $post.Params.cover.image -}}
+    {{- $coverURL := partial "cover-url.html" (dict "page" $post "image" .) -}}
     <div class="post-image">
-      <img src="{{ . | absURL }}" alt="{{ $.Params.cover.alt }}"> <!-- Use absURL for proper path resolution -->
+      <img src="{{ $coverURL }}" alt="{{ $post.Params.cover.alt | default $post.Title }}">
     </div>
     {{- end -}}
     <div class="post-details">
-      {{- if .Params.redirect_url -}}
-        <h2><a href="{{ .Params.redirect_url }}" style="color: black !important;">{{ .Title }}</a></h2>
+      {{- if $post.Params.redirect_url -}}
+        <h2><a href="{{ $post.Params.redirect_url }}" style="color: black !important;">{{ $post.Title }}</a></h2>
       {{- else -}}
-        <h2><a href="{{ .Permalink }}" style="color: black !important;">{{ .Title }}</a></h2>
+        <h2><a href="{{ $post.Permalink }}" style="color: black !important;">{{ $post.Title }}</a></h2>
       {{- end -}}
-      <time datetime="{{ .Date }}">{{ .Date.Format "January 2, 2006" }}</time>
-      {{- if .Params.author -}} <!-- Check for single author -->
-      <p class="post-author"> {{ .Params.author }}</p>
-      {{- else if .Params.authors -}} <!-- Check for multiple authors -->
-      <p class="post-author"> {{ delimit .Params.authors ", " }}</p>
-      <p style="text-align: justify;">{{ .Summary | markdownify }}</p>
+      <time datetime="{{ $post.Date }}">{{ $post.Date.Format "January 2, 2006" }}</time>
+      {{- if $post.Params.author -}}
+      <p class="post-author"> {{ $post.Params.author }}</p>
+      {{- else if $post.Params.authors -}}
+      <p class="post-author"> {{ delimit $post.Params.authors ", " }}</p>
+      <p style="text-align: justify;">{{ $post.Summary | markdownify }}</p>
       {{- end -}}
     </div>
   </article>
