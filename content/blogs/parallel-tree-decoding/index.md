@@ -91,7 +91,7 @@ At inference time, the frozen target verifies every node in the speculative tree
 ### Training the Head
 
 {{< justify >}}
-Only the draft head is trained; the target model stays frozen. This lets JetSpec attach to a production model without changing its weights. Training samples anchor positions in target-aligned sequences, builds future-token blocks, and supervises the head against the target’s own next-token distributions. Training with soft target distributions with forward KL preserves relative preferences among plausible continuations, and slightly outperforms SFT.
+Only the draft head is trained; the target model stays frozen. This lets JetSpec attach to a production model without changing its weights. Training samples anchor positions in target-aligned sequences, builds future-token blocks, and supervises the head against the target’s own next-token distributions.
 {{< /justify >}}
 
 {{< justify >}}
