@@ -1,8 +1,8 @@
 +++
 title = "FastAFD: Open-Source Large-Scale Attention-FFN Disaggregation on Blackwell NVL72"
 date = 2026-07-04T12:00:00-07:00
-authors = ["Hao AI Lab"]
-author = "Hao AI Lab"
+authors = ["Yichao Fu*", "Yuxuan Zhang*", "Ruitian Wang", "Junda Chen", "Hao Zhang"]
+author = "Yichao Fu*, Yuxuan Zhang*, Ruitian Wang, Junda Chen, Hao Zhang"
 ShowReadingTime = true
 draft = false
 math = true
@@ -270,7 +270,7 @@ If the condition holds, the system approaches the corresponding attention-side l
 
 FastAFD is a serving prototype, not a new model architecture. AFD itself is prior systems work: MegaScale-Infer and Step-3 establish the attention/FFN split as a serving direction [[1]](#ref-1) [[2]](#ref-2). FastAFD's contribution is an open, inspectable GB200 NVL72 implementation with measured decode-throughput gains over tuned vLLM. This post only profiles steady-state decode steps on GB200 NVL72. It does not claim to solve online arrivals, mixed prefill/decode traffic, SLO-aware admission, request migration, or failure recovery. We plan to release the code and scripts at [hao-ai-lab/FastAFD](https://github.com/hao-ai-lab/FastAFD).
 
-**Broader model and architecture coverage.** The current implementation focuses on full-attention MoE models, specifically Qwen3-235B-A22B and MiniMax-M2.5. The next step is to extend FastAFD to recent open large-MoE families such as DeepSeek, Kimi, Qwen3-Next, and GLM [[11]](#ref-11) [[12]](#ref-12) [[13]](#ref-13) [[14]](#ref-14). These models stress both sides of AFD: attention may be full, sparse, sliding-window, or hybrid/linear, while MoE routing changes expert count, activation ratio, load balance, and numerical format.
+**Broader model and architecture coverage.** The current implementation focuses on full-attention MoE models, specifically Qwen3-235B-A22B and MiniMax-M2.5. The next step is to extend FastAFD to recent open large-MoE families such as DeepSeek, Kimi, Qwen3-Next, GLM, and Stepfun [[11]](#ref-11) [[12]](#ref-12) [[13]](#ref-13) [[14]](#ref-14) [[19]](#ref-19). These models stress both sides of AFD: attention may be full, sparse, sliding-window, or hybrid/linear, while MoE routing changes expert count, activation ratio, load balance, and numerical format.
 
 **Production serving composition.** A production server has to compose AFD with the rest of the serving stack: prefill/decode disaggregation, speculative decoding, admission control, request migration, runtime metrics, load-imbalance handling, and SLO-aware scheduling [[15]](#ref-15) [[16]](#ref-16). Attention load follows context length and active request count. FFN load follows the number of tokens entering the MoE layer, then routing and expert hot spots decide how that work is distributed across FFN workers. Future schedulers should plan against both KV-cache pressure and expert pressure, not only a static attention-to-FFN node split.
 
@@ -278,7 +278,7 @@ FastAFD is a serving prototype, not a new model architecture. AFD itself is prio
 
 ## Acknowledgement
 
-We thank NVIDIA for supporting our development on GB200 NVL72. We thank the Qwen team and MiniMax for creating and open-sourcing Qwen3-235B-A22B and MiniMax-M2.5 to the community. FastAFD also builds on the open-source work of the SGLang, vLLM, DeepEP, and DeepGEMM teams, without which a system at this scale would not have been possible to build in the open.
+We thank NVIDIA for supporting our development on GB200 NVL72. We thank the Qwen team and MiniMax for creating and open-sourcing Qwen3-235B-A22B and MiniMax-M2.5 to the community. We would like to thank Yibo Zhu and Yonghao Zhuang for providing insightful feedback. FastAFD also builds on the open-source work of the SGLang, vLLM, DeepEP, and DeepGEMM teams, without which a system at this scale would not have been possible to build in the open.
 
 ## References
 
@@ -300,3 +300,4 @@ We thank NVIDIA for supporting our development on GB200 NVL72. We thank the Qwen
 16. <a id="ref-16"></a>NVIDIA, "How NVIDIA Dynamo 1.0 Powers Multi-Node Inference at Production Scale," NVIDIA Technical Blog, 2026. <https://developer.nvidia.com/blog/nvidia-dynamo-1-production-ready/>
 17. <a id="ref-17"></a>NVIDIA, "Inside NVIDIA Groq 3 LPX: The Low-Latency Inference Accelerator for the NVIDIA Vera Rubin Platform," NVIDIA Technical Blog, 2026. <https://developer.nvidia.com/blog/inside-nvidia-groq-3-lpx-the-low-latency-inference-accelerator-for-the-nvidia-vera-rubin-platform/>
 18. <a id="ref-18"></a>NVIDIA, "Inside the NVIDIA Vera Rubin Platform: Six New Chips, One AI Supercomputer," NVIDIA Technical Blog, 2026. <https://developer.nvidia.com/blog/inside-the-nvidia-rubin-platform-six-new-chips-one-ai-supercomputer/>
+19. <a id="ref-19"></a>StepFun Team, "Step 3.7 Flash," Hugging Face model card, 2026. <https://huggingface.co/stepfun-ai/Step-3.7-Flash/>
