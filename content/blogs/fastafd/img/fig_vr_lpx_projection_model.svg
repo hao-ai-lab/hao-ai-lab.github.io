@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="760" viewBox="0 0 1180 760" role="img" aria-label="FastAFD GB200 decode-step latency decomposition and predictor">
+  <defs>
+    <style>
+      .title { font: 700 34px Arial, sans-serif; fill: #1f2a44; }
+      .subtitle { font: 500 22px Arial, sans-serif; fill: #5d687c; }
+      .label { font: 700 24px Arial, sans-serif; fill: #1f2a44; }
+      .small { font: 500 18px Arial, sans-serif; fill: #5d687c; }
+      .tiny { font: 600 15px Arial, sans-serif; fill: #5d687c; }
+      .bartext { font: 700 20px Arial, sans-serif; fill: #1f2a44; }
+      .formula { font: 600 22px "Courier New", monospace; fill: #1f2a44; }
+      .formula-small { font: 600 18px "Courier New", monospace; fill: #1f2a44; }
+      .attn { fill: #d8eaff; stroke: #3479c6; stroke-width: 4; }
+      .dense { fill: #e7f0ff; stroke: #6d8ee6; stroke-width: 4; }
+      .moe { fill: #dff4e7; stroke: #2f9a63; stroke-width: 4; }
+      .comm { fill: #fff0d8; stroke: #e28a20; stroke-width: 4; }
+      .panel { fill: #ffffff; stroke: #d7dde7; stroke-width: 3; }
+      .dash { fill: none; stroke: #e28a20; stroke-width: 4; stroke-dasharray: 11 9; }
+      .bracket { stroke: #6b7280; stroke-width: 3; fill: none; }
+      .divider { stroke: #c8d0dc; stroke-width: 3; }
+      .axis { stroke: #8994a5; stroke-width: 3; marker-end: url(#axis-arrow); }
+    </style>
+    <marker id="axis-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#8994a5"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1180" height="760" fill="#ffffff"/>
+  <text x="58" y="58" class="title">Decode-step latency composition</text>
+
+  <!-- Legend -->
+  <rect x="58" y="78" width="24" height="18" rx="3" class="attn"/>
+  <text x="91" y="94" class="tiny">FMHA (attention)</text>
+  <rect x="252" y="78" width="24" height="18" rx="3" class="dense"/>
+  <text x="285" y="94" class="tiny">Dense</text>
+  <rect x="542" y="78" width="24" height="18" rx="3" class="moe"/>
+  <text x="575" y="94" class="tiny">MoE / FFN path</text>
+
+  <!-- Top panel: colocated -->
+  <text x="58" y="135" class="label">Colocated vLLM</text>
+  <text x="58" y="166" class="subtitle">one decode step pays attention and MoE on the same GPU pool</text>
+
+  <!-- proportional to Qwen3-235B 8K vLLM, with small retained kernels folded into Dense for readability -->
+  <rect x="58" y="205" width="375" height="88" rx="8" class="attn"/>
+  <text x="205" y="257" class="bartext">FMHA</text>
+
+  <rect x="433" y="205" width="141" height="88" rx="8" class="dense"/>
+  <text x="476" y="257" class="bartext">Dense</text>
+
+  <rect x="574" y="205" width="389" height="88" rx="8" class="moe"/>
+  <text x="731" y="235" class="bartext">MoE</text>
+  <text x="647" y="266" class="small">dispatch + expert FFNs + combine</text>
+
+  <path d="M 58 324 L 963 324" class="bracket"/>
+  <path d="M 58 315 L 58 333 M 963 315 L 963 333" class="bracket"/>
+  <text x="420" y="359" class="formula">T_vLLM = T_FMHA + T_dense + T_moe</text>
+
+  <!-- Bottom panel: disaggregated exposed critical path -->
+  <text x="58" y="425" class="label">Disaggregated target</text>
+  <text x="58" y="456" class="subtitle">the exposed critical path keeps MoE off the attention timeline</text>
+
+  <!-- close to measured AFD step, with larger attention and non-FMHA retained work folded into Dense -->
+  <rect x="58" y="480" width="562" height="82" rx="8" class="attn"/>
+  <text x="302" y="527" class="bartext">FMHA</text>
+  <rect x="620" y="480" width="282" height="82" rx="8" class="dense"/>
+  <text x="732" y="527" class="bartext">Dense</text>
+
+  <rect x="192" y="604" width="560" height="64" rx="8" class="moe" opacity="0.85"/>
+  <text x="428" y="627" class="bartext">MoE</text>
+  <text x="300" y="653" class="small">dispatch + expert FFNs + combine</text>
+
+  <path d="M 58 696 L 902 696" class="bracket"/>
+  <path d="M 58 687 L 58 705 M 902 687 L 902 705" class="bracket"/>
+  <text x="230" y="732" class="formula">T_AFD ~= 1.5 x T_FMHA + 2 x T_dense</text>
+
+  <line x1="58" y1="386" x2="1138" y2="386" class="axis"/>
+  <text x="1007" y="379" class="tiny">time</text>
+
+</svg>
