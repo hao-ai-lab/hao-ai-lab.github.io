@@ -9,11 +9,11 @@ math = true
 contentClass = "post-content-justified"
 summary = "FastAFD is an open-source serving prototype for large-scale Attention-FFN disaggregation on Blackwell NVL72."
 [cover]
-    image = "img/fig_win.png"
+    image = "img/afd-token-flow.gif"
     relative = true
-    alt = "FastAFD per-GPU decode throughput over the colocated baseline"
-    caption = "FastAFD improves per-GPU decode throughput over a tuned colocated vLLM baseline at the best attention-to-FFN node ratio."
-    hidden = true
+    alt = "Attention-FFN disaggregated token flow"
+    caption = "Attention-FFN disaggregated token flow: attention workers run request-parallel while FFN/MoE workers aggregate tokens from all attention workers into large expert batches."
+    hidden = false
 [socialIcons]
    [[socialIcons.icon]]
      name = "twitter"
