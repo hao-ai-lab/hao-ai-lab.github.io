@@ -1,6 +1,6 @@
 +++
 title = "FastAFD: Open-Source Large-Scale Attention-FFN Disaggregation on Blackwell NVL72"
-date = 2026-07-04T12:00:00-07:00
+date = 2026-07-06T12:00:00-07:00
 authors = ["Yichao Fu*", "Yuxuan Zhang*", "Ruitian Wang", "Junda Chen", "Hao Zhang"]
 author = "Yichao Fu*, Yuxuan Zhang*, Ruitian Wang, Junda Chen, Hao Zhang"
 ShowReadingTime = true
