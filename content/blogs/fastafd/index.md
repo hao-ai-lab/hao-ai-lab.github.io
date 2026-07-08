@@ -22,7 +22,7 @@ summary = "FastAFD is an open-source serving prototype for large-scale Attention
 
 **TL;DR**
 
-One major challenge to serve MoE model today lies in the heterogenity of attention and MoE layer. Attention is constrained by KV-cache capacity: as context length grows, fewer active requests fit in a decode batch. The MoE layer, however, needs a sufficiently large batch to keep expert GEMMs efficient. As context length grows, the active decode batch shrinks, leaving attention largely dominated by KV-cache reads while MoE loses the token volume needed for efficient expert execution.
+One major challenge to serve the MoE model today lies in the heterogeneity of attention and MoE layer. Attention is constrained by KV-cache capacity: as context length grows, fewer active requests fit in a decode batch. The MoE layer, however, needs a sufficiently large batch to keep expert GEMMs efficient. As context length grows, the active decode batch shrinks, leaving attention largely dominated by KV-cache reads while MoE loses the token volume needed for efficient expert execution.
 
 Prior AFD systems such as MegaScale-Infer [[1]](#ref-1) and Step Fun's Step3 [[2]](#ref-2) have shown that disaggregating attention and FFN/MoE can improve MoE serving on pre-Blackwell GPU deployments. However, as scale-up systems such as NVL72 GB300 become much stronger (with much higher network bandwidth and compute), will the benefits of AFD still carry over to these system? Looking even further, as NVIDIA Vera-Rubin + LPX [[17]](#ref-17) is intrinsically heterogeneous, does AFD still shows benefit on these systems as expected?
 
