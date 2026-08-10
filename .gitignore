@@ -3,3 +3,8 @@ public/*
 *.swp
 .hugo_build.lock
 .DS_Store
+
+# Local pre-edit snapshots of blog posts (not for publication)
+.blog-backups/
+__pycache__/
+*.pyc
