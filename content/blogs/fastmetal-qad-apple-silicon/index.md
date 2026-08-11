@@ -246,7 +246,7 @@ We welcome feedback, contributions, and collaboration. If you have a feature or 
 
 The base models are [Wan](https://github.com/Wan-Video/Wan2.1) 2.1 and 2.2 from the Wan team at Alibaba. The recipe builds on [DMD2](https://arxiv.org/abs/2405.14867) by Tianwei Yin and coauthors, and continues the work of everyone who shipped [FastWan-QAD](https://haoailab.com/blogs/fastwan-qad/).
 
-On the Mac side we depend on [TAEHV](https://github.com/madebyollin/taehv) by Ollin Boer Bohan for decoding, [rife-mlx](https://github.com/hao-ai-lab/FastVideo) for frame interpolation, and [MLX](https://github.com/ml-explore/mlx) and the community around it for the runtime.
+On the Mac side we depend on [TAEHV](https://github.com/madebyollin/taehv) by Ollin Boer Bohan for decoding, [rife-mlx](https://github.com/xocialize/rife-mlx) for frame interpolation, and [MLX](https://github.com/ml-explore/mlx) and the community around it for the runtime.
 
 Training ran on [NVIDIA](https://www.nvidia.com/) GB200 GPUs. Thank you to NVIDIA for the compute and the Blackwell-era tooling the QAD recipe builds on.
 
