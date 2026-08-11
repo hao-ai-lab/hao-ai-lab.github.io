@@ -14,11 +14,13 @@ contentClass = "post-content-justified"
       name = "github"
       url = "https://github.com/hao-ai-lab/FastVideo"
 [cover]
-    image = "img/int8_reconstruction_l2.png"
-    alt = "FastMetal-QAD runs Wan video models natively on Apple Silicon"
-    caption = "FastMetal-QAD runs Wan video models natively on Apple Silicon"
+    image = "img/fast_metal.png"
+    alt = "FastMetal: Wan video models running natively on Apple Silicon"
+    caption = "FastMetal: Wan video models running natively on Apple Silicon"
     hidden = true
 +++
+
+{{< image src="img/fast_metal.png" alt="FastMetal: Wan video models running natively on Apple Silicon" width="100%" >}}
 
 {{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-412taon6b-~Ijpdj2UCeJPDjdgve~r3A" discord="https://discord.gg/Dm8F2peD3e" huggingface="https://huggingface.co/FastVideo" >}}
 
@@ -145,17 +147,17 @@ Every clip below is the same prompt per model across all five modes, on the same
 <td colspan="3" align="center" style="border: 2px solid #000; padding: 8px;"><strong>Refine mode</strong></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/refine/1p3b.mp4" width="249" autoplay loop muted playsinline controls></video><br><small>109.53s · 5.31 GiB peak</small></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/refine/5b.mp4" width="249" autoplay loop muted playsinline controls></video><br><small>119.68s · 9.36 GiB peak</small></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/refine/14b.mp4" width="249" autoplay loop muted playsinline controls></video><br><small>652.24s · 34.67 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/refine/1p3b.mp4" width="249" autoplay loop muted playsinline controls></video><br><small>100.59s · 3.90 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/refine/5b.mp4" width="249" autoplay loop muted playsinline controls></video><br><small>107.64s · 10.80 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/refine/14b.mp4" width="249" autoplay loop muted playsinline controls></video><br><small>618.06s · 21.71 GiB peak</small></td>
 </tr>
 <tr>
 <td colspan="3" align="center" style="border: 2px solid #000; padding: 8px;"><strong>Fast + refine</strong></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/fast_refine/1p3b.mp4" width="249" autoplay loop muted playsinline controls></video><br><small>40.00s · 4.63 GiB peak</small></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/fast_refine/5b.mp4" width="249" autoplay loop muted playsinline controls></video><br><small>54.18s · 7.98 GiB peak</small></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/fast_refine/14b.mp4" width="249" autoplay loop muted playsinline controls></video><br><small>251.49s · 32.25 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/fast_refine/1p3b.mp4" width="249" autoplay loop muted playsinline controls></video><br><small>39.43s · 3.22 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/fast_refine/5b.mp4" width="249" autoplay loop muted playsinline controls></video><br><small>51.58s · 8.13 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/fast_refine/14b.mp4" width="249" autoplay loop muted playsinline controls></video><br><small>237.35s · 18.11 GiB peak</small></td>
 </tr>
 <tr>
 <td colspan="3" align="center" style="border: 2px solid #000; padding: 8px;"><strong>Prompt enhancement</strong></td>
@@ -168,11 +170,11 @@ Every clip below is the same prompt per model across all five modes, on the same
 </table>
 </div>
 
-Fast mode is the largest single lever: roughly 2.4x to 2.9x less denoising work at every model size. Refine costs about 10 to 15 percent more denoising than baseline and buys detail rather than speed. The two compose: fast + refine still lands well under baseline while recovering much of what fast mode gives up. Prompt enhancement is free at the DiT: it rewrites the prompt, not the workload.
+Fast mode is the largest single lever: roughly 2.4x to 2.9x less denoising work at every model size. Refine costs about 5 to 7 percent more denoising than baseline and buys detail rather than speed. The two compose: fast + refine still lands well under baseline while recovering much of what fast mode gives up. Prompt enhancement is free at the DiT: it rewrites the prompt, not the workload.
 
 {{< image src="img/fig_mode_speed.svg" alt="Denoise time by generation mode for each model" width="100%" title="Figure 3. Denoise time by generation mode. Each panel is scaled to its own model; speed-up factors are relative to that model's own baseline run." >}}
 
-Memory is what decides which Mac can run what. Baseline 5B fits in 16 GB and baseline 14B in 24 GB, while 14B refine and fast + refine are the only configurations in this release that need more than 24 GB.
+Memory is what decides which Mac can run what, and nameplate RAM overstates the budget twice over: Apple counts in decimal, so a 24 GB Mac holds 22.35 GiB, and macOS plus whatever else is open takes several GiB of that. The 5B stays under 11 GiB in every mode, which is why 720p is comfortable on a 16 GB machine. The 14B peaks at 21.7 GiB, close enough to a 24 GB Mac's real ceiling that we target it at 36 GB and above. Refine is nearly free in memory terms: the two-pass path keeps one resident copy of the DiT rather than two.
 
 {{< image src="img/fig_peak_memory.svg" alt="Peak MLX memory by model and mode with Mac memory tiers marked" width="100%" title="Figure 4. Peak MLX memory during denoising, with the 16 GB and 24 GB Mac tiers marked." >}}
 
@@ -244,7 +246,7 @@ We welcome feedback, contributions, and collaboration. If you have a feature or 
 
 ## Acknowledgements
 
-The base models are [Wan](https://github.com/Wan-Video/Wan2.1) 2.1 and 2.2 from the Wan team at Alibaba. The recipe builds on [DMD2](https://arxiv.org/abs/2405.14867) by Tianwei Yin and coauthors, and continues the work of everyone who shipped [FastWan-QAD](https://haoailab.com/blogs/fastwan-qad/).
+The base models are [Wan](https://wan.video/) 2.1 and 2.2 from the Wan team at Alibaba. The recipe builds on [DMD2](https://arxiv.org/abs/2405.14867) by Tianwei Yin and coauthors, and continues the work of everyone who shipped [FastWan-QAD](https://haoailab.com/blogs/fastwan-qad/).
 
 On the Mac side we depend on [TAEHV](https://github.com/madebyollin/taehv) by Ollin Boer Bohan for decoding, [rife-mlx](https://github.com/xocialize/rife-mlx) for frame interpolation, and [MLX](https://github.com/ml-explore/mlx) and the community around it for the runtime.
 

@@ -22,19 +22,29 @@ from pathlib import Path
 SOURCE_DEFAULT = Path("/tmp/fastvideo_pr1638_quality_runs")
 DEST = Path(__file__).resolve().parent / "data"
 
-# Run directory -> metrics files that feed a figure in the post.
+# Single-pass rows. These trace one input shape, so the compile fix in
+# FastVideo 51ede39e9 does not change them and the original runs still stand.
 WANTED = {
     "blog_modes_forest_1p3b": "forest_1p3b_832x480_81_{mode}_metrics.json",
     "blog_modes_neon_5b": "neon_woman_5b_1280x704_81_{mode}_metrics.json",
     "blog_modes_stretch_14b": "stretch_14b_832x480_81_{mode}_seed1024_metrics.json",
 }
-MODES = ("baseline", "fast", "refine", "fast_refine", "prompt_enhance")
+MODES = ("baseline", "fast", "prompt_enhance")
 
-# The 5B refine and fast+refine rows in the post come from a re-run.
+# Two-pass rows, re-measured after 51ede39e9 stopped mx.compile from keeping a
+# second copy of the DiT weights alive across the two denoising resolutions.
 EXTRA = {
-    "blog_modes_neon_5b_retry_seed2027_nocompile": (
-        "neon_woman_5b_1280x704_81_refine_seed2027_metrics.json",
+    "blog_modes_forest_1p3b_pr51ede39": (
+        "forest_1p3b_832x480_81_refine_metrics.json",
+        "forest_1p3b_832x480_81_fast_refine_metrics.json",
+    ),
+    "blog_modes_neon_5b_pr51ede39": (
+        "neon_woman_5b_1280x704_81_refine_seed2027_cached_metrics.json",
         "neon_woman_5b_1280x704_81_fast_refine_seed2027_metrics.json",
+    ),
+    "blog_modes_stretch_14b_pr51ede39": (
+        "stretch_14b_832x480_81_refine_seed1024_metrics.json",
+        "stretch_14b_832x480_81_fast_refine_seed1024_metrics.json",
     ),
 }
 

@@ -18,52 +18,52 @@
   <text x="190.0" y="96.0" class="lbl" text-anchor="start">FastMetal-1.3B-QAD</text>
   <text x="190.0" y="114.0" class="sub" text-anchor="start">832×480 · 81 frames</text>
   <line x1="170.0" y1="84.0" x2="170.0" y2="414.0" stroke="#e8ecf2" stroke-width="1"/>
-  <rect x="190.0" y="136.0" width="135.4" height="22.0" rx="5" fill="#3b7dd8"/>
+  <rect x="190.0" y="136.0" width="139.9" height="22.0" rx="5" fill="#3b7dd8"/>
   <text x="354.0" y="153.0" class="val" text-anchor="start">89.8 s</text>
-  <rect x="190.0" y="196.0" width="47.2" height="22.0" rx="5" fill="#3b7dd8"/>
+  <rect x="190.0" y="196.0" width="48.8" height="22.0" rx="5" fill="#3b7dd8"/>
   <text x="354.0" y="213.0" class="val" text-anchor="start">31.3 s</text>
   <text x="480.0" y="213.0" class="vs" text-anchor="end">2.87×</text>
   <rect x="190.0" y="256.0" width="150.0" height="22.0" rx="5" fill="#3b7dd8"/>
-  <text x="354.0" y="273.0" class="val" text-anchor="start">99.5 s</text>
-  <text x="480.0" y="273.0" class="vs" text-anchor="end">0.90×</text>
+  <text x="354.0" y="273.0" class="val" text-anchor="start">96.2 s</text>
+  <text x="480.0" y="273.0" class="vs" text-anchor="end">0.93×</text>
   <rect x="190.0" y="316.0" width="54.0" height="22.0" rx="5" fill="#3b7dd8"/>
-  <text x="354.0" y="333.0" class="val" text-anchor="start">35.8 s</text>
-  <text x="480.0" y="333.0" class="vs" text-anchor="end">2.51×</text>
-  <rect x="190.0" y="376.0" width="134.0" height="22.0" rx="5" fill="#3b7dd8"/>
+  <text x="354.0" y="333.0" class="val" text-anchor="start">34.6 s</text>
+  <text x="480.0" y="333.0" class="vs" text-anchor="end">2.59×</text>
+  <rect x="190.0" y="376.0" width="138.5" height="22.0" rx="5" fill="#3b7dd8"/>
   <text x="354.0" y="393.0" class="val" text-anchor="start">88.9 s</text>
   <text x="480.0" y="393.0" class="vs" text-anchor="end">1.01×</text>
   <text x="512.0" y="96.0" class="lbl" text-anchor="start">FastMetal-5B-QAD</text>
   <text x="512.0" y="114.0" class="sub" text-anchor="start">1280×704 · 81 frames</text>
   <line x1="492.0" y1="84.0" x2="492.0" y2="414.0" stroke="#e8ecf2" stroke-width="1"/>
-  <rect x="512.0" y="136.0" width="128.7" height="22.0" rx="5" fill="#1f8a4c"/>
+  <rect x="512.0" y="136.0" width="143.6" height="22.0" rx="5" fill="#1f8a4c"/>
   <text x="676.0" y="153.0" class="val" text-anchor="start">98.5 s</text>
-  <rect x="512.0" y="196.0" width="53.8" height="22.0" rx="5" fill="#1f8a4c"/>
+  <rect x="512.0" y="196.0" width="60.0" height="22.0" rx="5" fill="#1f8a4c"/>
   <text x="676.0" y="213.0" class="val" text-anchor="start">41.2 s</text>
   <text x="802.0" y="213.0" class="vs" text-anchor="end">2.39×</text>
   <rect x="512.0" y="256.0" width="150.0" height="22.0" rx="5" fill="#1f8a4c"/>
-  <text x="676.0" y="273.0" class="val" text-anchor="start">115 s</text>
-  <text x="802.0" y="273.0" class="vs" text-anchor="end">0.86×</text>
-  <rect x="512.0" y="316.0" width="63.2" height="22.0" rx="5" fill="#1f8a4c"/>
-  <text x="676.0" y="333.0" class="val" text-anchor="start">48.3 s</text>
-  <text x="802.0" y="333.0" class="vs" text-anchor="end">2.04×</text>
-  <rect x="512.0" y="376.0" width="129.0" height="22.0" rx="5" fill="#1f8a4c"/>
+  <text x="676.0" y="273.0" class="val" text-anchor="start">103 s</text>
+  <text x="802.0" y="273.0" class="vs" text-anchor="end">0.96×</text>
+  <rect x="512.0" y="316.0" width="65.5" height="22.0" rx="5" fill="#1f8a4c"/>
+  <text x="676.0" y="333.0" class="val" text-anchor="start">44.9 s</text>
+  <text x="802.0" y="333.0" class="vs" text-anchor="end">2.19×</text>
+  <rect x="512.0" y="376.0" width="144.0" height="22.0" rx="5" fill="#1f8a4c"/>
   <text x="676.0" y="393.0" class="val" text-anchor="start">98.8 s</text>
   <text x="802.0" y="393.0" class="vs" text-anchor="end">1.00×</text>
   <text x="834.0" y="96.0" class="lbl" text-anchor="start">FastMetal-14B-QAD</text>
   <text x="834.0" y="114.0" class="sub" text-anchor="start">832×480 · 81 frames</text>
   <line x1="814.0" y1="84.0" x2="814.0" y2="414.0" stroke="#e8ecf2" stroke-width="1"/>
-  <rect x="834.0" y="136.0" width="130.7" height="22.0" rx="5" fill="#d1521a"/>
+  <rect x="834.0" y="136.0" width="143.1" height="22.0" rx="5" fill="#d1521a"/>
   <text x="998.0" y="153.0" class="val" text-anchor="start">554 s</text>
-  <rect x="834.0" y="196.0" width="48.3" height="22.0" rx="5" fill="#d1521a"/>
+  <rect x="834.0" y="196.0" width="52.9" height="22.0" rx="5" fill="#d1521a"/>
   <text x="998.0" y="213.0" class="val" text-anchor="start">205 s</text>
   <text x="1124.0" y="213.0" class="vs" text-anchor="end">2.71×</text>
   <rect x="834.0" y="256.0" width="150.0" height="22.0" rx="5" fill="#d1521a"/>
-  <text x="998.0" y="273.0" class="val" text-anchor="start">636 s</text>
-  <text x="1124.0" y="273.0" class="vs" text-anchor="end">0.87×</text>
-  <rect x="834.0" y="316.0" width="57.6" height="22.0" rx="5" fill="#d1521a"/>
-  <text x="998.0" y="333.0" class="val" text-anchor="start">244 s</text>
-  <text x="1124.0" y="333.0" class="vs" text-anchor="end">2.27×</text>
-  <rect x="834.0" y="376.0" width="129.8" height="22.0" rx="5" fill="#d1521a"/>
+  <text x="998.0" y="273.0" class="val" text-anchor="start">581 s</text>
+  <text x="1124.0" y="273.0" class="vs" text-anchor="end">0.95×</text>
+  <rect x="834.0" y="316.0" width="59.7" height="22.0" rx="5" fill="#d1521a"/>
+  <text x="998.0" y="333.0" class="val" text-anchor="start">231 s</text>
+  <text x="1124.0" y="333.0" class="vs" text-anchor="end">2.40×</text>
+  <rect x="834.0" y="376.0" width="142.2" height="22.0" rx="5" fill="#d1521a"/>
   <text x="998.0" y="393.0" class="val" text-anchor="start">551 s</text>
   <text x="1124.0" y="393.0" class="vs" text-anchor="end">1.01×</text>
   <text x="40.0" y="153.0" class="lbl" text-anchor="start">baseline</text>

@@ -35,10 +35,10 @@
   <text x="983.3" y="634.0" class="tick" text-anchor="middle">32</text>
   <line x1="1080.0" y1="100.0" x2="1080.0" y2="614.0" stroke="#e8ecf2" stroke-width="1"/>
   <text x="1080.0" y="634.0" class="tick" text-anchor="middle">36</text>
-  <line x1="596.7" y1="92.0" x2="596.7" y2="614.0" stroke="#c8d0dc" stroke-width="1.5" stroke-dasharray="6 5"/>
-  <text x="596.7" y="86.0" class="sub" text-anchor="middle">16 GB Mac</text>
-  <line x1="790.0" y1="92.0" x2="790.0" y2="614.0" stroke="#c8d0dc" stroke-width="1.5" stroke-dasharray="6 5"/>
-  <text x="790.0" y="86.0" class="sub" text-anchor="middle">24 GB Mac</text>
+  <line x1="570.1" y1="92.0" x2="570.1" y2="614.0" stroke="#c8d0dc" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="570.1" y="86.0" class="sub" text-anchor="middle">16 GB Mac (14.9 GiB)</text>
+  <line x1="750.2" y1="92.0" x2="750.2" y2="614.0" stroke="#c8d0dc" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="750.2" y="86.0" class="sub" text-anchor="middle">24 GB Mac (22.4 GiB)</text>
   <text x="196.0" y="133.0" class="lbl" text-anchor="end">1.3B · baseline</text>
   <rect x="210.0" y="118.0" width="93.6" height="21.0" rx="5" fill="#3b7dd8"/>
   <text x="313.6" y="133.0" class="val" text-anchor="start">3.87 GiB</text>
@@ -46,11 +46,11 @@
   <rect x="210.0" y="148.0" width="77.5" height="21.0" rx="5" fill="#3b7dd8"/>
   <text x="297.5" y="163.0" class="val" text-anchor="start">3.20 GiB</text>
   <text x="196.0" y="193.0" class="lbl" text-anchor="end">1.3B · refine</text>
-  <rect x="210.0" y="178.0" width="128.3" height="21.0" rx="5" fill="#3b7dd8"/>
-  <text x="348.3" y="193.0" class="val" text-anchor="start">5.31 GiB</text>
+  <rect x="210.0" y="178.0" width="94.2" height="21.0" rx="5" fill="#3b7dd8"/>
+  <text x="314.2" y="193.0" class="val" text-anchor="start">3.90 GiB</text>
   <text x="196.0" y="223.0" class="lbl" text-anchor="end">1.3B · fast + refine</text>
-  <rect x="210.0" y="208.0" width="111.8" height="21.0" rx="5" fill="#3b7dd8"/>
-  <text x="331.8" y="223.0" class="val" text-anchor="start">4.63 GiB</text>
+  <rect x="210.0" y="208.0" width="77.7" height="21.0" rx="5" fill="#3b7dd8"/>
+  <text x="297.7" y="223.0" class="val" text-anchor="start">3.22 GiB</text>
   <text x="196.0" y="253.0" class="lbl" text-anchor="end">1.3B · prompt enhance</text>
   <rect x="210.0" y="238.0" width="93.6" height="21.0" rx="5" fill="#3b7dd8"/>
   <text x="313.6" y="253.0" class="val" text-anchor="start">3.87 GiB</text>
@@ -61,11 +61,11 @@
   <rect x="210.0" y="314.0" width="192.7" height="21.0" rx="5" fill="#1f8a4c"/>
   <text x="412.7" y="329.0" class="val" text-anchor="start">7.97 GiB</text>
   <text x="196.0" y="359.0" class="lbl" text-anchor="end">5B · refine</text>
-  <rect x="210.0" y="344.0" width="226.1" height="21.0" rx="5" fill="#1f8a4c"/>
-  <text x="446.1" y="359.0" class="val" text-anchor="start">9.36 GiB</text>
+  <rect x="210.0" y="344.0" width="261.0" height="21.0" rx="5" fill="#1f8a4c"/>
+  <text x="481.0" y="359.0" class="val" text-anchor="start">10.80 GiB</text>
   <text x="196.0" y="389.0" class="lbl" text-anchor="end">5B · fast + refine</text>
-  <rect x="210.0" y="374.0" width="192.9" height="21.0" rx="5" fill="#1f8a4c"/>
-  <text x="412.9" y="389.0" class="val" text-anchor="start">7.98 GiB</text>
+  <rect x="210.0" y="374.0" width="196.5" height="21.0" rx="5" fill="#1f8a4c"/>
+  <text x="416.5" y="389.0" class="val" text-anchor="start">8.13 GiB</text>
   <text x="196.0" y="419.0" class="lbl" text-anchor="end">5B · prompt enhance</text>
   <rect x="210.0" y="404.0" width="225.6" height="21.0" rx="5" fill="#1f8a4c"/>
   <text x="445.6" y="419.0" class="val" text-anchor="start">9.34 GiB</text>
@@ -76,15 +76,15 @@
   <rect x="210.0" y="480.0" width="437.3" height="21.0" rx="5" fill="#d1521a"/>
   <text x="657.3" y="495.0" class="val" text-anchor="start">18.10 GiB</text>
   <text x="196.0" y="525.0" class="lbl" text-anchor="end">14B · refine</text>
-  <rect x="210.0" y="510.0" width="837.8" height="21.0" rx="5" fill="#d1521a"/>
-  <text x="1057.8" y="525.0" class="val" text-anchor="start">34.67 GiB</text>
+  <rect x="210.0" y="510.0" width="524.7" height="21.0" rx="5" fill="#d1521a"/>
+  <text x="744.7" y="525.0" class="val" text-anchor="start">21.71 GiB</text>
   <text x="196.0" y="555.0" class="lbl" text-anchor="end">14B · fast + refine</text>
-  <rect x="210.0" y="540.0" width="779.4" height="21.0" rx="5" fill="#d1521a"/>
-  <text x="999.4" y="555.0" class="val" text-anchor="start">32.25 GiB</text>
+  <rect x="210.0" y="540.0" width="437.7" height="21.0" rx="5" fill="#d1521a"/>
+  <text x="657.7" y="555.0" class="val" text-anchor="start">18.11 GiB</text>
   <text x="196.0" y="585.0" class="lbl" text-anchor="end">14B · prompt enhance</text>
   <rect x="210.0" y="570.0" width="524.0" height="21.0" rx="5" fill="#d1521a"/>
   <text x="744.0" y="585.0" class="val" text-anchor="start">21.68 GiB</text>
   <line x1="210.0" y1="614.0" x2="1080.0" y2="614.0" stroke="#c8d0dc" stroke-width="1"/>
   <text x="1092.0" y="634.0" class="tick" text-anchor="start">GiB</text>
-  <text x="40.0" y="660.0" class="cap" text-anchor="start">14B refine and fast + refine are the only configurations that exceed a 24 GB Mac; both were measured on the 36 GB test machine.</text>
+  <text x="40.0" y="660.0" class="cap" text-anchor="start">Nameplate RAM is decimal, so a 24 GB Mac holds 22.35 GiB. macOS and running apps claim several GiB on top, so a peak near a line will not fit that machine in practice.</text>
 </svg>

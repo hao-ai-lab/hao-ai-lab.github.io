@@ -82,9 +82,13 @@ def peak_memory_figure() -> str:
     for gib in range(0, 37, 4):
         body.append(svg.line(scale(gib), 100, scale(gib), axis_y, svg.GRID))
         body.append(svg.text(scale(gib), axis_y + 20, str(gib), cls="tick", anchor="middle"))
-    for gib, label in ((16, "16 GB Mac"), (24, "24 GB Mac")):
+    # Apple markets RAM in decimal GB; the axis is GiB, so 16 GB is 14.90 GiB
+    # and 24 GB is 22.35 GiB. macOS and running apps also claim several GiB, so
+    # a usable budget sits well below the nameplate line.
+    for gb, label in ((16, "16 GB Mac"), (24, "24 GB Mac")):
+        gib = gb * 1000**3 / 1024**3
         body.append(svg.line(scale(gib), 92, scale(gib), axis_y, svg.RULE, 1.5, "6 5"))
-        body.append(svg.text(scale(gib), 86, label, cls="sub", anchor="middle"))
+        body.append(svg.text(scale(gib), 86, f"{label} ({gib:.1f} GiB)", cls="sub", anchor="middle"))
 
     for run, y in rows:
         body.append(svg.text(x0 - 14, y + 15, f"{run.model} · {run.mode}", cls="lbl", anchor="end"))
@@ -93,8 +97,9 @@ def peak_memory_figure() -> str:
     body.append(svg.line(x0, axis_y, x1, axis_y, svg.RULE))
     body.append(svg.text(x1 + 12, axis_y + 20, "GiB", cls="tick", anchor="start"))
     body.append(svg.text(40, axis_y + 46,
-                         "14B refine and fast + refine are the only configurations that exceed a 24 GB Mac; "
-                         "both were measured on the 36 GB test machine.", cls="cap"))
+                         "Nameplate RAM is decimal, so a 24 GB Mac holds 22.35 GiB. macOS and running apps "
+                         "claim several GiB on top, so a peak near a line will not fit that machine in practice.",
+                         cls="cap"))
     return svg.render(1160, int(axis_y + 64), "Peak MLX memory by model and mode", body)
 
 
