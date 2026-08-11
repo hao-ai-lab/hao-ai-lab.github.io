@@ -33,7 +33,7 @@ The Mac has become a serious AI platform and continues to improve with every gen
 
 ## Release lineup
 
-Every model is a three-step student trained with DMD2 and quantization-aware training on the affine INT8 grid, so the precision used during training is the precision shipped at release. Each model is published both as Diffusers safetensors and as a pre-quantized MLX checkpoint, reducing download size and avoiding re-quantization at load time. FastVideo source is Apache-2.0; the vendored TAEHV decoder is MIT-licensed.
+Every model is a three-step student trained with DMD2 and quantization-aware training on the affine INT8 grid, so the precision used during training is the precision shipped at release. Each model is published both as Diffusers safetensors and as a pre-quantized MLX checkpoint, reducing download size and avoiding re-quantization at load time. FastVideo source is Apache-2.0; the vendored TAEHV decoder and MLX RIFE backend are both MIT-licensed.
 
 {{< table title="Table 1: FastMetal-QAD release checkpoints." >}}
 
@@ -248,7 +248,7 @@ We welcome feedback, contributions, and collaboration. If you have a feature or 
 
 The base models are [Wan](https://wan.video/) 2.1 and 2.2 from the Wan team at Alibaba. The recipe builds on [DMD2](https://arxiv.org/abs/2405.14867) by Tianwei Yin and coauthors, and continues the work of everyone who shipped [FastWan-QAD](https://haoailab.com/blogs/fastwan-qad/).
 
-On the Mac side we depend on [TAEHV](https://github.com/madebyollin/taehv) by Ollin Boer Bohan for decoding, [rife-mlx](https://github.com/xocialize/rife-mlx) for frame interpolation, and [MLX](https://github.com/ml-explore/mlx) and the community around it for the runtime.
+On the Mac side we vendor [TAEHV](https://github.com/madebyollin/taehv) by Ollin Boer Bohan for decoding and [rife-mlx](https://github.com/xocialize/rife-mlx) for frame interpolation, itself an MLX port of [Practical-RIFE](https://github.com/hzwer/Practical-RIFE) by hzwer. The runtime rests on [MLX](https://github.com/ml-explore/mlx) and the community around it.
 
 Training ran on [NVIDIA](https://www.nvidia.com/) GB200 GPUs. Thank you to NVIDIA for the compute and the Blackwell-era tooling the QAD recipe builds on.
 
