@@ -184,16 +184,16 @@ A Mac Studio is not the constraint this release was designed around, so we repea
 
 {{< table title="Table 3: MacBook Air (M5, 24 GB, 10-core GPU). Averages over repeated runs at the same resolutions as above." >}}
 
-| Model | Mode | Runs | Avg Total | Avg Peak |
-| :---- | :--- | :--: | --------: | -------: |
-| 1.3B | Baseline | 7 | 156.2s | 3.70 GiB |
-| 1.3B | Fast | 2 | 58.2s | 2.71 GiB |
-| 1.3B | Refine | 1 | 149.0s | 5.14 GiB |
-| 1.3B | Fast + refine | 1 | 75.7s | 4.14 GiB |
-| 5B | Baseline | 4 | 200.1s | 9.54 GiB |
-| 5B | Fast | 2 | 90.7s | 8.11 GiB |
-| 5B | Refine | 1 | 154.9s | 9.46 GiB |
-| 5B | Fast + refine | 2 | 111.5s | 7.54 GiB |
+| Model | Mode | Avg Total | Avg Peak |
+| :---- | :--- | --------: | -------: |
+| 1.3B | Baseline | 156.2s | 3.70 GiB |
+| 1.3B | Fast | 58.2s | 2.71 GiB |
+| 1.3B | Refine | 149.0s | 5.14 GiB |
+| 1.3B | Fast + refine | 75.7s | 4.14 GiB |
+| 5B | Baseline | 200.1s | 9.54 GiB |
+| 5B | Fast | 90.7s | 8.11 GiB |
+| 5B | Refine | 154.9s | 9.46 GiB |
+| 5B | Fast + refine | 111.5s | 7.54 GiB |
 
 {{</ table >}}
 
