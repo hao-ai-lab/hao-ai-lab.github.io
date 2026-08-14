@@ -58,6 +58,8 @@ summary: people
 
 {{< lab_member name="Zihang Min" role="Undergrad Intern" image="llama_placeholder.png" academic="https://github.com/minzh23">}}
 
+{{< lab_member name="Ruitian Wang" role="Undergrad Intern" image="ruitian_wang.jpg" academic="https://github.com/skywong14">}}
+
 {{< /lab_members_grid >}}
 
 ### Alumni
