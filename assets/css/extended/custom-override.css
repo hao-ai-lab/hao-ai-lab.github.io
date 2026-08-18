@@ -107,3 +107,33 @@
     text-indent: 0;
     margin-top: var(--content-gap);
 }
+
+/* Media comparison grids.
+ *
+ * PaperMod renders .post-content table as display:block with overflow-x:auto
+ * so wide text tables scroll instead of breaking the page. For a grid of
+ * <video> cells that backfires: display:block means the real table box is an
+ * anonymous inner box sized from its content, and with table-layout:auto the
+ * column widths are recomputed every time a cell's contents change size. With
+ * two dozen videos loading, and Chrome building the native controls when a
+ * cell is hovered, the columns visibly jump and overflow the container.
+ *
+ * Give these grids a deterministic layout instead: a real table box, full
+ * width, fixed layout, so column widths come from the header row and never
+ * from the media inside.
+ */
+.post-content table.video-grid {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.post-content table.video-grid th,
+.post-content table.video-grid td {
+    min-width: 0;
+}
+
+.post-content table.video-grid video {
+    max-width: 100%;
+    height: auto;
+}
