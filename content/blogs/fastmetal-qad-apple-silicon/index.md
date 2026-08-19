@@ -5,7 +5,7 @@ url = "/blogs/fastmetal/"
 authors = ["Aryan Kumar", "Will Lin", "Hao Zhang"]
 author = "Aryan Kumar, Will Lin, Hao Zhang"
 ShowReadingTime = true
-draft = true
+draft = false
 contentClass = "post-content-justified"
 [socialIcons]
     [[socialIcons.icon]]
