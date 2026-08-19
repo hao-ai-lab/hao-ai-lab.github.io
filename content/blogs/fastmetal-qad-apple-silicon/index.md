@@ -39,9 +39,9 @@ Every model is a three-step student trained with DMD2 and quantization-aware tra
 
 | Checkpoint | Base | Outputs | MLX DiT Size | TAEHV Size | Mac Tier |
 | :--------- | :--- | :------ | :----------- | :--------- | :------- |
-| `FastMetal-1.3B-QAD` | Wan2.1-T2V-1.3B | 480p, ~5 s | 1.4 GB | 22 MB | 16 GB+ |
-| `FastMetal-5B-QAD` | Wan2.2-TI2V-5B | 480p / 720p, ~5 s | 4.9 GB | 22 MB | 16 GB+ |
-| `FastMetal-14B-QAD` | Wan2.1-T2V-14B | 480p / 720p, ~5 s | 14 GB | 22 MB | 36 GB+ |
+| [`FastMetal-1.3B-QAD`](https://huggingface.co/FastVideo/FastMetal-1.3B-QAD) | Wan2.1-T2V-1.3B | 480p, ~5 s | 1.4 GB | 22 MB | 16 GB+ |
+| [`FastMetal-5B-QAD`](https://huggingface.co/FastVideo/FastMetal-5B-QAD) | Wan2.2-TI2V-5B | 480p / 720p, ~5 s | 4.9 GB | 22 MB | 16 GB+ |
+| [`FastMetal-14B-QAD`](https://huggingface.co/FastVideo/FastMetal-14B-QAD) | Wan2.1-T2V-14B | 480p / 720p, ~5 s | 14 GB | 22 MB | 36 GB+ |
 
 {{</ table >}}
 
