@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="480" viewBox="0 0 1160 480" role="img" aria-label="Denoise time by generation mode">
+  <rect x="0" y="0" width="1160" height="480" fill="#ffffff"/>
+  <defs><style>
+    .t   { font: 700 21px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #1f2a44; }
+    .st  { font: 500 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #5d687c; }
+    .lbl { font: 600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #1f2a44; }
+    .sub { font: 500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #5d687c; }
+    .tick{ font: 500 11px ui-monospace,SFMono-Regular,Menlo,monospace; fill: #7a8699; }
+    .val { font: 700 13px ui-monospace,SFMono-Regular,Menlo,monospace; fill: #1f2a44; }
+    .vs  { font: 500 11px ui-monospace,SFMono-Regular,Menlo,monospace; fill: #5d687c; }
+    .vsw { font: 600 11px ui-monospace,SFMono-Regular,Menlo,monospace; fill: #ffffff; }
+    .na  { font: italic 500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #93a0b4; }
+    .cap { font: 500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #6b7688; }
+    
+  </style></defs>
+  <text x="40" y="36" class="t">Denoise time by generation mode</text>
+  <text x="40" y="58" class="st">Mac Studio · Apple M4 Max · 36 GB unified memory · three-step DMD, INT8 DiT · each panel is scaled to its own model</text>
+  <text x="190.0" y="96.0" class="lbl" text-anchor="start">FastMetal-1.3B-QAD</text>
+  <text x="190.0" y="114.0" class="sub" text-anchor="start">832×480 · 81 frames</text>
+  <line x1="170.0" y1="84.0" x2="170.0" y2="414.0" stroke="#e8ecf2" stroke-width="1"/>
+  <rect x="190.0" y="136.0" width="139.9" height="22.0" rx="5" fill="#3b7dd8"/>
+  <text x="354.0" y="153.0" class="val" text-anchor="start">89.8 s</text>
+  <rect x="190.0" y="196.0" width="48.8" height="22.0" rx="5" fill="#3b7dd8"/>
+  <text x="354.0" y="213.0" class="val" text-anchor="start">31.3 s</text>
+  <text x="480.0" y="213.0" class="vs" text-anchor="end">2.87×</text>
+  <rect x="190.0" y="256.0" width="150.0" height="22.0" rx="5" fill="#3b7dd8"/>
+  <text x="354.0" y="273.0" class="val" text-anchor="start">96.2 s</text>
+  <text x="480.0" y="273.0" class="vs" text-anchor="end">0.93×</text>
+  <rect x="190.0" y="316.0" width="54.0" height="22.0" rx="5" fill="#3b7dd8"/>
+  <text x="354.0" y="333.0" class="val" text-anchor="start">34.6 s</text>
+  <text x="480.0" y="333.0" class="vs" text-anchor="end">2.59×</text>
+  <rect x="190.0" y="376.0" width="138.5" height="22.0" rx="5" fill="#3b7dd8"/>
+  <text x="354.0" y="393.0" class="val" text-anchor="start">88.9 s</text>
+  <text x="480.0" y="393.0" class="vs" text-anchor="end">1.01×</text>
+  <text x="512.0" y="96.0" class="lbl" text-anchor="start">FastMetal-5B-QAD</text>
+  <text x="512.0" y="114.0" class="sub" text-anchor="start">1280×704 · 81 frames</text>
+  <line x1="492.0" y1="84.0" x2="492.0" y2="414.0" stroke="#e8ecf2" stroke-width="1"/>
+  <rect x="512.0" y="136.0" width="143.6" height="22.0" rx="5" fill="#1f8a4c"/>
+  <text x="676.0" y="153.0" class="val" text-anchor="start">98.5 s</text>
+  <rect x="512.0" y="196.0" width="60.0" height="22.0" rx="5" fill="#1f8a4c"/>
+  <text x="676.0" y="213.0" class="val" text-anchor="start">41.2 s</text>
+  <text x="802.0" y="213.0" class="vs" text-anchor="end">2.39×</text>
+  <rect x="512.0" y="256.0" width="150.0" height="22.0" rx="5" fill="#1f8a4c"/>
+  <text x="676.0" y="273.0" class="val" text-anchor="start">103 s</text>
+  <text x="802.0" y="273.0" class="vs" text-anchor="end">0.96×</text>
+  <rect x="512.0" y="316.0" width="65.5" height="22.0" rx="5" fill="#1f8a4c"/>
+  <text x="676.0" y="333.0" class="val" text-anchor="start">44.9 s</text>
+  <text x="802.0" y="333.0" class="vs" text-anchor="end">2.19×</text>
+  <rect x="512.0" y="376.0" width="144.0" height="22.0" rx="5" fill="#1f8a4c"/>
+  <text x="676.0" y="393.0" class="val" text-anchor="start">98.8 s</text>
+  <text x="802.0" y="393.0" class="vs" text-anchor="end">1.00×</text>
+  <text x="834.0" y="96.0" class="lbl" text-anchor="start">FastMetal-14B-QAD</text>
+  <text x="834.0" y="114.0" class="sub" text-anchor="start">832×480 · 81 frames</text>
+  <line x1="814.0" y1="84.0" x2="814.0" y2="414.0" stroke="#e8ecf2" stroke-width="1"/>
+  <rect x="834.0" y="136.0" width="143.1" height="22.0" rx="5" fill="#d1521a"/>
+  <text x="998.0" y="153.0" class="val" text-anchor="start">554 s</text>
+  <rect x="834.0" y="196.0" width="52.9" height="22.0" rx="5" fill="#d1521a"/>
+  <text x="998.0" y="213.0" class="val" text-anchor="start">205 s</text>
+  <text x="1124.0" y="213.0" class="vs" text-anchor="end">2.71×</text>
+  <rect x="834.0" y="256.0" width="150.0" height="22.0" rx="5" fill="#d1521a"/>
+  <text x="998.0" y="273.0" class="val" text-anchor="start">581 s</text>
+  <text x="1124.0" y="273.0" class="vs" text-anchor="end">0.95×</text>
+  <rect x="834.0" y="316.0" width="59.7" height="22.0" rx="5" fill="#d1521a"/>
+  <text x="998.0" y="333.0" class="val" text-anchor="start">231 s</text>
+  <text x="1124.0" y="333.0" class="vs" text-anchor="end">2.40×</text>
+  <rect x="834.0" y="376.0" width="142.2" height="22.0" rx="5" fill="#d1521a"/>
+  <text x="998.0" y="393.0" class="val" text-anchor="start">551 s</text>
+  <text x="1124.0" y="393.0" class="vs" text-anchor="end">1.01×</text>
+  <text x="40.0" y="153.0" class="lbl" text-anchor="start">baseline</text>
+  <text x="40.0" y="213.0" class="lbl" text-anchor="start">fast</text>
+  <text x="40.0" y="273.0" class="lbl" text-anchor="start">refine</text>
+  <text x="40.0" y="333.0" class="lbl" text-anchor="start">fast + refine</text>
+  <text x="40.0" y="393.0" class="lbl" text-anchor="start">prompt enhance</text>
+  <text x="40.0" y="460.0" class="cap" text-anchor="start">Speed-up factors are relative to that model's own baseline run.</text>
+</svg>
