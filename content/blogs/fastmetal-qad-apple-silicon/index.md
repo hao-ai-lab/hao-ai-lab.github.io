@@ -251,7 +251,7 @@ The base models are [Wan](https://wan.video/) 2.1 and 2.2 from the Wan team at A
 
 On the Mac side we vendor [TAEHV](https://github.com/madebyollin/taehv) by Ollin Boer Bohan for decoding and [rife-mlx](https://github.com/xocialize/rife-mlx) for frame interpolation, itself an MLX port of [Practical-RIFE](https://github.com/hzwer/Practical-RIFE) by hzwer. The runtime rests on [MLX](https://github.com/ml-explore/mlx) and the community around it.
 
-Training ran on [NVIDIA](https://www.nvidia.com/) GB200 GPUs. Thank you to NVIDIA for the compute and the Blackwell-era tooling the QAD recipe builds on.
+Training ran on [NVIDIA](https://www.nvidia.com/) GB200 GPUs. Thank you to NVIDIA for the compute and the Blackwell-era tooling the QAD recipe builds on. We also want to thank the [vLLM](https://github.com/vllm-project/vllm), [vLLM-Omni](https://github.com/vllm-project/vllm-omni), and [MBZUAI](https://mbzuai.ac.ae/) teams for sponsoring and supporting FastVideo.
 
 ## FastVideo team
 
