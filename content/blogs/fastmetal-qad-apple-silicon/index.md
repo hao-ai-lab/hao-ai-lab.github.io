@@ -1,6 +1,7 @@
 +++
 title = "FastMetal-QAD: Fast Local Video Generation on Apple Silicon"
 date = 2026-08-10T00:00:00-07:00
+url = "/blogs/fastmetal/"
 authors = ["Aryan Kumar", "Will Lin", "Hao Zhang"]
 author = "Aryan Kumar, Will Lin, Hao Zhang"
 ShowReadingTime = true
