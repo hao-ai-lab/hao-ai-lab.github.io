@@ -301,7 +301,9 @@ We thank [Nuva Lab](https://nuvalab.ai/) for the prompt suite and synthetic
 data corpus, and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen)
 team for the DMD2 framework and H3 reference experiment that helped us align
 the score clock, modality shifts, and backward simulation. We also thank
-MiniMax for releasing H3-Base, and vLLM project, NVIDIA, and MBZUAI for their continued sponsorship and support for FastVideo. 
+MiniMax for releasing H3-Base, and the [vLLM project](https://vllm.ai/), NVIDIA,
+and [MBZUAI](https://mbzuai.ac.ae/) for their continued sponsorship and support
+for FastVideo.
 
 <!-- TODO: Add named contributors and affiliations after author approval. -->
 
