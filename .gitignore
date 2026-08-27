@@ -1,4 +1,5 @@
 .idea
+.venv/
 public/*
 *.swp
 .hugo_build.lock
