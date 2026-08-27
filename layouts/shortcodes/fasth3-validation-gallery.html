@@ -8,17 +8,13 @@
 <div class="fasth3-validation-grid">
   {{- range $gallery.samples }}
   <article class="fasth3-validation-card">
-    <p class="fasth3-validation-title">
-      <strong>Sample {{ printf "%03d" .index }}</strong>
-      <span>{{ .sample_id }}</span>
-    </p>
     <video controls playsinline preload="metadata"
       aria-label="FastH3 validation sample {{ .sample_id }} with audio">
       <source src="{{ .video }}" type="video/mp4">
       Your browser does not support MP4 video with audio.
     </video>
     <p class="fasth3-validation-meta">
-      {{ printf "%.1f" .duration_seconds }} s · {{ .width }}×{{ .height }} · 24 FPS · stereo AAC
+      {{ .width }}×{{ .height }} · {{ .frames }} frames · 24 FPS · {{ printf "%.1f" .duration_seconds }} s · stereo AAC
     </p>
     <details>
       <summary>Prompt</summary>
@@ -52,17 +48,9 @@
   border-radius: 8px;
 }
 
-.fasth3-validation-title,
 .fasth3-validation-meta {
   margin: 0 0 0.65rem;
   text-indent: 0;
-}
-
-.fasth3-validation-title span {
-  display: block;
-  overflow-wrap: anywhere;
-  font-size: 0.78rem;
-  opacity: 0.72;
 }
 
 .fasth3-validation-meta {
