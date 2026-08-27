@@ -1,0 +1,93 @@
+{{- $manifestName := .Get "manifest" -}}
+{{- $manifest := .Page.Resources.GetMatch $manifestName -}}
+{{- if not $manifest -}}
+  {{- errorf "FastH3 validation gallery manifest %q was not found for %s" $manifestName .Page.File.Path -}}
+{{- end -}}
+{{- $gallery := transform.Unmarshal $manifest.Content -}}
+
+<div class="fasth3-validation-grid">
+  {{- range $gallery.samples }}
+  <article class="fasth3-validation-card">
+    <p class="fasth3-validation-title">
+      <strong>Sample {{ printf "%03d" .index }}</strong>
+      <span>{{ .sample_id }}</span>
+    </p>
+    <video controls playsinline preload="metadata"
+      aria-label="FastH3 validation sample {{ .sample_id }} with audio">
+      <source src="{{ .video }}" type="video/mp4">
+      Your browser does not support MP4 video with audio.
+    </video>
+    <p class="fasth3-validation-meta">
+      {{ printf "%.1f" .duration_seconds }} s · {{ .width }}×{{ .height }} · 24 FPS · stereo AAC
+    </p>
+    <details>
+      <summary>Prompt</summary>
+      <pre>{{ .prompt }}</pre>
+    </details>
+  </article>
+  {{- end }}
+</div>
+
+<style>
+.fasth3-validation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 1.25rem;
+  margin: 1.25rem 0 2rem;
+}
+
+.fasth3-validation-card {
+  min-width: 0;
+  padding: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--entry);
+}
+
+.fasth3-validation-card video {
+  display: block;
+  width: 100%;
+  max-height: 32rem;
+  background: #000;
+  border-radius: 8px;
+}
+
+.fasth3-validation-title,
+.fasth3-validation-meta {
+  margin: 0 0 0.65rem;
+  text-indent: 0;
+}
+
+.fasth3-validation-title span {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 0.78rem;
+  opacity: 0.72;
+}
+
+.fasth3-validation-meta {
+  margin-top: 0.55rem;
+  font-size: 0.78rem;
+  opacity: 0.78;
+}
+
+.fasth3-validation-card details {
+  margin-top: 0.55rem;
+}
+
+.fasth3-validation-card summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.fasth3-validation-card pre {
+  max-height: 18rem;
+  margin: 0.65rem 0 0;
+  padding: 0.75rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+</style>

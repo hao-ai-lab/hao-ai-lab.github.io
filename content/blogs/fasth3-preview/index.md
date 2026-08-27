@@ -121,18 +121,33 @@ trained with first/last-frame conditioning. Reference-to-video-and-audio
 (Ref2VA) uses a separate reference transformer and needs its own distilled
 checkpoint. We are actively working on shipping those checkpoints. Stay Tuned!
 
+## Random validation samples
+
+Here are 15 samples selected at random from the 60-video VSA / Data-Free
+validation set (fixed seed `20260827`). We did not curate the results after
+selection. Every card includes the full prompt. Click play to hear the generated
+32 kHz stereo audio; the videos do not autoplay or start muted.
+
+{{< fasth3-validation-gallery manifest="validation_v1_random15.json" >}}
+
 ## Performance
-Each local test uses FastVideo's optimized inference at a resolution of 1344x768x124 @ 24 FPS (5s) with audio. 
+
+Each local test uses FastVideo's optimized inference at 1344×768 and 24 FPS
+with audio. The 5s, 10s, and 15s shapes contain 124, 243, and 345 frames.
 We report the median of three timed requests after one full
 warmup. Model loading and compilation are excluded. End-to-end time includes
 encoding, denoising, decoding, audio, muxing, and file output.
 
-{{< table title="Performance table for final publication. TBD cells are intentionally not estimates." >}}
-| Model / variant | DiT forwards | Attention | 1× B200 E2E | 4× B200 E2E |
-|---|---:|---|---:|---:|
-| Base H3, FastVideo | 49 | Dense FA4 | 132 | 40 |
-| Preview v1 VSA / Data-Free (highlighted) | 4 | VSA, 90% sparse, tile 64 | 16.7 | 6.8 |
-| Preview v1 Dense / Data-Free (ablation) | 4 | Dense FA4 | 18.3 | 6.8 |
+{{< table title="Warm end-to-end latency for FastVideo on B200." >}}
+| Model / variant | Duration (frames) | DiT forwards | Attention | 1× B200 E2E | 4× B200 E2E |
+|---|---:|---:|---|---:|---:|
+| Base H3, FastVideo | 5s (124) | 49 | Dense FA4 | 132 | 40 |
+| Preview v1 VSA / Data-Free (highlighted) | 5s (124) | 4 | VSA, 90% sparse, tile 64 | 16.2 | 6.1 |
+| Preview v1 VSA / Data-Free (highlighted) | 10s (243) | 4 | VSA, 90% sparse, tile 64 | 31.1 | 12.0 |
+| Preview v1 VSA / Data-Free (highlighted) | 15s (345) | 4 | VSA, 90% sparse, tile 64 | 47.2 | 15.5 |
+| Preview v1 Dense / Data-Free (ablation) | 5s (124) | 4 | Dense FA4 | 18.3 | 6.8 |
+| Preview v1 Dense / Data-Free (ablation) | 10s (243) | 4 | Dense FA4 | 50.2 | 15.0 |
+| Preview v1 Dense / Data-Free (ablation) | 15s (345) | 4 | Dense FA4 | 91.3 | 25.6 |
 {{</ table >}}
 
 VSA / Data-Free is the highlighted performance path. The two synthetic VSA
