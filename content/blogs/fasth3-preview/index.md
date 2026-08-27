@@ -42,7 +42,7 @@ Publication checklist (remove before publishing):
 **TL;DR.** FastVideo, in collaboration with [Nuva Lab](https://nuvalab.ai/)
 and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team, is releasing
 four FastH3 Preview v1 checkpoints for text-to-video-and-audio (T2VA). They
-distill MiniMax H3 from 49 DiT calls to four and generate 768p video with audio.
+are all 4-step distilled checkpoints of MiniMax H3 and generate up to 768p video with audio.
 The family compares prompt-only with synthetic-video training and sparse with
 dense attention. In our qualitative checks, fast motion remain
 weaker than Base H3. FL2VA was not a training target and can produce low-motion
@@ -184,8 +184,6 @@ source .venv/bin/activate
 UV_TORCH_BACKEND=cu130 uv pip install -e ".[fasth3]"
 ```
 
-If Hugging Face asks for access, accept the MiniMax H3 Community License and
-run `hf auth login`. Never put a Hub token in a script or output directory.
 
 The simplest path is one of the four launchers below. The LoRAs are already
 extracted and ready to load. Each launcher downloads its exact adapter from the
