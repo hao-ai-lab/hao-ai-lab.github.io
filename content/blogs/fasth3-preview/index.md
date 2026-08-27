@@ -41,12 +41,14 @@ Publication checklist (remove before publishing):
 
 **TL;DR.** FastVideo, in collaboration with [Nuva Lab](https://nuvalab.ai/)
 and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team, is releasing
-four FastH3 Preview v1 checkpoints for text-to-video-and-audio (T2VA). They
-are all 4-step distilled checkpoints of MiniMax H3 and generate up to 768p video with audio.
-The family compares prompt-only with synthetic-video training and sparse with
-dense attention. In our qualitative checks, fast motion remain
-weaker than Base H3. FL2VA was not a training target and can produce low-motion
-results. Ref2VA is not supported yet.
+FastH3 Preview v1 for text-to-video-and-audio (T2VA). Our highlighted and
+recommended checkpoint is
+[VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-DataFree).
+It distills MiniMax H3 from 49 DiT calls to four, generates up to 768p video with
+audio, and uses 90% sparse Video Sparse Attention. Three companion checkpoints
+provide training-data and dense-attention ablations. In our qualitative checks,
+fast motion remains weaker than Base H3. FL2VA was not a training target and can
+produce low-motion results. Ref2VA is not supported yet.
 
 This is an open release: full weights, pre-extracted LoRAs, and FastVideo
 inference code are released in this blog. Training code, configs, and synthetic
@@ -82,10 +84,16 @@ FastVideo code uses Apache 2.0. H3 and FastH3 weights use the custom
 not a standard open-source model license. Please read it before using or
 redistributing the weights.
 
-## Four preview checkpoints
+## FastH3 Preview v1
 
 FastH3 distills H3's base transformer for text-to-video-and-audio (T2VA) and
 reuses the H3-Base text encoder, video VAE, audio VAE, tokenizers, and schedulers.
+
+The highlighted release is
+[VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-DataFree).
+It trains from prompts without target videos and is the version we recommend
+trying first. The other three checkpoints are ablations for studying synthetic
+training data, training duration, and dense attention.
 
 Alongside the weights, FastVideo will later be releasing:
 
@@ -96,13 +104,13 @@ We have already extracted the LoRA for every checkpoint. They are grouped in
 one [FastH3 Preview LoRA repository](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA),
 so inference does not require extracting an adapter from the full checkpoint.
 
-{{< table title="The four checkpoints in FastH3 Preview v1. Each uses four DiT calls." >}}
-| Variant | Pre-extracted LoRA | Training source | Attention | Training step |
-|---|---|---|---|---:|
-| [VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-DataFree) | [LoRA folder](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA/tree/main/vsa-datafree) | Prompts only, mixed shapes | VSA, 90% sparse, tile 64 | 1300 |
-| [VSA / Synthetic / Step 1300](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-Synthetic-Step1300) | [LoRA folder](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA/tree/main/vsa-synthetic-step1300) | Synthetic Base-H3 videos | VSA, 90% sparse, tile 64 | 1300 |
-| [VSA / Synthetic / Step 1900](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-Synthetic-Step1900) | [LoRA folder](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA/tree/main/vsa-synthetic-step1900) | Synthetic Base-H3 videos | VSA, 90% sparse, tile 64 | 1900 |
-| [Dense / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-Dense-DataFree) | [LoRA folder](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA/tree/main/dense-datafree) | Prompts only, mixed shapes | Dense FA4 | 1000 |
+{{< table title="The highlighted checkpoint and three ablations. Each uses four DiT calls." >}}
+| Variant | Role | Pre-extracted LoRA | Training source | Attention | Training step |
+|---|---|---|---|---|---:|
+| [VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-DataFree) | **Highlighted** | [LoRA folder](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA/tree/main/vsa-datafree) | Prompts only, mixed shapes | VSA, 90% sparse, tile 64 | 1300 |
+| [VSA / Synthetic / Step 1300](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-Synthetic-Step1300) | Ablation | [LoRA folder](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA/tree/main/vsa-synthetic-step1300) | Synthetic Base-H3 videos | VSA, 90% sparse, tile 64 | 1300 |
+| [VSA / Synthetic / Step 1900](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-Synthetic-Step1900) | Ablation | [LoRA folder](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA/tree/main/vsa-synthetic-step1900) | Synthetic Base-H3 videos | VSA, 90% sparse, tile 64 | 1900 |
+| [Dense / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-Dense-DataFree) | Ablation | [LoRA folder](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA/tree/main/dense-datafree) | Prompts only, mixed shapes | Dense FA4 | 1000 |
 {{</ table >}}
 
 “Data-free” (also known as backward simulation in DMD2) means training uses prompts but no target videos. The synthetic
@@ -132,12 +140,12 @@ measures only the DiT loop.
 | Model / variant | DiT forwards | Attention | 1× B200 E2E | 4× B200 E2E | 4× B200 denoise | Hosted E2E | Peak GiB / GPU |
 |---|---:|---|---:|---:|---:|---:|---:|
 | Base H3, FastVideo | 49 | Dense FA4 | TBD | TBD | TBD | N/A | TBD |
-| Preview v1 VSA family | 4 | VSA, 90% sparse, tile 64 | TBD | TBD | TBD | N/A | TBD |
-| Preview v1 Dense / Data-Free | 4 | Dense FA4 | TBD | TBD | TBD | N/A | TBD |
+| Preview v1 VSA / Data-Free (highlighted) | 4 | VSA, 90% sparse, tile 64 | TBD | TBD | TBD | N/A | TBD |
+| Preview v1 Dense / Data-Free (ablation) | 4 | Dense FA4 | TBD | TBD | TBD | N/A | TBD |
 {{</ table >}}
 
-The three VSA checkpoints share one latency row because their runtime paths are
-identical.
+VSA / Data-Free is the highlighted performance path. The two synthetic VSA
+ablations use the same runtime path and therefore have the same latency.
 On B200, the default path uses FastVideo's tile-64 CUDA VSA kernel, regional DiT
 compilation, H3 fusions, and compiled parallel video VAE. We will evaluate the
 three checkpoints' quality separately. H3 Max is a hosted service on undisclosed
@@ -167,41 +175,43 @@ full-attention target. This extends the
 
 ## Try FastH3
 
-The release examples target four NVIDIA B200 GPUs with CUDA 13. The first run
-downloads and loads Base H3 plus one adapter, then compiles the fast inference
-path. Warmup and measured generations in the same runner process reuse that
-work; a new process loads and compiles again.
+The highlighted example targets four NVIDIA B200 GPUs with CUDA 13. The first
+run downloads and loads Base H3 plus the VSA / Data-Free adapter, then compiles
+the fast inference path. Warmup and measured generations in the same runner
+process reuse that work; a new process loads and compiles again.
 
 For guided setup, use FastVideo's
 [agent-guided installation](https://github.com/hao-ai-lab/FastVideo#install-with-an-ai-coding-agent).
-For a manual install:
+For a manual install, first install
+[`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 
 ```bash
 git clone https://github.com/hao-ai-lab/FastVideo.git
 cd FastVideo
 uv venv --python 3.12 --seed
 source .venv/bin/activate
-UV_TORCH_BACKEND=cu130 uv pip install -e ".[fasth3]"
+
+UV_TORCH_BACKEND=cu130 uv pip install \
+  --no-sources-package fastvideo-kernel \
+  -e ".[fasth3]"
+
+hf auth login
 ```
 
+The `--no-sources-package` option installs the published
+`fastvideo-kernel 0.3.4` wheel, which includes the B200 `sm100a` VSA kernel,
+instead of compiling the kernel locally. Accept the MiniMax H3 Community
+License before downloading Base H3. Never put a Hub token in a script or output
+directory.
 
-The simplest path is one of the four launchers below. The LoRAs are already
-extracted and ready to load. Each launcher downloads its exact adapter from the
-[combined LoRA repository](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA),
-loads it on top of `MiniMaxAI/MiniMax-H3`, selects the correct attention
-backend, and writes to its own output directory.
+The recommended path is the highlighted
+[VSA / Data-Free LoRA](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA/tree/main/vsa-datafree),
+which is already extracted and ready to load. Its
+[FastVideo launcher](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/run_fasth3_lora_preview_vsa_datafree.sh)
+downloads the adapter, loads it on top of `MiniMaxAI/MiniMax-H3`, and enables
+the required VSA-H3 backend and tile-64 kernel.
 
-| Variant / LoRA | Launcher | Attention |
-| --- | --- | --- |
-| [VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA/tree/main/vsa-datafree) | [`run_fasth3_lora_preview_vsa_datafree.sh`](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/run_fasth3_lora_preview_vsa_datafree.sh) | VSA, 90% sparse, tile 64 |
-| [VSA / Synthetic / Step 1300](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA/tree/main/vsa-synthetic-step1300) | [`run_fasth3_lora_preview_vsa_synthetic_step1300.sh`](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/run_fasth3_lora_preview_vsa_synthetic_step1300.sh) | VSA, 90% sparse, tile 64 |
-| [VSA / Synthetic / Step 1900](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA/tree/main/vsa-synthetic-step1900) | [`run_fasth3_lora_preview_vsa_synthetic_step1900.sh`](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/run_fasth3_lora_preview_vsa_synthetic_step1900.sh) | VSA, 90% sparse, tile 64 |
-| [Dense / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA/tree/main/dense-datafree) | [`run_fasth3_lora_preview_dense_datafree.sh`](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/run_fasth3_lora_preview_dense_datafree.sh) | Dense FA4 |
-
-The three VSA launchers enable the required VSA-H3 backend and tile-64 kernel.
-Do not remove `--vsa` or run those LoRAs through the dense path.
-
-Try the VSA / Data-Free model:
+Try VSA / Data-Free:
 
 ```bash
 PROMPT='integrated_multimodal_description: A red fox runs through fresh snow at dawn. overall_soundscape: Fast pawsteps in snow, winter wind, and distant birds.'
@@ -212,15 +222,10 @@ bash examples/inference/basic/run_fasth3_lora_preview_vsa_datafree.sh \
   --repeats 1
 ```
 
-Swap only the launcher name to try the other three:
+Do not remove `--vsa` or run this LoRA through the dense path. The other three
+checkpoints remain available as ablations in the release table above.
 
-```bash
-bash examples/inference/basic/run_fasth3_lora_preview_vsa_synthetic_step1300.sh --prompt "$PROMPT" --no-warmup --repeats 1
-bash examples/inference/basic/run_fasth3_lora_preview_vsa_synthetic_step1900.sh --prompt "$PROMPT" --no-warmup --repeats 1
-bash examples/inference/basic/run_fasth3_lora_preview_dense_datafree.sh --prompt "$PROMPT" --no-warmup --repeats 1
-```
-
-All four launchers use the shared
+The launcher uses the shared
 [`basic_fasth3_lora_preview.py`](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_lora_preview.py)
 runner. Its defaults enable FastVideo's H3 fusions, regional full-graph DiT
 compile, FA4, compiled sequence-parallel VAE decoding, replicated DiT weights,
@@ -299,10 +304,11 @@ and a sample clip.
 Share results, unsupported hardware, regressions, and new ideas on
 [GitHub](https://github.com/hao-ai-lab/FastVideo) or in the
 [FastVideo Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ).
-Explore the
-[four-checkpoint collection](https://huggingface.co/collections/FastVideo/fastvideo-fasth3),
-run the [optimized FastH3 LoRA example](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_lora_preview.py),
-and show us where FastH3 works—and where it does not.
+Start with the highlighted
+[VSA / Data-Free checkpoint](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-DataFree)
+and its [optimized FastVideo launcher](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/run_fasth3_lora_preview_vsa_datafree.sh).
+Use the [full collection](https://huggingface.co/collections/FastVideo/fastvideo-fasth3)
+for the ablations, and show us where FastH3 works—and where it does not.
 
 ## Acknowledgements
 
