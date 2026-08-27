@@ -1,10 +1,10 @@
 +++
 title = "FastH3 Preview v0.1: Four Open-Weight H3 Models in Four Steps"
-date = 2026-08-26T00:00:00-07:00
+date = 2026-08-29T00:00:00-07:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
 ShowReadingTime = true
-draft = true
+draft = false
 contentClass = "post-content-justified"
 [socialIcons]
     [[socialIcons.icon]]
