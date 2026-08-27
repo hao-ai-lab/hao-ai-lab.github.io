@@ -156,14 +156,6 @@ dense. The teacher and critic also uses dense attention, giving the sparse stude
 full-attention target. This extends the
 [FastVideo sparse-distillation recipe](/blogs/fastvideo_post_training/) to H3.
 
-## Where four steps still fall short
-
-### Fast motion
-
-
-### FL2VA
-
-
 
 ## Try FastH3
 
@@ -303,13 +295,10 @@ and show us where FastH3 works—and where it does not.
 ## Acknowledgements
 
 We thank [Nuva Lab](https://nuvalab.ai/) for the prompt suite and synthetic
-Base-H3 training corpus, and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen)
+data corpus, and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen)
 team for the DMD2 framework and H3 reference experiment that helped us align
 the score clock, modality shifts, and backward simulation. We also thank
-MiniMax for releasing H3-Base, fal for adding another H3 direction to the
-ecosystem, the DMD2 and VSA authors, the FlashAttention and CUTLASS teams, and
-every FastVideo contributor who built and tested the model, kernels, training
-path, evaluation tools, and serving stack.
+MiniMax for releasing H3-Base, and vLLM project, NVIDIA, and MBZUAI for their continued sponsorship and support for FastVideo. 
 
 <!-- TODO: Add named contributors and affiliations after author approval. -->
 
