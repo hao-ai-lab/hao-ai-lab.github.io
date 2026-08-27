@@ -128,11 +128,11 @@ warmup. Model loading and compilation are excluded. End-to-end time includes
 encoding, denoising, decoding, audio, muxing, and file output.
 
 {{< table title="Performance table for final publication. TBD cells are intentionally not estimates." >}}
-| Model / variant | DiT forwards | Attention | 1× B200 E2E | 4× B200 E2E | Hosted E2E |
-|---|---:|---|---:|---:|---:|
-| Base H3, FastVideo | 49 | Dense FA4 | 132 | 40 | N/A |
-| Preview v1 VSA / Data-Free (highlighted) | 4 | VSA, 90% sparse, tile 64 | 16.7 | 6.8 | N/A |
-| Preview v1 Dense / Data-Free (ablation) | 4 | Dense FA4 | 18.3 | 6.8 | N/A |
+| Model / variant | DiT forwards | Attention | 1× B200 E2E | 4× B200 E2E |
+|---|---:|---|---:|---:|
+| Base H3, FastVideo | 49 | Dense FA4 | 132 | 40 |
+| Preview v1 VSA / Data-Free (highlighted) | 4 | VSA, 90% sparse, tile 64 | 16.7 | 6.8 |
+| Preview v1 Dense / Data-Free (ablation) | 4 | Dense FA4 | 18.3 | 6.8 |
 {{</ table >}}
 
 VSA / Data-Free is the highlighted performance path. The two synthetic VSA
