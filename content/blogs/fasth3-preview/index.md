@@ -25,12 +25,12 @@ Publication checklist (remove before publishing):
   duration, resolution, and audio-enabled protocol. Do not mix fal-reported
   latency with our measured rows.
 - Add matched-prompt video comparisons with working audio controls.
-- Land the explicit H3 DMD inference-ladder fix on public FastVideo, rerun the
-  default B200 route, and replace `FASTVIDEO_RELEASE_COMMIT` below with that
-  exact revision.
+- Rerun the merged FastH3 LoRA path with regional compile on B200 and record the
+  exact FastVideo revision with the final performance results.
 - Confirm that revision includes the H3 DMD model adapter and training
   implementation, not only the release configs.
 - Confirm all four model repositories are public.
+- Confirm the combined FastH3 LoRA repository is public.
 - Add the public training-config and synthetic-dataset links; verify their
   licenses and manifests.
 - Confirm final author list, acknowledgements, citation URL, and MiniMax H3
@@ -159,88 +159,91 @@ full-attention target. This extends the
 
 ## Try FastH3
 
-The release examples target NVIDIA B200 GPUs with CUDA 13 and use four GPUs.
-The first run downloads and loads Base H3 plus the selected adapter, so allow
-extra time before generation begins.
+The release examples target four NVIDIA B200 GPUs with CUDA 13. The first run
+downloads and loads Base H3 plus one adapter, then compiles the fast inference
+path. Warmup and measured generations in the same runner process reuse that
+work; a new process loads and compiles again.
 
-For guided setup, give your coding agent the
-[FastVideo installation prompt](https://github.com/hao-ai-lab/FastVideo#install-with-an-ai-coding-agent).
+For guided setup, use FastVideo's
+[agent-guided installation](https://github.com/hao-ai-lab/FastVideo#install-with-an-ai-coding-agent).
 For a manual install:
 
 ```bash
 git clone https://github.com/hao-ai-lab/FastVideo.git
 cd FastVideo
-git checkout FASTVIDEO_RELEASE_COMMIT
 uv venv --python 3.12 --seed
 source .venv/bin/activate
 UV_TORCH_BACKEND=cu130 uv pip install -e ".[fasth3]"
 ```
 
-The LoRA inference path comes from
-[FastVideo PR #1769](https://github.com/hao-ai-lab/FastVideo/pull/1769). It
-loads the Base H3 weights and applies a FastH3 adapter while the pipeline is
-being built. The adapters are grouped in one
-[FastH3 LoRA repository](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA).
-Download only the two adapters used below:
+If Hugging Face asks for access, accept the MiniMax H3 Community License and
+run `hf auth login`. Never put a Hub token in a script or output directory.
 
-```bash
-LORA_ROOT='models/fasth3-preview-v1-lora'
-hf download FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA \
-  vsa-datafree/adapter_model.safetensors \
-  dense-datafree/adapter_model.safetensors \
-  --local-dir "$LORA_ROOT"
-```
+The simplest path is one of the four launchers below. Each launcher downloads
+its exact file from the
+[FastH3 Preview LoRA repository](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA),
+loads it on top of `MiniMaxAI/MiniMax-H3`, selects the correct attention
+backend, and writes to its own output directory.
 
-Use `--vsa` for a VSA adapter. Keep 90% sparsity, tile size 64, and the
-`sm100a` kernel:
+| Variant | Launcher | Attention |
+| --- | --- | --- |
+| VSA / Data-Free | [`run_fasth3_lora_preview_vsa_datafree.sh`](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/run_fasth3_lora_preview_vsa_datafree.sh) | VSA, 90% sparse, tile 64 |
+| VSA / Synthetic / Step 1300 | [`run_fasth3_lora_preview_vsa_synthetic_step1300.sh`](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/run_fasth3_lora_preview_vsa_synthetic_step1300.sh) | VSA, 90% sparse, tile 64 |
+| VSA / Synthetic / Step 1900 | [`run_fasth3_lora_preview_vsa_synthetic_step1900.sh`](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/run_fasth3_lora_preview_vsa_synthetic_step1900.sh) | VSA, 90% sparse, tile 64 |
+| Dense / Data-Free | [`run_fasth3_lora_preview_dense_datafree.sh`](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/run_fasth3_lora_preview_dense_datafree.sh) | Dense FA4 |
+
+Try the VSA / Data-Free model:
 
 ```bash
 PROMPT='integrated_multimodal_description: A red fox runs through fresh snow at dawn. overall_soundscape: Fast pawsteps in snow, winter wind, and distant birds.'
-BASE_MODEL='MiniMaxAI/MiniMax-H3'
-LORA_PATH="$LORA_ROOT/vsa-datafree"
 
-python examples/inference/lora/minimax_h3_lora_inference.py \
-  --model-path "$BASE_MODEL" \
-  --lora-path "$LORA_PATH" \
+bash examples/inference/basic/run_fasth3_lora_preview_vsa_datafree.sh \
   --prompt "$PROMPT" \
-  --output outputs/fasth3_vsa_datafree \
-  --num-gpus 4 \
-  --steps 5 \
-  --vsa \
-  --vsa-sparsity 0.9 \
-  --vsa-tile-size 64 \
-  --vsa-kernel sm100a \
-  --fa4
+  --no-warmup \
+  --repeats 1
 ```
 
-VSA LoRAs and full checkpoints require FastVideo's Video Sparse Attention
-backend and kernel. They will not reproduce the trained model with dense
-attention. To run another VSA variant, download its
-`vsa-synthetic-step1300/adapter_model.safetensors` or
-`vsa-synthetic-step1900/adapter_model.safetensors` file with the same
-`hf download` command, then change `LORA_PATH` to that subfolder.
-
-The Dense / Data-Free LoRA has no VSA gate. Run it with `--no-vsa`:
+Swap only the launcher name to try the other three:
 
 ```bash
-LORA_PATH="$LORA_ROOT/dense-datafree"
-
-python examples/inference/lora/minimax_h3_lora_inference.py \
-  --model-path "$BASE_MODEL" \
-  --lora-path "$LORA_PATH" \
-  --prompt "$PROMPT" \
-  --output outputs/fasth3_dense_datafree \
-  --num-gpus 4 \
-  --steps 5 \
-  --no-vsa \
-  --fa4
+bash examples/inference/basic/run_fasth3_lora_preview_vsa_synthetic_step1300.sh --prompt "$PROMPT" --no-warmup --repeats 1
+bash examples/inference/basic/run_fasth3_lora_preview_vsa_synthetic_step1900.sh --prompt "$PROMPT" --no-warmup --repeats 1
+bash examples/inference/basic/run_fasth3_lora_preview_dense_datafree.sh --prompt "$PROMPT" --no-warmup --repeats 1
 ```
 
-Five scheduler points produce exactly four DiT calls. The example fixes
-guidance to 1.0, matching training. Pass the adapter through `--lora-path` when
-the pipeline is created. Do not use runtime adapter switching for these
-releases: it applies only the low-rank factors and misses the exact parameter
-deltas and, for VSA, the compression-gate weights.
+All four launchers use the shared
+[`basic_fasth3_lora_preview.py`](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_lora_preview.py)
+runner. Its defaults enable FastVideo's H3 fusions, regional full-graph DiT
+compile, FA4, compiled sequence-parallel VAE decoding, replicated DiT weights,
+and pinned CPU offload. VSA variants also select 90% sparsity, tile size 64,
+and the `sm100a` block-sparse kernel. Five scheduler points mean exactly four
+DiT calls. Guidance stays at 1.0, matching training.
+
+By default, the runner performs one compile warmup and then saves three measured
+generations. Use `--no-warmup --repeats 1` for one clip, as above. Use
+`--num-frames 243` for about 10 seconds or `--num-frames 345` for about 15
+seconds.
+
+Adapter strength is also available:
+
+```bash
+bash examples/inference/basic/run_fasth3_lora_preview_vsa_datafree.sh \
+  --prompt "$PROMPT" \
+  --lora-strength 0.5 \
+  --no-warmup \
+  --repeats 1
+```
+
+Strength `1.0` applies the published rank-64 adapter at its trained scale.
+Strength `0` removes its weight deltas but keeps the selected attention backend,
+so a VSA run remains sparse. FastH3 adapters also contain exact parameter deltas
+and, for VSA, compression-gate weights. FastVideo therefore applies the adapter
+while building the pipeline and rejects unsafe runtime switching. Create a new
+generator when changing variants or strength.
+
+For a local adapter file or custom flags, call the shared Python runner directly.
+For a JSONL prompt set, use
+[`minimax_h3_lora_inference.py`](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/lora/minimax_h3_lora_inference.py).
 
 ## What comes next
 
@@ -289,7 +292,7 @@ Share results, unsupported hardware, regressions, and new ideas on
 [FastVideo Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ).
 Explore the
 [four-checkpoint collection](https://huggingface.co/collections/FastVideo/fastvideo-fasth3),
-run the [FastVideo LoRA example](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/lora/minimax_h3_lora_inference.py),
+run the [optimized FastH3 LoRA example](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_lora_preview.py),
 and show us where FastH3 works—and where it does not.
 
 ## Acknowledgements
