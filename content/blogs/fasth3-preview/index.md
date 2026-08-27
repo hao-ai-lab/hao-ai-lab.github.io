@@ -131,9 +131,9 @@ measures only the DiT loop.
 {{< table title="Performance table for final publication. TBD cells are intentionally not estimates." >}}
 | Model / variant | DiT forwards | Attention | 1× B200 E2E | 4× B200 E2E | 4× B200 denoise | Hosted E2E | Peak GiB / GPU |
 |---|---:|---|---:|---:|---:|---:|---:|
-| Base H3, FastVideo | 49 | Dense FA4 | TBD | TBD | TBD | N/A | TBD |
-| Preview v1 VSA / Data-Free (highlighted) | 4 | VSA, 90% sparse, tile 64 | TBD | TBD | TBD | N/A | TBD |
-| Preview v1 Dense / Data-Free (ablation) | 4 | Dense FA4 | TBD | TBD | TBD | N/A | TBD |
+| Base H3, FastVideo | 49 | Dense FA4 | 132 | 40 | TBD | N/A | TBD |
+| Preview v1 VSA / Data-Free (highlighted) | 4 | VSA, 90% sparse, tile 64 | 16.7 | 6.8 | TBD | N/A | TBD |
+| Preview v1 Dense / Data-Free (ablation) | 4 | Dense FA4 | 18.3 | 6.8 | 3.5 | N/A | 83.7 |
 {{</ table >}}
 
 VSA / Data-Free is the highlighted performance path. The two synthetic VSA
