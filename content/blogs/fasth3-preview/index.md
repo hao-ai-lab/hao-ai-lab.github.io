@@ -15,7 +15,7 @@ contentClass = "post-content-justified"
       url = "https://github.com/hao-ai-lab/FastVideo"
 +++
 
-{{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" huggingface="https://huggingface.co/collections/FastVideo/fastvideo-fasth3-6a8fbe67cc83dad6fa49360b" >}}
+{{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" huggingface="https://huggingface.co/collections/FastVideo/fastvideo-fasth3" >}}
 
 <!--
 Publication checklist (remove before publishing):
@@ -33,29 +33,22 @@ Publication checklist (remove before publishing):
 - Confirm all four model repositories are public.
 - Add the public training-config and synthetic-dataset links; verify their
   licenses and manifests.
-- Update all four model cards from private evaluation language to Preview
-  release language.
-- Rename the private model repositories, then update the links below:
-  `FastVideo-FastH3-4-step-Preview-v0.1-VSA-DataFree`,
-  `FastVideo-FastH3-4-step-Preview-v0.1-VSA-Synthetic-Step1300`,
-  `FastVideo-FastH3-4-step-Preview-v0.1-VSA-Synthetic-Step1900`, and
-  `FastVideo-FastH3-4-step-Preview-v0.1-Dense-DataFree`.
 - Confirm final author list, acknowledgements, citation URL, and MiniMax H3
   Community License review.
 - Confirm the final publication timestamp.
 -->
 
 
-**TL;DR.** FastVideo in collaboration with nuvalab.ai, and FastGen team is releasing four text-to-video-and-audio FastH3 Preview
-v0.1 checkpoints. They reduce MiniMax H3 from 49 transformer calls to four and
-generate 768p video with 32 kHz stereo audio. The variants explore prompt-only
-and synthetic-video training, and sparse and dense attention. In our qualitative
-checks, fast motion and fine audio remain weaker than Base H3; first/last-frame
-and reference workflows are not supported yet.
+**TL;DR.** FastVideo, in collaboration with [Nuva Lab](https://nuvalab.ai/)
+and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team, is releasing
+four FastH3 Preview v1 checkpoints for text-to-video-and-audio (T2VA). They
+distill MiniMax H3 from 49 DiT calls to four and generate 768p video with audio.
+The family compares prompt-only with synthetic-video training and sparse with
+dense attention. In our qualitative checks, fast motion remain
+weaker than Base H3. FL2VA was not a training target and can produce low-motion
+results. Ref2VA is not supported yet.
 
-This is an open release: weights, FastVideo training and inference code, exact
-configs, synthetic Base-H3 data, evaluation artifacts, and the sampling
-contract. We want the community to reproduce the recipe and improve it with us.
+This is an open release: weights, FastVideo inference code are released in this blog. Training code, configs, synthetic Base-H3 data will be released at a later date. We want the community to reproduce the recipe and improve it with us.
 
 <!-- TODO: Add an audible, matched-prompt hero comparison across the four
 FastH3 releases, Base H3, and H3 Max. Do not autoplay because autoplay mutes
@@ -96,17 +89,19 @@ Alongside the weights, FastVideo will later be releasing:
 - Full training code and recipe for DMD2 and Video Sparse Attention (VSA) kernels.
 - Prompts and synthetic Base-H3 videos.
 
-{{< table title="The four checkpoints in FastH3 Preview v0.1. Each uses four DiT calls." >}}
+{{< table title="The four checkpoints in FastH3 Preview v1. Each uses four DiT calls." >}}
 | Variant | Training source | Attention | Training step |
 |---|---|---|---:|
-| [VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-v1) | Prompts only, mixed shapes | VSA, 90% sparse, tile 64 | 1300 |
-| [VSA / Synthetic / Step 1300](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-v1.1) | Synthetic Base-H3 videos | VSA, 90% sparse, tile 64 | 1300 |
-| [VSA / Synthetic / Step 1900](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-v1.2) | Synthetic Base-H3 videos | VSA, 90% sparse, tile 64 | 1900 |
-| [Dense / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-Dense-4-step-v1) | Prompts only, mixed shapes | Dense FA4 | 1000 |
+| [VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-DataFree) | Prompts only, mixed shapes | VSA, 90% sparse, tile 64 | 1300 |
+| [VSA / Synthetic / Step 1300](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-Synthetic-Step1300) | Synthetic Base-H3 videos | VSA, 90% sparse, tile 64 | 1300 |
+| [VSA / Synthetic / Step 1900](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-Synthetic-Step1900) | Synthetic Base-H3 videos | VSA, 90% sparse, tile 64 | 1900 |
+| [Dense / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-Dense-DataFree) | Prompts only, mixed shapes | Dense FA4 | 1000 |
 {{</ table >}}
 
 “Data-free” (also known as backward simulation in DMD2) means training uses prompts but no target videos. The synthetic
 variants use videos generated by Base H3. The dense variant provides a full-attention comparison.
+[Nuva Lab](https://nuvalab.ai/) contributed the prompt suite and most of the
+synthetic Base-H3 T2VA training corpus.
 
 All four checkpoints support T2VA only. H3 uses the base transformer for both
 T2VA and first/last-frame-to-video-and-audio (FL2VA), but these students were not
@@ -125,12 +120,13 @@ measures only the DiT loop.
 | Model / variant | DiT forwards | Attention | 1× B200 E2E | 4× B200 E2E | 4× B200 denoise | Hosted E2E | Peak GiB / GPU |
 |---|---:|---|---:|---:|---:|---:|---:|
 | Base H3, FastVideo | 49 | Dense FA4 | TBD | TBD | TBD | N/A | TBD |
-| Preview v0.1 VSA family | 4 | VSA, 90% sparse, tile 64 | TBD | TBD | TBD | N/A | TBD |
-| Preview v0.1 Dense / Data-Free | 4 | Dense FA4 | TBD | TBD | TBD | N/A | TBD |
+| Preview v1 VSA family | 4 | VSA, 90% sparse, tile 64 | TBD | TBD | TBD | N/A | TBD |
+| Preview v1 Dense / Data-Free | 4 | Dense FA4 | TBD | TBD | TBD | N/A | TBD |
 | H3 Max, fal API | Not disclosed | Not disclosed | N/A | N/A | N/A | Under 3 s, fal-reported; observed TBD | Not disclosed |
 {{</ table >}}
 
-The three VSA checkpoints share one latency row because their performance are identical.
+The three VSA checkpoints share one latency row because their runtime paths are
+identical.
 On B200, the default path uses FastVideo's tile-64 CUDA VSA kernel, regional DiT
 compilation, H3 fusions, and compiled parallel video VAE. We will evaluate the
 three checkpoints' quality separately. H3 Max is a hosted service on undisclosed
@@ -159,47 +155,12 @@ full-attention target. This extends the
 
 ## Where four steps still fall short
 
-### Fast motion and the noise schedule
+### Fast motion
 
-In our qualitative checks, FastH3 is strongest on slower scenes and simple
-motion. In faster scenes, hair, water, grass, small objects, and sharp moving
-edges can become soft or smeared.
 
-The four-step ladder looks evenly spaced: `[999, 749, 500, 250]`. But H3 maps
-each base timestep through a shift of 12 for video and 3 for audio. The effective
-noise levels are:
+### FL2VA
 
-{{< table title="H3 maps each base timestep to different video and audio noise levels. Zero is the clean endpoint, not another model call." >}}
-| Experiment | Base timesteps | Effective video noise | Effective audio noise |
-|---|---|---|---|
-| Current 4-step | `[999, 749, 500, 250]` | `[1.000, 0.973, 0.923, 0.800]` | `[1.000, 0.900, 0.750, 0.500]` |
-| 8-step experiment | `[999, 874, 749, 624, 500, 375, 250, 125]` | `[1.000, 0.988, 0.973, 0.952, 0.923, 0.878, 0.800, 0.632]` | `[1.000, 0.954, 0.900, 0.833, 0.750, 0.643, 0.500, 0.300]` |
-| 4-step low-noise experiment | `[999, 600, 250, 50]` | `[1.000, 0.947, 0.800, 0.387]` | `[1.000, 0.818, 0.500, 0.136]` |
-{{</ table >}}
 
-The current model's last call happens while video noise is still 0.80. One large
-final update must recover fine detail and fast motion at once. That matches the
-blur and smearing we see, but it is still a hypothesis.
-
-The 8-step run adds more calls. The low-noise run keeps four calls but moves the
-last one closer to the clean output, from video noise 0.80 to 0.387. FastVideo
-uses the same schedule for training and validation because changing only the
-inference schedule can hurt a distilled model. More low-noise work may sharpen
-edges but weaken composition or large motion, so we will compare both runs
-before choosing a new default.
-
-### Aligning audio and video
-
-We fixed two sources of mismatch. First, FastVideo now derives every video and
-audio noise level from one shared base timestep, then applies H3's video shift
-of 12 and audio shift of 3. Training, validation, and inference stay on the same
-paired schedule.
-
-Second, H3 packs audio on a 40 Hz clock tied to the video length, while the audio
-VAE can round up by one latent. FastVideo now trims or edge-pads the audio latent
-to the exact packed length. These are latent and diffusion-clock fixes, not a
-late MP4 offset. Fine audio detail can still be weak, so evaluation will include
-listening tests and an audio-video sync metric.
 
 ## Try FastH3
 
@@ -218,7 +179,7 @@ UV_TORCH_BACKEND=cu130 uv pip install -e ".[fasth3]"
 
 ```bash
 PROMPT='integrated_multimodal_description: A red fox runs through fresh snow at dawn. overall_soundscape: Fast pawsteps in snow, winter wind, and distant birds.'
-MODEL_PATH='FastVideo/FastVideo-FastH3-4-step-v1.2'
+MODEL_PATH='FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-Synthetic-Step1900'
 export FASTVIDEO_DMD_DENOISING_STEPS=999,749,500,250
 
 python examples/inference/basic/basic_fasth3.py \
@@ -237,7 +198,7 @@ the Dense / Data-Free model card for its command.
 
 ## What comes next
 
-Preview v0.1 is an early checkpoint family, not a claim that four steps have
+Preview v1 is an early checkpoint family, not a claim that four steps have
 solved H3. FastVideo's next priorities are:
 
 ### 1. Publish a evaluation between our checkpoints and H3 Max
@@ -281,19 +242,20 @@ Share results, unsupported hardware, regressions, and new ideas on
 [GitHub](https://github.com/hao-ai-lab/FastVideo) or in the
 [FastVideo Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ).
 Explore the
-[four-checkpoint collection](https://huggingface.co/collections/FastVideo/fastvideo-fasth3-6a8fbe67cc83dad6fa49360b),
+[four-checkpoint collection](https://huggingface.co/collections/FastVideo/fastvideo-fasth3),
 run the [FastVideo example](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3.py),
 and show us where FastH3 works—and where it does not.
 
 ## Acknowledgements
 
-We thank our collaborators on the [NVIDIA FastGen](https://github.com/NVlabs/FastGen)
-team. Their reference implementation helped us align DMD2's score clock,
-modality shifts, and backward-simulation behavior. We also thank MiniMax for
-releasing H3-Base, fal for adding another H3 direction to the ecosystem, the
-DMD2 and VSA authors, the FlashAttention and CUTLASS teams, and every FastVideo
-contributor who built and tested the model, kernels, training path, evaluation
-tools, and serving stack.
+We thank [Nuva Lab](https://nuvalab.ai/) for the prompt suite and synthetic
+Base-H3 training corpus, and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen)
+team for the DMD2 framework and H3 reference experiment that helped us align
+the score clock, modality shifts, and backward simulation. We also thank
+MiniMax for releasing H3-Base, fal for adding another H3 direction to the
+ecosystem, the DMD2 and VSA authors, the FlashAttention and CUTLASS teams, and
+every FastVideo contributor who built and tested the model, kernels, training
+path, evaluation tools, and serving stack.
 
 <!-- TODO: Add named contributors and affiliations after author approval. -->
 
@@ -307,7 +269,7 @@ release, DMD2, VSA, and FastVideo.
 
 ```bibtex
 @misc{fastvideo_fasth3_2026,
-  title        = {FastH3 Preview v0.1: Four Open-Weight H3 Models in Four Steps},
+  title        = {FastH3 Preview v1: Four Open-Weight H3 Models in Four Steps},
   author       = {FastVideo Team},
   year         = {2026},
   howpublished = {\url{https://haoailab.com/blogs/fasth3-preview/}},
