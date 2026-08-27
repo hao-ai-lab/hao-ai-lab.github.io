@@ -125,15 +125,14 @@ checkpoint. We are actively working on shipping those checkpoints. Stay Tuned!
 Each local test uses FastVideo's optimized inference at a resolution of 1344x768x124 @ 24 FPS (5s) with audio. 
 We report the median of three timed requests after one full
 warmup. Model loading and compilation are excluded. End-to-end time includes
-encoding, denoising, decoding, audio, muxing, and file output; denoise time
-measures only the DiT loop.
+encoding, denoising, decoding, audio, muxing, and file output.
 
 {{< table title="Performance table for final publication. TBD cells are intentionally not estimates." >}}
-| Model / variant | DiT forwards | Attention | 1× B200 E2E | 4× B200 E2E | 4× B200 denoise | Hosted E2E | Peak GiB / GPU |
-|---|---:|---|---:|---:|---:|---:|---:|
-| Base H3, FastVideo | 49 | Dense FA4 | 132 | 40 | TBD | N/A | TBD |
-| Preview v1 VSA / Data-Free (highlighted) | 4 | VSA, 90% sparse, tile 64 | 16.7 | 6.8 | TBD | N/A | TBD |
-| Preview v1 Dense / Data-Free (ablation) | 4 | Dense FA4 | 18.3 | 6.8 | 3.5 | N/A | 83.7 |
+| Model / variant | DiT forwards | Attention | 1× B200 E2E | 4× B200 E2E | Hosted E2E |
+|---|---:|---|---:|---:|---:|
+| Base H3, FastVideo | 49 | Dense FA4 | 132 | 40 | N/A |
+| Preview v1 VSA / Data-Free (highlighted) | 4 | VSA, 90% sparse, tile 64 | 16.7 | 6.8 | N/A |
+| Preview v1 Dense / Data-Free (ablation) | 4 | Dense FA4 | 18.3 | 6.8 | N/A |
 {{</ table >}}
 
 VSA / Data-Free is the highlighted performance path. The two synthetic VSA
