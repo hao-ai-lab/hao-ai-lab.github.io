@@ -99,8 +99,8 @@ reuses the H3-Base text encoder, video VAE, audio VAE, tokenizers, and scheduler
 
 FastH3 is not fixed to the 1344×768 benchmark shape. The checkpoints were
 trained and validated on mixed canvases, including square, portrait, landscape,
-and ultrawide video. The gallery below spans 480×640 through 1760×768. FastVideo
-accepts custom heights and widths in multiples of 32.
+and ultrawide 768p video. FastVideo accepts custom heights and widths in
+multiples of 32.
 
 Our highlighted release is
 [VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-DataFree).
@@ -140,12 +140,9 @@ trained with first/last-frame conditioning. Reference-to-video-and-audio
 (Ref2VA) uses a separate reference transformer and needs its own distilled
 checkpoint. We are actively working on shipping those checkpoints. Stay Tuned!
 
-## Random validation samples
+## Validation samples
 
-Here are 15 samples selected at random from the 60-video VSA / Data-Free
-validation set (fixed seed `20260827`). We did not curate the results after
-selection. Every card includes the full prompt. Click play to hear the generated
-32 kHz stereo audio; the videos do not autoplay or start muted.
+Fifteen VSA / Data-Free validation samples with generated stereo audio and full prompts.
 
 {{< fasth3-validation-gallery manifest="validation_v1_random15.json" >}}
 
@@ -158,21 +155,23 @@ warmup. Model loading and compilation are excluded. End-to-end time includes
 encoding, denoising, decoding, audio, muxing, and file output.
 
 {{< table title="Warm end-to-end latency for FastVideo on B200." >}}
-| Model / variant | Duration (frames) | DiT forwards | Attention | 1× B200 E2E | 4× B200 E2E |
-|---|---:|---:|---|---:|---:|
-| Base H3, FastVideo | 5s (124) | 49 | Dense FA4 | 132 | 40 |
-| Preview v1 VSA / Data-Free (highlighted) | 5s (124) | 4 | VSA, 90% sparse, tile 64 | 16.2 | 6.1 |
-| Preview v1 VSA / Data-Free (highlighted) | 10s (243) | 4 | VSA, 90% sparse, tile 64 | 31.1 | 12.0 |
-| Preview v1 VSA / Data-Free (highlighted) | 15s (345) | 4 | VSA, 90% sparse, tile 64 | 47.2 | 15.5 |
-| Preview v1 Dense / Data-Free (ablation) | 5s (124) | 4 | Dense FA4 | 18.3 | 6.8 |
-| Preview v1 Dense / Data-Free (ablation) | 10s (243) | 4 | Dense FA4 | 50.2 | 15.0 |
-| Preview v1 Dense / Data-Free (ablation) | 15s (345) | 4 | Dense FA4 | 91.3 | 25.6 |
+| Model / variant | Duration (frames) | DiT forwards | Attention | 1× B200 E2E | 4× B200 E2E | 8× B200 E2E | 8× B200 denoise |
+|---|---:|---:|---|---:|---:|---:|---:|
+| Base H3, FastVideo | 5s (124) | 49 | Dense FA4 | 132 | 40 |  |  |
+| Preview v1 VSA / Data-Free (highlighted) | 5s (124) | 4 | VSA, 90% sparse, tile 64 | 16.2 | 6.1 | 8.02 | 2.22 |
+| Preview v1 VSA / Data-Free (highlighted) | 10s (243) | 4 | VSA, 90% sparse, tile 64 | 31.1 | 12.0 | 10.54 | 3.05 |
+| Preview v1 VSA / Data-Free (highlighted) | 15s (345) | 4 | VSA, 90% sparse, tile 64 | 47.2 | 15.5 | 13.90 | 4.73 |
+| Preview v1 Dense / Data-Free (ablation) | 5s (124) | 4 | Dense FA4 | 18.3 | 6.8 |  |  |
+| Preview v1 Dense / Data-Free (ablation) | 10s (243) | 4 | Dense FA4 | 50.2 | 15.0 |  |  |
+| Preview v1 Dense / Data-Free (ablation) | 15s (345) | 4 | Dense FA4 | 91.3 | 25.6 |  |  |
 {{</ table >}}
 
 VSA / Data-Free is the highlighted performance path. The two synthetic VSA
 ablations use the same runtime path and therefore have the same latency.
 On B200, the default path uses FastVideo's optimized tile-64 CUDA VSA kernel, regional DiT
-compilation, H3 fusions, and compiled parallel video VAE. We will evaluate the
+compilation, H3 fusions, and compiled parallel video VAE. The 8× B200 measurements use
+H3 fusions and the compiled parallel VAE, but predate regional compilation of the sparse DiT.
+We will evaluate the
 three checkpoints' quality separately. H3 Max is a hosted service on undisclosed
 hardware, so fal's number is not an apples-to-apples local result.
 
