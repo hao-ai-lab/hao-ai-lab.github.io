@@ -38,6 +38,14 @@ Publication checklist (remove before publishing):
 - Confirm the final publication timestamp.
 -->
 
+<div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
+  <video controls playsinline preload="metadata"
+    aria-label="Garfield announces the open-source FastH3 four-step release"
+    style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
+    <source src="img/hero/000_garfield_fasth3_open_source.mp4" type="video/mp4">
+    Your browser does not support MP4 video with audio.
+  </video>
+</div>
 
 **TL;DR:** FastVideo, in collaboration with [Nuva Lab](https://nuvalab.ai/)
 and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team, is releasing
