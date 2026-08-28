@@ -221,10 +221,12 @@ uses FA4.
 The setup below targets four NVIDIA B200 GPUs with CUDA 13. On first use, the
 launcher downloads Base H3 and the VSA / Data-Free adapter. Each new process
 loads them and compiles the fast inference path; warmup and measured generations
-in one process reuse that work.
+in one process reuse that work. For other supported platforms, start with the
+[FastVideo installation guide](https://hao-ai-lab.github.io/FastVideo/getting_started/installation/).
 
-For guided setup, use FastVideo's
-[agent-guided installation](https://github.com/hao-ai-lab/FastVideo#install-with-an-ai-coding-agent).
+For guided environment setup, use FastVideo's
+[agent-guided installation](https://github.com/hao-ai-lab/FastVideo#install-with-an-ai-coding-agent)
+and ask the agent to finish with the FastH3-specific install command below.
 For a manual install, first install
 [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
 
@@ -237,15 +239,13 @@ source .venv/bin/activate
 UV_TORCH_BACKEND=cu130 uv pip install \
   --no-sources-package fastvideo-kernel \
   -e ".[fasth3]"
-
-hf auth login
 ```
 
 The `--no-sources-package` option installs the published
-`fastvideo-kernel 0.3.4` wheel, which includes the B200 `sm100a` VSA kernel,
-instead of compiling the kernel locally. Accept the MiniMax H3 Community
-License before downloading Base H3. Never put a Hub token in a script or output
-directory.
+`fastvideo-kernel` wheel, which includes the B200 `sm100a` VSA kernel, instead
+of compiling the kernel locally. Base H3 and the FastH3 adapters are public, so
+no Hugging Face login is required. Review the MiniMax H3 Community License
+before use.
 
 Use the pre-extracted
 [VSA / Data-Free LoRA](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA/tree/main/vsa-datafree)
@@ -264,6 +264,10 @@ bash examples/inference/basic/run_fasth3_lora_preview_vsa_datafree.sh \
   --no-warmup \
   --repeats 1
 ```
+
+On other multi-GPU CUDA systems, add
+`--no-replicated-dit --vsa-kernel triton --no-fa4`. The value of `--num-gpus`
+must divide H3's 56 attention heads.
 
 Do not remove `--vsa` or run this LoRA through the dense path. The other three
 checkpoints remain available in the ablation table above.
