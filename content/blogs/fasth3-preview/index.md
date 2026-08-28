@@ -1,5 +1,5 @@
 +++
-title = "FastVideo FastH3 Preview v1: Open-Weight 4-Step Distilled H3 Models"
+title = "FastVideo FastH3 V1: Open-Source 4-Step Sparse Distilled H3 for 14x Speedup on NVIDIA Blackwell GPU"
 date = 2026-08-27T00:00:00-07:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -48,12 +48,13 @@ Publication checklist (remove before publishing):
 </div>
 
 **TL;DR:** FastVideo, in collaboration with [Nuva Lab](https://nuvalab.ai/)
-and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team, is releasing
+and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team, is open sourcing
 FastH3 Preview v1 for text-to-video-and-audio (T2VA). It is a four-step
-distilled MiniMax H3 that generates synchronized audio and variable-resolution,
-variable-aspect-ratio video up to a 768-pixel short edge. The highlighted model
-uses 90% sparse Video Sparse Attention. Three companion checkpoints provide
-training-data and dense-attention ablations.
+distilled MiniMax H3 that achieves
+sub-realtime generation (13s) on 8xB200 for a 768p 15s video and up to 14x
+speedup on a single NVIDIA Blackwell GPU. FastH3 can natively generate
+synchronized audio and variable-resolution, variable-aspect-ratio video up to a
+768-pixel short edge.
 
 We are releasing full weights, pre-extracted LoRAs, and FastVideo
 inference code all in this blog. Training code, configs, and synthetic
