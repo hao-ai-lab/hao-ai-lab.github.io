@@ -1,5 +1,5 @@
 +++
-title = "FastVideo FastH3 V1: Open-Source 4-Step Sparse Distilled H3 for 14x Speedup on NVIDIA Blackwell GPU"
+title = "FastVideo FastH3 V1: Open-Weight 4-Step Sparse Distilled H3 for 14x Speedup on NVIDIA Blackwell GPU"
 date = 2026-08-27T00:00:00-07:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -78,13 +78,6 @@ The strongest video systems were mostly closed until MiniMax released the
 [H3-Base weights](https://huggingface.co/MiniMaxAI/MiniMax-H3). With downloadable
 weights, the community can inspect H3, post-train it, replace kernels, and run it
 on its own hardware.
-
-That ecosystem is already growing. On August 26, fal announced
-[H3 Max](https://fal.ai/learn/devs/introducing-h3-max-by-fal), a hosted
-post-trained H3 model. fal reports stronger quality and a latency below three
-seconds for a five-second 768p request. fal has not announced downloadable H3 Max weights or training code.
-FastVideo takes the open source path by making the acceleration checkpoint and recipe a shared
-open source asset, not just an API.
 
 This continues our work on
 [FastWan sparse distillation](/blogs/fastvideo_post_training/) and
@@ -176,9 +169,7 @@ ablations use the same runtime path and therefore have the same latency.
 On B200, the default path uses FastVideo's optimized tile-64 CUDA VSA kernel, regional DiT
 compilation, H3 fusions, and compiled parallel video VAE. The 8× B200 measurements use
 H3 fusions and the compiled parallel VAE, but predate regional compilation of the sparse DiT.
-We will evaluate the
-three checkpoints' quality separately. H3 Max is a hosted service on undisclosed
-hardware, so fal's number is not an apples-to-apples local result.
+We will evaluate the three checkpoints' quality separately. 
 
 ## How FastH3 works
 
