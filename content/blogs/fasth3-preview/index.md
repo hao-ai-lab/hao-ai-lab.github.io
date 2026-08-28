@@ -155,17 +155,17 @@ warmup. Model loading and compilation are excluded. End-to-end time includes
 encoding, denoising, decoding, audio, muxing, and file output.
 
 {{< table title="Warm end-to-end latency and same-hardware speedup for FastVideo on B200." >}}
-| Model / variant | Duration (frames) | DiT forwards | Attention | 1× B200 E2E | 4× B200 E2E | **Speedup over Base H3 (1× / 4×)** | 8× B200 E2E | 8× B200 denoise |
-|---|---:|---:|---|---:|---:|---:|---:|---:|
-| Base H3, FastVideo | 5s (124) | 49 | Dense FA4 | 132.5 | 40.6 | 1.0× / 1.0× |  |  |
-| Preview v1 VSA / Data-Free (highlighted) | 5s (124) | 4 | VSA, 90% sparse, tile 64 | 16.2 | 6.1 | **8.16× / 6.65×** | 8.02 | 2.22 |
-| Preview v1 Dense / Data-Free (ablation) | 5s (124) | 4 | Dense FA4 | 18.3 | 6.8 | 7.24× / 5.97× |  |  |
-| Base H3, FastVideo | 10s (243) | 49 | Dense FA4 | 377.4 | 108.7 | 1.0× / 1.0× |  |  |
-| Preview v1 VSA / Data-Free (highlighted) | 10s (243) | 4 | VSA, 90% sparse, tile 64 | 31.1 | 12.0 | **12.13× / 9.03×** | 10.54 | 3.05 |
-| Preview v1 Dense / Data-Free (ablation) | 10s (243) | 4 | Dense FA4 | 50.2 | 15.0 | 7.52× / 7.25× |  |  |
-| Base H3, FastVideo | 15s (345) | 49 | Dense FA4 | 678.7 | 193.1 | 1.0× / 1.0× |  |  |
-| Preview v1 VSA / Data-Free (highlighted) | 15s (345) | 4 | VSA, 90% sparse, tile 64 | 47.2 | 15.5 | **14.38× / 12.48×** | 13.90 | 4.73 |
-| Preview v1 Dense / Data-Free (ablation) | 15s (345) | 4 | Dense FA4 | 91.3 | 25.6 | 7.43× / 7.54× |  |  |
+| Model / runtime | Duration | 1× B200 E2E (s) | 4× B200 E2E (s) | 8× B200 E2E (s) | **Speedup over Base H3 (1× / 4×)** |
+|---|---:|---:|---:|---:|---:|
+| **Base H3 · Dense FA4** | 5s | 132.5 | 40.6 |  | 1.0× / 1.0× |
+|  | 10s | 377.4 | 108.7 |  | 1.0× / 1.0× |
+|  | 15s | 678.7 | 193.1 |  | 1.0× / 1.0× |
+| **Preview v1 VSA / Data-Free · 90% sparse** | 5s | 16.2 | 6.1 | 8.02 | **8.16× / 6.65×** |
+|  | 10s | 31.1 | 12.0 | 10.54 | **12.13× / 9.03×** |
+|  | 15s | 47.2 | 15.5 | 13.90 | **14.38× / 12.48×** |
+| **Preview v1 Dense / Data-Free · Dense FA4** | 5s | 18.3 | 6.8 |  | 7.24× / 5.97× |
+|  | 10s | 50.2 | 15.0 |  | 7.52× / 7.25× |
+|  | 15s | 91.3 | 25.6 |  | 7.43× / 7.54× |
 {{</ table >}}
 
 Speedup uses the unrounded timings for the same duration and GPU count; no 8×
