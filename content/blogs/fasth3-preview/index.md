@@ -41,9 +41,11 @@ Publication checklist (remove before publishing):
 
 **TL;DR:** FastVideo, in collaboration with [Nuva Lab](https://nuvalab.ai/)
 and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team, is releasing
-FastH3 Preview v1 for text-to-video-and-audio (T2VA). It is a 4-step distilled MiniMax H3 and generates up to 768p video with
-audio, and uses 90% sparse Video Sparse Attention. Three companion checkpoints
-provide training-data and dense-attention ablations. 
+FastH3 Preview v1 for text-to-video-and-audio (T2VA). It is a four-step
+distilled MiniMax H3 that generates synchronized audio and variable-resolution,
+variable-aspect-ratio video up to a 768-pixel short edge. The highlighted model
+uses 90% sparse Video Sparse Attention. Three companion checkpoints provide
+training-data and dense-attention ablations.
 
 We are releasing full weights, pre-extracted LoRAs, and FastVideo
 inference code all in this blog. Training code, configs, and synthetic
@@ -86,6 +88,11 @@ model to H3.
 
 FastH3 distills H3's base transformer for text-to-video-and-audio (T2VA) and
 reuses the H3-Base text encoder, video VAE, audio VAE, tokenizers, and schedulers.
+
+FastH3 is not fixed to the 1344×768 benchmark shape. The checkpoints were
+trained and validated on mixed canvases, including square, portrait, landscape,
+and ultrawide video. The gallery below spans 480×640 through 1760×768. FastVideo
+accepts custom heights and widths in multiples of 32.
 
 Our highlighted release is
 [VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-DataFree).
@@ -301,9 +308,15 @@ also exploring FP8 and NVFP4 variants.
 
 ## Help us test more hardware
 
-Our published numbers use NVIDIA B200 GPUs. We welcome results from other
-single- and multi-GPU systems that can load FastH3. Our team is also working on 
-consumer grade GPUs such as 5090 and Apple Silicon MLX runtime.
+Our published latency numbers use NVIDIA B200 GPUs because that is our
+controlled benchmark platform, not because the checkpoints require B200. The
+weights are hardware-independent and can run anywhere with enough memory and a
+compatible H3 runtime. The VSA checkpoints additionally need a compatible
+FastVideo VSA kernel.
+
+We are preparing optimized FastVideo recipes for NVIDIA RTX GPUs, NVIDIA DGX
+Spark, and Apple Silicon through MLX. Stay tuned, and help us test hardware we
+do not have locally.
 
 Share results, unsupported hardware, regressions, and new ideas on
 [GitHub](https://github.com/hao-ai-lab/FastVideo) or in the
