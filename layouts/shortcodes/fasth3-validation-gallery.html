@@ -8,7 +8,8 @@
 <div class="fasth3-validation-grid">
   {{- range $gallery.samples }}
   <article class="fasth3-validation-card">
-    <video controls playsinline preload="metadata"
+    <video controls playsinline preload="none"
+      style="aspect-ratio: {{ .width }} / {{ .height }};"
       aria-label="FastH3 validation sample {{ .sample_id }} with audio">
       <source src="{{ .video }}" type="video/mp4">
       Your browser does not support MP4 video with audio.
@@ -44,6 +45,7 @@
   display: block;
   width: 100%;
   max-height: 32rem;
+  object-fit: contain;
   background: #000;
   border-radius: 8px;
 }
