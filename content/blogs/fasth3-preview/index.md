@@ -56,11 +56,11 @@ We took production readiness, quality, user experience and openness seriously.
 We hope this joint effort will lead to a solid foundation for people who would
 love to use it in real commerical workload beyond an academic experimentation.
 
-### Speed:
+### Speed
 - FastH3 can generate 15s 768p video in less than 13s with sub-realtime generation on 8xB200 GPUs.
 - Up to 14x speedup on a single Nvidia Blackwell GPU
 
-### Quality:
+### Quality
 - We used 1k+ B200 training hours, paired with real world multi-shot, visual audio synced input distribution and output formats for best possible quality preservation.
 - FastH3 natively supports variable resolution, aspect ratio, and duration. In a single checkpoint.
 
@@ -156,9 +156,9 @@ encoding, denoising, decoding, audio, muxing, and file output.
 | **Base H3 · Dense FA4** | 5s | 132.5 | 40.6 |  | 1.0× / 1.0× |
 |  | 10s | 377.4 | 108.7 |  | 1.0× / 1.0× |
 |  | 15s | 678.7 | 193.1 |  | 1.0× / 1.0× |
-| **Preview v1 VSA / Data-Free · 90% sparse** | 5s | 16.2 | 6.1 | 8.02 | **8.16× / 6.65×** |
-|  | 10s | 31.1 | 12.0 | 10.54 | **12.13× / 9.03×** |
-|  | 15s | 47.2 | 15.5 | 13.90 | **14.38× / 12.48×** |
+| **Preview v1 VSA / Data-Free · 90% sparse** | 5s | 16.2 | 6.1 | 6.84 | **8.16× / 6.65×** |
+|  | 10s | 31.1 | 12.0 | 11.66 | **12.13× / 9.03×** |
+|  | 15s | 47.2 | 15.5 | 12.88 | **14.38× / 12.48×** |
 | **Preview v1 Dense / Data-Free · Dense FA4** | 5s | 18.3 | 6.8 |  | 7.24× / 5.97× |
 |  | 10s | 50.2 | 15.0 |  | 7.52× / 7.25× |
 |  | 15s | 91.3 | 25.6 |  | 7.43× / 7.54× |
@@ -169,9 +169,8 @@ speedup is claimed without a matched Base H3 run.
 
 VSA / Data-Free is our recommended release and default performance path.
 On B200, this path uses FastVideo's optimized tile-64 CUDA VSA kernel, regional
-DiT compilation, H3 fusions, and compiled parallel video VAE. The 8× B200
-measurements use H3 fusions and the compiled parallel VAE, but predate regional
-compilation of the sparse DiT.
+DiT compilation, H3 fusions, and compiled video VAE. The 8× B200 measurements
+also use SP8 parallel VAE decoding.
 
 ## How FastH3 works
 
