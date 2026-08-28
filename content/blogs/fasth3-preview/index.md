@@ -1,5 +1,5 @@
 +++
-title = "FastVideo FastH3 V1: Open-Weight Sparse Distilled Minimax H3 for 14x Speedup on NVIDIA Blackwell GPU"
+title = "FastVideo FastH3 V1: Open-Weight 4-Step Sparse Distilled Minimax H3 for 14x Speedup on NVIDIA Blackwell GPU"
 date = 2026-08-27T00:00:00-07:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -108,7 +108,7 @@ and ultrawide 768p video. FastVideo accepts custom heights and widths in
 multiples of 32.
 
 Our highlighted release is
-[4-step VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-DataFree) and [8-step VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-8-step-Preview-v1-VSA-DataFree).
+[4-step VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-DataFree).
 It trains from prompts without target videos and is the version we recommend
 trying first. The other three checkpoints are ablations for studying synthetic
 training data, training duration, and dense attention.
@@ -346,11 +346,13 @@ Its production-aligned post-training insights help bridge open-source research
 to practical data-assisted distillation for commercial video workflows, with
 Omni Ref as the next focus.
 
-We also thank the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team for
+We thank the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team for
 the DMD2 framework and H3 reference experiment that helped us align the score
-clock, modality shifts, and backward simulation. We also thank MiniMax for
-releasing H3-Base, and the [vLLM project](https://vllm.ai/), NVIDIA, and
-[MBZUAI](https://mbzuai.ac.ae/) for their continued sponsorship and support for
+clock, modality shifts, and backward simulation. 
+
+We also thank MiniMax for releasing H3-Base, and the [vLLM
+project](https://vllm.ai/), [NVIDIA](https://www.nvidia.com/en-us/), and
+[MBZUAI](https://mbzuai.ac.ae/) for their continued sponsorship and support of
 FastVideo.
 
 <!-- TODO: Add named contributors and affiliations after author approval. -->
