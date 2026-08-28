@@ -1,5 +1,5 @@
 +++
-title = "FastVideo FastH3 V1: Open-Weight 4-Step Sparse Distilled H3 for 14x Speedup on NVIDIA Blackwell GPU"
+title = "FastVideo FastH3 V1: Open-Weight Sparse Distilled Minimax H3 for 14x Speedup on NVIDIA Blackwell GPU"
 date = 2026-08-27T00:00:00-07:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -47,26 +47,37 @@ Publication checklist (remove before publishing):
   </video>
 </div>
 
-**TL;DR:** FastVideo, in collaboration with [Nuva Lab](https://nuvalab.ai/)
+## **TL;DR:** 
+FastVideo, in collaboration with [Nuva Lab](https://nuvalab.ai/)
 and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team, is open sourcing
-FastH3 Preview v1 for text-to-video-and-audio (T2VA). It is a four-step
-distilled MiniMax H3 that achieves
-sub-realtime generation (13s) on 8xB200 for a 768p 15s video and up to 14x
-speedup on a single NVIDIA Blackwell GPU. FastH3 can natively generate
-synchronized audio and variable-resolution, variable-aspect-ratio video up to a
-768-pixel short edge.
+FastH3 Preview v1 for text-to-video-and-audio (T2VA), post-trained on Minimax H3.
 
-We are releasing full weights, pre-extracted LoRAs, and FastVideo
-inference code all in this blog. Training code, configs, and synthetic
-Base-H3 data will be released at a later date.
+We took production readiness, quality, user experience and openness seriously.
+We hope this joint effort will lead to a solid foundation for people who would
+love to use it in real commerical workload beyond an academic experimentation.
 
-FastH3 actually holds up because:
-1. It's fully open source (training code coming soon!)
-2. It uses production quality post training data / distribution that people actually use and desire
-3. It uses substantial compute with 1000+ B200 training hours
-4. It's fast and quality preserving because the team has the expertise
-5. It's composable and we have simple loras for you to plug in and try.
-6. Omni ref version coming soon so you should follow along and see the real deal next
+### Speed:
+- FastH3 can generate 15s 768p video in less than 13s with sub-realtime generation on 8xB200 GPUs.
+- Up to 14x speedup on a single Nvidia Blackwell GPU
+
+### Quality:
+- We used 1k+ B200 training hours, paired with real world multi-shot, visual audio synced input distribution and output formats for best possible quality preservation.
+- FastH3 natively supports variable resolution, aspect ratio, and duration. In a single checkpoint.
+
+### Openness
+
+- Fully open weight with composable components of various sizes: full checkpoint, 4-step, 8-step lora, sparse/dense attention for you to evaluate and make your own workflow.
+- Fully open source with training (coming soon!) and inference code recipe for your customization.
+
+
+### What’s Next
+
+- Follow us along for image ref (FL2VA) and full omni ref (Ref2VA) coming in the next a few weeks   
+- Motion and more generation quality improvements
+- Nvfp4 and GPU memory reduction. 
+- Optimizations targeting local AI devices including RTX, DGX Sparks, and Apple MLX.
+- New training runs using FastGen team's new [Parallel Decoding Distillation (PDD)](https://research.nvidia.com/labs/genair/pdd/) method!
+
 
 <!-- TODO: Add an audible, matched-prompt hero comparison across the four
 FastH3 releases, Base H3, and H3 Max. Do not autoplay because autoplay mutes
@@ -97,19 +108,14 @@ and ultrawide 768p video. FastVideo accepts custom heights and widths in
 multiples of 32.
 
 Our highlighted release is
-[VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-DataFree).
+[4-step VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-VSA-DataFree) and [8-step VSA / Data-Free](https://huggingface.co/FastVideo/FastVideo-FastH3-8-step-Preview-v1-VSA-DataFree).
 It trains from prompts without target videos and is the version we recommend
 trying first. The other three checkpoints are ablations for studying synthetic
 training data, training duration, and dense attention.
 
-Alongside the weights, FastVideo will later be releasing:
-
-- Full training code and recipe for DMD2 and Video Sparse Attention (VSA) kernels.
-- Prompts and synthetic Base-H3 videos.
 
 We have already extracted the LoRA for every checkpoint. They are grouped in
-one [FastH3 Preview LoRA repository](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA),
-so inference does not require extracting an adapter from the full checkpoint.
+one [FastH3 Preview LoRA repository](https://huggingface.co/FastVideo/FastVideo-FastH3-4-step-Preview-v1-LoRA).
 
 {{< table title="The highlighted checkpoint and three ablations. Each uses four DiT calls." >}}
 | Variant | Role | Pre-extracted LoRA | Training source | Attention | Training step |
@@ -283,11 +289,7 @@ For a JSONL prompt set, use
 
 Preview v1 is an early checkpoint family. FastVideo's next priorities are:
 
-### 1. Publish a evaluation between our checkpoints and H3 Max
-
-We will compare every checkpoint with Base H3 and H3 Max on 60 held-out prompts.
-
-### 2. Improve motion and offer an eight-step option
+### 1. Improve motion and offer an eight-step option
 
 We will finish the four-step low-noise A/B and 8-step model post-training.
 We will then test stronger final-step training, more low-noise critic samples,
@@ -295,14 +297,19 @@ motion-sensitive losses, and learned timestep placement. The four-step model
 targets minimum latency; eight steps may be a better quality setting. We will
 release an 8-step checkpoint only after a matched comparison.
 
-### 3. Add FL2VA and Ref2VA
+### 2. Add FL2VA and Ref2VA
 
 T2VA is only one H3 workflow. FL2VA uses the base transformer but needs new
 conditioning training. Ref2VA uses the separate reference transformer, so
 FastVideo must distill it separately. We will evaluate mixed reference types,
 long clips, and reference fidelity before releasing either workflow.
 
-### 4. Make H3 easier to run and extend
+### 3. Apply Parallel Decoding Distillation methods to H3
+
+We will continue to collaborate with NVIDIA's FastGen team to try their new PDD
+algorithm and obtain the highest quality step-distilled H3 possible!
+
+### 4. Make H3 easier to run for local AI and to extend
 
 At four steps, encoding, VAE decode, audio, and file output become a larger
 share of latency. FastVideo will keep improving VAE compilation and parallelism,
