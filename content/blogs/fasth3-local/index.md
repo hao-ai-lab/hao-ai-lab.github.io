@@ -22,6 +22,7 @@ Publication checklist:
 - Confirm the release name, step count, model IDs, license text, and final author list.
 - Replace every media placeholder with an audible MP4 from the final checkpoint.
 - Fill the fixed-protocol INT8, INT6, and INT4 table from one quiet M4 Max run.
+- Confirm that the final FastVideo release revision contains PR #1788.
 - Fill the Spark benchmark row from the final public checkpoint and merged FastVideo revision.
 - Replace the architecture and phase-breakdown TODOs with final figures.
 - Confirm whether spatial fast mode ships in this release. Upstream MLX does not wire it yet.
@@ -46,7 +47,8 @@ fewer video frames, then reconstructs the requested frame count with MLX RIFE.
 The DGX Spark path brings the same FastH3 family to a 128 GB desktop
 Grace-Blackwell system. We are releasing the weights, inference recipes, and
 the runtime work so that the community can measure, change, and improve the
-whole path.
+whole path. The MLX release also includes the exact-quality wide-matrix dispatch
+from FastVideo PR #1788.
 
 <!-- TODO: Replace "now" and the release statements above with the exact public
 artifact status on publication day. -->
@@ -211,11 +213,21 @@ the image and motion tradeoff instead of reducing it to one aggregate score.
 The runtime work also exposed a counterintuitive result. At H3's very wide
 packed-token matrices, MLX's affine quantized matrix multiplication can be
 slower than dequantizing a weight for the operation and calling a dense BF16
-GEMM. Our current performance PR measures a 9.8 percent reduction in four-step
-DiT time for the INT6 832 by 480 by 124 workload, with bit-exact video and audio
-latents. That work remains under review in
-[FastVideo PR #1788](https://github.com/hao-ai-lab/FastVideo/pull/1788), so it is
-not included in the release number until it merges.
+GEMM. The release includes the H3-specific dispatch from
+[FastVideo PR #1788](https://github.com/hao-ai-lab/FastVideo/pull/1788). Stored
+INT4, INT6, and INT8 weights stay quantized. When the packed row count reaches
+the measured crossover, the runtime dequantizes the matrix for that operation
+and calls the dense GEMM without caching a second weight copy. The default
+crossover is 768 rows, and `FASTVIDEO_MLX_DQ_GEMM=0` restores the original
+quantized matrix multiplication path.
+
+On an M4 Max with 36 GiB of unified memory, this dispatch reduced four-step INT6
+DiT time from 386.47 seconds to 348.75 seconds for the 832 by 480 by 124
+workload. That is a 9.8 percent reduction with bit-exact video and audio latents.
+Peak memory changed from 19.31 GiB to 19.46 GiB. INT8 and INT4 also crossed over
+at the production matrix shape, while small INT4 matrices still favored the
+quantized path. That last result is why the release uses a shape gate instead of
+changing every low-bit multiplication.
 
 ### Make sparse attention native to Metal
 
