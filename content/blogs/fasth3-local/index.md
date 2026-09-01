@@ -1,11 +1,11 @@
 +++
 title = "FastH3 on Apple Silicon and DGX Spark"
-date = 2026-08-31T00:00:00-07:00
+date = 2026-09-01T00:00:00-07:00
 url = "/blogs/fasth3-local/"
 authors = ["Aryan Kumar", "Satyam Srivastava", "Will Lin", "Hao Zhang"]
 author = "Aryan Kumar, Satyam Srivastava, Will Lin, Hao Zhang"
 ShowReadingTime = true
-draft = true
+draft = false
 contentClass = "fasth3-local-article"
 [socialIcons]
     [[socialIcons.icon]]
@@ -22,12 +22,7 @@ contentClass = "fasth3-local-article"
 +++
 
 <!--
-Publication checklist:
-- Keep draft = true until weights, videos, and public commands are final.
-- Confirm checkpoint IDs, licenses, and partner wording.
-- Fill the video grids and phase chart from final runs.
-- Test cookbook commands and every public link.
-
+Internal run notes, not for the page:
 Mac evidence, M4 Max 36 GB:
 - Wide-M affine INT6, 832x480x124, 4 steps, dense attention: DiT 386.47s to
   348.75s, bit-exact latents, peak 19.31 to 19.46 GiB.
@@ -40,67 +35,122 @@ Spark GB10, FastH3 4-step VSA-DataFree, 768x1344x124, seed 2026:
   to 336s.
 - TAEH3 preview decode: 2.4s vs 68s VAE, 224s e2e.
 - Lazy load: Qwen, then DiT, then VAE. Geometry from checkpoint JSON.
+- Two Sparks, SP=2, full VAE, Triton VSA, parallel VAE, cold alpine recipe:
+  1 GPU 374 to 393s, SP=2 292s. 345 frames SP=2: 587s.
+
+Still to add before merge if we have them:
+- Weight downloads and one verified generation command per platform.
 -->
 
 {{< image src="img/cover.png" alt="FastH3 on Apple Silicon and DGX Spark" width="100%" >}}
 
 {{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" huggingface="https://huggingface.co/collections/FastVideo/fastvideo-fasth3" >}}
 
-FastH3 now runs on a Mac, and on NVIDIA DGX Spark.
+FastH3 now runs on a Mac and on NVIDIA DGX Spark. Two Sparks can generate
+one clip together.
 
 H3 generates video and audio together. That used to mean a data-center GPU.
 Our [FastH3 Preview](/blogs/fasth3-preview/) distilled it into a few steps on
 Blackwell. This release puts that model on Apple Silicon through MLX, and on a
-desktop GB10 through CUDA 13. The Mac path targets 36 GB of unified memory or
+desktop GB10 through CUDA 13. The Mac path needs 36 GB of unified memory or
 more. Spark has 128 GB.
 
-With this post we are also introducing the [FastVideo Cookbook](/FastVideo/cookbook/).
-This is the first time we are putting it out in public. MiniMax H3 is on it,
-with CUDA and native MLX paths.
+This post also publishes the [FastVideo Cookbook](/FastVideo/cookbook/) for
+the first time. MiniMax H3 is on it, with CUDA, native MLX, and a local
+OpenAI-compatible server.
 
 ## Generated locally
 
-The same prompts on an Apple M4 Max and a DGX Spark. Base H3 on B200 is the
-quality reference. Turn the audio on.
+The same prompts on an Apple M4 Max, a DGX Spark, and four GB200s.
+Turn the audio on.
 
 <div class="fasth3-local-grid fasth3-local-grid--platforms">
-  <div class="fasth3-local-grid__header">Apple M4 Max<br><small>FastH3 MLX, TODO precision</small></div>
-  <div class="fasth3-local-grid__header">DGX Spark GB10<br><small>FastH3 CUDA, TODO precision</small></div>
-  <div class="fasth3-local-grid__header">NVIDIA B200<br><small>Base H3 reference</small></div>
-  <div class="fasth3-local-media-placeholder" data-label="Apple M4 Max, prompt A">TODO: prompt A video</div>
-  <div class="fasth3-local-media-placeholder" data-label="DGX Spark, prompt A">TODO: prompt A video</div>
-  <div class="fasth3-local-media-placeholder" data-label="B200 Base H3, prompt A">TODO: prompt A video</div>
-  <div class="fasth3-local-media-placeholder" data-label="Apple M4 Max, prompt B">TODO: prompt B video</div>
-  <div class="fasth3-local-media-placeholder" data-label="DGX Spark, prompt B">TODO: prompt B video</div>
-  <div class="fasth3-local-media-placeholder" data-label="B200 Base H3, prompt B">TODO: prompt B video</div>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="M4 Max, space gate">
+      <source src="img/videos/platforms/mac-space-gate.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>M4 Max</b><span>504 s · cold</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="DGX Spark, space gate">
+      <source src="img/videos/platforms/spark-astronaut-gateway.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>DGX Spark</b><span>264 s · cold</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="Four GB200s, space gate">
+      <source src="img/videos/platforms/gb200-space-gate.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>4 GB200s</b><span>10.2 s · first request</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="M4 Max, desert fashion">
+      <source src="img/videos/platforms/mac-desert-fashion.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>M4 Max</b><span>465 s · cold</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="DGX Spark, desert fashion">
+      <source src="img/videos/platforms/spark-fashion-highway.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>DGX Spark</b><span>243 s · cold</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="Four GB200s, desert fashion">
+      <source src="img/videos/platforms/gb200-desert-fashion.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>4 GB200s</b><span>5.1 s · warm</span></figcaption>
+  </figure>
 </div>
 
-<!-- TODO: Replace placeholders with final videos. Add collapsible full prompts
-and per-cell checkpoint, precision, seed, resolution, frames, duration, steps,
-attention backend, and revision. Match prompts, output dimensions, and duration.
-Base H3 and FastH3 differ in model and schedule; do not imply a hardware speed test. -->
+<!-- Row 1: space / astronaut gateway. Mac INT8 full VAE 503.62s, Spark
+astronaut_gateway 264.1s, 4x GB200 first request 10.191s.
+Row 2: desert fashion / highway. Mac INT6 full VAE 465.17s, Spark
+fashion_highway 243.4s, 4x GB200 warm 5.081s. Same FastH3. -->
+
+Those six clips are the same recipe: 832×480, 124 frames, four-step FastH3,
+full VAE. The chart splits a first generation from a repeat. Spark repeat is
+a second generate in the same process, not a loaded server. Qwen and DiT
+still reload. Most of those 20 to 31 seconds are VAE compile already paid.
+GB200 is a loaded server. 350 s of model start sits outside both bars.
+
+On the Mac, denoising is most of the wait. On Spark with the full VAE,
+decode is.
+
+{{< image src="img/fig_platform_stages.svg" alt="Share of end-to-end time per stage, first generation versus repeat, on M4 Max, Spark, and four GB200s" width="100%" title="Figure 1. Same 832×480, 124-frame, full-VAE recipe. Mac repeat is a cached prompt. Spark repeat is the same process. GB200 is a loaded server." >}}
 
 ## INT8, INT6, and INT4
 
 Every Mac number in this post comes from an M4 Max with 36 GB of unified
 memory.
 
-INT8 keeps more of the original weights. INT6 is the format we used for the
-Mac timings later in this post. INT4 leaves the most room for activations.
-Lower precision can change detail and motion. Same prompt, same seed, three
-formats.
+INT8 keeps more of the original weights. INT4 leaves the most room for
+activations. INT6 is the default we timed. Wall clock barely moves across
+the three. Peak memory does. Same prompt, same seed.
 
 <div class="fasth3-local-grid">
-  <div class="fasth3-local-grid__header">INT8<br><small>Time: TODO · Peak: TODO</small></div>
-  <div class="fasth3-local-grid__header">INT6<br><small>Time: TODO · Peak: TODO</small></div>
-  <div class="fasth3-local-grid__header">INT4<br><small>Time: TODO · Peak: TODO</small></div>
-  <div class="fasth3-local-media-placeholder" data-label="INT8">TODO: INT8</div>
-  <div class="fasth3-local-media-placeholder" data-label="INT6">TODO: INT6</div>
-  <div class="fasth3-local-media-placeholder" data-label="INT4">TODO: INT4</div>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="INT8 meadow dialogue">
+      <source src="img/videos/quant/int8.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>INT8</b><span>481 s · 24.2 GiB peak</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="INT6 meadow dialogue">
+      <source src="img/videos/quant/int6.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>INT6</b><span>456 s · 19.5 GiB peak</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="INT4 meadow dialogue">
+      <source src="img/videos/quant/int4.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>INT4</b><span>467 s · 14.8 GiB peak</span></figcaption>
+  </figure>
 </div>
 
-<!-- TODO: One matched prompt across INT8, INT6, and INT4. Fill time and peak
-memory. Link weights from the headers. -->
+<!-- Meadow dialogue, same prompt and seed, full H3 VAE. 12 INT8, 13 INT6, 14 INT4.
+E2E wall 480.50s / 455.90s / 466.53s. Peak denoise 24.15 / 19.48 / 14.82 GiB. -->
 
 ## How H3 runs on a Mac
 
@@ -124,21 +174,14 @@ decode, export. Each phase loads what it needs and frees the rest.
 H3 reads an intermediate layer of Qwen3-VL, so the encoder skips the last 14
 layers. It streams the rest one layer at a time and keeps only the embedding
 rows the prompt uses. An uncached prompt used to spend about 80 seconds here.
-A single bounded read per tensor brings that to about 15 seconds, with the
-same hidden features. Cache those embeddings and a repeated prompt skips this
+A single bounded read per tensor brings that to about 17 seconds, with the
+same hidden features. Cache those embeddings and the next prompt skips this
 stage.
 
 After denoising, tiled video decode and a native audio decoder finish the clip
-without reconstructing the whole frame buffer at once.
+without rebuilding the whole frame buffer at once.
 
-<div class="fasth3-local-chart-placeholder">
-  <strong>TODO: Time and memory through one generation</strong>
-  <span>Prompt encoding · Denoising · Video and audio decode · Export</span>
-</div>
-
-<!-- TODO: Two aligned panels: time per phase and measured phase peak. Include
-RIFE when enabled. Identify cached versus uncached prompts and memory accounting;
-do not equate MLX allocation peaks with whole-system memory use. -->
+{{< image src="img/fig_mac_phases.svg" alt="Time and memory through one FastH3 generation on an M4 Max" width="100%" title="Figure 2. Cache the prompt and the 17 s encode disappears. TAEH3 drops decode from 102 s to 1 s, and peak decode from 11.0 GiB to 3.6 GiB." >}}
 
 Smaller weights are not always faster. H3 multiplies large video and audio
 matrices. At those shapes, unpacking a quantized weight into BF16 and using
@@ -148,10 +191,10 @@ discarded after the multiply.
 On a four-step INT6 run, denoising dropped from 386.47 seconds to 348.75
 seconds. The video and audio latents were bit-exact. Peak MLX memory rose from
 19.31 GiB to 19.46 GiB. That run used 832×480, 124 frames, and dense attention,
-so the number is the matrix path, not sparse attention.
+so this is the matmul path, not Video Sparse Attention.
 
-FastH3 also uses Video Sparse Attention, so only selected video tiles attend.
-The MLX runtime implements that policy on Apple GPUs.
+The Mac path still implements Video Sparse Attention. Selected video tiles
+attend. The rest do not.
 
 ## FastH3 on DGX Spark
 
@@ -174,92 +217,163 @@ config, so decode does not keep a 65 GB DiT loaded just to read a patch size.
 On a discrete GPU, copying weights to the host frees device memory. On Spark
 that copy lands in the same pool. We stopped it. DiT weights load straight
 onto the GPU. On one GB10 that cut the transformer load from 445 seconds to
-39 seconds, and a 768 by 1344, 124-frame run from 772 seconds to 336 seconds.
+39 seconds, and a 768×1344, 124-frame run from 772 seconds to 336 seconds.
 
 H3 never uses the last layers of its text encoder. The Spark path skips them,
 same as the Mac path. Video Sparse Attention stays on CUDA. The FastVideo
 kernel builds from source for `sm_121`.
 
+Two Sparks can run that clip together. Sequence parallel splits denoising and
+decode across both GB10s over the QSFP link. Each box still loads components
+in phases. The transformer is copied onto both, so neither can skip the
+phased load.
+
+On the same 768×1344, 124-frame recipe, two Sparks finished in 292 seconds.
+One Spark took 374. TAEH3 on that pair was 195 seconds. A 345-frame clip,
+about 14 seconds of video, finished in 581 seconds on the pair with the
+full H3 VAE.
+
+{{< image src="img/fig_spark_setups.svg" alt="DGX Spark end-to-end generation time for one Spark and two Sparks, full VAE and TAEH3, at 832 by 480 and 768 by 1344" width="100%" title="Figure 3. Cold process starts on GB10. Two Sparks help. TAEH3 helps more. At 768×1344, TAEH3 decode is 12.5 s, not the 1 s you see at 480p." >}}
+
 Install from the
-[CUDA 13 Spark guide](/FastVideo/getting_started/installation/spark/), then
-pick a CUDA recipe in the [Cookbook](/FastVideo/cookbook/minimax-h3/).
+[CUDA 13 Spark guide](/FastVideo/getting_started/installation/spark/). For two
+boxes, follow the
+[pair guide](/FastVideo/getting_started/installation/spark_pair/), then pick a
+CUDA recipe in the [Cookbook](/FastVideo/cookbook/minimax-h3/).
 
-{{< table title="DGX Spark · FastH3 on one GB10" >}}
-
-| Output | Decode | Generation time |
-| :----- | :----- | --------------: |
-| 768×1344, 124 frames, 4-step FastH3 | Full H3 VAE | 336 s |
-| 768×1344, 124 frames, 4-step FastH3 | TAEH3 preview | 224 s |
-
-{{</ table >}}
-
-<!-- TODO: Confirm these rows against the final public checkpoint and command.
-GB10, VSA-DataFree, seed 2026, sequential/lazy load, GPU-direct DiT, n=1.
-TAEH3 is preview quality. Add peak allocated memory if the public example
-prints it. -->
+<!-- 832x480 124 full VAE: Figure 1 Spark rows are fashion, seed 2026.
+1 Spark cold 254.0s / same process 234.1s. 2 Sparks cold 221.4s / same
+process 190.0s. Req2 still reloads Qwen and DiT. VAE compile already paid.
+Kitchen plus golden-gate dual mean is 209s, used in the TAEH3 grid.
+TAEH3 134s / 119s are those kitchen clips. 768x1344 124: 1 Spark 374s
+and 2 Sparks 292s alpine pair, full VAE, cold. 2 Sparks TAEH3 195.1s,
+decode 12.5s, alpine dancer. 1-Spark TAEH3 224s is portrait preview.
+345-frame pair 581s is track_c_15s mean. GPU-direct DiT load 445s to 39s,
+earlier e2e 772s to 336s. TAEH3 is preview quality. -->
 
 ## Full VAE versus TAEH3
 
 The full H3 VAE is the quality path. [TAEH3](https://github.com/madebyollin/taehv)
 is the preview path. It reconstructs the same latents much faster, and fine
-detail goes softer. Hair, fabric, and distant backgrounds lose bite. That is
-expected.
+detail goes softer. Hair, fabric, and distant backgrounds lose bite.
 
-On an M4 Max, tiled H3 VAE decode took 108 seconds. TAEH3 took 1.44 seconds.
-On a GB10, VAE decode was 68 seconds and TAEH3 was 2.4 seconds. End-to-end
-dropped from 336 seconds to 224 seconds. Use TAEH3 to check a prompt. Render
-with the full VAE when you like what you see.
+On an M4 Max, tiled H3 VAE decode took 104 seconds. TAEH3 took one second.
+On one Spark, VAE decode was 114 seconds and TAEH3 was 1.3 seconds.
+End-to-end with TAEH3 was 134 seconds on that box, 119 seconds on two.
+At 768×1344 on two Sparks, TAEH3 decode was 12.5 seconds and the clip
+finished in 195 seconds. Use TAEH3 to check a prompt. Render with the full
+VAE when you like what you see.
 
-Same prompt and seed on each row. Left is the full VAE. Right is TAEH3.
+Same prompt and seed. First row is the full VAE. Second row is TAEH3.
+Columns are an M4 Max, one Spark, and two Sparks.
 
-<div class="fasth3-local-grid fasth3-local-grid--taeh3">
-  <div class="fasth3-local-grid__header">Apple M4 Max · full VAE</div>
-  <div class="fasth3-local-grid__header">Apple M4 Max · TAEH3</div>
-  <div class="fasth3-local-media-placeholder" data-label="Mac, full VAE">TODO: Mac full VAE</div>
-  <div class="fasth3-local-media-placeholder" data-label="Mac, TAEH3">TODO: Mac TAEH3</div>
-  <div class="fasth3-local-grid__header">DGX Spark · full VAE</div>
-  <div class="fasth3-local-grid__header">DGX Spark · TAEH3</div>
-  <div class="fasth3-local-media-placeholder" data-label="Spark, full VAE">TODO: Spark full VAE</div>
-  <div class="fasth3-local-media-placeholder" data-label="Spark, TAEH3">TODO: Spark TAEH3</div>
+<div class="fasth3-local-grid">
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="M4 Max, full VAE">
+      <source src="img/videos/taeh3/mac-full-vae.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>M4 Max</b><span>Full VAE · 451 s</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="One Spark, full VAE">
+      <source src="img/videos/taeh3/1spark-full-vae.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>1 Spark</b><span>Full VAE · 243 s</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="Two Sparks, full VAE">
+      <source src="img/videos/taeh3/2spark-full-vae.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>2 Sparks</b><span>Full VAE · 209 s</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="M4 Max, TAEH3">
+      <source src="img/videos/taeh3/mac-taeh3.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>M4 Max</b><span>TAEH3 · 350 s</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="One Spark, TAEH3">
+      <source src="img/videos/taeh3/1spark-taeh3.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>1 Spark</b><span>TAEH3 · 134 s</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="Two Sparks, TAEH3">
+      <source src="img/videos/taeh3/2spark-taeh3.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>2 Sparks</b><span>TAEH3 · 119 s</span></figcaption>
+  </figure>
 </div>
 
-<!-- TODO: Matched prompt, seed, resolution, and duration. Mac and Spark may
-differ in precision. Caption the quality drop. Do not autoplay muted. -->
+<!-- Kitchen creature. Mac INT6 cached: 10 full VAE 450.55s, 11 TAEH3 350.47s.
+Spark cold: 1spark_baseline 243.1s, 1spark_taeh3 134.0s, 2spark_baseline
+209.2s, 2spark_taeh3 119.1s. -->
 
 ## Faster drafts
 
 A native-resolution clip takes a while. That is fine for a final render. It
 is a lot to pay to find out the prompt is wrong.
 
-`--fast` denoises fewer video frames, then interpolates back to the requested
-length. Audio keeps its full duration.
+`--fast` denoises fewer video frames, then interpolates back to 124.
+This run generated 73 frames. RIFE filled the rest. Audio keeps its full
+duration.
 
-`--fast-spatial` is the MLX preview knob. It denoises a smaller canvas, then
-resamples the frames up. Composition and fine detail get softer. That is the
-trade. Glance at a prompt this way, then run without it when you are ready
-to keep the clip.
+`--fast-spatial` denoises a smaller canvas, then resamples up. The clip
+below is the conservative setting, 672×384 up to 832×480. Composition and
+fine detail get softer. Treat it as a preview knob, not a final render.
+
+Same prompt and seed on the M4 Max. INT6, cached prompt, full VAE.
 
 <div class="fasth3-local-grid fasth3-local-grid--modes">
-  <div class="fasth3-local-grid__header">Baseline</div>
-  <div class="fasth3-local-grid__header">Temporal fast</div>
-  <div class="fasth3-local-grid__header">Spatial fast</div>
-  <div class="fasth3-local-media-placeholder" data-label="Baseline">TODO: fixed-prompt baseline</div>
-  <div class="fasth3-local-media-placeholder" data-label="Temporal fast">TODO: same prompt and seed</div>
-  <div class="fasth3-local-media-placeholder" data-label="Spatial fast">TODO: same prompt and seed</div>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="Baseline forest clip">
+      <source src="img/videos/drafts/baseline.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>Baseline</b><span>457 s · 19.5 GiB</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="Temporal fast forest clip">
+      <source src="img/videos/drafts/temporal-fast.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>Temporal fast</b><span>248 s · 1.84×</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="Spatial fast forest clip">
+      <source src="img/videos/drafts/spatial-fast.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>Spatial fast</b><span>272 s · 1.68×</span></figcaption>
+  </figure>
 </div>
 
-<!-- TODO: Matched examples with time, memory, output dimensions, and audio.
-Spatial fast is MLX. Call out the quality drop in the caption. -->
+<!-- Forest drone, INT6 Dense Preview v1, FP32 full H3 VAE, seed 3301,
+cached prompt, 124-frame 480p. No TAEH3.
+15 native 832x480 124f: E2E 456.80s, generate 451.81s, denoise 346.93s,
+decode 103.64s, OS peak 22.74 GiB, MLX denoise 19.47 GiB.
+16 temporal fast 73 frames to 124, RIFE: E2E 248.11s, generate 242.30s,
+denoise 177.36s, decode 58.24s, RIFE 5.46s, OS peak 20.44 GiB,
+MLX denoise 17.90 GiB. 1.84x.
+17 clean spatial 672x384 to 832x480: E2E about 272s, generate 266.75s,
+denoise 194.81s, decode 70.66s, OS peak 20.75 GiB, MLX denoise 18.10 GiB.
+1.68x. Older 416x256 spatial at 103s is not this file. -->
 
 ## FastVideo Cookbook
 
 Open the [Cookbook](/FastVideo/cookbook/), pick a model, pick a recipe, and copy
 a command we actually run.
 
-H3 is there with CUDA, the four-step preview, LoRA, and native MLX. Open the
-[H3 recipes](/FastVideo/cookbook/minimax-h3/) and generate. Spark users should
+H3 is there with CUDA, the four-step preview, LoRA, native MLX, and a
+two-Spark recipe.
+
+You can also serve FastH3. Start the server once on CUDA or on MLX. Then
+change prompts from the playground, from cURL, or from an OpenAI-compatible
+SDK in your app. Later prompts reuse that process. You do not reload the
+model for every try. Open the [H3 recipes](/FastVideo/cookbook/minimax-h3/)
+or the [server guide](/FastVideo/cookbook/openai-api/). Spark users should
 install from the
 [CUDA 13 Spark guide](/FastVideo/getting_started/installation/spark/) first.
+Two boxes should follow the
+[pair guide](/FastVideo/getting_started/installation/spark_pair/).
 
 <div class="fasth3-local-cookbook">
   <strong><a href="/FastVideo/cookbook/">FastVideo Cookbook</a></strong>
@@ -267,16 +381,19 @@ install from the
   training, and evaluation land in the same catalog as they ship.</span>
 </div>
 
-> TODO: Add the three weight downloads and one verified generation command
-> for each platform.
+<!-- TODO: Add the three weight downloads and one verified generation command
+for each platform. -->
 
-We are still cutting latency, adding more distilled models, and looking at
+We are still cutting latency, adding distilled models, and looking at
 schedules with fewer than four steps. The RTX family, including the 5090 and
 4090, is the next CUDA focus.
 
-We have not run FastH3 on M5 Max, M5 Ultra Mac Studio, M5 Mac Pro, M5 Mac mini,
-or M6 yet. Every Mac number here is from an M4 Max. Those chips should be
-faster. We want to keep making the Apple Silicon path better.
+Apple just announced
+[M6 in the Mac mini and M5 Ultra in the Mac Studio](https://www.apple.com/newsroom/2026/08/apple-introduces-m6-and-m5-ultra-for-a-big-leap-in-performance-and-ai-compute/).
+We have not run FastH3 on those, or on M5 Max or M5 Pro Mac mini. Every Mac
+number here is from an M4 Max. The MLX path is the same on those chips. They
+should be faster, especially M5 Ultra with its unified memory and GPU. We
+want to measure them.
 
 If you measure a new machine, improve a kernel, or hit a bug, start from the
 [contribution guide](/FastVideo/contributing/overview/) or the
@@ -302,59 +419,62 @@ the optional preview decoder this release uses. The Mac path is built on
 
 **Contributors:** Aryan Kumar
 <a href="https://github.com/aryan5v" aria-label="Aryan Kumar GitHub"><i class="fab fa-github"></i></a>
-<a href="https://www.linkedin.com/in/aryan-kumar01" aria-label="Aryan Kumar LinkedIn"><i class="fab fa-linkedin"></i></a>
 <a href="https://x.com/aryan_xv" aria-label="Aryan Kumar X"><i class="fab fa-x-twitter"></i></a>,
 Satyam Srivastava
-<a href="https://github.com/Satyam-53" aria-label="Satyam Srivastava GitHub"><i class="fab fa-github"></i></a>  
+<a href="https://github.com/Satyam-53" aria-label="Satyam Srivastava GitHub"><i class="fab fa-github"></i></a>,
+Kyle Hu
+<a href="https://github.com/KyleNeverGivesUp" aria-label="Kyle Hu GitHub"><i class="fab fa-github"></i></a>  
 **Tech lead:** Will Lin
 <a href="https://github.com/SolitaryThinker" aria-label="Will Lin GitHub"><i class="fab fa-github"></i></a>
-<a href="https://www.linkedin.com/in/will-lin-294920100" aria-label="Will Lin LinkedIn"><i class="fab fa-linkedin"></i></a>
 <a href="https://x.com/wlsaidhi" aria-label="Will Lin X"><i class="fab fa-x-twitter"></i></a>  
 **Advisor:** Hao Zhang
 <a href="https://github.com/zhisbug" aria-label="Hao Zhang GitHub"><i class="fab fa-github"></i></a>
-<a href="https://www.linkedin.com/in/haozhangml" aria-label="Hao Zhang LinkedIn"><i class="fab fa-linkedin"></i></a>
 <a href="https://x.com/haozhangml" aria-label="Hao Zhang X"><i class="fab fa-x-twitter"></i></a>
 
 <style>
-.fasth3-local-grid {
+.fasth3-local-article .fasth3-local-grid {
   display: grid;
-  gap: 0.75rem;
-  margin: 1.4rem 0 2rem;
+  width: 100%;
+  margin: 1.6rem 0 2.2rem;
+  gap: 1.35rem 0.7rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.fasth3-local-grid--taeh3 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.fasth3-local-grid__header,
-.fasth3-local-media-placeholder {
+.fasth3-local-article .fasth3-local-clip {
   min-width: 0;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  margin: 0;
+  overflow: visible;
+  background: transparent;
 }
 
-.fasth3-local-grid__header {
-  padding: 0.75rem;
-  background: var(--code-bg);
-  text-align: center;
-  font-weight: 650;
+.fasth3-local-article .fasth3-local-clip video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  background: #000;
 }
 
-.fasth3-local-grid__header small {
-  font-weight: 400;
-  opacity: 0.7;
-}
-
-.fasth3-local-media-placeholder {
-  display: grid;
-  min-height: 10rem;
-  padding: 1rem;
-  place-content: center;
-  background: linear-gradient(145deg, var(--entry), var(--code-bg));
-  color: var(--secondary);
-  text-align: center;
+.fasth3-local-article .fasth3-local-clip > figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  align-items: baseline;
+  margin: 0.45rem 0 0;
+  color: var(--primary);
   font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+
+.fasth3-local-article .fasth3-local-clip > figcaption b {
+  font-weight: 600;
+}
+
+.fasth3-local-article .fasth3-local-clip > figcaption span {
+  color: var(--secondary);
+  font-weight: 400;
 }
 
 .fasth3-local-pipeline {
@@ -385,28 +505,6 @@ Satyam Srivastava
 .fasth3-local-pipeline b {
   align-self: center;
   opacity: 0.55;
-}
-
-.fasth3-local-chart-placeholder {
-  display: flex;
-  min-height: 13rem;
-  margin: 1.4rem 0 2rem;
-  padding: 1.2rem;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 0.4rem;
-  border: 1px dashed var(--border);
-  border-radius: 12px;
-  background:
-    linear-gradient(to top, transparent 24%, var(--border) 25%, transparent 26%) 0 0 / 100% 25%,
-    var(--entry);
-  text-align: center;
-}
-
-.fasth3-local-chart-placeholder span {
-  font-size: 0.8rem;
-  opacity: 0.7;
 }
 
 .fasth3-local-cookbook {
@@ -449,26 +547,21 @@ Satyam Srivastava
     table-layout: auto;
   }
 
-  .fasth3-local-grid,
-  .fasth3-local-grid--taeh3,
+  .fasth3-local-article .fasth3-local-grid,
   .fasth3-local-pipeline {
+    width: 100%;
+    margin-inline: 0;
     grid-template-columns: 1fr;
   }
 
-  .fasth3-local-grid__header {
-    display: none;
+  .fasth3-local-article .fasth3-local-clip {
+    width: 100% !important;
+    max-width: 100%;
+    overflow: visible;
   }
 
   .fasth3-local-pipeline b {
     transform: rotate(90deg);
-  }
-
-  .fasth3-local-media-placeholder::before {
-    display: block;
-    margin-bottom: 0.4rem;
-    color: var(--primary);
-    content: attr(data-label);
-    font-weight: 650;
   }
 }
 </style>

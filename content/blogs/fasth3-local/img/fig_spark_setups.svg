@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="356" viewBox="0 0 1160 356" role="img" aria-label="DGX Spark generation time by setup">
+  <rect x="0" y="0" width="1160" height="356" fill="#ffffff"/>
+  <defs><style>
+    .t   { font: 700 21px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #1f2a44; }
+    .st  { font: 500 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #5d687c; }
+    .lbl { font: 600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #1f2a44; }
+    .sub { font: 500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #5d687c; }
+    .tick{ font: 500 11px ui-monospace,SFMono-Regular,Menlo,monospace; fill: #7a8699; }
+    .val { font: 700 13px ui-monospace,SFMono-Regular,Menlo,monospace; fill: #1f2a44; }
+    .vsw { font: 600 11px ui-monospace,SFMono-Regular,Menlo,monospace; fill: #ffffff; }
+    .na  { font: italic 500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #93a0b4; }
+    .cap { font: 500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #6b7688; }
+  </style></defs>
+  <text x="40" y="36" class="t">DGX Spark generation time</text>
+  <text x="40" y="58" class="st">4-step FastH3 · cold process start · each bar is end-to-end wall clock</text>
+  <rect x="280.0" y="78.0" width="13.0" height="13.0" rx="3" fill="#3b7dd8"/>
+  <text x="300.0" y="89.0" class="sub" text-anchor="start">full VAE</text>
+  <rect x="410.0" y="78.0" width="13.0" height="13.0" rx="3" fill="#1f8a4c"/>
+  <text x="430.0" y="89.0" class="sub" text-anchor="start">TAEH3 preview</text>
+  <text x="280.0" y="112.0" class="lbl" text-anchor="start">832×480 · 124 frames</text>
+  <text x="740.0" y="112.0" class="lbl" text-anchor="start">768×1344 · 124 frames</text>
+  <line x1="264.0" y1="100.0" x2="264.0" y2="300.0" stroke="#e8ecf2" stroke-width="1"/>
+  <line x1="724.0" y1="100.0" x2="724.0" y2="300.0" stroke="#e8ecf2" stroke-width="1"/>
+  <text x="256.0" y="144.0" class="lbl" text-anchor="end">1 Spark · full VAE</text>
+  <rect x="280.0" y="128.0" width="149.4" height="22.0" rx="5" fill="#3b7dd8"/>
+  <text x="439.4" y="144.0" class="val" text-anchor="start">254 s</text>
+  <rect x="740.0" y="128.0" width="220.0" height="22.0" rx="5" fill="#3b7dd8"/>
+  <text x="970.0" y="144.0" class="val" text-anchor="start">374 s</text>
+  <text x="256.0" y="188.0" class="lbl" text-anchor="end">1 Spark · TAEH3</text>
+  <rect x="280.0" y="172.0" width="78.8" height="22.0" rx="5" fill="#1f8a4c"/>
+  <text x="368.8" y="188.0" class="val" text-anchor="start">134 s</text>
+  <rect x="740.0" y="172.0" width="131.8" height="22.0" rx="5" fill="#1f8a4c"/>
+  <text x="881.8" y="188.0" class="val" text-anchor="start">224 s</text>
+  <text x="256.0" y="232.0" class="lbl" text-anchor="end">2 Sparks · full VAE</text>
+  <rect x="280.0" y="216.0" width="122.9" height="22.0" rx="5" fill="#3b7dd8"/>
+  <text x="412.9" y="232.0" class="val" text-anchor="start">209 s</text>
+  <rect x="740.0" y="216.0" width="171.8" height="22.0" rx="5" fill="#3b7dd8"/>
+  <text x="921.8" y="232.0" class="val" text-anchor="start">292 s</text>
+  <text x="256.0" y="276.0" class="lbl" text-anchor="end">2 Sparks · TAEH3</text>
+  <rect x="280.0" y="260.0" width="70.0" height="22.0" rx="5" fill="#1f8a4c"/>
+  <text x="360.0" y="276.0" class="val" text-anchor="start">119 s</text>
+  <rect x="740.0" y="260.0" width="114.7" height="22.0" rx="5" fill="#1f8a4c"/>
+  <text x="864.7" y="276.0" class="val" text-anchor="start">195 s</text>
+  <text x="40.0" y="328.0" class="cap" text-anchor="start">TAEH3 decode at 768×1344 is 12.5 s, not the 1 s you see at 480p.</text>
+</svg>
