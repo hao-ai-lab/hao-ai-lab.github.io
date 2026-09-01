@@ -2,8 +2,8 @@
 title = "FastH3 on Apple Silicon and DGX Spark"
 date = 2026-09-01T00:00:00-07:00
 url = "/blogs/fasth3-local/"
-authors = ["Aryan Kumar", "Satyam Srivastava", "Will Lin", "Hao Zhang"]
-author = "Aryan Kumar, Satyam Srivastava, Will Lin, Hao Zhang"
+authors = ["Aryan Kumar", "Will Lin", "Hao Zhang"]
+author = "Aryan Kumar, Will Lin, Hao Zhang"
 ShowReadingTime = true
 draft = false
 contentClass = "fasth3-local-article"
@@ -20,27 +20,6 @@ contentClass = "fasth3-local-article"
     caption = "FastH3 on Apple Silicon and DGX Spark"
     hidden = true
 +++
-
-<!--
-Internal run notes, not for the page:
-Mac evidence, M4 Max 36 GB:
-- Wide-M affine INT6, 832x480x124, 4 steps, dense attention: DiT 386.47s to
-  348.75s, bit-exact latents, peak 19.31 to 19.46 GiB.
-- Uncached conditioner: about 80s to about 15s, exact hidden features.
-- TAEH3 decode vs tiled H3 VAE: 1.44s vs 107.90s, 3.62 vs 11.03 GiB. Preview
-  quality, not lossless.
-
-Spark GB10, FastH3 4-step VSA-DataFree, 768x1344x124, seed 2026:
-- Sequential start, GPU-direct DiT, full VAE: DiT load 445s to 39s, e2e 772s
-  to 336s.
-- TAEH3 preview decode: 2.4s vs 68s VAE, 224s e2e.
-- Lazy load: Qwen, then DiT, then VAE. Geometry from checkpoint JSON.
-- Two Sparks, SP=2, full VAE, Triton VSA, parallel VAE, cold alpine recipe:
-  1 GPU 374 to 393s, SP=2 292s. 345 frames SP=2: 587s.
-
-Still to add before merge if we have them:
-- Weight downloads and one verified generation command per platform.
--->
 
 {{< image src="img/cover.png" alt="FastH3 on Apple Silicon and DGX Spark" width="100%" >}}
 
@@ -103,11 +82,6 @@ Turn the audio on.
   </figure>
 </div>
 
-<!-- Row 1: space / astronaut gateway. Mac INT8 full VAE 503.62s, Spark
-astronaut_gateway 264.1s, 4x GB200 first request 10.191s.
-Row 2: desert fashion / highway. Mac INT6 full VAE 465.17s, Spark
-fashion_highway 243.4s, 4x GB200 warm 5.081s. Same FastH3. -->
-
 Those six clips are the same recipe: 832×480, 124 frames, four-step FastH3,
 full VAE. The chart splits a first generation from a repeat. Spark repeat is
 a second generate in the same process, not a loaded server. Qwen and DiT
@@ -148,9 +122,6 @@ the three. Peak memory does. Same prompt, same seed.
     <figcaption><b>INT4</b><span>467 s · 14.8 GiB peak</span></figcaption>
   </figure>
 </div>
-
-<!-- Meadow dialogue, same prompt and seed, full H3 VAE. 12 INT8, 13 INT6, 14 INT4.
-E2E wall 480.50s / 455.90s / 466.53s. Peak denoise 24.15 / 19.48 / 14.82 GiB. -->
 
 ## How H3 runs on a Mac
 
@@ -241,16 +212,6 @@ boxes, follow the
 [pair guide](/FastVideo/getting_started/installation/spark_pair/), then pick a
 CUDA recipe in the [Cookbook](/FastVideo/cookbook/minimax-h3/).
 
-<!-- 832x480 124 full VAE: Figure 1 Spark rows are fashion, seed 2026.
-1 Spark cold 254.0s / same process 234.1s. 2 Sparks cold 221.4s / same
-process 190.0s. Req2 still reloads Qwen and DiT. VAE compile already paid.
-Kitchen plus golden-gate dual mean is 209s, used in the TAEH3 grid.
-TAEH3 134s / 119s are those kitchen clips. 768x1344 124: 1 Spark 374s
-and 2 Sparks 292s alpine pair, full VAE, cold. 2 Sparks TAEH3 195.1s,
-decode 12.5s, alpine dancer. 1-Spark TAEH3 224s is portrait preview.
-345-frame pair 581s is track_c_15s mean. GPU-direct DiT load 445s to 39s,
-earlier e2e 772s to 336s. TAEH3 is preview quality. -->
-
 ## Full VAE versus TAEH3
 
 The full H3 VAE is the quality path. [TAEH3](https://github.com/madebyollin/taehv)
@@ -306,10 +267,6 @@ Columns are an M4 Max, one Spark, and two Sparks.
   </figure>
 </div>
 
-<!-- Kitchen creature. Mac INT6 cached: 10 full VAE 450.55s, 11 TAEH3 350.47s.
-Spark cold: 1spark_baseline 243.1s, 1spark_taeh3 134.0s, 2spark_baseline
-209.2s, 2spark_taeh3 119.1s. -->
-
 ## Faster drafts
 
 A native-resolution clip takes a while. That is fine for a final render. It
@@ -346,17 +303,6 @@ Same prompt and seed on the M4 Max. INT6, cached prompt, full VAE.
   </figure>
 </div>
 
-<!-- Forest drone, INT6 Dense Preview v1, FP32 full H3 VAE, seed 3301,
-cached prompt, 124-frame 480p. No TAEH3.
-15 native 832x480 124f: E2E 456.80s, generate 451.81s, denoise 346.93s,
-decode 103.64s, OS peak 22.74 GiB, MLX denoise 19.47 GiB.
-16 temporal fast 73 frames to 124, RIFE: E2E 248.11s, generate 242.30s,
-denoise 177.36s, decode 58.24s, RIFE 5.46s, OS peak 20.44 GiB,
-MLX denoise 17.90 GiB. 1.84x.
-17 clean spatial 672x384 to 832x480: E2E about 272s, generate 266.75s,
-denoise 194.81s, decode 70.66s, OS peak 20.75 GiB, MLX denoise 18.10 GiB.
-1.68x. Older 416x256 spatial at 103s is not this file. -->
-
 ## FastVideo Cookbook
 
 Open the [Cookbook](/FastVideo/cookbook/), pick a model, pick a recipe, and copy
@@ -380,9 +326,6 @@ Two boxes should follow the
   <span>Maintained inference recipes, starting with MiniMax H3. Distillation,
   training, and evaluation land in the same catalog as they ship.</span>
 </div>
-
-<!-- TODO: Add the three weight downloads and one verified generation command
-for each platform. -->
 
 We are still cutting latency, adding distilled models, and looking at
 schedules with fewer than four steps. The RTX family, including the 5090 and
@@ -413,17 +356,18 @@ We thank Ollin Boer Bohan for [TAEH3](https://github.com/madebyollin/taehv),
 the optional preview decoder this release uses. The Mac path is built on
 [MLX](https://github.com/ml-explore/mlx) and the community around it.
 
-<!-- TODO: Final licenses and partner wording. -->
-
 ## FastVideo team
 
 **Contributors:** Aryan Kumar
 <a href="https://github.com/aryan5v" aria-label="Aryan Kumar GitHub"><i class="fab fa-github"></i></a>
 <a href="https://x.com/aryan_xv" aria-label="Aryan Kumar X"><i class="fab fa-x-twitter"></i></a>,
 Satyam Srivastava
-<a href="https://github.com/Satyam-53" aria-label="Satyam Srivastava GitHub"><i class="fab fa-github"></i></a>,
+<a href="https://github.com/Satyam-53" aria-label="Satyam Srivastava GitHub"><i class="fab fa-github"></i></a>
+<a href="https://x.com/Sat_53" aria-label="Satyam Srivastava X"><i class="fab fa-x-twitter"></i></a>,
 Kyle Hu
-<a href="https://github.com/KyleNeverGivesUp" aria-label="Kyle Hu GitHub"><i class="fab fa-github"></i></a>  
+<a href="https://github.com/KyleNeverGivesUp" aria-label="Kyle Hu GitHub"><i class="fab fa-github"></i></a>,
+Ishan Vaish
+<a href="https://github.com/Ishxn20" aria-label="Ishan Vaish GitHub"><i class="fab fa-github"></i></a>  
 **Tech lead:** Will Lin
 <a href="https://github.com/SolitaryThinker" aria-label="Will Lin GitHub"><i class="fab fa-github"></i></a>
 <a href="https://x.com/wlsaidhi" aria-label="Will Lin X"><i class="fab fa-x-twitter"></i></a>  
