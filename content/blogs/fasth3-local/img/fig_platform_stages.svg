@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="352" viewBox="0 0 1160 352" role="img" aria-label="Wall clock breakdown by stage, first generation versus repeat">
+  <rect x="0" y="0" width="1160" height="352" fill="#ffffff"/>
+  <defs><style>
+    .t   { font: 700 21px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #1f2a44; }
+    .st  { font: 500 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #5d687c; }
+    .lbl { font: 600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #1f2a44; }
+    .sub { font: 500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #5d687c; }
+    .tick{ font: 500 11px ui-monospace,SFMono-Regular,Menlo,monospace; fill: #7a8699; }
+    .val { font: 700 13px ui-monospace,SFMono-Regular,Menlo,monospace; fill: #1f2a44; }
+    .vsw { font: 600 11px ui-monospace,SFMono-Regular,Menlo,monospace; fill: #ffffff; }
+    .na  { font: italic 500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #93a0b4; }
+    .cap { font: 500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #6b7688; }
+  </style></defs>
+  <text x="40" y="36" class="t">Where the wall clock goes</text>
+  <text x="40" y="58" class="st">832×480 · 124 frames · 4-step FastH3 · full VAE · share of that machine's own end-to-end time</text>
+  <rect x="168.0" y="78.0" width="13.0" height="13.0" rx="3" fill="#7b8bb5"/>
+  <text x="188.0" y="89.0" class="sub" text-anchor="start">prompt</text>
+  <rect x="298.0" y="78.0" width="13.0" height="13.0" rx="3" fill="#3b7dd8"/>
+  <text x="318.0" y="89.0" class="sub" text-anchor="start">denoise</text>
+  <rect x="428.0" y="78.0" width="13.0" height="13.0" rx="3" fill="#f0b429"/>
+  <text x="448.0" y="89.0" class="sub" text-anchor="start">decode</text>
+  <rect x="558.0" y="78.0" width="13.0" height="13.0" rx="3" fill="#cbd3e0"/>
+  <text x="578.0" y="89.0" class="sub" text-anchor="start">other</text>
+  <text x="168.0" y="112.0" class="lbl" text-anchor="start">First generation</text>
+  <text x="620.0" y="112.0" class="lbl" text-anchor="start">Repeat</text>
+  <text x="168.0" y="128.0" class="sub" text-anchor="start">cold process, or first request</text>
+  <text x="620.0" y="128.0" class="sub" text-anchor="start">same process, cached prompt, or loaded server</text>
+  <text x="156.0" y="165.0" class="lbl" text-anchor="end">M4 Max</text>
+  <rect x="168.0" y="148.0" width="12.9" height="24.0" rx="3" fill="#7b8bb5"/>
+  <rect x="180.9" y="148.0" width="267.3" height="24.0" rx="3" fill="#3b7dd8"/>
+  <text x="314.5" y="165.0" class="vsw" text-anchor="middle">358 s</text>
+  <rect x="448.1" y="148.0" width="77.0" height="24.0" rx="3" fill="#f0b429"/>
+  <text x="486.6" y="165.0" class="vsw" text-anchor="middle">103 s</text>
+  <rect x="525.2" y="148.0" width="4.8" height="24.0" rx="3" fill="#cbd3e0"/>
+  <text x="540.0" y="165.0" class="val" text-anchor="start">484 s</text>
+  <rect x="620.0" y="148.0" width="274.5" height="24.0" rx="3" fill="#3b7dd8"/>
+  <text x="757.2" y="165.0" class="vsw" text-anchor="middle">345 s</text>
+  <rect x="894.5" y="148.0" width="82.6" height="24.0" rx="3" fill="#f0b429"/>
+  <text x="935.8" y="165.0" class="vsw" text-anchor="middle">104 s</text>
+  <rect x="977.1" y="148.0" width="4.9" height="24.0" rx="3" fill="#cbd3e0"/>
+  <text x="992.0" y="165.0" class="val" text-anchor="start">454 s</text>
+  <text x="156.0" y="207.0" class="lbl" text-anchor="end">1 Spark</text>
+  <rect x="168.0" y="190.0" width="51.7" height="24.0" rx="3" fill="#7b8bb5"/>
+  <rect x="219.7" y="190.0" width="122.6" height="24.0" rx="3" fill="#3b7dd8"/>
+  <text x="281.0" y="207.0" class="vsw" text-anchor="middle">86 s</text>
+  <rect x="342.3" y="190.0" width="163.6" height="24.0" rx="3" fill="#f0b429"/>
+  <text x="424.1" y="207.0" class="vsw" text-anchor="middle">115 s</text>
+  <rect x="505.9" y="190.0" width="24.1" height="24.0" rx="3" fill="#cbd3e0"/>
+  <text x="540.0" y="207.0" class="val" text-anchor="start">254 s</text>
+  <rect x="620.0" y="190.0" width="53.5" height="24.0" rx="3" fill="#7b8bb5"/>
+  <rect x="673.5" y="190.0" width="124.6" height="24.0" rx="3" fill="#3b7dd8"/>
+  <text x="735.8" y="207.0" class="vsw" text-anchor="middle">81 s</text>
+  <rect x="798.1" y="190.0" width="163.3" height="24.0" rx="3" fill="#f0b429"/>
+  <text x="879.8" y="207.0" class="vsw" text-anchor="middle">106 s</text>
+  <rect x="961.4" y="190.0" width="20.6" height="24.0" rx="3" fill="#cbd3e0"/>
+  <text x="992.0" y="207.0" class="val" text-anchor="start">234 s</text>
+  <text x="156.0" y="249.0" class="lbl" text-anchor="end">2 Sparks</text>
+  <rect x="168.0" y="232.0" width="55.3" height="24.0" rx="3" fill="#7b8bb5"/>
+  <text x="195.6" y="249.0" class="vsw" text-anchor="middle">34 s</text>
+  <rect x="223.3" y="232.0" width="113.8" height="24.0" rx="3" fill="#3b7dd8"/>
+  <text x="280.2" y="249.0" class="vsw" text-anchor="middle">70 s</text>
+  <rect x="337.1" y="232.0" width="151.4" height="24.0" rx="3" fill="#f0b429"/>
+  <text x="412.8" y="249.0" class="vsw" text-anchor="middle">93 s</text>
+  <rect x="488.5" y="232.0" width="41.5" height="24.0" rx="3" fill="#cbd3e0"/>
+  <text x="540.0" y="249.0" class="val" text-anchor="start">221 s</text>
+  <rect x="620.0" y="232.0" width="64.8" height="24.0" rx="3" fill="#7b8bb5"/>
+  <text x="652.4" y="249.0" class="vsw" text-anchor="middle">34 s</text>
+  <rect x="684.8" y="232.0" width="132.4" height="24.0" rx="3" fill="#3b7dd8"/>
+  <text x="751.0" y="249.0" class="vsw" text-anchor="middle">70 s</text>
+  <rect x="817.2" y="232.0" width="152.2" height="24.0" rx="3" fill="#f0b429"/>
+  <text x="893.3" y="249.0" class="vsw" text-anchor="middle">80 s</text>
+  <rect x="969.4" y="232.0" width="12.6" height="24.0" rx="3" fill="#cbd3e0"/>
+  <text x="992.0" y="249.0" class="val" text-anchor="start">190 s</text>
+  <text x="156.0" y="291.0" class="lbl" text-anchor="end">4 GB200s</text>
+  <rect x="168.0" y="274.0" width="67.3" height="24.0" rx="3" fill="#7b8bb5"/>
+  <text x="201.7" y="291.0" class="vsw" text-anchor="middle">1.9 s</text>
+  <rect x="235.3" y="274.0" width="98.5" height="24.0" rx="3" fill="#3b7dd8"/>
+  <text x="284.6" y="291.0" class="vsw" text-anchor="middle">2.8 s</text>
+  <rect x="333.8" y="274.0" width="85.8" height="24.0" rx="3" fill="#f0b429"/>
+  <text x="376.7" y="291.0" class="vsw" text-anchor="middle">2.4 s</text>
+  <rect x="419.6" y="274.0" width="110.4" height="24.0" rx="3" fill="#cbd3e0"/>
+  <text x="474.8" y="291.0" class="vsw" text-anchor="middle">3.1 s</text>
+  <text x="540.0" y="291.0" class="val" text-anchor="start">10.2 s</text>
+  <rect x="620.0" y="274.0" width="58.1" height="24.0" rx="3" fill="#7b8bb5"/>
+  <text x="649.1" y="291.0" class="vsw" text-anchor="middle">0.8 s</text>
+  <rect x="678.1" y="274.0" width="124.4" height="24.0" rx="3" fill="#3b7dd8"/>
+  <text x="740.3" y="291.0" class="vsw" text-anchor="middle">1.7 s</text>
+  <rect x="802.5" y="274.0" width="143.3" height="24.0" rx="3" fill="#f0b429"/>
+  <text x="874.2" y="291.0" class="vsw" text-anchor="middle">2.0 s</text>
+  <rect x="945.9" y="274.0" width="36.1" height="24.0" rx="3" fill="#cbd3e0"/>
+  <text x="992.0" y="291.0" class="val" text-anchor="start">5.1 s</text>
+  <text x="40.0" y="324.0" class="cap" text-anchor="start">Spark repeat is a second generate in the same process. Qwen and DiT still reload. GB200 is a loaded server. Model load (350 s) sits outside those bars.</text>
+</svg>

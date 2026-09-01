@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="488" viewBox="0 0 1160 488" role="img" aria-label="Mac time and memory through one generation">
+  <rect x="0" y="0" width="1160" height="488" fill="#ffffff"/>
+  <defs><style>
+    .t   { font: 700 21px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #1f2a44; }
+    .st  { font: 500 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #5d687c; }
+    .lbl { font: 600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #1f2a44; }
+    .sub { font: 500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #5d687c; }
+    .tick{ font: 500 11px ui-monospace,SFMono-Regular,Menlo,monospace; fill: #7a8699; }
+    .val { font: 700 13px ui-monospace,SFMono-Regular,Menlo,monospace; fill: #1f2a44; }
+    .vsw { font: 600 11px ui-monospace,SFMono-Regular,Menlo,monospace; fill: #ffffff; }
+    .na  { font: italic 500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #93a0b4; }
+    .cap { font: 500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; fill: #6b7688; }
+  </style></defs>
+  <text x="40" y="36" class="t">Time and memory through one Mac generation</text>
+  <text x="40" y="58" class="st">M4 Max · 36 GB unified memory · 832×480 · 124 frames</text>
+  <rect x="250.0" y="78.0" width="13.0" height="13.0" rx="3" fill="#7b8bb5"/>
+  <text x="270.0" y="89.0" class="sub" text-anchor="start">prompt</text>
+  <rect x="415.0" y="78.0" width="13.0" height="13.0" rx="3" fill="#3b7dd8"/>
+  <text x="435.0" y="89.0" class="sub" text-anchor="start">denoise</text>
+  <rect x="580.0" y="78.0" width="13.0" height="13.0" rx="3" fill="#f0b429"/>
+  <text x="600.0" y="89.0" class="sub" text-anchor="start">decode</text>
+  <rect x="745.0" y="78.0" width="13.0" height="13.0" rx="3" fill="#cbd3e0"/>
+  <text x="765.0" y="89.0" class="sub" text-anchor="start">other</text>
+  <text x="236.0" y="137.0" class="lbl" text-anchor="end">First prompt</text>
+  <rect x="250.0" y="118.0" width="27.5" height="24.0" rx="3" fill="#7b8bb5"/>
+  <rect x="277.5" y="118.0" width="539.6" height="24.0" rx="3" fill="#3b7dd8"/>
+  <text x="547.3" y="135.0" class="vsw" text-anchor="middle">339 s</text>
+  <rect x="817.0" y="118.0" width="162.5" height="24.0" rx="3" fill="#f0b429"/>
+  <text x="898.3" y="135.0" class="vsw" text-anchor="middle">102 s</text>
+  <rect x="979.6" y="118.0" width="10.4" height="24.0" rx="3" fill="#cbd3e0"/>
+  <text x="1000.0" y="135.0" class="val" text-anchor="start">465 s</text>
+  <text x="236.0" y="179.0" class="lbl" text-anchor="end">Cached prompt</text>
+  <rect x="250.0" y="160.0" width="559.6" height="24.0" rx="3" fill="#3b7dd8"/>
+  <text x="529.8" y="177.0" class="vsw" text-anchor="middle">341 s</text>
+  <rect x="809.6" y="160.0" width="170.6" height="24.0" rx="3" fill="#f0b429"/>
+  <text x="894.9" y="177.0" class="vsw" text-anchor="middle">104 s</text>
+  <rect x="980.2" y="160.0" width="9.8" height="24.0" rx="3" fill="#cbd3e0"/>
+  <text x="1000.0" y="177.0" class="val" text-anchor="start">451 s</text>
+  <text x="236.0" y="221.0" class="lbl" text-anchor="end">Cached · TAEH3</text>
+  <rect x="250.0" y="202.0" width="724.6" height="24.0" rx="3" fill="#3b7dd8"/>
+  <text x="612.3" y="219.0" class="vsw" text-anchor="middle">343 s</text>
+  <rect x="974.6" y="202.0" width="2.1" height="24.0" rx="3" fill="#f0b429"/>
+  <rect x="976.7" y="202.0" width="13.3" height="24.0" rx="3" fill="#cbd3e0"/>
+  <text x="1000.0" y="219.0" class="val" text-anchor="start">350 s</text>
+  <text x="40.0" y="260.0" class="lbl" text-anchor="start">Peak MLX memory by stage</text>
+  <rect x="250.0" y="278.0" width="13.0" height="13.0" rx="3" fill="#3b7dd8"/>
+  <text x="270.0" y="289.0" class="sub" text-anchor="start">peak denoise</text>
+  <rect x="400.0" y="278.0" width="13.0" height="13.0" rx="3" fill="#f0b429"/>
+  <text x="420.0" y="289.0" class="sub" text-anchor="start">peak decode</text>
+  <line x1="250.0" y1="306.0" x2="250.0" y2="420.0" stroke="#e8ecf2" stroke-width="1"/>
+  <text x="250.0" y="438.0" class="tick" text-anchor="middle">0 GiB</text>
+  <line x1="414.4" y1="306.0" x2="414.4" y2="420.0" stroke="#e8ecf2" stroke-width="1"/>
+  <text x="414.4" y="438.0" class="tick" text-anchor="middle">8 GiB</text>
+  <line x1="578.9" y1="306.0" x2="578.9" y2="420.0" stroke="#e8ecf2" stroke-width="1"/>
+  <text x="578.9" y="438.0" class="tick" text-anchor="middle">16 GiB</text>
+  <line x1="743.3" y1="306.0" x2="743.3" y2="420.0" stroke="#e8ecf2" stroke-width="1"/>
+  <text x="743.3" y="438.0" class="tick" text-anchor="middle">24 GiB</text>
+  <line x1="907.8" y1="306.0" x2="907.8" y2="420.0" stroke="#e8ecf2" stroke-width="1"/>
+  <text x="907.8" y="438.0" class="tick" text-anchor="middle">32 GiB</text>
+  <text x="236.0" y="322.0" class="lbl" text-anchor="end">First prompt</text>
+  <rect x="250.0" y="306.0" width="400.2" height="13.0" rx="3" fill="#3b7dd8"/>
+  <text x="658.2" y="317.0" class="val" text-anchor="start">19.5 GiB</text>
+  <rect x="250.0" y="321.0" width="226.7" height="13.0" rx="3" fill="#f0b429"/>
+  <text x="484.7" y="332.0" class="val" text-anchor="start">11.0 GiB</text>
+  <text x="236.0" y="358.0" class="lbl" text-anchor="end">Cached prompt</text>
+  <rect x="250.0" y="342.0" width="400.2" height="13.0" rx="3" fill="#3b7dd8"/>
+  <text x="658.2" y="353.0" class="val" text-anchor="start">19.5 GiB</text>
+  <rect x="250.0" y="357.0" width="226.7" height="13.0" rx="3" fill="#f0b429"/>
+  <text x="484.7" y="368.0" class="val" text-anchor="start">11.0 GiB</text>
+  <text x="236.0" y="394.0" class="lbl" text-anchor="end">Cached · TAEH3</text>
+  <rect x="250.0" y="378.0" width="400.2" height="13.0" rx="3" fill="#3b7dd8"/>
+  <text x="658.2" y="389.0" class="val" text-anchor="start">19.5 GiB</text>
+  <rect x="250.0" y="393.0" width="74.4" height="13.0" rx="3" fill="#f0b429"/>
+  <text x="332.4" y="404.0" class="val" text-anchor="start">3.6 GiB</text>
+  <text x="40.0" y="460.0" class="cap" text-anchor="start">Cached rows reuse the prompt embedding. TAEH3 is preview decode. Peaks are MLX stage peaks, not whole-system memory.</text>
+</svg>
