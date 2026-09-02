@@ -1,6 +1,6 @@
 +++
 title = "FastH3 on Apple Silicon and DGX Spark"
-date = 2026-09-01T00:00:00-07:00
+date = 2026-09-02T00:00:00-07:00
 url = "/blogs/fasth3-local/"
 authors = ["Aryan Kumar", "Will Lin", "Hao Zhang"]
 author = "Aryan Kumar, Will Lin, Hao Zhang"
@@ -25,22 +25,21 @@ contentClass = "fasth3-local-article"
 
 {{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" huggingface="https://huggingface.co/collections/FastVideo/fastvideo-fasth3" >}}
 
-FastH3 now runs on a Mac and on NVIDIA DGX Spark. Two Sparks can generate
-one clip together.
+FastH3 now runs on a Mac and on NVIDIA DGX Spark.
 
 H3 generates video and audio together. That used to mean a data-center GPU.
 Our [FastH3 Preview](/blogs/fasth3-preview/) distilled it into a few steps on
-Blackwell. This release puts that model on Apple Silicon through MLX, and on a
-desktop GB10 through CUDA 13. The Mac path needs 36 GB of unified memory or
-more. Spark has 128 GB.
+NVIDIA Blackwell. This release puts that model on Apple Silicon through MLX,
+and on DGX Spark through CUDA 13. The Mac path needs 36 GB of unified memory
+or more. Spark has 128 GB. A pair of Sparks can share one clip over QSFP.
 
 This post also publishes the [FastVideo Cookbook](/FastVideo/cookbook/) for
-the first time. MiniMax H3 is on it, with CUDA, native MLX, and a local
-OpenAI-compatible server.
+the first time. MiniMax H3 is on it, with CUDA, native MLX, a Spark-pair
+recipe, and a local OpenAI-compatible server.
 
 ## Generated locally
 
-The same prompts on an Apple M4 Max, a DGX Spark, and four GB200s.
+The same prompts on an Apple M4 Max, NVIDIA DGX Spark, and four GB200s.
 Turn the audio on.
 
 <div class="fasth3-local-grid fasth3-local-grid--platforms">
@@ -93,35 +92,56 @@ decode is.
 
 {{< image src="img/fig_platform_stages.svg" alt="Share of end-to-end time per stage, first generation versus repeat, on M4 Max, Spark, and four GB200s" width="100%" title="Figure 1. Same 832×480, 124-frame, full-VAE recipe. Mac repeat is a cached prompt. Spark repeat is the same process. GB200 is a loaded server." >}}
 
-## INT8, INT6, and INT4
+## FastH3 on DGX Spark
 
-Every Mac number in this post comes from an M4 Max with 36 GB of unified
-memory.
+[DGX Spark](https://www.nvidia.com/en-us/products/workstations/dgx-spark/)
+is NVIDIA's desktop Blackwell machine. GB10 GPU, 128 GB of unified LPDDR5X,
+CUDA 13, ARM64. The FastH3 CUDA path from the Preview release now runs here,
+on one Spark or on a pair.
 
-INT8 keeps more of the original weights. INT4 leaves the most room for
-activations. INT6 is the default we timed. Wall clock barely moves across
-the three. Peak memory does. Same prompt, same seed.
+The model fits. Loading it the usual way does not.
 
-<div class="fasth3-local-grid">
-  <figure class="fasth3-local-clip">
-    <video controls playsinline preload="metadata" aria-label="INT8 meadow dialogue">
-      <source src="img/videos/quant/int8.mp4" type="video/mp4">
-    </video>
-    <figcaption><b>INT8</b><span>481 s · 24.2 GiB peak</span></figcaption>
-  </figure>
-  <figure class="fasth3-local-clip">
-    <video controls playsinline preload="metadata" aria-label="INT6 meadow dialogue">
-      <source src="img/videos/quant/int6.mp4" type="video/mp4">
-    </video>
-    <figcaption><b>INT6</b><span>456 s · 19.5 GiB peak</span></figcaption>
-  </figure>
-  <figure class="fasth3-local-clip">
-    <video controls playsinline preload="metadata" aria-label="INT4 meadow dialogue">
-      <source src="img/videos/quant/int4.mp4" type="video/mp4">
-    </video>
-    <figcaption><b>INT4</b><span>467 s · 14.8 GiB peak</span></figcaption>
-  </figure>
-</div>
+There is no separate VRAM. CPU and GPU share one pool, at roughly 270 GB/s,
+about a tenth of datacenter HBM. FastH3's encoder, transformer, and decoders
+add up to more than the 121 GB a workload actually gets. Keep them all
+resident and the process dies before the first frame.
+
+So the pipeline never holds them together. It encodes the prompt, drops the
+text encoder, loads the transformer, denoises, drops the transformer, then
+loads the VAE. Patch size and compression ratios come from the checkpoint
+config, so decode does not keep a 65 GB DiT loaded just to read a patch size.
+
+On a discrete GPU, copying weights to the host frees device memory. On Spark
+that copy lands in the same pool. We stopped it. DiT weights load straight
+onto the GPU. On one GB10 that cut the transformer load from 445 seconds to
+39 seconds, and a 768×1344, 124-frame run from 772 seconds to 336 seconds.
+
+H3 never uses the last layers of its text encoder. The Spark path skips them.
+Video Sparse Attention stays on CUDA. The FastVideo kernel builds from source
+for `sm_121`.
+
+A pair of Sparks can share a single generation. Sequence parallel splits
+denoising and decode across both NVIDIA GB10s over the QSFP link. Each box
+still loads components in phases. The transformer is copied onto both, so
+neither can skip the phased load.
+
+On the same 768×1344, 124-frame recipe, two Sparks finished in 292 seconds.
+One Spark took 374. TAEH3 on that pair was 195 seconds. A 345-frame clip,
+about 14 seconds of video, finished in 581 seconds on the pair with the
+full H3 VAE.
+
+{{< image src="img/fig_spark_setups.svg" alt="DGX Spark end-to-end generation time for one Spark and two Sparks, full VAE and TAEH3, at 832 by 480 and 768 by 1344" width="100%" title="Figure 2. One NVIDIA DGX Spark, or a pair. Cold process starts on GB10. At 768×1344, TAEH3 decode is 12.5 s, not the 1 s you see at 480p." >}}
+
+The public [vLLM-Omni MiniMax H3 recipe for DGX Spark](https://recipes.vllm.ai/MiniMaxAI/MiniMax-H3?hardware=dgx_spark_gb10)
+starts at 1024×576, five seconds, 50 steps. On one Spark that request took
+1881 seconds. FastH3 at the same shape, four steps, finished in 268 seconds,
+about 7×. 832×480 was 8.4×. 1344×768 was 7.9×. Same box, same 124-frame clip.
+
+Install from the
+[CUDA 13 Spark guide](/FastVideo/getting_started/installation/spark/). For a
+pair, follow the
+[pair guide](/FastVideo/getting_started/installation/spark_pair/), then pick a
+CUDA recipe in the [Cookbook](/FastVideo/cookbook/minimax-h3/).
 
 ## How H3 runs on a Mac
 
@@ -152,7 +172,7 @@ stage.
 After denoising, tiled video decode and a native audio decoder finish the clip
 without rebuilding the whole frame buffer at once.
 
-{{< image src="img/fig_mac_phases.svg" alt="Time and memory through one FastH3 generation on an M4 Max" width="100%" title="Figure 2. Cache the prompt and the 17 s encode disappears. TAEH3 drops decode from 102 s to 1 s, and peak decode from 11.0 GiB to 3.6 GiB." >}}
+{{< image src="img/fig_mac_phases.svg" alt="Time and memory through one FastH3 generation on an M4 Max" width="100%" title="Figure 3. Cache the prompt and the 17 s encode disappears. TAEH3 drops decode from 102 s to 1 s, and peak decode from 11.0 GiB to 3.6 GiB." >}}
 
 Smaller weights are not always faster. H3 multiplies large video and audio
 matrices. At those shapes, unpacking a quantized weight into BF16 and using
@@ -167,50 +187,38 @@ so this is the matmul path, not Video Sparse Attention.
 The Mac path still implements Video Sparse Attention. Selected video tiles
 attend. The rest do not.
 
-## FastH3 on DGX Spark
+## INT8, INT6, and INT4
 
-[DGX Spark](https://www.nvidia.com/en-us/products/workstations/dgx-spark/)
-is a desktop Blackwell machine. GB10 GPU, 128 GB of unified LPDDR5X, CUDA 13,
-ARM64. The FastH3 CUDA path from the Preview release now runs on that box.
+Every Mac number in this post comes from an M4 Max with 36 GB of unified
+memory.
 
-The model fits. Loading it the usual way does not.
+INT8 keeps more of the original weights. INT4 leaves the most room for
+activations. INT6 is the default we timed. Wall clock barely moves across
+the three. Peak memory does. Same prompt, same seed.
 
-There is no separate VRAM. CPU and GPU share one pool, at roughly 270 GB/s,
-about a tenth of datacenter HBM. FastH3's encoder, transformer, and decoders
-add up to more than the 121 GB a workload actually gets. Keep them all
-resident and the process dies before the first frame.
+<div class="fasth3-local-grid">
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="INT8 meadow dialogue">
+      <source src="img/videos/quant/int8.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>INT8</b><span>481 s · 24.2 GiB peak</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="INT6 meadow dialogue">
+      <source src="img/videos/quant/int6.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>INT6</b><span>456 s · 19.5 GiB peak</span></figcaption>
+  </figure>
+  <figure class="fasth3-local-clip">
+    <video controls playsinline preload="metadata" aria-label="INT4 meadow dialogue">
+      <source src="img/videos/quant/int4.mp4" type="video/mp4">
+    </video>
+    <figcaption><b>INT4</b><span>467 s · 14.8 GiB peak</span></figcaption>
+  </figure>
+</div>
 
-So the pipeline never holds them together. It encodes the prompt, drops the
-text encoder, loads the transformer, denoises, drops the transformer, then
-loads the VAE. Patch size and compression ratios come from the checkpoint
-config, so decode does not keep a 65 GB DiT loaded just to read a patch size.
-
-On a discrete GPU, copying weights to the host frees device memory. On Spark
-that copy lands in the same pool. We stopped it. DiT weights load straight
-onto the GPU. On one GB10 that cut the transformer load from 445 seconds to
-39 seconds, and a 768×1344, 124-frame run from 772 seconds to 336 seconds.
-
-H3 never uses the last layers of its text encoder. The Spark path skips them,
-same as the Mac path. Video Sparse Attention stays on CUDA. The FastVideo
-kernel builds from source for `sm_121`.
-
-Two Sparks can run that clip together. Sequence parallel splits denoising and
-decode across both GB10s over the QSFP link. Each box still loads components
-in phases. The transformer is copied onto both, so neither can skip the
-phased load.
-
-On the same 768×1344, 124-frame recipe, two Sparks finished in 292 seconds.
-One Spark took 374. TAEH3 on that pair was 195 seconds. A 345-frame clip,
-about 14 seconds of video, finished in 581 seconds on the pair with the
-full H3 VAE.
-
-{{< image src="img/fig_spark_setups.svg" alt="DGX Spark end-to-end generation time for one Spark and two Sparks, full VAE and TAEH3, at 832 by 480 and 768 by 1344" width="100%" title="Figure 3. Cold process starts on GB10. Two Sparks help. TAEH3 helps more. At 768×1344, TAEH3 decode is 12.5 s, not the 1 s you see at 480p." >}}
-
-Install from the
-[CUDA 13 Spark guide](/FastVideo/getting_started/installation/spark/). For two
-boxes, follow the
-[pair guide](/FastVideo/getting_started/installation/spark_pair/), then pick a
-CUDA recipe in the [Cookbook](/FastVideo/cookbook/minimax-h3/).
+INT8, INT6, and INT4 MLX weights are on
+[Hugging Face](https://huggingface.co/FastVideo/models).
 
 ## Full VAE versus TAEH3
 
@@ -365,7 +373,8 @@ Satyam Srivastava
 <a href="https://github.com/Satyam-53" aria-label="Satyam Srivastava GitHub"><i class="fab fa-github"></i></a>
 <a href="https://x.com/Sat_53" aria-label="Satyam Srivastava X"><i class="fab fa-x-twitter"></i></a>,
 Kyle Hu
-<a href="https://github.com/KyleNeverGivesUp" aria-label="Kyle Hu GitHub"><i class="fab fa-github"></i></a>,
+<a href="https://github.com/KyleNeverGivesUp" aria-label="Kyle Hu GitHub"><i class="fab fa-github"></i></a>
+<a href="https://x.com/Kyle1029765" aria-label="Kyle Hu X"><i class="fab fa-x-twitter"></i></a>,
 Ishan Vaish
 <a href="https://github.com/Ishxn20" aria-label="Ishan Vaish GitHub"><i class="fab fa-github"></i></a>  
 **Tech lead:** Will Lin
