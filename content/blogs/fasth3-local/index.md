@@ -132,6 +132,11 @@ full H3 VAE.
 
 {{< image src="img/fig_spark_setups.svg" alt="DGX Spark end-to-end generation time for one Spark and two Sparks, full VAE and TAEH3, at 832 by 480 and 768 by 1344" width="100%" title="Figure 2. One NVIDIA DGX Spark, or a pair. Cold process starts on GB10. At 768×1344, TAEH3 decode is 12.5 s, not the 1 s you see at 480p." >}}
 
+The public [vLLM-Omni MiniMax H3 recipe for DGX Spark](https://recipes.vllm.ai/MiniMaxAI/MiniMax-H3?hardware=dgx_spark_gb10)
+starts at 1024×576, five seconds, 50 steps. On one Spark that request took
+1881 seconds. FastH3 at the same shape, four steps, finished in 268 seconds,
+about 7×. 832×480 was 8.4×. 1344×768 was 7.9×. Same box, same 124-frame clip.
+
 Install from the
 [CUDA 13 Spark guide](/FastVideo/getting_started/installation/spark/). For a
 pair, follow the
