@@ -1,6 +1,6 @@
 +++
 title = "FastH3 on Apple Silicon and DGX Spark"
-date = 2026-09-01T00:00:00-07:00
+date = 2026-09-02T00:00:00-07:00
 url = "/blogs/fasth3-local/"
 authors = ["Aryan Kumar", "Will Lin", "Hao Zhang"]
 author = "Aryan Kumar, Will Lin, Hao Zhang"
