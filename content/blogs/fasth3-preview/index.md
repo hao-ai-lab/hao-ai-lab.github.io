@@ -48,9 +48,11 @@ Publication checklist (remove before publishing):
 </div>
 
 ## **TL;DR:** 
-FastVideo, in collaboration with [Nuva Lab](https://nuvalab.ai/)
-and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) and NVIDIA Enterprise Products team, is open sourcing
-FastH3 Preview v1 for text-to-video-and-audio (T2VA), post-trained on Minimax H3.
+FastVideo, is open sourcing FastH3 Preview v1 for text-to-video-and-audio
+(T2VA), post-trained on Minimax H3.
+
+We collaborated closely [Nuva Lab](https://nuvalab.ai/),  
+[NVIDIA FastGen](https://github.com/NVlabs/FastGen) (Julius Berner, Chao Liu, Arash Vahdat), and NVIDIA Enterprise Products (Pengcheng Li, Cliff Woolley) on FastH3.
 
 We took production readiness, quality, user experience and openness seriously.
 We hope this joint effort will lead to a solid foundation for people who would
@@ -363,7 +365,7 @@ for the ablations, and share your videos with us!
 FastVideo FastH3 builds on [Minimax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3).
 We thank the Minimax team for releasing its weights and code.
 
-We want to give special shoutout to Pengcheng Li from NVIDIA Enterprise Products team for the amazing work on the Video Sparse Attention (VSA) kernel used by FastH3!
+We thank the NVIDIA Enterprise Products team (Pengcheng Li, Cliff Woolley) for the amazing work on the Video Sparse Attention (VSA) kernel used by FastH3!
 
 We thank [Nuva Lab](https://nuvalab.ai/) for bringing production grounding to
 FastH3 through its experience with real-world creative video-agent workloads.
@@ -371,7 +373,7 @@ Its production-aligned post-training insights help bridge open-source research
 to practical data-assisted distillation for commercial video workflows, with
 Omni Ref as the next focus.
 
-We thank the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team for
+We thank the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) (Julius Berner, Chao Liu, Arash Vahdat) team for
 the DMD2 framework and H3 reference experiment that helped us align the score
 clock, modality shifts, and backward simulation. 
 

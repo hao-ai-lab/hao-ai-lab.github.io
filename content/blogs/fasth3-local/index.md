@@ -33,7 +33,7 @@ FastVideo FastH3 builds on [Minimax H3](https://huggingface.co/MiniMaxAI/MiniMax
 We thank the Minimax team for releasing its weights and code.
 
 The FastVideo Team collaborated closely [Nuva Lab](https://nuvalab.ai/),  
-[NVIDIA FastGen](https://github.com/NVlabs/FastGen), and NVIDIA Enterprise Products team collaborated [FastH3 Preview](/blogs/fasth3-preview/).
+[NVIDIA FastGen](https://github.com/NVlabs/FastGen) (Julius Berner, Chao Liu, Arash Vahdat), and NVIDIA Enterprise Products (Pengcheng Li, Cliff Woolley) team collaborated [FastH3 Preview](/blogs/fasth3-preview/).
 
 H3 generates video and audio together. That used to mean a data-center GPU.
 Our [FastH3 Preview](/blogs/fasth3-preview/) distilled it into a few steps on
@@ -363,10 +363,10 @@ settings, timings, and the output.
 FastVideo FastH3 builds on [Minimax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3).
 We thank the Minimax team for releasing its weights and code.
 
-Special shoutout to Pengcheng Li from NVIDIA Enterprise Products team for the amazing work on the Video Sparse Attention (VSA) kernel used by FastH3!
+We thank the NVIDIA Enterprise Products team (Pengcheng Li, Cliff Woolley) for the amazing work on the Video Sparse Attention (VSA) kernel used by FastH3!
 
 The FastVideo Team collaborated closely with [Nuva Lab](https://nuvalab.ai/),  
-[NVIDIA FastGen](https://github.com/NVlabs/FastGen), and NVIDIA Enterprise Products team on [FastH3](/blogs/fasth3-preview/).
+[NVIDIA FastGen](https://github.com/NVlabs/FastGen) (Julius Berner, Chao Liu, Arash Vahdat), and NVIDIA Enterprise Products team on [FastH3](/blogs/fasth3-preview/).
 
 We thank Ollin Boer Bohan for [TAEH3](https://github.com/madebyollin/taehv),
 the optional preview decoder this release uses. The Mac path is built on
