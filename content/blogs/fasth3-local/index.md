@@ -1,9 +1,9 @@
 +++
-title = "FastH3 on Apple Silicon and DGX Spark"
+title = "FastVideo FastH3 Goes Local: 7x Speedup on NVIDIA DGX Spark and Apple Silicon"
 date = 2026-09-02T00:00:00-07:00
 url = "/blogs/fasth3-local/"
-authors = ["Aryan Kumar", "Will Lin", "Hao Zhang"]
-author = "Aryan Kumar, Will Lin, Hao Zhang"
+authors = ["FastVideo Team"]
+author = "FastVideo Team"
 ShowReadingTime = true
 draft = false
 contentClass = "fasth3-local-article"
@@ -25,13 +25,20 @@ contentClass = "fasth3-local-article"
 
 {{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" huggingface="https://huggingface.co/collections/FastVideo/fastvideo-fasth3" >}}
 
-FastH3 now runs on a Mac and on NVIDIA DGX Spark.
+## **TL;DR:** 
+FastVideo FastH3 now runs on up to 2x NVIDIA DGX Sparks and on Apple Silicon. Up
+to 8x speedup! We also share some updates on next versions of FastH3! 
+
+FastVideo FastH3 builds on [Minimax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3).
+We thank the Minimax team for releasing its weights and code.
+
+The FastVideo Team collaborated closely [Nuva Lab](https://nuvalab.ai/),  
+[NVIDIA FastGen](https://github.com/NVlabs/FastGen), and NVIDIA Enterprise Products team collaborated [FastH3 Preview](/blogs/fasth3-preview/).
 
 H3 generates video and audio together. That used to mean a data-center GPU.
 Our [FastH3 Preview](/blogs/fasth3-preview/) distilled it into a few steps on
-NVIDIA Blackwell. This release puts that model on Apple Silicon through MLX,
-and on DGX Spark through CUDA 13. The Mac path needs 36 GB of unified memory
-or more. Spark has 128 GB. A pair of Sparks can share one clip over QSFP.
+NVIDIA Blackwell. This release puts that model on NVIDIA DGX Sparks (up to 2x) and Apple Silicon through MLX. The Mac path needs 36 GB of unified memory
+or more. A pair of Sparks can share one clip over QSFP.
 
 This post also publishes the [FastVideo Cookbook](/FastVideo/cookbook/) for
 the first time. MiniMax H3 is on it, with CUDA, native MLX, a Spark-pair
@@ -99,7 +106,7 @@ is NVIDIA's desktop Blackwell machine. GB10 GPU, 128 GB of unified LPDDR5X,
 CUDA 13, ARM64. The FastH3 CUDA path from the Preview release now runs here,
 on one Spark or on a pair.
 
-The model fits. Loading it the usual way does not.
+Although the model fits, we cannot load it the usual way.
 
 There is no separate VRAM. CPU and GPU share one pool, at roughly 270 GB/s,
 about a tenth of datacenter HBM. FastH3's encoder, transformer, and decoders
@@ -353,30 +360,36 @@ settings, timings, and the output.
 
 ## Acknowledgements
 
-FastH3 builds on [MiniMax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3).
-We thank the MiniMax team for releasing its weights and code.
+FastVideo FastH3 builds on [Minimax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3).
+We thank the Minimax team for releasing its weights and code.
 
-[Nuva Lab](https://nuvalab.ai/) and
-[NVIDIA FastGen](https://github.com/NVlabs/FastGen) collaborated on
-[FastH3 Preview](/blogs/fasth3-preview/).
+Special shoutout to Pengcheng Li from NVIDIA Enterprise Products team for the amazing work on the Video Sparse Attention (VSA) kernel used by FastH3!
+
+The FastVideo Team collaborated closely with [Nuva Lab](https://nuvalab.ai/),  
+[NVIDIA FastGen](https://github.com/NVlabs/FastGen), and NVIDIA Enterprise Products team on [FastH3](/blogs/fasth3-preview/).
 
 We thank Ollin Boer Bohan for [TAEH3](https://github.com/madebyollin/taehv),
 the optional preview decoder this release uses. The Mac path is built on
 [MLX](https://github.com/ml-explore/mlx) and the community around it.
 
+We also thank the [vLLM project](https://vllm.ai/),
+[NVIDIA](https://www.nvidia.com/en-us/), and [MBZUAI](https://mbzuai.ac.ae/) for
+their continued sponsorship and support of FastVideo.
+
 ## FastVideo team
 
-**Contributors:** Aryan Kumar
+**Contributors:** Aryan Kumar*
 <a href="https://github.com/aryan5v" aria-label="Aryan Kumar GitHub"><i class="fab fa-github"></i></a>
 <a href="https://x.com/aryan_xv" aria-label="Aryan Kumar X"><i class="fab fa-x-twitter"></i></a>,
-Satyam Srivastava
-<a href="https://github.com/Satyam-53" aria-label="Satyam Srivastava GitHub"><i class="fab fa-github"></i></a>
-<a href="https://x.com/Sat_53" aria-label="Satyam Srivastava X"><i class="fab fa-x-twitter"></i></a>,
-Kyle Hu
+Kyle Hu*
 <a href="https://github.com/KyleNeverGivesUp" aria-label="Kyle Hu GitHub"><i class="fab fa-github"></i></a>
 <a href="https://x.com/Kyle1029765" aria-label="Kyle Hu X"><i class="fab fa-x-twitter"></i></a>,
+Satyam Srivastava*
+<a href="https://github.com/Satyam-53" aria-label="Satyam Srivastava GitHub"><i class="fab fa-github"></i></a>
+<a href="https://x.com/Sat_53" aria-label="Satyam Srivastava X"><i class="fab fa-x-twitter"></i></a>,
 Ishan Vaish
 <a href="https://github.com/Ishxn20" aria-label="Ishan Vaish GitHub"><i class="fab fa-github"></i></a>  
+(*Equal Contribution)  
 **Tech lead:** Will Lin
 <a href="https://github.com/SolitaryThinker" aria-label="Will Lin GitHub"><i class="fab fa-github"></i></a>
 <a href="https://x.com/wlsaidhi" aria-label="Will Lin X"><i class="fab fa-x-twitter"></i></a>  

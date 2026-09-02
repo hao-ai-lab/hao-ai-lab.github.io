@@ -49,7 +49,7 @@ Publication checklist (remove before publishing):
 
 ## **TL;DR:** 
 FastVideo, in collaboration with [Nuva Lab](https://nuvalab.ai/)
-and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team, is open sourcing
+and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) and NVIDIA Enterprise Products team, is open sourcing
 FastH3 Preview v1 for text-to-video-and-audio (T2VA), post-trained on Minimax H3.
 
 We took production readiness, quality, user experience and openness seriously.
@@ -360,6 +360,10 @@ for the ablations, and share your videos with us!
 
 ## Acknowledgements
 
+FastVideo FastH3 builds on [Minimax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3).
+We thank the Minimax team for releasing its weights and code.
+
+We want to give special shoutout to Pengcheng Li from NVIDIA Enterprise Products team for the amazing work on the Video Sparse Attention (VSA) kernel used by FastH3!
 
 We thank [Nuva Lab](https://nuvalab.ai/) for bringing production grounding to
 FastH3 through its experience with real-world creative video-agent workloads.
