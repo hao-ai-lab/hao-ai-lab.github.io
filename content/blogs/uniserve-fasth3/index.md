@@ -1,5 +1,5 @@
 +++
-title = "FastVideo UniServe: Production serving for FastH3 on NVIDIA Blackwell GPUs at 1.7x lower latency and 1.45x higher throughput"
+title = "FastVideo UniServe: Production serving for FastH3 on NVIDIA Blackwell GPUs at 1.8x lower latency and 1.45x higher throughput"
 date = 2026-09-29T00:00:00-07:00
 url = "/blogs/uniserve-fasth3/"
 authors = ["FastVideo Team"]
@@ -201,7 +201,7 @@ The following traces use the same 10 s/1K prompt and seed on four GB200 GPUs, on
 
 Every optimization in the sections above is exact: it changes where and when the same computation runs, so its output differs from a reference implementation only by floating-point summation order, and every collective, including the Ulysses all-gathers and all-to-alls, stays in BF16.
 
-Precision is a separate, explicit choice, set per component when the server starts. The BF16 results in this post use UniServe's `quality` preset: BF16 DiT and text encoder, and FP16 video-decoder projections. The default `balanced` preset stores the video decoder's projections in NVFP4, which has minimal impact on visual quality. `performance` also runs the DiT MLP in FP8, and `maximum` runs it in NVFP4 with an FP8 text encoder; attention stays in BF16 in every preset.
+Precision is a separate, explicit choice, set per component when the server starts. UniServe's default preset, `quality`, runs the DiT and text encoder in BF16 and the video-decoder projections in FP16; the BF16 results in this post use it. `balanced` stores the video decoder's projections in NVFP4, which has minimal impact on visual quality. `performance` also runs the DiT MLP in FP8, and `maximum` runs it in NVFP4 with an FP8 text encoder; attention stays in BF16 in every preset.
 
 ## NVFP4
 
