@@ -1,0 +1,509 @@
+{{- /*
+  UniServe FastH3 deployment configurator.
+
+  The deployment files under assets/uniserve/fast_h3/ are byte-for-byte
+  copies of UniServe's configs/fast_h3/. The page embeds their text so the
+  reader sees and downloads exactly the file the command names; the script
+  only assembles command lines from the selections below.
+*/ -}}
+{{- $names := slice "ulysses4" "ulysses8" "ulysses8-two-node" "ulysses4x2" "ulysses4x2-two-node" "dp8-text-tp8" -}}
+{{- $files := dict -}}
+{{- range $names -}}
+  {{- $files = merge $files (dict . (resources.Get (printf "uniserve/fast_h3/%s.json" .)).Content) -}}
+{{- end -}}
+<div class="usd" id="uniserve-deploy">
+  <div class="usd-controls">
+    <div class="usd-row"><span class="usd-label" id="usd-hardware-label">GPU</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-hardware-label" data-field="hardware"></div></div>
+    <div class="usd-row"><span class="usd-label" id="usd-size-label">GPUs</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-size-label" data-field="size"></div></div>
+    <div class="usd-row"><span class="usd-label" id="usd-goal-label">Optimize for</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-goal-label" data-field="goal"></div></div>
+    <div class="usd-row"><span class="usd-label" id="usd-checkpoint-label">Checkpoint</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-checkpoint-label" data-field="checkpoint"></div></div>
+    <div class="usd-row" data-row="precision"><span class="usd-label" id="usd-precision-label">Precision</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-precision-label" data-field="precision"></div></div>
+    <div class="usd-row"><span class="usd-label" id="usd-seconds-label">Longest clip</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-seconds-label" data-field="seconds"></div></div>
+    <div class="usd-row"><span class="usd-label" id="usd-prompt-label">Longest prompt</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-prompt-label" data-field="prompt"></div></div>
+  </div>
+  <p class="usd-summary" data-out="summary"></p>
+  <div class="usd-steps" data-out="steps"></div>
+  <details class="usd-file">
+    <summary>Deployment file <code data-out="file-path"></code></summary>
+    <div class="usd-step-head"><span>Shipped with UniServe; pass it to <code>--workers</code>.</span><span class="usd-actions"><button type="button" class="usd-button" data-action="copy-file">Copy</button><button type="button" class="usd-button" data-action="download-file">Download</button></span></div>
+    <pre><code data-out="file"></code></pre>
+  </details>
+</div>
+<script>
+(function () {
+  "use strict";
+
+  // Deployment file text by name, as shipped in configs/fast_h3/.
+  const FILES = {{ $files }};
+
+  const REPOSITORY = {
+    bf16: "FastVideo/FastVideo-FastH3-8-Step-V2",
+    nvfp4: "FastVideo/FastVideo-FastH3-8-Step-V2-NVFP4",
+  };
+
+  const LAYOUTS = {
+    "ulysses4": "One replica on four GPUs: a Ulysses4 denoiser and a TP4 text encoder.",
+    "ulysses8": "One replica on eight GPUs: a Ulysses8 denoiser and a TP8 text encoder.",
+    "ulysses8-two-node": "One replica across both nodes: a Ulysses8 denoiser and a TP8 text encoder.",
+    "ulysses4x2": "Two replicas, each a Ulysses4 denoiser with its own TP4 text encoder.",
+    "ulysses4x2-two-node": "Two replicas, one per node, each a Ulysses4 denoiser with its own TP4 text encoder.",
+    "dp8-text-tp8": "Eight one-GPU replicas that share one TP8 text encoder.",
+  };
+
+  // Every combination below has been served end to end. `slots` is the
+  // number of concurrently resident requests; `ladder` lists the prompt-token
+  // capacities startup prepares, cut at the chosen prompt limit; `maxSeconds`
+  // and `maxPrompt` are the largest limits a deployment was run with.
+  const HARDWARE = [
+    {
+      id: "gb200", label: "GB200", blackwell: true,
+      sizes: [
+        {
+          id: "4", label: "4 GPUs, one node",
+          goals: {
+            latency: { file: "ulysses4", slots: 2 },
+            throughput: { file: "ulysses4", slots: 2 },
+          },
+        },
+        {
+          id: "8", label: "8 GPUs, two nodes", twoNodes: true,
+          goals: {
+            latency: { file: "ulysses8-two-node", slots: 2, flags: ["--graph-policy off"] },
+            throughput: { file: "ulysses4x2-two-node", slots: 4 },
+          },
+        },
+      ],
+    },
+    {
+      id: "rtx", label: "RTX PRO 6000", blackwell: true,
+      sizes: [
+        {
+          id: "8", label: "8 GPUs, one node",
+          goals: {
+            latency: { file: "ulysses8", slots: 2, flags: ["--graph-policy off", "--mem-fraction-static 0.92"], ladder: [1024, 10240, 16384] },
+            throughput: { file: "ulysses4x2", slots: 4, flags: ["--graph-policy off", "--mem-fraction-static 0.92"], ladder: [1024, 10240, 16384] },
+          },
+        },
+      ],
+    },
+    {
+      id: "h200", label: "H200", blackwell: false,
+      sizes: [
+        {
+          id: "4", label: "4 GPUs, one node",
+          goals: {
+            latency: { file: "ulysses4", slots: 2, flags: ["--mem-fraction-static 0.92"], ladder: [1024, 16384] },
+            throughput: { file: "ulysses4", slots: 2, flags: ["--mem-fraction-static 0.92"], ladder: [1024, 16384] },
+          },
+        },
+        {
+          id: "8", label: "8 GPUs, one node",
+          goals: {
+            latency: { file: "ulysses8", slots: 2, flags: ["--mem-fraction-static 0.92"], ladder: [1024, 10240], maxPrompt: 10240 },
+            throughput: { file: "dp8-text-tp8", slots: 8, maxSeconds: 5, maxPrompt: 1024 },
+          },
+        },
+      ],
+    },
+  ];
+
+  const GOALS = [
+    { id: "latency", label: "Latency" },
+    { id: "throughput", label: "Throughput" },
+  ];
+  const CHECKPOINTS = [
+    { id: "bf16", label: "BF16" },
+    { id: "nvfp4", label: "NVFP4" },
+  ];
+  // Runtime precision presets of the BF16 checkpoint. NVFP4 needs
+  // Blackwell tensor cores; Hopper computes BF16, FP16 and FP8.
+  const PRECISIONS = {
+    blackwell: [
+      { id: "quality", label: "quality" },
+      { id: "balanced", label: "balanced", config: '{"mode":"balanced"}' },
+      { id: "performance", label: "performance", config: '{"mode":"performance"}' },
+      { id: "maximum", label: "maximum", config: '{"mode":"maximum"}' },
+    ],
+    hopper: [
+      { id: "quality", label: "quality" },
+      { id: "fp8-mlp", label: "FP8 MLPs", config: '{"components":{"mlp":"fp8"}}' },
+    ],
+  };
+  const SECONDS = [5, 10, 15];
+  const PROMPTS = [
+    { tokens: 1024, label: "1K tokens" },
+    { tokens: 10240, label: "10K tokens" },
+    { tokens: 16384, label: "16K tokens" },
+  ];
+  const DEFAULT_SECONDS = 15;
+  const DEFAULT_PROMPT = 16384;
+
+  const root = document.getElementById("uniserve-deploy");
+  const state = {
+    hardware: "gb200", size: "4", goal: "latency", checkpoint: "bf16",
+    precision: "quality", seconds: DEFAULT_SECONDS, prompt: DEFAULT_PROMPT,
+  };
+
+  function hardware() {
+    return HARDWARE.find((item) => item.id === state.hardware);
+  }
+
+  function size() {
+    return hardware().sizes.find((item) => item.id === state.size);
+  }
+
+  function deployment() {
+    return size().goals[state.goal];
+  }
+
+  // The limits a reader chose, capped by what the deployment was run with.
+  // The choice itself is kept, so passing through a capped deployment does
+  // not lower the limits of the next one.
+  function limits() {
+    const chosen = deployment();
+    return {
+      seconds: Math.min(state.seconds, chosen.maxSeconds || DEFAULT_SECONDS),
+      prompt: Math.min(state.prompt, chosen.maxPrompt || DEFAULT_PROMPT),
+    };
+  }
+
+  // Keep every selection valid after another one changes.
+  function reconcile() {
+    if (!hardware().sizes.some((item) => item.id === state.size)) {
+      state.size = hardware().sizes[0].id;
+    }
+    if (!hardware().blackwell) {
+      state.checkpoint = "bf16";
+    }
+    const precisions = PRECISIONS[hardware().blackwell ? "blackwell" : "hopper"];
+    if (!precisions.some((item) => item.id === state.precision)) {
+      state.precision = "quality";
+    }
+  }
+
+  function options(field, items, selected = state[field]) {
+    const group = root.querySelector('[data-field="' + field + '"]');
+    group.replaceChildren();
+    for (const item of items) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "usd-option";
+      button.textContent = item.label;
+      button.setAttribute("role", "radio");
+      button.setAttribute("aria-checked", String(item.value === selected));
+      button.disabled = Boolean(item.disabled);
+      if (item.title) {
+        button.title = item.title;
+      }
+      button.addEventListener("click", () => {
+        state[field] = item.value;
+        render();
+      });
+      group.append(button);
+    }
+  }
+
+  function commandLines(head, args) {
+    return [head, ...args.map((arg) => "  " + arg)].join(" \\\n");
+  }
+
+  function block(title, text, note) {
+    const step = document.createElement("div");
+    step.className = "usd-step";
+    const header = document.createElement("div");
+    header.className = "usd-step-head";
+    const label = document.createElement("span");
+    label.textContent = title;
+    const copy = document.createElement("button");
+    copy.type = "button";
+    copy.className = "usd-button";
+    copy.textContent = "Copy";
+    copy.addEventListener("click", () => copyText(copy, text));
+    header.append(label, copy);
+    const pre = document.createElement("pre");
+    const code = document.createElement("code");
+    code.textContent = text;
+    pre.append(code);
+    step.append(header, pre);
+    if (note) {
+      const paragraph = document.createElement("p");
+      paragraph.className = "usd-note";
+      paragraph.textContent = note;
+      step.append(paragraph);
+    }
+    return step;
+  }
+
+  function copyText(button, text) {
+    const done = () => {
+      button.textContent = "Copied";
+      setTimeout(() => { button.textContent = "Copy"; }, 1500);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done);
+      return;
+    }
+    const area = document.createElement("textarea");
+    area.value = text;
+    document.body.append(area);
+    area.select();
+    document.execCommand("copy");
+    area.remove();
+    done();
+  }
+
+  // Returns the commands for the current selection.
+  function commands() {
+    const chosen = deployment();
+    const limit = limits();
+    const twoNodes = Boolean(size().twoNodes);
+    const args = ["--workers configs/fast_h3/" + chosen.file + ".json"];
+    if (twoNodes) {
+      args.push("--host-identity rank-0");
+    }
+    args.push("--served-model-name FastH3", "--host 0.0.0.0", "--max-running-requests " + chosen.slots);
+    args.push(...(chosen.flags || []));
+    if (limit.seconds !== DEFAULT_SECONDS) {
+      args.push("--max-video-seconds " + limit.seconds);
+    }
+    if (limit.prompt !== DEFAULT_PROMPT) {
+      args.push("--max-model-len " + limit.prompt);
+    }
+    if (chosen.ladder) {
+      const capacities = chosen.ladder.filter((tokens) => tokens < limit.prompt).concat([limit.prompt]);
+      if (capacities.length > 1) {
+        args.push("--video-text-capacities " + capacities.join(","));
+      }
+    }
+    const precision = PRECISIONS[hardware().blackwell ? "blackwell" : "hopper"].find((item) => item.id === state.precision);
+    if (state.checkpoint === "bf16" && precision.config) {
+      args.push("--quantization-config '" + precision.config + "'");
+    }
+
+    const directory = "/workspace/models/" + REPOSITORY[state.checkpoint].split("/")[1];
+    const download = [
+      "export H3_MODEL=" + directory,
+      'hf download ' + REPOSITORY[state.checkpoint] + ' --local-dir "$H3_MODEL"',
+    ].join("\n");
+    const environment = twoNodes ? "NCCL_NVLS_ENABLE=0 " : "";
+    const serve = commandLines(environment + 'uniserve serve "$H3_MODEL"', args);
+    const launcher = environment + "uniserve-host --head <address the head logs> --host-identity rank-1";
+    const request = commandLines("curl --fail-with-body --max-time 600 http://127.0.0.1:8000/v1/videos/sync", [
+      "-H 'Content-Type: application/json'",
+      "-d '" + JSON.stringify({
+        model: "FastH3",
+        prompt: "A clear stream flows through a green forest while birds sing.",
+        seconds: 5,
+        seed: 1000,
+      }) + "'",
+      "--output forest.mp4",
+    ]);
+    return { download, serve, launcher, request, twoNodes };
+  }
+
+  function render() {
+    reconcile();
+    const chosen = deployment();
+    const limit = limits();
+    const blackwell = hardware().blackwell;
+
+    options("hardware", HARDWARE.map((item) => ({ value: item.id, label: item.label })));
+    options("size", hardware().sizes.map((item) => ({ value: item.id, label: item.label })));
+    options("goal", GOALS.map((item) => ({ value: item.id, label: item.label })));
+    options("checkpoint", CHECKPOINTS.map((item) => ({
+      value: item.id,
+      label: item.label,
+      disabled: item.id === "nvfp4" && !blackwell,
+      title: item.id === "nvfp4" && !blackwell ? "NVFP4 needs Blackwell tensor cores" : "",
+    })));
+    options("precision", PRECISIONS[blackwell ? "blackwell" : "hopper"].map((item) => ({
+      value: item.id,
+      label: item.label + (item.id === "quality" ? " (default)" : ""),
+    })));
+    root.querySelector('[data-row="precision"]').hidden = state.checkpoint !== "bf16";
+    options("seconds", SECONDS.map((seconds) => ({
+      value: seconds,
+      label: seconds + " s",
+      disabled: seconds > (chosen.maxSeconds || DEFAULT_SECONDS),
+      title: seconds > (chosen.maxSeconds || DEFAULT_SECONDS) ? "Not run with this deployment" : "",
+    })), limit.seconds);
+    options("prompt", PROMPTS.map((item) => ({
+      value: item.tokens,
+      label: item.label,
+      disabled: item.tokens > (chosen.maxPrompt || DEFAULT_PROMPT),
+      title: item.tokens > (chosen.maxPrompt || DEFAULT_PROMPT) ? "Not run with this deployment" : "",
+    })), limit.prompt);
+
+    const out = commands();
+    root.querySelector('[data-out="summary"]').textContent = LAYOUTS[chosen.file] + " Up to " + chosen.slots + " requests are resident at once.";
+    const steps = root.querySelector('[data-out="steps"]');
+    steps.replaceChildren(
+      block(out.twoNodes ? "1. Download the checkpoint on both nodes, at the same path" : "1. Download the checkpoint", out.download),
+      block(out.twoNodes ? "2. Start the head on the node named rank-0" : "2. Start the server", out.serve,
+        "Run from the UniServe repository. Startup prepares every admitted request shape before /health reports ready."),
+    );
+    if (out.twoNodes) {
+      steps.append(block("3. Start the launcher on the node named rank-1", out.launcher,
+        "The head logs the address after \"awaiting a launcher\". Both nodes need the same UniServe build and Python environment."));
+    }
+    steps.append(block((out.twoNodes ? "4" : "3") + ". Generate a video", out.request));
+
+    root.querySelector('[data-out="file-path"]').textContent = "configs/fast_h3/" + chosen.file + ".json";
+    root.querySelector('[data-out="file"]').textContent = FILES[chosen.file];
+  }
+
+  root.querySelector('[data-action="copy-file"]').addEventListener("click", (event) => {
+    copyText(event.currentTarget, FILES[deployment().file]);
+  });
+  root.querySelector('[data-action="download-file"]').addEventListener("click", () => {
+    const name = deployment().file + ".json";
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([FILES[deployment().file]], { type: "application/json" }));
+    link.download = name;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+
+  render();
+})();
+</script>
+<style>
+.usd {
+  margin: var(--content-gap) 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  /* The page background keeps code blocks distinct in both themes. */
+  background: var(--theme);
+}
+.usd-controls {
+  display: grid;
+  gap: 10px;
+}
+.usd-row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  align-items: center;
+  gap: 12px;
+}
+.usd-row[hidden] {
+  display: none;
+}
+.usd-label {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: var(--primary);
+}
+.usd-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.usd .usd-option {
+  padding: 5px 12px;
+  font: inherit;
+  font-size: 0.85em;
+  line-height: 1.4;
+  color: var(--primary);
+  background: var(--theme);
+  border: 1px solid var(--tertiary);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.usd .usd-option:hover:not(:disabled) {
+  border-color: var(--secondary);
+}
+.usd .usd-option[aria-checked="true"] {
+  color: var(--theme);
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.usd .usd-option:disabled {
+  color: var(--secondary);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.usd .usd-option:focus-visible,
+.usd .usd-button:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+}
+.usd-summary {
+  margin: 16px 0 4px;
+  font-size: 0.9em;
+  color: var(--secondary);
+}
+.usd-step {
+  margin-top: 14px;
+}
+.usd-step-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: var(--primary);
+}
+.usd-actions {
+  display: flex;
+  gap: 6px;
+}
+.usd .usd-button {
+  flex: none;
+  padding: 2px 10px;
+  font: inherit;
+  font-size: 0.8em;
+  font-weight: 500;
+  color: var(--secondary);
+  background: transparent;
+  border: 1px solid var(--tertiary);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.usd .usd-button:hover {
+  color: var(--primary);
+  border-color: var(--secondary);
+}
+.usd pre {
+  margin: 0;
+}
+.usd pre code {
+  white-space: pre;
+  word-break: normal;
+}
+.usd-note {
+  margin: 6px 0 0;
+  font-size: 0.85em;
+  color: var(--secondary);
+}
+.usd-file {
+  margin-top: 16px;
+}
+.usd-file summary {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+}
+/* Deployment files run to a few hundred lines; scroll inside the block. */
+.usd-file pre code {
+  max-height: 24em;
+  overflow-y: auto;
+}
+.usd-file .usd-step-head {
+  margin: 10px 0 6px;
+  font-weight: 400;
+  color: var(--secondary);
+}
+@media (max-width: 600px) {
+  .usd {
+    padding: 12px;
+  }
+  .usd-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+</style>
