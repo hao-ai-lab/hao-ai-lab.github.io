@@ -31,7 +31,7 @@ summary = "UniServe serves FastH3 8-Step text-to-video-with-audio faster than re
 - **Faster than real time.** On eight NVIDIA GB200 GPUs, a 5-second 1344×768 clip with audio from a 1K-token prompt arrives as a finished MP4 in 3.1 s and a 10-second clip in 6.2 s (5.3 s with NVFP4).
 - **Throughput.** About 11,000 videos a day on eight NVIDIA GB200 GPUs and 3,400 on eight RTX PRO 6000 GPUs for a mix of 5- to 15-second clips: 6.4 and 21.2 GPU-seconds per second of generated video.
 - **Fastest open-source serving.** 1.2–1.8× lower median latency for a 10-second clip with a 1K-token prompt, and 15–45% higher throughput under load, than FastVideo, vLLM-Omni and SGLang, each in its fastest exact configuration.
-- **Hardware.** Tested on NVIDIA GB200 (four GPUs, and eight across two nodes) and RTX PRO 6000 Blackwell, with BF16 and NVFP4 checkpoints. UniServe also runs as an experimental backend for NVIDIA Dynamo.
+- **Hardware.** Tested on NVIDIA GB200 (four GPUs, and eight across two nodes) and RTX PRO 6000 Blackwell, with BF16 and NVFP4 checkpoints. UniServe also serves FastH3 on NVIDIA H200 and runs as an experimental backend for NVIDIA Dynamo.
 
 {{< image src="img/results-at-a-glance.svg" alt="UniServe latency against FastVideo, vLLM-Omni and SGLang for a 10-second clip with a 1K-token prompt" width="100%" title="Figure 1. Median end-to-end latency of a 10-second clip with a 1K-token prompt, one request at a time (12 requests per bar), on each hardware configuration. vLLM-Omni has no eight-GB200 latency result because one of its replicas cannot span two nodes." >}}
 FastH3 turns a text prompt into a video with a synchronized soundtrack in eight denoising steps. Serving it efficiently means keeping a long-sequence multimodal diffusion transformer (DiT) busy, decoding hundreds of overlapping video tiles, and encoding the video and audio and delivering them to the client. A faster attention kernel addresses only one part of that path.
@@ -240,6 +240,12 @@ The side-by-side clips are silent because the two samples have different soundtr
 UniServe also runs as an experimental backend for [NVIDIA Dynamo](https://github.com/ai-dynamo/dynamo). Dynamo's frontend serves the OpenAI-style `/v1/videos` endpoint and handles service discovery and request routing.
 
 `uniserve-dynamo-worker` embeds UniServe's Rust scheduler and engine in a Dynamo worker process and registers it as a video endpoint. Each request follows the same path as UniServe's own `/v1/videos` route, from validation through the finished MP4, and returns as one completed response with the MP4 embedded. The worker rejects request options that FastH3 does not implement instead of silently ignoring them. The integration currently supports text-to-video requests with complete, non-streaming responses. The [Dynamo quickstart](https://github.com/hao-ai-lab/UniServe/blob/main/docs/fast_h3/dynamo.md) shows how to serve FastH3 through Dynamo 1.5.0 on four GB200 GPUs.
+
+## Deploy UniServe
+
+Choose a GPU, a goal and a checkpoint to get the deployment file and the commands that serve FastH3 with UniServe. Every combination here is a configuration we have served end to end: latency deployments run one replica across all GPUs, and throughput deployments add replicas where they serve more requests at once. UniServe also runs on NVIDIA H200, which serves the BF16 checkpoint in the `quality` preset or with FP8 DiT MLPs. The [FastH3 guide](https://github.com/hao-ai-lab/UniServe/blob/main/docs/fast_h3/fast_h3.md) covers installation and every other option.
+
+{{< uniserve_deploy >}}
 
 ## Benchmark methodology and full results
 
