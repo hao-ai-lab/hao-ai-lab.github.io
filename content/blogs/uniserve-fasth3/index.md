@@ -1,5 +1,5 @@
 +++
-title = "UniServe: Serving FastH3 at Its Fastest"
+title = "FastVideo UniServe: Production serving for FastH3 on NVIDIA GPUs at 1.7x lower latency and 1.45x higher throughput"
 date = 2026-09-29T00:00:00-07:00
 url = "/blogs/uniserve-fasth3/"
 authors = ["FastVideo Team"]
@@ -26,10 +26,11 @@ summary = "UniServe serves FastH3 8-Step text-to-video-with-audio faster than re
 
 **TL;DR**
 
-- [UniServe](https://github.com/hao-ai-lab/UniServe) is a serving engine for FastH3 8-Step text-to-video-with-audio generation (more models to come!), built for production serving with our partners [Reactor](https://www.reactor.inc/) and [Nuva Lab](https://nuvalab.ai/).
-- **Faster than real time.** On eight GB200 GPUs, a 5-second 1344×768 clip with audio arrives as a finished MP4 in 3.1 s and a 10-second clip in 6.3 s (5.4 s with NVFP4).
+**FastVideo [UniServe](https://github.com/hao-ai-lab/UniServe) is a serving engine for FastH2 8-Step text-to-video-with-audio generation (more models to come!), built for production serving with our partners [Nuva Lab](https://nuvalab.ai/) and [Reactor](https://www.reactor.inc/):**
+- **Production Ready on Day 0.** Uniserve is serving production API traffic on [Reactor](https://www.reactor.inc/) on day-0!
+- **Faster than real time.** On eight NVIDIA GB200 GPUs, a 5-second 1344×768 clip with audio arrives as a finished MP4 in 3.1 s and a 10-second clip in 6.3 s (5.4 s with NVFP4).
 - **Throughput.** About 11,000 videos a day on eight GB200 GPUs and 3,400 on eight RTX PRO 6000 GPUs for a mix of 5- to 15-second clips: 6.4 and 21.2 GPU-seconds per second of generated video.
-- **Against open-source serving.** 1.2–1.7× lower median latency and 15–45% higher throughput than FastVideo, vLLM-Omni and SGLang, each in its fastest exact configuration.
+- **Fastest open-source serving.** 1.2–1.7× lower median latency and 15–45% higher throughput than FastVideo, vLLM-Omni and SGLang, each in its fastest exact configuration.
 - **Hardware.** Tested on NVIDIA GB200 (four GPUs, and eight across two nodes) and RTX PRO 6000 Blackwell, with BF16 and NVFP4 checkpoints. UniServe also runs as an experimental backend for NVIDIA Dynamo.
 
 {{< image src="img/results-at-a-glance.svg" alt="UniServe latency and throughput against FastVideo, vLLM-Omni and SGLang" width="100%" title="Figure 1. Median end-to-end latency with one request at a time (top) and the best throughput per GPU under load (bottom), on each hardware configuration. vLLM-Omni has no eight-GB200 latency result because one of its replicas cannot span two nodes." >}}
@@ -440,12 +441,30 @@ On four GB200 GPUs with one replica, every system's throughput is essentially fl
 
 *UniServe BF16 and NVFP4 in the same layouts. NVFP4 is a separate precision tier; see [NVFP4](#nvfp4).*
 
+
+## Meet the Team
+
+**Yi Sun**
+<a href="https://github.com/Boreas618" aria-label="Yi Sun GitHub"><i class="fab fa-github"></i></a>
+<a href="https://www.linkedin.com/in/yi-sun-mlsys/" aria-label="Yi Sun LinkedIn"><i class="fab fa-linkedin"></i></a>
+<a href="https://x.com/yisun0618" aria-label="Yi Sun X"><i class="fab fa-x-twitter"></i></a>  
+**Will Lin**
+<a href="https://github.com/SolitaryThinker" aria-label="Will Lin GitHub"><i class="fab fa-github"></i></a>
+<a href="https://www.linkedin.com/in/will-lin-294920100" aria-label="Will Lin LinkedIn"><i class="fab fa-linkedin"></i></a>
+<a href="https://x.com/wlsaidhi" aria-label="Will Lin X"><i class="fab fa-x-twitter"></i></a>  
+**Hao Zhang**
+<a href="https://github.com/zhisbug" aria-label="Hao Zhang GitHub"><i class="fab fa-github"></i></a>
+<a href="https://www.linkedin.com/in/haozhangml" aria-label="Hao Zhang LinkedIn"><i class="fab fa-linkedin"></i></a>
+<a href="https://x.com/haozhangml" aria-label="Hao Zhang X"><i class="fab fa-x-twitter"></i></a>
+
 ## Acknowledgments
 
 FastVideo FastH3 builds on [MiniMax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3). We thank the MiniMax team for releasing its weights and code.
 
-We thank Guan Luo, Qi Wang, Ryan McCormick, and the rest of the [NVIDIA Dynamo](https://github.com/ai-dynamo/dynamo) team for their support in integrating Dynamo with UniServe, bringing UniServe closer to a production-grade serving engine.
-
 We thank [Nuva Lab](https://nuvalab.ai/) and [Reactor](https://www.reactor.inc/) for their collaboration, feedback and insights during UniServe's development, and Nuva Lab for access to the production hardware used in our benchmarks.
 
-We also thank MiniMax for releasing H3-Base, and the [vLLM project](https://vllm.ai/), [NVIDIA](https://www.nvidia.com/en-us/) and [MBZUAI](https://mbzuai.ac.ae/) for their continued sponsorship and support of FastVideo.
+We thank Guan Luo, Qi Wang, Ryan McCormick, Harry Kim, and the rest of the [NVIDIA Dynamo](https://github.com/ai-dynamo/dynamo) team for their support in integrating Dynamo with UniServe, bringing UniServe closer to a production-grade serving engine.
+
+We also thank [NVIDIA FastGen](https://github.com/NVlabs/FastGen) (Julius Berner, Chao Liu, Arash Vahdat), and NVIDIA Enterprise Products (Pengcheng Li, Cliff Woolley) team for  collaborating on [FastH3](/blogs/fasth3-preview/).
+
+Finally, we are extremely grateful to the [vLLM project](https://vllm.ai/), [NVIDIA](https://www.nvidia.com/en-us/) and [MBZUAI](https://mbzuai.ac.ae/) for their continued sponsorship and support of FastVideo.
