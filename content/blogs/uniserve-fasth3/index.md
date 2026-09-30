@@ -1,5 +1,5 @@
 +++
-title = "FastVideo UniServe: Production serving for FastH3 on NVIDIA GPUs at 1.7x lower latency and 1.45x higher throughput"
+title = "FastVideo UniServe: Production serving for FastH3 on NVIDIA Blackwell GPUs at 1.7x lower latency and 1.45x higher throughput"
 date = 2026-09-29T00:00:00-07:00
 url = "/blogs/uniserve-fasth3/"
 authors = ["FastVideo Team"]
@@ -29,7 +29,7 @@ summary = "UniServe serves FastH3 8-Step text-to-video-with-audio faster than re
 **FastVideo [UniServe](https://github.com/hao-ai-lab/UniServe) is a serving engine for FastH2 8-Step text-to-video-with-audio generation (more models to come!), built for production serving with our partners [Nuva Lab](https://nuvalab.ai/) and [Reactor](https://www.reactor.inc/):**
 - **Production Ready on Day 0.** Uniserve is serving production API traffic on [Reactor](https://www.reactor.inc/) on day-0!
 - **Faster than real time.** On eight NVIDIA GB200 GPUs, a 5-second 1344×768 clip with audio arrives as a finished MP4 in 3.1 s and a 10-second clip in 6.3 s (5.4 s with NVFP4).
-- **Throughput.** About 11,000 videos a day on eight GB200 GPUs and 3,400 on eight RTX PRO 6000 GPUs for a mix of 5- to 15-second clips: 6.4 and 21.2 GPU-seconds per second of generated video.
+- **Throughput.** About 11,000 videos a day on eight NVIDIA GB200 GPUs and 3,400 on eight RTX PRO 6000 GPUs for a mix of 5- to 15-second clips: 6.4 and 21.2 GPU-seconds per second of generated video.
 - **Fastest open-source serving.** 1.2–1.7× lower median latency and 15–45% higher throughput than FastVideo, vLLM-Omni and SGLang, each in its fastest exact configuration.
 - **Hardware.** Tested on NVIDIA GB200 (four GPUs, and eight across two nodes) and RTX PRO 6000 Blackwell, with BF16 and NVFP4 checkpoints. UniServe also runs as an experimental backend for NVIDIA Dynamo.
 
