@@ -10,7 +10,7 @@ TocOpen = false
 draft = false
 math = true
 contentClass = "post-content-justified"
-summary = "UniServe serves FastH3 8-Step text-to-video-with-audio with lower median latency and higher throughput than FastVideo, vLLM-Omni and SGLang on GB200 and RTX PRO 6000, and Reactor runs it in production."
+summary = "UniServe serves FastH3 8-Step text-to-video-with-audio faster than real time on eight GB200 GPUs, with lower median latency and higher throughput than FastVideo, vLLM-Omni and SGLang on GB200 and RTX PRO 6000. It is built for production serving with our partners Reactor and Nuva Lab."
 [cover]
     image = "img/architecture.png"
     relative = true
@@ -196,6 +196,12 @@ The following traces use the same 10 s/1K prompt and seed on four GB200 GPUs, on
 
 *These are single-request diagnostics, not p50 estimates. Instrumentation perturbs execution, especially for the basic reference's many small kernel launches: its profiled request takes 42.622 s against 34.315 s unprofiled. We therefore do not derive speedup claims from these ratios. FastVideo, SGLang and vLLM-Omni are traced in the configurations their benchmark results use, with added NVTX instrumentation.*
 
+## Exactness and precision presets
+
+Every optimization in the sections above is exact: it changes where and when the same computation runs, so its output differs from a reference implementation only by floating-point summation order, and every collective, including the Ulysses all-gathers and all-to-alls, stays in BF16.
+
+Precision is a separate, explicit choice, set per component when the server starts. The BF16 results in this post use UniServe's `quality` preset: BF16 DiT and text encoder, and FP16 video-decoder projections. The default `balanced` preset stores the video decoder's projections in NVFP4, which has minimal impact on visual quality. `performance` also runs the DiT MLP in FP8, and `maximum` runs it in NVFP4 with an FP8 text encoder; attention stays in BF16 in every preset.
+
 ## NVFP4
 
 FastVideo also publishes an NVFP4 checkpoint, `FastVideo/FastVideo-FastH3-8-Step-V2-NVFP4`, and UniServe serves it natively. NVFP4 is the 4-bit floating-point format with native tensor-core support on Blackwell GPUs: it stores E2M1 values with one FP8 (E4M3) scale per 16-element block and one FP32 scale per tensor.
@@ -204,7 +210,7 @@ The checkpoint quantizes 150 DiT MLP projections (gate, up and down in each of t
 
 The traces confirm that the FP4 path runs: 14,400 FlashInfer `DeviceGemmFp4` kernels in the DiT and 3,528 in the video decoder across the four GB200 GPUs of a 10 s/1K request. On GPU 0, DiT time falls from 10.243 s with BF16 to 8.512 s, and video decoder time from 1.195 s to 0.766 s. End to end, NVFP4 lowers UniServe's median latency by 9.6–14.7% and raises its throughput by 15.4–18.6% across the three hardware configurations; see [NVFP4 against BF16](#nvfp4-against-bf16).
 
-**What is exact and what is lossy.** Every optimization in the sections above is exact: it changes where and when the same computation runs, so its output differs from a reference implementation only by floating-point summation order, and every collective, including the Ulysses all-gathers and all-to-alls, stays in BF16. Precision is a separate, explicit choice. The BF16 results in this post use UniServe's `quality` preset (BF16 DiT and text encoder, FP16 video-decoder projections) and the NVFP4 results FastVideo's calibrated NVFP4 checkpoint; for dense checkpoints UniServe also offers runtime presets that trade precision for speed: NVFP4 video-decoder projections in `balanced`, the default, plus an FP8 DiT MLP in `performance`, and an NVFP4 DiT MLP with an FP8 text encoder in `maximum`, with attention always in BF16. NVFP4 is lossy, and a same-seed comparison shows it: the clips below come from the same prompt and seed, yet details such as a performer's hair or apparent age differ. FastH3's eight-step sampler turns any numerical difference into a different sample of the same scene; in our tests, changing only the FP32 summation order of the pooled attention scores already produced visibly different videos. Same-seed divergence therefore does not by itself mean lower quality, but we have not yet evaluated the quality of the NVFP4 checkpoint or the runtime presets systematically, so we report NVFP4 as a separate speed tier rather than a free default.
+NVFP4 in the DiT is lossy, and a same-seed comparison shows it: the clips below come from the same prompt and seed, yet details such as a performer's hair or apparent age differ. FastH3's eight-step sampler turns any numerical difference into a different sample of the same scene; in our tests, changing only the FP32 summation order of the pooled attention scores already produced visibly different videos. Same-seed divergence therefore does not by itself mean lower quality, but we have not yet evaluated the checkpoint's quality systematically, so we report NVFP4 as a separate speed tier rather than a free default.
 
 The clips compare UniServe's BF16 (left) and NVFP4 (right) outputs for the same benchmark requests, 10 seconds with 1K-token prompts, from the eight-RTX PRO 6000 latency runs.
 
