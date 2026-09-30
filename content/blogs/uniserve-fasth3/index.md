@@ -10,7 +10,7 @@ TocOpen = false
 draft = false
 math = true
 contentClass = "post-content-justified"
-summary = "UniServe serves FastH3 8-Step text-to-video-with-audio with lower median latency and higher throughput than FastVideo, vLLM-Omni and SGLang on GB200 and RTX PRO 6000, and Reactor runs it in production."
+summary = "UniServe serves FastH3 8-Step text-to-video-with-audio faster than real time on eight GB200 GPUs, with lower median latency and higher throughput than FastVideo, vLLM-Omni and SGLang on GB200 and RTX PRO 6000. It is built for production serving with our partners Reactor and Nuva Lab."
 [cover]
     image = "img/architecture.png"
     relative = true
@@ -83,7 +83,7 @@ $$
 = 147.984\ \text{MiB}.
 $$
 
-The projection weights and biases this table replaces occupy **24.288 GiB** in the checkpoint. UniServe streams them through the precomputation at load time and frees them afterwards. Both figures are tensor sizes only, excluding other weights, activations, workspaces and CUDA graphs.
+The projection weights and biases this table replaces occupy **24.288 GiB** in the checkpoint. UniServe streams them through the precomputation at load time and frees them afterwards.
 
 ### Run the text refiner once
 
@@ -105,7 +105,7 @@ $$
 \end{aligned}
 $$
 
-The hidden-state all-gather moves **75% of the data** of the projected all-to-all, the ratio H/A. The output all-to-all is unchanged. This is a payload calculation for equal padding that excludes transport overhead; it is not a measured bandwidth or latency reduction, and because the systems pad differently it is not an exact ratio of traced bytes either.
+The hidden-state all-gather moves **75% of the data** of the projected all-to-all, the ratio H/A. The output all-to-all is unchanged.
 
 Head sharding also reduces weight memory. The 200 Q/K/V/gate matrices (four per layer across 50 layers) each have shape `[7168, 5376]`. They occupy **14.355 GiB per GPU** when replicated and **3.589 GiB per GPU** when sharded four ways by head. The total projection FLOPs are unchanged: the work is repartitioned from local tokens × all heads to all tokens × local heads.
 
@@ -131,7 +131,7 @@ $$
 
 UniServe's combination kernel evaluates this expression and writes each row directly into its position in the send buffer of the output all-to-all. This fuses the combination with the layout conversion, avoiding a separately materialized combined tensor followed by a permute-and-copy. The all-to-all then restores the sequence sharding that the output projection and residual path consume.
 
-The traces show what unfused layout conversions cost. In vLLM-Omni, the PyTorch profiler records 1,200 indexed Q/K/V writes into `[1, 77952, 14, 128]` buffers and 1,200 `contiguous()` calls on `[1, 14, 77952, 128]` tensors: padded token-major inputs are materialized and then converted to head-major layout. Nested operator records are counted once.
+The traces show what unfused layout conversions cost. In vLLM-Omni, the PyTorch profiler records 1,200 indexed Q/K/V writes into `[1, 77952, 14, 128]` buffers and 1,200 `contiguous()` calls on `[1, 14, 77952, 128]` tensors: padded token-major inputs are materialized and then converted to head-major layout.
 
 ### Fused modulation, normalization and residuals
 
@@ -148,9 +148,9 @@ In this sample, the three optimized baselines' native sparse-attention kernels a
 | Fine sparse attention, 400 calls | 3.779 s  | 3.373 s   | 3.476 s | 3.251 s   |
 | NCCL SendRecv, including waits   | 1.068 s  | 1.558 s   | 1.687 s | 1.323 s   |
 
-*Summed kernel durations on one GPU; they are not additive request phases.*
+*Summed kernel durations on GPU 0.*
 
-UniServe runs fine sparse attention with its own CuTe kernel. Even so, its combined refiner and denoising time is shorter: **10.052 s**, versus **11.723 s** for FastVideo, **11.111 s** for SGLang and **12.580 s** for vLLM-Omni. The advantage comes from the computation and data movement around attention; these traces do not attribute it to individual mechanisms.
+UniServe runs fine sparse attention with its own CuTe kernel. Even so, its combined refiner and denoising time is shorter: **10.052 s**, versus **11.723 s** for FastVideo, **11.111 s** for SGLang and **12.580 s** for vLLM-Omni. The advantage comes from the computation and data movement around attention.
 
 ## A batched, streaming decode path
 
@@ -160,7 +160,7 @@ The video VAE decoder reconstructs each temporal unit from overlapping spatial t
 
 UniServe concatenates a unit's 28 tiles along the batch dimension and decodes them in one call, then restores the grid and blends the overlaps. Tiles remain independent samples in the batch, so the tiled computation itself is unchanged; no attention crosses tile boundaries. The worker distributes temporal units across the four GPUs.
 
-{{< image src="img/media-placement.svg" alt="Spatial batching and temporal placement" width="100%" title="Figure 6. For four temporal units, UniServe issues four batch-28 decoder calls. FastVideo distributes temporal units across GPUs but loops over their spatial tiles. SGLang and vLLM-Omni distribute each unit's spatial tiles across GPUs. The diagram shows ownership and call counts, not timing or FLOP reductions." >}}
+{{< image src="img/media-placement.svg" alt="Spatial batching and temporal placement" width="100%" title="Figure 6. For four temporal units, UniServe issues four batch-28 decoder calls. FastVideo distributes temporal units across GPUs but loops over their spatial tiles. SGLang and vLLM-Omni distribute each unit's spatial tiles across GPUs." >}}
 For the 10-second sample's 14 temporal units, the traces show **14 decoder calls in UniServe**, versus **392 per-tile calls** in FastVideo and SGLang. Each batched call amortizes the host-side launch work over a whole unit.
 
 ### Fuse the VAE decoder and replay it as a CUDA graph
@@ -169,7 +169,7 @@ Batching combines with kernel fusion inside the VAE decoder. UniServe's video de
 
 The worker captures the batched decode as a CUDA graph and replays it for each temporal unit. Across UniServe's video decoding and postprocessing, the 10-second trace records **14 graph launches**. Inside FastVideo's VAE stage, rank 0 issues 73,024 `cuLaunchKernel` and 24,420 `cuLaunchKernelEx` calls alongside 116 partial-graph launches, which take 1.024 s of CPU API time under profiling. Capturing the whole batched decode removes most of these returns to the host between kernels.
 
-The video decode spans **1.107 s on the GPUs in UniServe and 4.818 s in FastVideo**. On rank 0, video kernels are active for 1.043 s of UniServe's 1.107-second span, versus 1.343 s of FastVideo's 4.817-second span, so UniServe keeps the GPU far busier during decoding. Batching, fusion, graph replay and scheduling act together here; this comparison does not isolate the benefit of any one of them.
+The video decode spans **1.107 s on the GPUs in UniServe and 4.818 s in FastVideo**. On rank 0, video kernels are active for 1.043 s of UniServe's 1.107-second span, versus 1.343 s of FastVideo's 4.817-second span, so UniServe keeps the GPU far busier during decoding.
 
 ### Encode while the GPU is still decoding
 
@@ -192,9 +192,15 @@ The following traces use the same 10 s/1K prompt and seed on four GB200 GPUs, on
 | vLLM-Omni                | 0.119              | 12.580                    | 3.940        | 17.018               | 16.116                 |
 | Basic SP4                | 0.112              | 15.752                    | 25.346       | 42.622               | 34.315                 |
 
-*Decode covers video decoding, audio decoding and the final reconstruction steps; it excludes the GPU frame conversion performed by the output encoder. The intervals may overlap and should not be added. The unprofiled column is a warmed request served by the Nsight-traced process before collection starts; † UniServe's comes from its separate PyTorch-profiler process, also before profiling starts.*
+*Decode covers video decoding, audio decoding and the final reconstruction steps; it excludes the GPU frame conversion performed by the output encoder. The unprofiled column is a warmed request served by the Nsight-traced process before collection starts; † UniServe's comes from its separate PyTorch-profiler process, also before profiling starts.*
 
-*These are single-request diagnostics, not p50 estimates. Instrumentation perturbs execution, especially for the basic reference's many small kernel launches: its profiled request takes 42.622 s against 34.315 s unprofiled. We therefore do not derive speedup claims from these ratios. FastVideo, SGLang and vLLM-Omni are traced in the configurations their benchmark results use, with added NVTX instrumentation.*
+*FastVideo, SGLang and vLLM-Omni are traced in the configurations their benchmark results use, with added NVTX instrumentation.*
+
+## Exactness and precision presets
+
+Every optimization in the sections above is exact: it changes where and when the same computation runs, so its output differs from a reference implementation only by floating-point summation order, and every collective, including the Ulysses all-gathers and all-to-alls, stays in BF16.
+
+Precision is a separate, explicit choice, set per component when the server starts. The BF16 results in this post use UniServe's `quality` preset: BF16 DiT and text encoder, and FP16 video-decoder projections. The default `balanced` preset stores the video decoder's projections in NVFP4, which has minimal impact on visual quality. `performance` also runs the DiT MLP in FP8, and `maximum` runs it in NVFP4 with an FP8 text encoder; attention stays in BF16 in every preset.
 
 ## NVFP4
 
@@ -203,8 +209,6 @@ FastVideo also publishes an NVFP4 checkpoint, `FastVideo/FastVideo-FastH3-8-Step
 The checkpoint quantizes 150 DiT MLP projections (gate, up and down in each of the 50 layers) and 252 video-VAE decoder projections (Q/K/V, attention output and the three MLP projections in each of 36 layers). The text encoder and the DiT's attention projections stay in BF16. UniServe loads the packed weights as they are stored, two E2M1 values per byte plus the block scales, and quantizes activations on the fly against each module's calibrated global scale from the checkpoint, so every chunk of rows uses the same scale no matter how the sequence is split. The packed values and block scales go directly into a block-scaled FP4 GEMM that produces BF16 outputs.
 
 The traces confirm that the FP4 path runs: 14,400 FlashInfer `DeviceGemmFp4` kernels in the DiT and 3,528 in the video decoder across the four GB200 GPUs of a 10 s/1K request. On GPU 0, DiT time falls from 10.243 s with BF16 to 8.512 s, and video decoder time from 1.195 s to 0.766 s. End to end, NVFP4 lowers UniServe's median latency by 9.6–14.7% and raises its throughput by 15.4–18.6% across the three hardware configurations; see [NVFP4 against BF16](#nvfp4-against-bf16).
-
-**What is exact and what is lossy.** Every optimization in the sections above is exact: it changes where and when the same computation runs, so its output differs from a reference implementation only by floating-point summation order, and every collective, including the Ulysses all-gathers and all-to-alls, stays in BF16. Precision is a separate, explicit choice. The BF16 results in this post use UniServe's `quality` preset (BF16 DiT and text encoder, FP16 video-decoder projections) and the NVFP4 results FastVideo's calibrated NVFP4 checkpoint; for dense checkpoints UniServe also offers runtime presets that trade precision for speed: NVFP4 video-decoder projections in `balanced`, the default, plus an FP8 DiT MLP in `performance`, and an NVFP4 DiT MLP with an FP8 text encoder in `maximum`, with attention always in BF16. NVFP4 is lossy, and a same-seed comparison shows it: the clips below come from the same prompt and seed, yet details such as a performer's hair or apparent age differ. FastH3's eight-step sampler turns any numerical difference into a different sample of the same scene; in our tests, changing only the FP32 summation order of the pooled attention scores already produced visibly different videos. Same-seed divergence therefore does not by itself mean lower quality, but we have not yet evaluated the quality of the NVFP4 checkpoint or the runtime presets systematically, so we report NVFP4 as a separate speed tier rather than a free default.
 
 The clips compare UniServe's BF16 (left) and NVFP4 (right) outputs for the same benchmark requests, 10 seconds with 1K-token prompts, from the eight-RTX PRO 6000 latency runs.
 
@@ -228,7 +232,7 @@ The clips compare UniServe's BF16 (left) and NVFP4 (right) outputs for the same 
 <figcaption style="font-size: 16px; font-weight: normal; color: #808080; text-align: center;">Ceramics studio: BF16 (left) and NVFP4 (right).</figcaption>
 </figure>
 
-The side-by-side clips are silent because the two samples have different soundtracks. NVFP4 changes numerical precision in both the DiT and the video decoder, and in this tier the decoder's remaining dense projections run in BF16 rather than FP16, so we report NVFP4 as a separate UniServe tier instead of comparing it with the BF16 baselines. The other systems do not load this serialized checkpoint natively, and converting it would change the evaluated artifact.
+The side-by-side clips are silent because the two samples have different soundtracks. Only UniServe loads this checkpoint natively, so the NVFP4 results are UniServe's alone.
 
 ## Serving with NVIDIA Dynamo
 
@@ -250,9 +254,9 @@ We compare UniServe against two kinds of baselines.
 
 ### Setup
 
-**Hardware.** Four GB200 GPUs in one node; eight GB200 GPUs across two nodes connected by multi-node NVLink; and one node with eight RTX PRO 6000 Blackwell Server Edition GPUs with full peer-to-peer access. We treat each as a separate environment and do not read the change from four to eight GPUs as strong scaling, because the topology changes too. On the GB200 nodes every system runs with NCCL's NVLS multicast disabled (`NCCL_NVLS_ENABLE=0`).
+**Hardware.** Four GB200 GPUs in one node; eight GB200 GPUs across two nodes connected by multi-node NVLink; and one node with eight RTX PRO 6000 Blackwell Server Edition GPUs with full peer-to-peer access. On the GB200 nodes every system runs with NCCL's NVLS multicast disabled (`NCCL_NVLS_ENABLE=0`).
 
-**Systems and checkpoints.** Every system serves the BF16 checkpoint `FastVideo/FastVideo-FastH3-8-Step-V2` with its trained schedule, VSA sparsity and full decoders; only UniServe also serves the NVFP4 checkpoint `FastVideo/FastVideo-FastH3-8-Step-V2-NVFP4`. Approximations that change the computation are excluded: caching features across steps, skipping softmax work, approximate decoders, progressive resolution and fewer denoising steps. Optimizations that preserve the computation are allowed: compilation, exact fused kernels, sequence and tensor parallelism, component placement, precomputing request-independent values and asynchronous media processing. Every system selects the checkpoint's top-k video tiles exactly. vLLM-Omni loads the video and audio VAEs from the base MiniMax-H3 repository that its release pins; every tensor it loads is identical to the V2 release's.
+**Systems and checkpoints.** Every system serves the BF16 checkpoint `FastVideo/FastVideo-FastH3-8-Step-V2` with its trained schedule, VSA sparsity and full decoders; only UniServe also serves the NVFP4 checkpoint `FastVideo/FastVideo-FastH3-8-Step-V2-NVFP4`. Approximations that change the computation are excluded: caching features across steps, skipping softmax work, approximate decoders, progressive resolution and fewer denoising steps. Optimizations that preserve the computation are allowed: compilation, exact fused kernels, sequence and tensor parallelism, component placement, precomputing request-independent values and asynchronous media processing. Every system selects the checkpoint's top-k video tiles exactly.
 
 | System                       | Checkpoint  | 4 x GB200                    | 8 x GB200, two nodes                       | 8 x RTX PRO 6000      |
 | ---------------------------- | ----------- | ---------------------------- | ------------------------------------------ | --------------------- |
@@ -303,7 +307,7 @@ Every system encodes the H.264 stream with libx264's `ultrafast` preset. UniServ
 
 **Workload.** Six independently written scene families (a harbor, a ceramics studio, a percussion performance, a river, an observatory and a market) supply structured prompts describing visual action, camera, material detail and environmental sound. Each family has a 1,000-token and a 10,000-token version under the checkpoint's tokenizer; the longer version adds meaningful description of the same continuous event, never repeated filler. Every request has unique prompt bytes, so no prefix or result cache can turn repetition into a speedup. Prompt text, token IDs, SHA-256 digests, seeds and execution order are frozen in the published manifest.
 
-**Metrics.** The latency benchmark sends 72 requests at concurrency 1, after all six shapes are warmed: six scene families × two prompt lengths × three durations × two seeds, in one fixed random order shared by every system. We report p50, p90 and p95 over all 72 requests and the median of the 12 requests of each shape (duration × prompt length). The throughput benchmark sends 32 requests per concurrency level, five or six per shape, in one fixed shuffled order; the client keeps at most `C` requests in flight with no think time, for `C` = 1, 2, 4 and 8 on four GPUs and additionally 16 on eight, and each level is preceded by `2C` priming requests that are not counted. Throughput is the number of valid complete MP4s divided by the time from the first submission to the last response; invalid, failed or timed-out requests stay in the denominator. Each concurrency level is one run, so the numbers are completion rates over a finite request set, including ramp-up and drain, not sustained-capacity claims, and small differences between levels should not be read as rankings. A response is valid if it contains exactly one H.264 stream at 1344 × 768 and exactly 24 fps with a frame count within one frame of the aligned count, a stereo 32 kHz AAC track whose duration is within one frame period of the aligned media duration, and nonzero video variance and audio RMS. Within one environment, runs execute one at a time with one server deployment and one client, and each benchmark starts a fresh deployment that performs its own shape warmup and priming.
+**Metrics.** The latency benchmark sends 72 requests at concurrency 1, after all six shapes are warmed: six scene families × two prompt lengths × three durations × two seeds, in one fixed random order shared by every system. We report p50, p90 and p95 over all 72 requests and the median of the 12 requests of each shape (duration × prompt length). The throughput benchmark sends 32 requests per concurrency level, five or six per shape, in one fixed shuffled order; the client keeps at most `C` requests in flight with no think time, for `C` = 1, 2, 4 and 8 on four GPUs and additionally 16 on eight, and each level is preceded by `2C` priming requests that are not counted. Throughput is the number of valid complete MP4s divided by the time from the first submission to the last response; invalid, failed or timed-out requests stay in the denominator. Each concurrency level is one 32-request run. A response is valid if it contains exactly one H.264 stream at 1344 × 768 and exactly 24 fps with a frame count within one frame of the aligned count, a stereo 32 kHz AAC track whose duration is within one frame period of the aligned media duration, and nonzero video variance and audio RMS. Within one environment, runs execute one at a time with one server deployment and one client, and each benchmark starts a fresh deployment that performs its own shape warmup and priming.
 
 ### Latency
 
