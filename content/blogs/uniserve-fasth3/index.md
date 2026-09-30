@@ -307,6 +307,7 @@ Every system encodes the H.264 stream with libx264's `ultrafast` preset at CRF 2
 
 ### Latency
 
+{{< image src="img/latency-per-shape.svg" alt="Median latency per shape on every hardware configuration" width="100%" title="Figure 8. Median end-to-end latency of each shape (12 requests per point), one request at a time. The two panels of a row share their y-axis. vLLM-Omni has no eight-GB200 latency result because one of its replicas cannot span two nodes. The folded tables below list every value and the quantiles over all 72 requests." >}}
 **Four GB200 GPUs.** **Across the 72-request workload, UniServe BF16 has a median end-to-end latency of 14.24 s, compared with 17.80 s for SGLang, 18.17 s for FastVideo and 18.83 s for vLLM-Omni.** Across the six shapes, SGLang's median is 1.18 to 1.30 times UniServe's, FastVideo's 1.23 to 1.33 times and vLLM-Omni's 1.28 to 1.37 times. SGLang is the fastest baseline here and on eight GB200 GPUs although its DiT runs eager: its VSA-H3 validation refuses `torch.compile` and breakable CUDA graphs, while FastVideo and vLLM-Omni compile theirs.
 
 <details><summary>End-to-end latency on four GB200 GPUs</summary>
@@ -380,6 +381,7 @@ Every system encodes the H.264 stream with libx264's `ultrafast` preset at CRF 2
 
 ### Throughput
 
+{{< image src="img/throughput-concurrency.svg" alt="Throughput at each concurrency on every hardware configuration" width="100%" title="Figure 9. Valid videos per second at each concurrency, one 32-request run per point. On four GB200 GPUs, FastVideo's and vLLM-Omni's lines overlap. The folded tables below list every value with its p50 and p95 latency." >}}
 On four GB200 GPUs with one replica, every system's throughput is essentially flat across concurrency: higher concurrency adds queueing latency without adding throughput. **At each system's best concurrency, UniServe BF16's throughput is 24.0% above SGLang's, 32.6% above vLLM-Omni's and 32.7% above FastVideo's; all 640 responses pass media validation.** With two replicas on eight GPUs, C=1 leaves one replica idle and both are busy from C=2. **On two GB200 nodes, UniServe BF16 reaches 0.1283 videos/s, 14.9% above SGLang's best (0.1117 videos/s at C=8), 20.3% above FastVideo's (0.1067 videos/s at C=4) and 22.0% above vLLM-Omni's (0.1052 videos/s at C=8).** On the RTX PRO 6000, **UniServe BF16 reaches 0.0389 videos/s, 20.8% above SGLang's best (0.0322 videos/s at C=4), 39.9% above FastVideo's (0.0278 videos/s at C=4) and 45.4% above vLLM-Omni's (0.0267 videos/s at C=4)**. Each cell below gives throughput in valid videos per second, followed by p50 / p95 end-to-end latency in seconds, for one 32-request run.
 
 <details><summary>Throughput and latency under load on four GB200 GPUs</summary>
