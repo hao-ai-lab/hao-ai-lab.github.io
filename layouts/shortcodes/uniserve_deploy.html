@@ -287,7 +287,9 @@
     ].join("\n");
     const environment = twoNodes ? "NCCL_NVLS_ENABLE=0 " : "";
     const serve = commandLines(environment + 'uniserve serve "$H3_MODEL"', args);
-    const launcher = environment + "uniserve-host --head <address the head logs> --host-identity rank-1";
+    // The head listens on every interface and logs 0.0.0.0 with its port;
+    // the launcher reaches it through rank-0's own address.
+    const launcher = environment + "uniserve-host --head <rank-0 address>:<port> --host-identity rank-1";
     const request = commandLines("curl --fail-with-body --max-time 600 http://127.0.0.1:8000/v1/videos/sync", [
       "-H 'Content-Type: application/json'",
       "-d '" + JSON.stringify({
@@ -344,7 +346,7 @@
     );
     if (out.twoNodes) {
       steps.append(block("3. Start the launcher on the node named rank-1", out.launcher,
-        "The head logs the address after \"awaiting a launcher\". Both nodes need the same UniServe build and Python environment."));
+        "The head logs \"awaiting a launcher\" with address=\"0.0.0.0:<port>\"; use that port with an address of rank-0 that rank-1 can reach. Both nodes need the same UniServe build and Python environment."));
     }
     steps.append(block((out.twoNodes ? "4" : "3") + ". Generate a video", out.request));
 
