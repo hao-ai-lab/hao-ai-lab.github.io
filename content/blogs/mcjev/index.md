@@ -1,6 +1,6 @@
 +++
 title = "MCJev: A 24 ms Jev for Minecraft PvP"
-date = 2026-09-27T12:00:00-07:00
+date = 2026-10-02T00:00:00-07:00
 authors = ["Minshen (Alex) Zhang", "Junda Chen", "Yuanbo Yang", "Yuxuan Zhang", "Yi Sun", "Shaoxiong Duan", "Lanxiang Hu", "Jiaqi Leng", "Yulun Wu", "Will Lin", "Hao Zhang"]
 author = "Minshen (Alex) Zhang, Junda Chen, Yuanbo Yang, Yuxuan Zhang, Yi Sun, Shaoxiong Duan, Lanxiang Hu, Jiaqi Leng, Yulun Wu, Will Lin, Hao Zhang"
 ShowReadingTime = true
@@ -308,7 +308,7 @@ We especially thank **NVIDIA** for providing the **B200** GPUs that MCJev runs o
   title        = {{MCJev}: A 24 ms {Jev} for {Minecraft} {PvP}},
   author       = {Zhang, Minshen and Chen, Junda and Yang, Yuanbo and Zhang, Yuxuan and Sun, Yi and Duan, Shaoxiong and Hu, Lanxiang and Leng, Jiaqi and Wu, Yulun and Lin, Will and Zhang, Hao},
   year         = {2026},
-  month        = sep,
+  month        = oct,
   howpublished = {Hao AI Lab blog},
   url          = {https://haoailab.com/blogs/mcjev/}
 }
