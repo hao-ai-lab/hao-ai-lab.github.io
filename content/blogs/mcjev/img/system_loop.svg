@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" font-family="Helvetica, Arial, sans-serif">
+  <rect width="1000" height="470" fill="#ffffff"/>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#222230"/></marker><marker id="ap" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#6b3fa0"/></marker><marker id="ag" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,1.5 L10,5 L0,8.5 z" fill="#d9a400"/></marker></defs>
+  <!-- player & server -->
+  <rect x="20" y="60" width="200" height="120" rx="12" fill="#f4f4f7" stroke="#9a9aa6" stroke-width="2"/>
+  <text x="120" y="92" text-anchor="middle" font-size="16" font-weight="bold" fill="#222230">Minecraft server</text>
+  <text x="120" y="116" text-anchor="middle" font-size="12.5" fill="#555">Paper 1.11.2 · 36 UHC arenas</text>
+  <text x="120" y="134" text-anchor="middle" font-size="12.5" fill="#555">+ Sumo · 20 ticks a second</text>
+  <text x="120" y="160" text-anchor="middle" font-size="12.5" fill="#555">people join via Velocity</text>
+  <!-- actioner -->
+  <rect x="290" y="40" width="250" height="170" rx="12" fill="#fff8e1" stroke="#d9a400" stroke-width="2"/>
+  <text x="415" y="68" text-anchor="middle" font-size="16" font-weight="bold" fill="#222230">Jev's actioner</text>
+  <text x="415" y="90" text-anchor="middle" font-size="12.5" fill="#555">a bot client, every 50 ms tick:</text>
+  <text x="305" y="114" font-size="12.5" fill="#444">· reads the fight → text state</text>
+  <text x="305" y="134" font-size="12.5" fill="#444">· aims, leads arrows (ballistics +</text>
+  <text x="317" y="152" font-size="12.5" fill="#444">measured latency), sidesteps arrows</text>
+  <text x="305" y="172" font-size="12.5" fill="#444">· never walks into lava or off ledges</text>
+  <text x="305" y="192" font-size="12.5" fill="#444">· turns a choice into key presses</text>
+  <!-- DJev -->
+  <rect x="610" y="40" width="250" height="170" rx="12" fill="#f4f0fa" stroke="#6b3fa0" stroke-width="2"/>
+  <text x="735" y="68" text-anchor="middle" font-size="16" font-weight="bold" fill="#222230">DJev (the head)</text>
+  <text x="735" y="92" text-anchor="middle" font-size="12.5" fill="#555">DiffusionGemma-26B-A4B</text>
+  <text x="625" y="118" font-size="12.5" fill="#444">· one forward pass scores every</text>
+  <text x="637" y="136" font-size="12.5" fill="#444">tactic: draw, release, cover, crit,</text>
+  <text x="637" y="154" font-size="12.5" fill="#444">zigzag, lava trap, water escape …</text>
+  <text x="625" y="178" font-size="12.5" fill="#444">· ~24 ms, up to ~40 decisions/s</text>
+  <text x="625" y="198" font-size="12.5" fill="#444">· asked at the draw's key moments</text>
+  <!-- arrows -->
+  <path d="M 220 100 L 279 100" stroke="#222230" stroke-width="2" marker-end="url(#a)"/>
+  <text x="252" y="92" text-anchor="middle" font-size="11" fill="#555">world</text>
+  <path d="M 540 100 L 599 100" stroke="#222230" stroke-width="2" marker-end="url(#a)"/>
+  <text x="572" y="92" text-anchor="middle" font-size="11" fill="#555">state</text>
+  <path d="M 735 212 C 735 272, 415 272, 415 236 L 415 221" stroke="#6b3fa0" stroke-width="2" fill="none" marker-end="url(#ap)"/>
+  <text x="575" y="280" text-anchor="middle" font-size="12" fill="#6b3fa0">the chosen move</text>
+  <path d="M 290 180 C 250 226, 120 230, 120 204 L 120 191" stroke="#d9a400" stroke-width="2" fill="none" marker-end="url(#ag)"/>
+  <text x="200" y="236" text-anchor="middle" font-size="12" fill="#8a6a00">key presses</text>
+  <!-- serving -->
+  <rect x="610" y="300" width="370" height="150" rx="12" fill="#fafafa" stroke="#bbb" stroke-dasharray="5 4"/>
+  <text x="795" y="326" text-anchor="middle" font-size="14" font-weight="bold" fill="#222230">serving: one address, many GPUs</text>
+  <rect x="630" y="342" width="120" height="44" rx="8" fill="#ece6f6" stroke="#6b3fa0"/>
+  <text x="690" y="369" text-anchor="middle" font-size="12.5" fill="#222230">gateway</text>
+  <text x="690" y="404" text-anchor="middle" font-size="11" fill="#555">least-busy · health</text>
+  <text x="690" y="419" text-anchor="middle" font-size="11" fill="#555">checks · failover</text>
+  <g fill="#f4f0fa" stroke="#6b3fa0">
+    <rect x="790" y="340" width="170" height="24" rx="5"/><rect x="790" y="370" width="170" height="24" rx="5"/><rect x="790" y="400" width="170" height="24" rx="5"/>
+  </g>
+  <text x="875" y="357" text-anchor="middle" font-size="11.5" fill="#222230">node A · DJev-serve × GPUs</text>
+  <text x="875" y="387" text-anchor="middle" font-size="11.5" fill="#222230">node B · DJev-serve × GPUs</text>
+  <text x="875" y="417" text-anchor="middle" font-size="11.5" fill="#222230">node C · DJev-serve × GPUs</text>
+  <path d="M 750 364 L 786 352" stroke="#6b3fa0" stroke-width="1.5"/><path d="M 750 364 L 786 382" stroke="#6b3fa0" stroke-width="1.5"/><path d="M 750 364 L 786 412" stroke="#6b3fa0" stroke-width="1.5"/>
+  <path d="M 820 212 L 820 298" stroke="#bbb" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="828" y="260" font-size="11" fill="#888">served by</text>
+  <!-- note -->
+  <text x="20" y="310" font-size="14" font-weight="bold" fill="#222230">Why split head and actioner?</text>
+  <text x="20" y="334" font-size="12.5" fill="#444">A model call, however fast, is not a tick. The actioner runs the reflexes that</text>
+  <text x="20" y="352" font-size="12.5" fill="#444">must happen every 50 ms (aim, arrow lead, dodging, lava guard); DJev picks</text>
+  <text x="20" y="370" font-size="12.5" fill="#444">the tactic, from ~20 options, dozens of times a second. The bots, the server</text>
+  <text x="20" y="388" font-size="12.5" fill="#444">and the GPUs sit on the same cluster: no hop across the internet on the</text>
+  <text x="20" y="406" font-size="12.5" fill="#444">path from a Jev's eyes to its decision.</text>
+</svg>

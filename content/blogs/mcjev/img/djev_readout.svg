@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" font-family="Helvetica, Arial, sans-serif">
+  <rect width="1000" height="420" fill="#ffffff"/>
+  <!-- prompt -->
+  <rect x="20" y="40" width="330" height="330" rx="10" fill="#f4f0fa" stroke="#6b3fa0" stroke-width="2"/>
+  <text x="35" y="30" font-size="15" font-weight="bold" fill="#222230">prompt · encoder (causal, KV cache)</text>
+  <text x="38" y="70" font-size="13" fill="#444" font-family="Menlo, monospace">You are Jev2, fighting alexzms.</text>
+  <text x="38" y="92" font-size="13" fill="#444" font-family="Menlo, monospace">Rules · Techniques · The match</text>
+  <text x="38" y="114" font-size="13" fill="#444" font-family="Menlo, monospace">This round · Last seconds</text>
+  <text x="38" y="136" font-size="13" fill="#444" font-family="Menlo, monospace">Now: alexzms 7.7 blocks, bow drawn,</text>
+  <text x="38" y="158" font-size="13" fill="#444" font-family="Menlo, monospace">  behind a pillar; you 14/20 ...</text>
+  <line x1="38" y1="176" x2="330" y2="176" stroke="#c9b8e6" stroke-dasharray="4 4"/>
+  <text x="38" y="198" font-size="13" fill="#222230" font-family="Menlo, monospace">Question 1 (choice): what now?</text>
+  <text x="50" y="220" font-size="13" fill="#444" font-family="Menlo, monospace">A) jump_shot  B) take_cover</text>
+  <text x="50" y="242" font-size="13" fill="#444" font-family="Menlo, monospace">C) wait       D) bow_cancel</text>
+  <text x="50" y="264" font-size="13" fill="#444" font-family="Menlo, monospace">E) engage_crit ...  (16 options)</text>
+  <text x="38" y="292" font-size="13" fill="#222230" font-family="Menlo, monospace">Answer format: 1: &lt;letter&gt;</text>
+  <text x="38" y="338" font-size="12" fill="#6b3fa0">~1,760 tokens; only ~480 of them</text>
+  <text x="38" y="356" font-size="12" fill="#6b3fa0">come from the prefix cache (see below)</text>
+  <!-- canvas -->
+  <rect x="400" y="40" width="250" height="330" rx="10" fill="#fff8e1" stroke="#d9a400" stroke-width="2"/>
+  <text x="410" y="30" font-size="15" font-weight="bold" fill="#222230">canvas · decoder (bidirectional)</text>
+  <text x="420" y="80" font-size="16" fill="#222230" font-family="Menlo, monospace">1:</text>
+  <rect x="452" y="62" width="30" height="26" rx="4" fill="#6b3fa0"/>
+  <text x="459" y="81" font-size="15" fill="#fff" font-family="Menlo, monospace">▒</text>
+  <text x="492" y="74" font-size="12" fill="#6b3fa0">← the answer slot,</text>
+  <text x="506" y="90" font-size="12" fill="#6b3fa0">left as &lt;mask&gt;</text>
+  <text x="420" y="112" font-size="14" fill="#999" font-family="Menlo, monospace">&lt;turn|&gt; &lt;pad&gt; &lt;pad&gt; ...</text>
+  <text x="420" y="160" font-size="12.5" fill="#555">The scaffold is written in;</text>
+  <text x="420" y="178" font-size="12.5" fill="#555">only the slots are left to denoise.</text>
+  <text x="420" y="214" font-size="12.5" fill="#555">One decoder pass fills every slot</text>
+  <text x="420" y="232" font-size="12.5" fill="#555">at once, each seeing the whole</text>
+  <text x="420" y="250" font-size="12.5" fill="#555">prompt and the whole canvas.</text>
+  <text x="420" y="300" font-size="13" font-weight="bold" fill="#8a6a00">0 tokens generated</text>
+  <text x="420" y="320" font-size="13" font-weight="bold" fill="#8a6a00">1 forward pass</text>
+  <!-- arrow -->
+  <path d="M 655 75 L 700 75" stroke="#222230" stroke-width="2" marker-end="url(#a)"/>
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#222230"/></marker></defs>
+  <!-- readout -->
+  <text x="705" y="30" font-size="15" font-weight="bold" fill="#222230">logits at the slot → the options' tokens</text>
+  <g font-size="13" fill="#222230">
+    <text x="710" y="80">jump_shot</text>  <rect x="800" y="67" width="160" height="16" fill="#6b3fa0"/><text x="965" y="80" font-size="12">.89</text>
+    <text x="710" y="108">wait</text>       <rect x="800" y="95" width="8" height="16" fill="#9b7fc6"/><text x="812" y="108" font-size="12">.04</text>
+    <text x="710" y="136">bow_cancel</text> <rect x="800" y="123" width="7" height="16" fill="#9b7fc6"/><text x="811" y="136" font-size="12">.04</text>
+    <text x="710" y="164">jump</text>       <rect x="800" y="151" width="4" height="16" fill="#9b7fc6"/><text x="808" y="164" font-size="12">.02</text>
+    <text x="710" y="192">hold_sword</text> <rect x="800" y="179" width="1" height="16" fill="#9b7fc6"/><text x="805" y="192" font-size="12">.00</text>
+    <text x="710" y="220">…</text>
+  </g>
+  <text x="705" y="262" font-size="12.5" fill="#555">Keep only the candidate tokens</text>
+  <text x="705" y="280" font-size="12.5" fill="#555">(" A", " B", …), renormalise:</text>
+  <text x="705" y="298" font-size="12.5" fill="#555">a full distribution over the moves.</text>
+  <text x="705" y="334" font-size="12.5" fill="#555">Jev presses the top one (here a</text>
+  <text x="705" y="352" font-size="12.5" fill="#555">jump shot over the cover) and asks</text>
+  <text x="705" y="370" font-size="12.5" fill="#555">again ~24 ms later.</text>
+</svg>
