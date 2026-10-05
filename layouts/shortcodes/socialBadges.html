@@ -53,6 +53,12 @@
       </a>
     {{ end }}
 
+    {{ if .Get "x" }}
+      <a href="{{ .Get "x" }}" target="_blank" rel="noopener noreferrer">
+        <img src="https://img.shields.io/badge/X-post-000000?style=social&logo=x" alt="X post" style="transform: scale(1.5);">
+      </a>
+    {{ end }}
+
     {{ if .Get "discord" }}
       <a href="{{ .Get "discord" }}" target="_blank" rel="noopener noreferrer">
         <img src="https://img.shields.io/badge/Discord-Join-5865F2?style=flat&logo=discord&logoColor=white" style="transform: scale(1.5);">
