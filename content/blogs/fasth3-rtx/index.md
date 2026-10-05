@@ -33,7 +33,7 @@ This post continues [FastH3 Goes Local](/blogs/fasth3-local/), which brought Fas
 
 - **FastH3 V2 now runs on one consumer GPU, a DGX Spark or a Mac.** We ship it in NVFP4 for Blackwell GPUs and DGX Spark, FP8 for the RTX 4090 and GPUs with less memory, and INT6 for Apple Silicon.
 - **Quantization keeps the quality.** Every FP4 layer uses activation scales calibrated on 1,000 prompts, so large activations are not clipped.
-- **FastH3 Trim is an experiment in making the model smaller.** It is 4.2× smaller than base H3 and faster than V2 on every device, at minimal cost in quality.
+- **FastH3 Trim is an experiment in making the model smaller.** It is 4.2× smaller than base H3, faster than V2 on every device and runs in as little as 8 GB of GPU memory, at minimal cost in quality.
 - **There is room to improve, and we will keep working on it.** Both models are eight-step distillations; we expect better quality and smaller models in future releases.
 
 ## Same prompt, every machine
@@ -102,7 +102,7 @@ Each row is one machine. The left clip is FastH3 V2 and the right clip is FastH3
         <source src="img/videos/spark-1x/v2-nvfp4-corgi-weather.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
-    <figcaption><b>V2 · NVFP4</b><span>— s</span></figcaption>
+    <figcaption><b>V2 · NVFP4</b><span>141.4 s</span></figcaption>
   </figure>
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="spark-1x/trim-nvfp4-corgi-weather.mp4">
@@ -119,7 +119,7 @@ Each row is one machine. The left clip is FastH3 V2 and the right clip is FastH3
         <source src="img/videos/m4max/v2-int6-corgi-weather.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
-    <figcaption><b>V2 · INT6</b><span>— s</span></figcaption>
+    <figcaption><b>V2 · INT6</b><span></span></figcaption>
   </figure>
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="m4max/trim-int6-corgi-weather.mp4">
@@ -135,7 +135,7 @@ Each row is one machine. The left clip is FastH3 V2 and the right clip is FastH3
 
 We report two numbers per machine: a 5 s clip at 832×480 and a 5 s clip at 1344×768, both with audio. Times are end to end on a warm server, from prompt to finished MP4: text encoding, eight denoising steps, video and audio decoding, and export. Each is the median of two runs on each of two prompts.
 
-{{< image src="img/fig_e2e.svg" alt="Paired thin bars per machine, FastH3 V2 and FastH3 Trim, end-to-end seconds for a 5 s, 832×480 clip on a log scale. Pending cells are outlined." width="100%" title="Figure 1. End-to-end time for a 5 s, 832×480 clip with audio. Every row is one machine." >}}
+{{< image src="img/fig_e2e.svg" alt="Paired thin bars per machine, FastH3 V2 and FastH3 Trim, end-to-end seconds for a 5 s, 832×480 clip on a log scale." width="100%" title="Figure 1. End-to-end time for a 5 s, 832×480 clip with audio. Every row is one machine." >}}
 
 <!-- results-table:start -->
 | Machine | Memory | V2, 480p | Trim, 480p | V2, 768p | Trim, 768p |
@@ -145,6 +145,7 @@ We report two numbers per machine: a 5 s clip at 832×480 and a 5 s clip at 1344
 | RTX 4090 | 24 GB | 54.6 s | 43.9 s | 154.6 s | 132.8 s |
 | RTX 4090, 16 GB limit | 16 GB | 79.9 s | 72.1 s | 153.7 s | 139.9 s |
 | RTX 4090, 12 GB limit | 12 GB | 91.2 s | 74.1 s | 170.7 s | 147.1 s |
+| RTX 4090, 8 GB limit | 8 GB | — | 82.0 s | — | — |
 | DGX Spark | 128 GB unified | 141.4 s | 125.8 s | — | 340.1 s |
 | 2× DGX Spark | 128 GB each | 87.2 s | 78.3 s | — | — |
 | Mac, M4 Max | 36 GB unified | — | 925.2 s | — | — |
@@ -180,7 +181,7 @@ Three more changes bring the 4090 to 43.9 s for a 5 s clip:
 - **Text encoder:** it streams to the GPU one layer at a time through exact-size pinned buffers, and one fused kernel expands its NVFP4 weights.
 - **VAE:** the same INT8 lightweight VAE as every other device, with a fused dequantization step and one shared quantized input for the Q, K and V projections. Decoded frames are bit-identical to the unoptimized path.
 
-For the 16 GB and 12 GB rows, we cap the PyTorch allocator on the same 4090. They show that the model fits in that much memory; a real 16 GB GPU will be slower.
+For the 16 GB, 12 GB and 8 GB rows, we cap GPU memory on the same 4090. Both models fit in 12 GB, and FastH3 Trim fits in 8 GB; a real card with less memory will be slower.
 
 ### DGX Spark and Apple Silicon
 
@@ -225,14 +226,14 @@ Figure 5 splits one 5 s, 480p FastH3 Trim clip by stage on each machine. On the 
 ## Limitations and what comes next
 
 - **FastH3 Trim is experimental.** Busy scenes can show less detail than V2; use V2 when quality matters most.
-- **Memory tiers are emulated.** The 16 GB and 12 GB numbers cap memory on a 4090; real cards with that memory will be slower.
+- **Memory tiers are emulated.** The 16 GB, 12 GB and 8 GB numbers cap memory on a 4090; real cards with that memory will be slower.
 
 ## Get the models
 
 | Hardware | FastH3 V2 | FastH3 Trim |
 |---|---|---|
 | RTX 5090, RTX PRO 6000, DGX Spark (NVFP4) | [`FastVideo-FastH3-8-Step-V2-NVFP4-Consumer`](https://huggingface.co/FastVideo/FastVideo-FastH3-8-Step-V2-NVFP4-Consumer) | [`FastVideo-FastH3-Trim-8-Step-NVFP4`](https://huggingface.co/FastVideo/FastVideo-FastH3-Trim-8-Step-NVFP4) |
-| RTX 4090, 16 GB and 12 GB GPUs (FP8) | [`FastVideo-FastH3-8-Step-V2-FP8`](https://huggingface.co/FastVideo/FastVideo-FastH3-8-Step-V2-FP8) | [`FastVideo-FastH3-Trim-8-Step-FP8`](https://huggingface.co/FastVideo/FastVideo-FastH3-Trim-8-Step-FP8) |
+| RTX 4090 and GPUs down to 8 GB (FP8) | [`FastVideo-FastH3-8-Step-V2-FP8`](https://huggingface.co/FastVideo/FastVideo-FastH3-8-Step-V2-FP8) | [`FastVideo-FastH3-Trim-8-Step-FP8`](https://huggingface.co/FastVideo/FastVideo-FastH3-Trim-8-Step-FP8) |
 | Apple Silicon (MLX INT6) | [`FastVideo-FastH3-8-Step-V2-MLX-INT6`](https://huggingface.co/FastVideo/FastVideo-FastH3-8-Step-V2-MLX-INT6) | [`FastVideo-FastH3-Trim-8-Step-MLX-INT6`](https://huggingface.co/FastVideo/FastVideo-FastH3-Trim-8-Step-MLX-INT6) |
 | Source weights (BF16) | [`FastVideo-FastH3-8-Step-V2`](https://huggingface.co/FastVideo/FastVideo-FastH3-8-Step-V2) | [`FastVideo-FastH3-Trim-8-Step`](https://huggingface.co/FastVideo/FastVideo-FastH3-Trim-8-Step) |
 
@@ -401,7 +402,7 @@ FastH3 V2 (top) and FastH3 Trim (bottom) on one RTX 5090, 832×480, 5 s with aud
 }
 
 .fasth3-rtx-article .fasth3-rtx-frame::before {
-  content: "pending · " attr(data-file);
+  content: "";
   position: absolute;
   inset: 0;
   display: grid;
