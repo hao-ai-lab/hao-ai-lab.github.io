@@ -50,6 +50,8 @@ summary: people
 
 {{< lab_member name="Satyam Srivastava" role="Master Intern" image="satyam_srivastava.jpg" academic="https://satyam-53.github.io/" linkedin="https://www.linkedin.com/in/satyam-srivastava-981491203/">}}
 
+{{< lab_member name="Aaron Feng" role="Master Intern" image="aaron_feng.jpg" academic="https://aaronzhfeng.github.io" twitter="https://x.com/aaronzhfeng">}}
+
 {{< lab_member name="Jinzhe Pan" role="Undergrad Intern" image="llama_placeholder.png" academic="https://github.com/Eigensystem">}}
 
 {{< lab_member name="Shao Duan" role="Undergrad Intern" image="shao.png" academic="https://github.com/shaoxiongduan">}}
