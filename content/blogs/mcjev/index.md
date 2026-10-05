@@ -134,7 +134,7 @@ Three stages of serving the same model:
 | a leading inference engine with the structured read (DJev) | ~60 ms | no generation loop, but general-purpose scheduling |
 | **DJev-serve** | **~24 ms** | one forward pass per decision, captured in a CUDA graph |
 
-(174 ms: the first prototype on one NVIDIA GB200, a short test request; it never served real rounds. ~60 and ~24 ms: medians in real rounds (Figure 12). On a controlled benchmark, the same recorded request with the same weights on one NVIDIA B200, DJev-serve is the same 2.5× faster. The leading inference engine here is vLLM 0.30 nightly, with the structured reads DJev uses.)
+(174 ms: the first prototype on one NVIDIA GB200, a short test request; it never served real rounds. ~60 and ~24 ms: medians in real rounds (Figure 12). On a controlled benchmark, the same recorded request with the same weights on one NVIDIA B200, DJev-serve is the same 2.5× faster.)
 
 **Where the time went.** The first version launched **10,340 kernels** per forward, mostly tiny glue around 30 layers, and kept the GPU busy for only a third of the time; 8 requests batched together took barely longer than one. DJev on the leading inference engine removes most of that, but still runs prefill and denoise as two scheduled steps over the full canvas width.
 
@@ -142,12 +142,12 @@ Three stages of serving the same model:
 
 - **One CUDA graph from token ids to answer log-probs**, one per prompt-length bucket; per decision we fill two small index buffers and replay.
 - **A prefix cache inside the graph**: each request reuses the KV of the longest block-aligned prefix it shares with a recent prompt, and the prefix length is just data in the index buffers.
-- **FlashAttention-2 for the 25 sliding-window layers** (about 4× faster per layer than vLLM's Triton attention on Blackwell); the 5 global layers (head size 512) stay on a tuned Triton kernel.
-- **NVIDIA kernels for the MoE**, the largest share of each forward (Figure 7): CUTLASS grouped GEMMs through FlashInfer, 7% faster than vLLM's Triton MoE kernel.
+- **FlashAttention-2 for the 25 sliding-window layers** (about 4× faster per layer than the Triton attention kernel on Blackwell); the 5 global layers (head size 512) stay on a tuned Triton kernel.
+- **NVIDIA kernels for the MoE**, the largest share of each forward (Figure 7): CUTLASS grouped GEMMs through FlashInfer, 7% faster than the Triton MoE kernel.
 
 The result is **~24 ms a decision** in real rounds, request to answer, most of it the GPU forward itself, so the bottleneck is now the GPU. The raw benchmark numbers, versions and the full layout are in [serving/docs/PERFORMANCE.md](https://github.com/alexzms/MCJev/blob/main/serving/docs/PERFORMANCE.md).
 
-**NVFP4.** NVIDIA publishes an NVFP4 checkpoint of the same model, [nvidia/diffusiongemma-26B-A4B-it-NVFP4](https://huggingface.co/nvidia/diffusiongemma-26B-A4B-it-NVFP4), in Blackwell's native 4-bit format. Through vLLM on GB200 it was not yet faster than BF16 at our batch size (about 9% slower on a short read), but with GEMMs more than half of every forward, bringing it into DJev-serve's graph is our next step, along with FlashAttention-4, which we have not benchmarked yet.
+**NVFP4.** NVIDIA publishes an NVFP4 checkpoint of the same model, [nvidia/diffusiongemma-26B-A4B-it-NVFP4](https://huggingface.co/nvidia/diffusiongemma-26B-A4B-it-NVFP4), in Blackwell's native 4-bit format. In our tests on GB200 it was not yet faster than BF16 at our batch size (about 9% slower on a short read), but with GEMMs more than half of every forward, bringing it into DJev-serve's graph is our next step, along with FlashAttention-4, which we have not benchmarked yet.
 
 {{< /justify >}}
 
