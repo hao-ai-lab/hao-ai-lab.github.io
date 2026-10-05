@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="242" viewBox="0 0 760 242" role="img" aria-labelledby="t d"><title id="t">Checkpoint size by component</title><desc id="d">BF16 H3 is 137.7 GiB (text encoder 62.1, DiT 65.3, VAEs 10.3). The FastH3 Trim NVFP4 release is 33.0 GiB (text encoder 15.3, DiT 11.1, VAEs 6.5), 4.2 times smaller.</desc>
+<style>
+  .bg{fill:#fcfcfb} .t1{fill:#0b0b0b} .t2{fill:#52514e} .grid{stroke:#e4e3de} .axis{stroke:#9b9a95}
+  .s1{fill:#33557d} .s2{fill:#b86a3c} .s3{fill:#b5afa5} .drop{fill:#b0463c} .ref{stroke:#52514e}
+  .gap{stroke:#fcfcfb} .on{fill:#ffffff} .on3{fill:#0b0b0b} .est{fill:none;stroke:#52514e}
+  .ring{fill:none;stroke:#0b0b0b}
+  text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+  @media (prefers-color-scheme: dark){
+    .bg{fill:#1a1a19} .t1{fill:#ffffff} .t2{fill:#c3c2b7} .grid{stroke:#2e2e2c} .axis{stroke:#6b6a66}
+    .s1{fill:#7393bb} .s2{fill:#c27448} .s3{fill:#69655e} .drop{fill:#c9605a} .ref{stroke:#c3c2b7}
+    .gap{stroke:#1a1a19} .on{fill:#0b0b0b} .on3{fill:#ffffff} .est{fill:none;stroke:#c3c2b7}
+    .ring{fill:none;stroke:#ffffff}
+  }
+</style>
+<rect class="bg" width="760" height="242"/>
+<rect class="s1" x="24" y="22" width="12" height="12" rx="3"/><text class="t2" x="42" y="32" font-size="13">Text encoder</text>
+<rect class="s2" x="152.8" y="22" width="12" height="12" rx="3"/><text class="t2" x="170.8" y="32" font-size="13">Video+audio DiT</text>
+<rect class="s3" x="303.8" y="22" width="12" height="12" rx="3"/><text class="t2" x="321.8" y="32" font-size="13">VAEs</text>
+<text class="t1" x="24" y="70" font-size="13.5" font-weight="600">MiniMax H3 / FastH3 V2, BF16</text>
+<rect class="s1" x="24.0" y="78" width="283.0" height="34" rx="4"/>
+<text class="on" x="32.0" y="100" font-size="12.5" font-weight="600">62.1</text>
+<rect class="s2" x="309.0" y="78" width="297.4" height="34" rx="4"/>
+<text class="on" x="317.0" y="100" font-size="12.5" font-weight="600">65.3</text>
+<rect class="s3" x="608.4" y="78" width="45.0" height="34" rx="4"/>
+<text class="on3" x="616.4" y="100" font-size="12.5" font-weight="600">10.3</text>
+<text class="t1" x="663.4" y="100" font-size="14" font-weight="700">137.7 GiB</text>
+<text class="t1" x="24" y="132" font-size="13.5" font-weight="600">FastH3 Trim, NVFP4 (this release)</text>
+<rect class="s1" x="24.0" y="140" width="68.3" height="34" rx="4"/>
+<text class="on" x="32.0" y="162" font-size="12.5" font-weight="600">15.3</text>
+<rect class="s2" x="94.3" y="140" width="48.9" height="34" rx="4"/>
+<text class="on" x="102.3" y="162" font-size="12.5" font-weight="600">11.1</text>
+<rect class="s3" x="145.2" y="140" width="27.8" height="34" rx="4"/>
+<text class="on3" x="149.2" y="162" font-size="11" font-weight="600">6.5</text>
+<text class="t1" x="183.0" y="162" font-size="14" font-weight="700">33.0 GiB</text>
+<text class="t2" x="24" y="230" font-size="12">Hugging Face checkpoint size per component, GiB. VAEs = video + audio VAE.</text>
+</svg>
