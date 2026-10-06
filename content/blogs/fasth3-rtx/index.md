@@ -230,14 +230,15 @@ Figure 5 splits one 5 s, 480p FastH3 Trim clip by stage on each machine. On the 
 
 ## Get the models
 
-| Hardware | FastH3 V2 | FastH3 Trim |
+| Hardware / runtime | FastH3 V2 | FastH3 Trim |
 |---|---|---|
 | RTX 5090, RTX PRO 6000, DGX Spark (NVFP4) | [`FastVideo-FastH3-8-Step-V2-NVFP4-Consumer`](https://huggingface.co/FastVideo/FastVideo-FastH3-8-Step-V2-NVFP4-Consumer) | [`FastVideo-FastH3-Trim-8-Step-NVFP4`](https://huggingface.co/FastVideo/FastVideo-FastH3-Trim-8-Step-NVFP4) |
 | RTX 4090 and GPUs down to 8 GB (FP8) | [`FastVideo-FastH3-8-Step-V2-FP8`](https://huggingface.co/FastVideo/FastVideo-FastH3-8-Step-V2-FP8) | [`FastVideo-FastH3-Trim-8-Step-FP8`](https://huggingface.co/FastVideo/FastVideo-FastH3-Trim-8-Step-FP8) |
 | Apple Silicon (MLX INT6) | [`FastVideo-FastH3-8-Step-V2-MLX-INT6`](https://huggingface.co/FastVideo/FastVideo-FastH3-8-Step-V2-MLX-INT6) | [`FastVideo-FastH3-Trim-8-Step-MLX-INT6`](https://huggingface.co/FastVideo/FastVideo-FastH3-Trim-8-Step-MLX-INT6) |
+| ComfyUI checkpoints | [`FastVideo-FastH3-8-Step-V2-NVFP4-Comfy`](https://huggingface.co/FastVideo/FastVideo-FastH3-8-Step-V2-NVFP4-Comfy) | [`FastVideo-FastH3-Trim-Comfy`](https://huggingface.co/FastVideo/FastVideo-FastH3-Trim-Comfy) |
 | Source weights (BF16) | [`FastVideo-FastH3-8-Step-V2`](https://huggingface.co/FastVideo/FastVideo-FastH3-8-Step-V2) | [`FastVideo-FastH3-Trim-8-Step`](https://huggingface.co/FastVideo/FastVideo-FastH3-Trim-8-Step) |
 
-All repositories are under the [FastVideo](https://huggingface.co/FastVideo) organization. Multi-GPU data-center serving keeps using [`FastVideo-FastH3-8-Step-V2-NVFP4`](https://huggingface.co/FastVideo/FastVideo-FastH3-8-Step-V2-NVFP4). Each consumer repository includes the NVFP4 text encoder, the lightweight VAE and a `fastvideo_inference.json` file with the sampling schedule, which FastVideo reads automatically. On one RTX 5090:
+All repositories are under the [FastVideo](https://huggingface.co/FastVideo) organization. Multi-GPU data-center serving keeps using [`FastVideo-FastH3-8-Step-V2-NVFP4`](https://huggingface.co/FastVideo/FastVideo-FastH3-8-Step-V2-NVFP4). Each FastVideo-format consumer repository includes the NVFP4 text encoder, the lightweight VAE and a `fastvideo_inference.json` file with the sampling schedule, which FastVideo reads automatically. On one RTX 5090:
 
 ```python
 import os
