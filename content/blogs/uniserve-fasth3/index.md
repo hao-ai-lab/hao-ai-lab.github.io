@@ -30,7 +30,7 @@ summary = "UniServe serves FastH3 8-Step text-to-video-with-audio faster than re
 - **Production Ready on Day 0.** Uniserve is serving production API traffic on [Reactor](https://www.reactor.inc/) and [Nuva Lab](https://nuvalab.ai/)!
 - **Faster than real time.** On eight NVIDIA GB200 GPUs, a 5-second 1344×768 clip with audio from a 1K-token prompt arrives as a finished MP4 in 3.1 s and a 10-second clip in 6.2 s (5.3 s with NVFP4).
 - **Throughput.** About 11,000 videos a day on eight NVIDIA GB200 GPUs and 3,400 on eight RTX PRO 6000 GPUs for a mix of 5- to 15-second clips: 6.4 and 21.2 GPU-seconds per second of generated video.
-- **Fastest open-source serving.** 1.2–1.8× lower median latency for a 10-second clip with a 1K-token prompt, and 15–45% higher throughput under load, than FastVideo, vLLM-Omni and SGLang, each in its fastest exact configuration.
+- **Fastest open-source serving.** 1.2–1.8× lower median latency for a 10-second clip with a 1K-token prompt, and 15–45% higher throughput under load, than FastVideo, vLLM-Omni and SGLang.
 - **Hardware.** Tested on NVIDIA GB200 (four GPUs, and eight across two nodes) and RTX PRO 6000 Blackwell, with BF16 and NVFP4 checkpoints. UniServe also serves FastH3 on NVIDIA H200 and runs as an experimental backend for NVIDIA Dynamo.
 
 {{< image src="img/results-at-a-glance.svg" alt="UniServe latency against FastVideo, vLLM-Omni and SGLang for a 10-second clip with a 1K-token prompt" width="100%" title="Figure 1. Median end-to-end latency of a 10-second clip with a 1K-token prompt, one request at a time (12 requests per bar), on each hardware configuration. vLLM-Omni has no eight-GB200 latency result because one of its replicas cannot span two nodes." >}}
@@ -257,7 +257,7 @@ We compare UniServe against two kinds of baselines.
 
 **Basic SP4 reference.** To show what UniServe's optimizations contribute, we build a basic reference from the pinned FastVideo implementation. It already has the standard parallel setup: Ulysses SP4 denoising, TP4 text encoding, resident weights, the native VSA kernel, one text-refiner pass per request and FP16 VAE decoder projections. FastVideo's optional fusions, `torch.compile`, AdaLN precomputation and parallel VAE decoding are disabled.
 
-**Optimized baselines.** FastVideo, vLLM-Omni and SGLang each run their fastest exact configuration. On GB200 all three use the native SM100a VSA kernel; vLLM-Omni and SGLang would otherwise use their Triton VSA kernels there, so we force the native kernel. Where a system lacked a deployment optimization that UniServe uses, we added it locally, so that the comparison measures execution pipelines rather than missing features: fixed-schedule AdaLN precomputation (added to FastVideo and vLLM-Omni; SGLang's existing implementation enabled for this checkpoint), FP16 storage of the video decoder's projection weights (added to FastVideo and vLLM-Omni; SGLang already stores them in FP16), and text-to-video loading that skips the unused image-conditioning components and VAE encoders. vLLM-Omni's worker-side MP4 encoding (`preencode_mp4`), which is off by default, is turned on, and every system encodes H.264 with the same libx264 settings as UniServe. Every system keeps its weights resident on the GPU. [Setup](#setup) lists the per-system settings and patches.
+**Optimized baselines.** FastVideo, vLLM-Omni and SGLang each run a fast configuration of the same checkpoint: native SM100a VSA on GB200, resident GPU weights, and the same libx264 encode settings. [Setup](#setup) lists the per-system settings.
 
 ### Setup
 
@@ -273,7 +273,7 @@ We compare UniServe against two kinds of baselines.
 | SGLang                       | BF16        | Supported, native SM100a VSA | Supported, native SM100a VSA               | Supported, Triton VSA |
 | FastVideo, vLLM-Omni, SGLang | NVFP4       | N/A                          | N/A                                        | N/A                   |
 
-*Supported configurations. On GB200, vLLM-Omni and SGLang are switched from their default Triton VSA kernels to the native SM100a kernel. † vLLM-Omni runs the sequence-parallel workers of a diffusion stage as local processes on one host, so a single replica cannot span the two GB200 nodes; it serves the two-replica throughput layout and has no eight-GB200 latency result. N/A: these systems do not load the serialized NVFP4 checkpoint natively, and converting it would change the evaluated artifact.*
+*Supported configurations. On GB200, vLLM-Omni and SGLang use the native SM100a VSA kernel. † vLLM-Omni cannot run one replica across two hosts, so it has no eight-GB200 latency result. NVFP4 is UniServe-only: the other systems do not load this checkpoint natively.*
 
 **Layouts.** On each hardware configuration, every system serves latency in one shared layout and throughput in another. A single request is fastest when all GPUs work on it, so every latency layout is one replica spanning the whole machine. The throughput layouts come from qualification runs over each hardware configuration's replica × sequence-parallel options. A shared layout is not every system's own best: in qualification on four GB200 GPUs, FastVideo's four single-GPU replicas delivered 2.5% more throughput than one four-GPU replica, and SGLang's two two-GPU replicas 0.8% more.
 
@@ -285,7 +285,7 @@ We compare UniServe against two kinds of baselines.
 
 *Layouts.* `r` *is the number of replicas and* `s` *the DiT's sequence-parallel degree; the text encoder is tensor-parallel across each replica's GPUs.*
 
-**Baseline configuration.** Within a layout, each system runs its fastest exact configuration. No system offloads weights to host memory or shards DiT weights with tensor parallelism; with these settings every system keeps all weights resident on every hardware configuration.
+**Baseline configuration.** Within a layout, each system keeps DiT weights resident on the GPU. No system offloads weights to host memory or shards them with tensor parallelism.
 
 | Setting                                 | UniServe                                                                                     | FastVideo                         | vLLM-Omni                                      | SGLang                                          |
 | --------------------------------------- | -------------------------------------------------------------------------------------------- | --------------------------------- | ---------------------------------------------- | ----------------------------------------------- |
@@ -300,15 +300,6 @@ We compare UniServe against two kinds of baselines.
 | Allocator                               | Expandable segments                                                                          | Expandable segments               | Expandable segments                            | Expandable segments                             |
 
 *Per-system settings within each layout.*
-
-The baselines reach these settings through small local changes, published as patches against their served revisions:
-
-- **AdaLN precomputation.** SGLang already implements it (`--minimax-h3-adaln-online`) but rejects the Diffusers-layout checkpoint because it looks up weights by their native tensor names; the patch resolves the names through SGLang's own checkpoint mapping. vLLM-Omni and FastVideo gain the same precomputation: the projections are evaluated once per schedule step with the model's own time embedder and the same kernels and row counts as the per-step path, and the transformer blocks read the results.
-- **FP16 video-VAE decoder weights.** FastVideo and vLLM-Omni run the video decoder under FP16 autocast, which casts the FP32 projection weights to FP16 on every call. The patch stores these weights in FP16 at load time, which removes the per-call casts and halves their memory; the stored weights are the values the casts would produce. SGLang already stores its decoder weights in FP16 and needs no change.
-- **Text-to-video components only.** The video and audio VAE encoders and the Qwen3-VL vision tower are not loaded, and any request that would need them is rejected.
-- **H.264 encoder settings.** SGLang gains the `x264_preset` request field from [sglang#41797](https://github.com/sgl-project/sglang/pull/41797), applied to its served revision.
-
-These changes sit on top of small support fixes the baselines need to serve the V2 checkpoint correctly on GB200: SGLang loads the eight-step checkpoint through a local model overlay and selects the SM100a VSA kernel explicitly, vLLM-Omni derives its selected video tiles from the checkpoint's sparsity, and FastVideo sizes its `torch.compile` cache for all six served shapes.
 
 Every system encodes the H.264 stream with libx264's `ultrafast` preset. UniServe and FastVideo encode at CRF 23 by default, and vLLM-Omni's GB200 runs set the same CRF per request through `video_codec_options`. SGLang receives `x264_preset` set to `ultrafast` and `output_compression` set to 53, which its encoder maps to CRF 23, replacing its default `fast` preset at CRF 25; it encodes with the host's current FFmpeg build, selected through `IMAGEIO_FFMPEG_EXE`, instead of the FFmpeg 4.2.2 bundled with imageio-ffmpeg, and it still probes each written file with `ffprobe`, as it does when serving. At the same settings UniServe's files are about 9% larger (median video bitrate 10.7 Mb/s against 9.7–9.9 Mb/s on the four-GB200 latency outputs), consistent with its encoding each temporal unit, in parallel, as its own segment that starts with a keyframe (seven keyframes in a 5-second clip, against one for the other systems).
 
