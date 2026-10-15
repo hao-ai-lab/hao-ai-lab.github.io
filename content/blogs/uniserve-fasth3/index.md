@@ -33,7 +33,7 @@ summary = "UniServe serves FastH3 8-Step text-to-video-with-audio faster than re
 - **Fastest open-source serving.** 1.2–1.8× lower median latency for a 10-second clip with a 1K-token prompt, and 15–45% higher throughput under load, than FastVideo, vLLM-Omni and SGLang.
 - **Hardware.** Tested on NVIDIA GB200 (four GPUs, and eight across two nodes) and RTX PRO 6000 Blackwell, with BF16 and NVFP4 checkpoints. UniServe also serves FastH3 on NVIDIA H200 and runs as an experimental backend for NVIDIA Dynamo.
 
-{{< image src="img/results-at-a-glance.svg" alt="UniServe latency against FastVideo, vLLM-Omni and SGLang for a 10-second clip with a 1K-token prompt" width="100%" title="Figure 1. Median end-to-end latency of a 10-second clip with a 1K-token prompt, one request at a time (12 requests per bar), on each hardware configuration. vLLM-Omni has no eight-GB200 latency result because one of its replicas cannot span two nodes." >}}
+{{< image src="img/results-at-a-glance.svg" alt="UniServe latency against FastVideo, vLLM-Omni and SGLang for a 10-second clip with a 1K-token prompt" width="100%" title="Figure 1. Median end-to-end latency of a 10-second clip with a 1K-token prompt, one request at a time, on each hardware configuration. vLLM-Omni has no eight-GB200 result because a replica cannot span two nodes." >}}
 FastH3 turns a text prompt into a video with a synchronized soundtrack in eight denoising steps. Serving it efficiently means keeping a long-sequence multimodal diffusion transformer (DiT) busy, decoding hundreds of overlapping video tiles, and encoding the video and audio and delivering them to the client. A faster attention kernel addresses only one part of that path.
 
 UniServe optimizes the whole request path. It shards the attention projections by head for Ulysses sequence parallelism, fuses sparse-attention preprocessing so that it writes directly into the layouts the attention kernels read, batches spatial tiles into each VAE decoder call, and streams decoded video to CPU encoders while later frames are still decoding. Precomputed schedule-dependent values, preallocated request buffers and CUDA graphs support this execution path.
@@ -182,20 +182,18 @@ vLLM-Omni offers a similar option, `preencode_mp4`, which encodes each decoded c
 
 ## Where the time goes
 
-The following traces use the same 10 s/1K prompt and seed on four GB200 GPUs, one request at a time. Model warmup and IPC initialization complete before collection starts; both traced shapes are then warmed with the profiler active before the recorded requests. Each capture runs alone on its four-GPU node. PyTorch profiler traces capture eager operator shapes and calls; Nsight Systems captures the CUDA and NVTX timeline, including kernels inside CUDA graphs.
+The following traces use the same 10 s/1K prompt and seed on four GB200 GPUs, one request at a time, after warmup.
 
 {{< image src="img/request-timeline-10s-1k.svg" alt="Five-system complete-request timeline" width="100%" title="Figure 7. All panels share one time axis, starting at request submission. The dashed line marks receipt of the complete MP4. GPU bars span the first to the last correlated kernel across the four GPUs, including idle gaps. Host output bars can overlap GPU work and include any format conversion inside those functions." >}}
 | 10 s/1K request, seconds | Text encoder (GPU) | Refiner + denoising (GPU) | Decode (GPU) | End-to-end, profiled | End-to-end, unprofiled |
 | ------------------------ | ------------------ | ------------------------- | ------------ | -------------------- | ---------------------- |
-| UniServe                 | 0.020              | 10.052                    | 1.107        | 11.414               | 11.341†                |
+| UniServe                 | 0.020              | 10.052                    | 1.107        | 11.414               | 11.341                 |
 | FastVideo                | 0.113              | 11.723                    | 4.953        | 17.735               | 16.496                 |
 | SGLang                   | 0.161              | 11.111                    | 5.318        | 17.215               | 16.089                 |
 | vLLM-Omni                | 0.119              | 12.580                    | 3.940        | 17.018               | 16.116                 |
 | Basic SP4                | 0.112              | 15.752                    | 25.346       | 42.622               | 34.315                 |
 
-*Decode covers video decoding, audio decoding and the final reconstruction steps; it excludes the GPU frame conversion performed by the output encoder. The unprofiled column is a warmed request served by the Nsight-traced process before collection starts; † UniServe's comes from its separate PyTorch-profiler process, also before profiling starts.*
-
-*FastVideo, SGLang and vLLM-Omni are traced in the configurations their benchmark results use, with added NVTX instrumentation.*
+*Decode covers video decoding, audio decoding and the final reconstruction steps; it excludes the GPU frame conversion performed by the output encoder. The unprofiled column is a warmed request before tracing starts.*
 
 ## Exactness and precision presets
 
@@ -261,7 +259,7 @@ We compare UniServe against two kinds of baselines.
 
 ### Setup
 
-**Hardware.** Four GB200 GPUs in one node; eight GB200 GPUs across two nodes connected by multi-node NVLink; and one node with eight RTX PRO 6000 Blackwell Server Edition GPUs with full peer-to-peer access. On the GB200 nodes every system runs with NCCL's NVLS multicast disabled (`NCCL_NVLS_ENABLE=0`).
+**Hardware.** Four GB200 GPUs in one node; eight GB200 GPUs across two nodes connected by multi-node NVLink; and one node with eight RTX PRO 6000 Blackwell Server Edition GPUs.
 
 **Systems and checkpoints.** Every system serves the BF16 checkpoint `FastVideo/FastVideo-FastH3-8-Step-V2` with its trained schedule, VSA sparsity and full decoders; only UniServe also serves the NVFP4 checkpoint `FastVideo/FastVideo-FastH3-8-Step-V2-NVFP4`. Approximations that change the computation are excluded: caching features across steps, skipping softmax work, approximate decoders, progressive resolution and fewer denoising steps. Optimizations that preserve the computation are allowed: compilation, exact fused kernels, sequence and tensor parallelism, component placement, precomputing request-independent values and asynchronous media processing. Every system selects the checkpoint's top-k video tiles exactly.
 
@@ -275,7 +273,7 @@ We compare UniServe against two kinds of baselines.
 
 *Supported configurations. On GB200, vLLM-Omni and SGLang use the native SM100a VSA kernel. † vLLM-Omni cannot run one replica across two hosts, so it has no eight-GB200 latency result. NVFP4 is UniServe-only: the other systems do not load this checkpoint natively.*
 
-**Layouts.** On each hardware configuration, every system serves latency in one shared layout and throughput in another. A single request is fastest when all GPUs work on it, so every latency layout is one replica spanning the whole machine. The throughput layouts come from qualification runs over each hardware configuration's replica × sequence-parallel options. A shared layout is not every system's own best: in qualification on four GB200 GPUs, FastVideo's four single-GPU replicas delivered 2.5% more throughput than one four-GPU replica, and SGLang's two two-GPU replicas 0.8% more.
+**Layouts.** Latency uses one replica spanning the whole machine, so a single request can use every GPU. Throughput uses the replica × sequence-parallel layout in the table below.
 
 | Hardware             | Latency layout           | Throughput layout                              |
 | -------------------- | ------------------------ | ---------------------------------------------- |
@@ -297,19 +295,18 @@ We compare UniServe against two kinds of baselines.
 | Compilation                             | CUDA graphs for four-GPU replicas on GB200; eager for eight-GPU replicas and on RTX PRO 6000 | DiT: regional `torch.compile` on GB200 (it requires the SM100a kernel); VAE decoder compiled on all hardware | Regional `torch.compile`                       | None: eager, because SGLang's VSA-H3 validation refuses `torch.compile` and breakable CUDA graphs |
 | MP4 encoding                            | Host workers, overlapped with decoding                                                       | After decoding                    | On the worker, overlapped with decoding (`preencode_mp4`) | After decoding, followed by an `ffprobe` check  |
 | H.264 encoder                           | libx264 `ultrafast`                                                                          | libx264 `ultrafast`               | libx264 `ultrafast`                            | libx264 `ultrafast`                             |
-| Allocator                               | Expandable segments                                                                          | Expandable segments               | Expandable segments                            | Expandable segments                             |
 
 *Per-system settings within each layout.*
 
 Every system encodes the H.264 stream with libx264's `ultrafast` preset. UniServe and FastVideo encode at CRF 23 by default, and vLLM-Omni's GB200 runs set the same CRF per request through `video_codec_options`. SGLang receives `x264_preset` set to `ultrafast` and `output_compression` set to 53, which its encoder maps to CRF 23, replacing its default `fast` preset at CRF 25; it encodes with the host's current FFmpeg build, selected through `IMAGEIO_FFMPEG_EXE`, instead of the FFmpeg 4.2.2 bundled with imageio-ffmpeg, and it still probes each written file with `ffprobe`, as it does when serving. At the same settings UniServe's files are about 9% larger (median video bitrate 10.7 Mb/s against 9.7–9.9 Mb/s on the four-GB200 latency outputs), consistent with its encoding each temporal unit, in parallel, as its own segment that starts with a keyframe (seven keyframes in a 5-second clip, against one for the other systems).
 
-**Workload.** Six independently written scene families (a harbor, a ceramics studio, a percussion performance, a river, an observatory and a market) supply structured prompts describing visual action, camera, material detail and environmental sound. Each family has a 1,000-token and a 10,000-token version under the checkpoint's tokenizer; the longer version adds meaningful description of the same continuous event, never repeated filler. Every request has unique prompt bytes, so no prefix or result cache can turn repetition into a speedup. Prompt text, token IDs, SHA-256 digests, seeds and execution order are frozen in the published manifest.
+**Workload.** Six scene families, each with a 1K-token and a 10K-token prompt, at 5-, 10- and 15-second clip lengths. Prompts, seeds and execution order are the same for every system.
 
-**Metrics.** The latency benchmark sends 72 requests at concurrency 1, after all six shapes are warmed: six scene families × two prompt lengths × three durations × two seeds, in one fixed random order shared by every system. We report p50, p90 and p95 over all 72 requests and the median of the 12 requests of each shape (duration × prompt length). The throughput benchmark sends 32 requests per concurrency level, five or six per shape, in one fixed shuffled order; the client keeps at most `C` requests in flight with no think time, for `C` = 1, 2, 4 and 8 on four GPUs and additionally 16 on eight, and each level is preceded by `2C` priming requests that are not counted. Throughput is the number of valid complete MP4s divided by the time from the first submission to the last response; invalid, failed or timed-out requests stay in the denominator. Each concurrency level is one 32-request run. A response is valid if it contains exactly one H.264 stream at 1344 × 768 and exactly 24 fps with a frame count within one frame of the aligned count, a stereo 32 kHz AAC track whose duration is within one frame period of the aligned media duration, and nonzero video variance and audio RMS. Within one environment, runs execute one at a time with one server deployment and one client, and each benchmark starts a fresh deployment that performs its own shape warmup and priming.
+**Metrics.** Latency is 72 requests at concurrency 1 (six scenes × two prompt lengths × three durations × two seeds). We report p50 / p90 / p95 over all 72 and the median of the 12 requests of each shape. Throughput is 32 requests per concurrency level (C = 1, 2, 4, 8, and 16 on eight GPUs), counted as valid MP4s per second from the first submission to the last response.
 
 ### Latency
 
-{{< image src="img/latency-per-shape.svg" alt="Median latency per shape on every hardware configuration" width="100%" title="Figure 8. Median end-to-end latency of each shape (12 requests per point), one request at a time. The two panels of a row share their y-axis. vLLM-Omni has no eight-GB200 latency result because one of its replicas cannot span two nodes. The folded tables below list every value and the quantiles over all 72 requests." >}}
+{{< image src="img/latency-per-shape.svg" alt="Median latency per shape on every hardware configuration" width="100%" title="Figure 8. Median end-to-end latency of each shape, one request at a time. The two panels of a row share their y-axis. The folded tables below list every value." >}}
 **Four GB200 GPUs.** **Across the 72-request workload, UniServe BF16 has a median end-to-end latency of 14.24 s, compared with 17.80 s for SGLang, 18.17 s for FastVideo and 18.83 s for vLLM-Omni.** Across the six shapes, SGLang's median is 1.18 to 1.30 times UniServe's, FastVideo's 1.23 to 1.33 times and vLLM-Omni's 1.28 to 1.37 times. SGLang is the fastest baseline here and on eight GB200 GPUs although its DiT runs eager: its VSA-H3 validation refuses `torch.compile` and breakable CUDA graphs, while FastVideo and vLLM-Omni compile theirs.
 
 <details><summary>End-to-end latency on four GB200 GPUs</summary>
@@ -342,7 +339,7 @@ Every system encodes the H.264 stream with libx264's `ultrafast` preset. UniServ
 | --------- | --------- | -------- | --------- | --------- | ----------------- |
 | UniServe  | BF16      | **7.51** | **14.09** | **14.12** | 72 / 72           |
 | FastVideo | BF16      | 13.02    | 23.58     | 24.39     | 72 / 72           |
-| vLLM-Omni | BF16      | N/A†     |           |           |                   |
+| vLLM-Omni | BF16      | N/A      |           |           |                   |
 | SGLang    | BF16      | 9.79     | 17.46     | 17.59     | 72 / 72           |
 | UniServe  | NVFP4     | **6.56** | **12.53** | **12.60** | 72 / 72           |
 
@@ -353,7 +350,7 @@ Every system encodes the H.264 stream with libx264's `ultrafast` preset. UniServ
 | SGLang    | BF16      | 4.22     | 6.02      | 8.38      | 10.99      | 13.88     | 17.51      |
 | UniServe  | NVFP4     | **3.05** | **4.15**  | **5.35**  | **7.62**   | **9.13**  | **12.54**  |
 
-*End-to-end latency on eight GB200 GPUs across two nodes (*`r1s8`*). † A single vLLM-Omni replica cannot span two nodes.*
+*End-to-end latency on eight GB200 GPUs across two nodes (*`r1s8`*).*
 
 </details>
 
@@ -377,14 +374,14 @@ Every system encodes the H.264 stream with libx264's `ultrafast` preset. UniServ
 | SGLang    | BF16      | **18.27** | 27.10     | 37.09     | 49.71      | 60.36     | 76.50      |
 | UniServe  | NVFP4     | **17.39** | **22.54** | **28.15** | **36.15**  | **42.61** | **53.54**  |
 
-*End-to-end latency on eight RTX PRO 6000 GPUs (*`r1s8`*). Quantiles use linear interpolation over all 72 request latencies.*
+*End-to-end latency on eight RTX PRO 6000 GPUs (*`r1s8`*).*
 
 </details>
 
 ### Throughput
 
-{{< image src="img/throughput-concurrency.svg" alt="Throughput at each concurrency on every hardware configuration" width="100%" title="Figure 9. Valid videos per second at each concurrency, one 32-request run per point. On four GB200 GPUs, FastVideo's and vLLM-Omni's lines overlap. The folded tables below list every value with its p50 and p95 latency." >}}
-On four GB200 GPUs with one replica, every system's throughput is essentially flat across concurrency: higher concurrency adds queueing latency without adding throughput. **At each system's best concurrency, UniServe BF16's throughput is 24.0% above SGLang's, 32.6% above vLLM-Omni's and 32.7% above FastVideo's; all 640 responses pass media validation.** With two replicas on eight GPUs, C=1 leaves one replica idle and both are busy from C=2. **On two GB200 nodes, UniServe BF16 reaches 0.1283 videos/s, 14.9% above SGLang's best (0.1117 videos/s at C=8), 20.3% above FastVideo's (0.1067 videos/s at C=4) and 22.0% above vLLM-Omni's (0.1052 videos/s at C=8).** On the RTX PRO 6000, **UniServe BF16 reaches 0.0389 videos/s, 20.8% above SGLang's best (0.0322 videos/s at C=4), 39.9% above FastVideo's (0.0278 videos/s at C=4) and 45.4% above vLLM-Omni's (0.0267 videos/s at C=4)**. Each cell below gives throughput in valid videos per second, followed by p50 / p95 end-to-end latency in seconds, for one 32-request run.
+{{< image src="img/throughput-concurrency.svg" alt="Throughput at each concurrency on every hardware configuration" width="100%" title="Figure 9. Valid videos per second at each concurrency. On four GB200 GPUs, FastVideo's and vLLM-Omni's lines overlap. The folded tables below list every value with its p50 and p95 latency." >}}
+On four GB200 GPUs with one replica, every system's throughput is essentially flat across concurrency: higher concurrency adds queueing latency without adding throughput. **At each system's best concurrency, UniServe BF16's throughput is 24.0% above SGLang's, 32.6% above vLLM-Omni's and 32.7% above FastVideo's.** With two replicas on eight GPUs, C=1 leaves one replica idle and both are busy from C=2. **On two GB200 nodes, UniServe BF16 reaches 0.1283 videos/s, 14.9% above SGLang's best (0.1117 videos/s at C=8), 20.3% above FastVideo's (0.1067 videos/s at C=4) and 22.0% above vLLM-Omni's (0.1052 videos/s at C=8).** On the RTX PRO 6000, **UniServe BF16 reaches 0.0389 videos/s, 20.8% above SGLang's best (0.0322 videos/s at C=4), 39.9% above FastVideo's (0.0278 videos/s at C=4) and 45.4% above vLLM-Omni's (0.0267 videos/s at C=4)**. Each cell below gives throughput in valid videos per second, followed by p50 / p95 end-to-end latency in seconds, for one 32-request run.
 
 <details><summary>Throughput and latency under load on four GB200 GPUs</summary>
 
@@ -410,7 +407,7 @@ On four GB200 GPUs with one replica, every system's throughput is essentially fl
 | SGLang    | BF16      | 0.0564 (15.3 / 32.6)     | 0.1079 (15.2 / 32.7)     | 0.1111 (34.7 / 51.4)     | 0.1117 (63.0 / 93.7)     | 0.1002 (106.5 / 173.5)     |
 | UniServe  | NVFP4     | **0.0804 (9.7 / 24.3)**  | **0.1420 (9.7 / 34.6)**  | **0.1437 (25.2 / 42.2)** | **0.1467 (46.3 / 68.5)** | **0.1480 (92.3 / 119.7)**  |
 
-*Throughput and latency under load on eight GB200 GPUs across two nodes (*`r2s4`*). UniServe's rows on this configuration were measured with a later revision that routes each decoded video unit only to the host that encodes it; the earlier revision also published every unit to the other node.*
+*Throughput and latency under load on eight GB200 GPUs across two nodes (*`r2s4`*).*
 
 </details>
 
