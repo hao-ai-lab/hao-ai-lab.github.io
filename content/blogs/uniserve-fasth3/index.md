@@ -56,7 +56,7 @@ Each request runs a Qwen3-VL-based text encoder, a two-layer text refiner, eight
 
 The checkpoint is distilled for a fixed eight-step schedule. Because the timesteps never change, every timestep-dependent value can be computed before any request arrives, which UniServe exploits below.
 
-Video sparse attention (VSA) operates on tiles of 64 tokens. Text and audio queries attend to every key tile. Video queries attend densely to the text and audio keys and, among the video keys, to the highest-scoring 20% of tiles, rounded to a whole number of tiles. A second, coarse branch attends over mean-pooled tiles, and a learned gate adds its output to the fine sparse-attention output. UniServe computes exactly this, including the dense multimodal prefix and the coarse branch.
+Video sparse attention (VSA) operates on tiles of 64 tokens. Text and audio queries attend to every key tile. Video queries attend densely to the text and audio keys and, among the video keys, to the highest-scoring 20% of tiles, rounded to a whole number of tiles. A second, coarse branch attends over mean-pooled tiles, and a learned gate adds its output to the fine sparse-attention output. UniServe implements this sparse pattern, including the dense multimodal prefix and the coarse branch.
 
 At 1344 × 768 and 24 fps, a 10-second clip with a 1K-token prompt is about 74K tokens (video, audio and text). A 15-second clip with a 10K-token prompt is about 119K. At these lengths, every extra full-sequence intermediate tensor costs substantial memory traffic.
 
@@ -139,7 +139,7 @@ The baselines' native sparse-attention kernels are a bit faster than UniServe's 
 
 The video VAE decoder reconstructs each temporal unit from overlapping spatial tiles. At 1344 × 768 the tile grid is 4 × 7: 28 tiles with a 256-pixel minimum tile size and a 64-pixel overlap. A straightforward implementation loops over the tiles and calls the decoder once per tile. Parallelizing the DiT leaves this loop untouched: in the basic SP4 trace, all video decoder kernels still run on GPU 0.
 
-UniServe concatenates a unit's 28 tiles along the batch dimension and decodes them in one call, then restores the grid and blends the overlaps. Tiles remain independent samples in the batch, so the tiled computation itself is unchanged; no attention crosses tile boundaries. The worker distributes temporal units across the four GPUs.
+UniServe concatenates a unit's 28 tiles along the batch dimension and decodes them in one call, then restores the grid and blends the overlaps. Tiles stay independent samples in the batch. The worker distributes temporal units across the four GPUs.
 
 {{< image src="img/media-placement.svg" alt="Spatial batching and temporal placement" width="100%" title="Figure 6. For four temporal units, UniServe issues four batch-28 decoder calls. FastVideo distributes temporal units across GPUs but loops over their spatial tiles. SGLang and vLLM-Omni distribute each unit's spatial tiles across GPUs." >}}
 For the 10-second sample's 14 temporal units, the traces show **14 decoder calls in UniServe**, versus **392 per-tile calls** in FastVideo and SGLang. Each batched call amortizes the host-side launch work over a whole unit.
@@ -175,11 +175,9 @@ The following traces use the same 10 s/1K prompt and seed on four GB200 GPUs, on
 
 *Decode covers video decoding, audio decoding and the final reconstruction steps; it excludes the GPU frame conversion performed by the output encoder. The unprofiled column is a warmed request before tracing starts.*
 
-## Exactness and precision presets
+## Precision presets
 
-Every optimization in the sections above is exact: it changes where and when the same computation runs, so its output differs from a reference implementation only by floating-point summation order, and every collective, including the Ulysses all-gathers and all-to-alls, stays in BF16.
-
-Precision is a separate, explicit choice, set per component when the server starts. UniServe's default preset, `quality`, runs the DiT and text encoder in BF16 and the video-decoder projections in FP16; the BF16 results in this post use it. `balanced` stores the video decoder's projections in NVFP4, which has minimal impact on visual quality. `performance` also runs the DiT MLP in FP8, and `maximum` runs it in NVFP4 with an FP8 text encoder; attention stays in BF16 in every preset.
+The optimizations above change where and when the same computation runs. Precision is a separate choice, set per component when the server starts. The default preset, `quality`, runs the DiT and text encoder in BF16 and the video-decoder projections in FP16; the BF16 results in this post use it. `balanced` stores the video decoder's projections in NVFP4. `performance` also runs the DiT MLP in FP8, and `maximum` runs it in NVFP4 with an FP8 text encoder; attention stays in BF16 in every preset.
 
 ## NVFP4
 
@@ -217,7 +215,7 @@ The side-by-side clips are silent because the two samples have different soundtr
 
 UniServe also runs as an experimental backend for [NVIDIA Dynamo](https://github.com/ai-dynamo/dynamo). Dynamo's frontend serves the OpenAI-style `/v1/videos` endpoint and handles service discovery and request routing.
 
-`uniserve-dynamo-worker` embeds UniServe's Rust scheduler and engine in a Dynamo worker process and registers it as a video endpoint. Each request follows the same path as UniServe's own `/v1/videos` route, from validation through the finished MP4, and returns as one completed response with the MP4 embedded. The worker rejects request options that FastH3 does not implement instead of silently ignoring them. The integration currently supports text-to-video requests with complete, non-streaming responses. The [Dynamo quickstart](https://github.com/hao-ai-lab/UniServe/blob/main/docs/fast_h3/dynamo.md) shows how to serve FastH3 through Dynamo 1.5.0 on four GB200 GPUs.
+`uniserve-dynamo-worker` embeds UniServe's scheduler in a Dynamo worker and serves FastH3 through Dynamo's `/v1/videos` endpoint. The [Dynamo quickstart](https://github.com/hao-ai-lab/UniServe/blob/main/docs/fast_h3/dynamo.md) shows how to run it on four GB200 GPUs.
 
 ## Deploy UniServe
 
@@ -241,7 +239,7 @@ We compare UniServe against two kinds of baselines.
 
 **Hardware.** Four GB200 GPUs in one node; eight GB200 GPUs across two nodes connected by multi-node NVLink; and one node with eight RTX PRO 6000 Blackwell Server Edition GPUs.
 
-**Systems and checkpoints.** Every system serves the BF16 checkpoint `FastVideo/FastVideo-FastH3-8-Step-V2` with its trained schedule, VSA sparsity and full decoders; only UniServe also serves the NVFP4 checkpoint `FastVideo/FastVideo-FastH3-8-Step-V2-NVFP4`. Approximations that change the computation are excluded: caching features across steps, skipping softmax work, approximate decoders, progressive resolution and fewer denoising steps. Optimizations that preserve the computation are allowed: compilation, exact fused kernels, sequence and tensor parallelism, component placement, precomputing request-independent values and asynchronous media processing. Every system selects the checkpoint's top-k video tiles exactly.
+**Systems and checkpoints.** Every system serves the BF16 checkpoint `FastVideo/FastVideo-FastH3-8-Step-V2` with its trained schedule, VSA sparsity and full decoders; only UniServe also serves the NVFP4 checkpoint `FastVideo/FastVideo-FastH3-8-Step-V2-NVFP4`. All systems run the full eight-step schedule, the checkpoint's sparse attention, and the full video and audio decoders. Compilation, fused kernels, parallelism and overlapping media processing are in scope.
 
 | System                       | Checkpoint  | 4 x GB200                    | 8 x GB200, two nodes                       | 8 x RTX PRO 6000      |
 | ---------------------------- | ----------- | ---------------------------- | ------------------------------------------ | --------------------- |
