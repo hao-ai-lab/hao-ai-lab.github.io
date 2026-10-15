@@ -54,11 +54,11 @@ This post first shows the results, then the mechanisms behind them. Unless noted
 
 Each request runs a Qwen3-VL-based text encoder, a two-layer text refiner, eight forward passes of a 50-layer DiT, and separate video and audio VAE decoders. The DiT attends over a joint sequence of text, video and audio tokens. Its hidden size is 5,376; attention has 56 heads of dimension 128, so the Q, K, V and gate projections each produce 7,168 channels. With four-way Ulysses sequence parallelism (SP4), each GPU computes attention for 14 heads.
 
-The checkpoint is distilled for a fixed schedule of eight timesteps, `[999, 874, 749, 624, 500, 375, 250, 125]`, with timestep shifts of 10 for video and 3 for audio. The last solver update reaches the clean sample without another DiT forward. Because the schedule is fixed, every timestep-dependent value can be computed before any request arrives, which UniServe exploits below.
+The checkpoint is distilled for a fixed eight-step schedule. Because the timesteps never change, every timestep-dependent value can be computed before any request arrives, which UniServe exploits below.
 
 Video sparse attention (VSA) operates on tiles of 64 tokens. Text and audio queries attend to every key tile. Video queries attend densely to the text and audio keys and, among the video keys, to the highest-scoring 20% of tiles, rounded to a whole number of tiles. A second, coarse branch attends over mean-pooled tiles, and a learned gate adds its output to the fine sparse-attention output. UniServe computes exactly this, including the dense multimodal prefix and the coarse branch.
 
-At 1344 × 768 and 24 fps, a 10-second request aligns to 243 frames. With a 1K-token prompt it has 72,576 video tokens, 810 audio tokens and 1,000 text tokens: 74,386 tokens in total. Tile alignment and the capacity padding of UniServe's preallocated buffers extend this to 78,080 rows. A 15-second request with a 10K-token prompt has 119,062 tokens and uses 125,696 buffer rows in the measured deployment; other systems pad differently. At these sequence lengths, every additional full-sequence intermediate tensor costs substantial memory traffic.
+At 1344 × 768 and 24 fps, a 10-second clip with a 1K-token prompt is about 74K tokens (video, audio and text). A 15-second clip with a 10K-token prompt is about 119K. At these lengths, every extra full-sequence intermediate tensor costs substantial memory traffic.
 
 ## Architecture
 
@@ -77,14 +77,7 @@ The diffusion runner allocates its workspace once, for the largest supported sha
 
 Each DiT block projects the timestep embedding into per-modality shift, scale and gate vectors (AdaLN modulation). These depend only on the weights and the timestep, not on the prompt or the latent. Since the checkpoint fixes its eight timesteps, UniServe computes every modulation vector at load time and keeps only the results.
 
-Each of the 50 layers produces 96,768 values (three modalities × six modulation terms × hidden size 5,376), and the final output modulation adds 10,752. With eight steps, each with separate video and audio timesteps, the BF16 table occupies:
-
-$$
-8 \times 2 \times (50 \times 96{,}768 + 10{,}752) \times 2\ \text{bytes}
-= 147.984\ \text{MiB}.
-$$
-
-The projection weights and biases this table replaces occupy **24.288 GiB** in the checkpoint. UniServe streams them through the precomputation at load time and frees them afterwards.
+Across 50 layers, eight steps and separate video and audio timesteps, the BF16 table is about 148 MiB. The projection weights it replaces occupy about **24 GiB** in the checkpoint. UniServe streams those weights through the precomputation at load time and frees them afterwards.
 
 ### Run the text refiner once
 
@@ -108,7 +101,7 @@ $$
 
 The hidden-state all-gather moves **75% of the data** of the projected all-to-all, the ratio H/A. The output all-to-all is unchanged.
 
-Head sharding also reduces weight memory. The 200 Q/K/V/gate matrices (four per layer across 50 layers) each have shape `[7168, 5376]`. They occupy **14.355 GiB per GPU** when replicated and **3.589 GiB per GPU** when sharded four ways by head. The total projection FLOPs are unchanged: the work is repartitioned from local tokens × all heads to all tokens × local heads.
+Head sharding also reduces weight memory. The 200 Q/K/V/gate matrices occupy about **14.4 GiB per GPU** when replicated and **3.6 GiB per GPU** when sharded four ways. The total projection FLOPs are unchanged: the work is repartitioned from local tokens × all heads to all tokens × local heads.
 
 ## Kernel fusion in the DiT
 
@@ -118,9 +111,7 @@ An unfused path runs Q/K RMSNorm, RoPE, gathering the valid rows, filling the pa
 
 UniServe's preprocessing kernel performs the learned Q/K RMSNorm, partial RoPE, tile pooling over valid tokens, tile packing and gate copying in a single pass per projected chunk. It writes the fine-attention inputs and the FP32 pooled statistics directly into the buffers the attention kernels read. Padding is handled inside this kernel, so it never becomes an input to later computation. Top-k tile selection and the fine and coarse attention kernels remain separate.
 
-The fusion granularity is a chunk, not a whole transformer block: the 10 s/1K request makes 6,400 preprocessing calls on GPU 0, totaling **0.373 s**. Working per chunk lets preprocessing start as rows arrive from the all-gather.
-
-For comparison, FastVideo's packing and pooling read separately materialized, normalized projections, and SGLang's fused packing and pooling also run after a separate RMSNorm/RoPE step. vLLM-Omni builds padded attention inputs through indexed writes and contiguous layout conversions. UniServe's wider fusion avoids these intermediate full-sequence tensors.
+The fusion granularity is a chunk, not a whole transformer block, so preprocessing can start as rows arrive from the all-gather. UniServe's wider fusion avoids the intermediate full-sequence tensors that an unfused RMSNorm / RoPE / pack / pool / transpose path would materialize.
 
 ### Fused output combination
 
@@ -132,8 +123,6 @@ $$
 
 UniServe's combination kernel evaluates this expression and writes each row directly into its position in the send buffer of the output all-to-all. This fuses the combination with the layout conversion, avoiding a separately materialized combined tensor followed by a permute-and-copy. The all-to-all then restores the sequence sharding that the output projection and residual path consume.
 
-The traces show what unfused layout conversions cost. In vLLM-Omni, the PyTorch profiler records 1,200 indexed Q/K/V writes into `[1, 77952, 14, 128]` buffers and 1,200 `contiguous()` calls on `[1, 14, 77952, 128]` tensors: padded token-major inputs are materialized and then converted to head-major layout.
-
 ### Fused modulation, normalization and residuals
 
 Each block applies AdaLN modulation around RMSNorm and a gated residual update. Schematically, the attention input is `RMSNorm(x) * (1 + scale_attn) + shift_attn`. After attention, the residual becomes `r = x + gate_attn * attention_output`, and the MLP input is the modulated RMSNorm of `r`.
@@ -142,16 +131,7 @@ UniServe fuses these steps. The pre-attention kernel looks up each token's modul
 
 ### End-to-end DiT time matters more than one kernel
 
-In this sample, the three optimized baselines' native sparse-attention kernels are faster than UniServe's:
-
-| GPU 0 kernel time, 10 s/1K       | UniServe | FastVideo | SGLang  | vLLM-Omni |
-| -------------------------------- | -------- | --------- | ------- | --------- |
-| Fine sparse attention, 400 calls | 3.779 s  | 3.373 s   | 3.476 s | 3.251 s   |
-| NCCL SendRecv, including waits   | 1.068 s  | 1.558 s   | 1.687 s | 1.323 s   |
-
-*Summed kernel durations on GPU 0.*
-
-UniServe runs fine sparse attention with its own CuTe kernel. Even so, its combined refiner and denoising time is shorter: **10.052 s**, versus **11.723 s** for FastVideo, **11.111 s** for SGLang and **12.580 s** for vLLM-Omni. The advantage comes from the computation and data movement around attention.
+The baselines' native sparse-attention kernels are a bit faster than UniServe's CuTe kernel on this sample. Communication is the other way around, and UniServe still spends less time in the refiner and denoising as a whole — about **10.1 s**, versus **11.1–12.6 s** for the others. The advantage comes from the computation and data movement around attention.
 
 ## A batched, streaming decode path
 
@@ -168,15 +148,15 @@ For the 10-second sample's 14 temporal units, the traces show **14 decoder calls
 
 Batching combines with kernel fusion inside the VAE decoder. UniServe's video decoder transformer fuses Q/K normalization with RoPE, fuses the scaled attention residual with the following RMSNorm, and defers each MLP residual addition into the next layer's normalization; the last layer folds its pending addition into the output LayerNorm. The normalization reads the FP32 residual sum, so FP16 projection weights do not round the residual stream to FP16. SwiGLU and the final unpatchify step, which turns tokens back into pixels, have their own fused kernels.
 
-The worker captures the batched decode as a CUDA graph and replays it for each temporal unit. Across UniServe's video decoding and postprocessing, the 10-second trace records **14 graph launches**. Inside FastVideo's VAE stage, rank 0 issues 73,024 `cuLaunchKernel` and 24,420 `cuLaunchKernelEx` calls alongside 116 partial-graph launches, which take 1.024 s of CPU API time under profiling. Capturing the whole batched decode removes most of these returns to the host between kernels.
+The worker captures the batched decode as a CUDA graph and replays it for each temporal unit. Capturing the whole batched decode removes the host round-trips of launching thousands of small kernels per request.
 
-The video decode spans **1.107 s on the GPUs in UniServe and 4.818 s in FastVideo**. On rank 0, video kernels are active for 1.043 s of UniServe's 1.107-second span, versus 1.343 s of FastVideo's 4.817-second span, so UniServe keeps the GPU far busier during decoding.
+The video decode spans about **1.1 s on the GPUs in UniServe and 4.8 s in FastVideo**. UniServe keeps the GPU busy for almost that entire span; FastVideo spends much of its 4.8 s waiting on the host.
 
 ### Encode while the GPU is still decoding
 
 A video request is not finished when its pixels are reconstructed. UniServe copies each decoded RGB unit to host memory and schedules its encoding independently of the remaining GPU decoding. On the same host, the encoder reads the published host buffer directly instead of making another copy. Four CPU encoder processes encode units with libx264 while the GPUs continue decoding. The audio decoder produces PCM, which the host encodes to AAC. The muxer appends the already encoded video packets with adjusted timestamps and adds the audio track, without decoding or re-encoding any video.
 
-The trace shows the overlap: the first video encode starts **10.469 s** after submission, while the last video decoder kernel finishes at **11.315 s**. The complete MP4 arrives at **11.414 s**, only **98.8 ms** after the last video kernel.
+The trace shows the overlap: encoding starts while later units are still decoding, and the complete MP4 arrives about **100 ms** after the last video kernel.
 
 vLLM-Omni offers a similar option, `preencode_mp4`, which encodes each decoded chunk on the worker while later chunks decode; the vLLM-Omni benchmark results below use it. FastVideo and SGLang encode the MP4 after decoding finishes.
 
@@ -207,7 +187,7 @@ FastVideo also publishes an NVFP4 checkpoint, `FastVideo/FastVideo-FastH3-8-Step
 
 The checkpoint quantizes 150 DiT MLP projections (gate, up and down in each of the 50 layers) and 252 video-VAE decoder projections (Q/K/V, attention output and the three MLP projections in each of 36 layers). The text encoder and the DiT's attention projections stay in BF16. UniServe loads the packed weights as they are stored, two E2M1 values per byte plus the block scales, and quantizes activations on the fly against each module's calibrated global scale from the checkpoint, so every chunk of rows uses the same scale no matter how the sequence is split. The packed values and block scales go directly into a block-scaled FP4 GEMM that produces BF16 outputs.
 
-The traces confirm that the FP4 path runs: 14,400 FlashInfer `DeviceGemmFp4` kernels in the DiT and 3,528 in the video decoder across the four GB200 GPUs of a 10 s/1K request. On GPU 0, DiT time falls from 10.243 s with BF16 to 8.512 s, and video decoder time from 1.195 s to 0.766 s. End to end, NVFP4 lowers UniServe's median latency by 9.6–14.7% and raises its throughput by 15.4–18.6% across the three hardware configurations; see [NVFP4 against BF16](#nvfp4-against-bf16).
+On a 10 s/1K request, DiT time on GPU 0 falls from 10.2 s with BF16 to 8.5 s, and video decoder time from 1.2 s to 0.8 s. End to end, NVFP4 lowers UniServe's median latency by about 10–15% and raises its throughput by 15–19% across the three hardware configurations; see [NVFP4 against BF16](#nvfp4-against-bf16).
 
 The clips compare UniServe's BF16 (left) and NVFP4 (right) outputs for the same benchmark requests, 10 seconds with 1K-token prompts, from the eight-RTX PRO 6000 latency runs.
 
