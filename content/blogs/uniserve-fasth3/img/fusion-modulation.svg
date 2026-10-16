@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 692" width="1080" height="692" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"/></marker></defs>
+<rect width="1080" height="692" fill="#ffffff"/>
+<rect x="40.0" y="96.0" width="420.0" height="520.0" rx="10" fill="#fafbfc" stroke="#d5dbe3" stroke-width="1"/>
+<rect x="480.0" y="96.0" width="560.0" height="520.0" rx="10" fill="#fafbfc" stroke="#d5dbe3" stroke-width="1"/>
+<text x="540.0" y="38.0" font-size="21" font-weight="bold" fill="#152638" text-anchor="middle">AdaLN modulation and residuals: three fused kernels per block</text>
+<text x="540.0" y="61.0" font-size="13" font-weight="normal" fill="#556575" text-anchor="middle">One DiT block on one GPU. The modulation rows were computed at load time for the eight fixed timesteps.</text>
+<rect x="100.0" y="160.0" width="300.0" height="28.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="250.0" y="178.5" font-size="13" font-weight="600" fill="#1f4e8c" text-anchor="middle">look up shift, scale, gate</text>
+<line x1="250.0" y1="190.0" x2="250.0" y2="200.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="100.0" y="202.0" width="300.0" height="28.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="250.0" y="220.5" font-size="13" font-weight="600" fill="#1f4e8c" text-anchor="middle">RMSNorm</text>
+<line x1="250.0" y1="232.0" x2="250.0" y2="242.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="100.0" y="244.0" width="300.0" height="28.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="250.0" y="262.5" font-size="13" font-weight="600" fill="#1f4e8c" text-anchor="middle">× (1 + scale) + shift</text>
+<line x1="250.0" y1="274.0" x2="250.0" y2="284.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="100.0" y="286.0" width="300.0" height="28.0" rx="6" fill="#e7def6" stroke="#627080" stroke-width="1.2"/>
+<text x="250.0" y="304.5" font-size="13" font-weight="600" fill="#5b3c8f" text-anchor="middle">attention</text>
+<line x1="250.0" y1="316.0" x2="250.0" y2="326.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="100.0" y="328.0" width="300.0" height="28.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="250.0" y="346.5" font-size="13" font-weight="600" fill="#1f4e8c" text-anchor="middle">× gate_attn, + x</text>
+<line x1="250.0" y1="358.0" x2="250.0" y2="368.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="100.0" y="370.0" width="300.0" height="28.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="250.0" y="388.5" font-size="13" font-weight="600" fill="#1f4e8c" text-anchor="middle">RMSNorm</text>
+<line x1="250.0" y1="400.0" x2="250.0" y2="410.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="100.0" y="412.0" width="300.0" height="28.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="250.0" y="430.5" font-size="13" font-weight="600" fill="#1f4e8c" text-anchor="middle">× (1 + scale) + shift</text>
+<line x1="250.0" y1="442.0" x2="250.0" y2="452.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="100.0" y="454.0" width="300.0" height="28.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="250.0" y="472.5" font-size="13" font-weight="600" fill="#1f4e8c" text-anchor="middle">gate/up GEMM, SiLU · up</text>
+<line x1="250.0" y1="484.0" x2="250.0" y2="494.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="100.0" y="496.0" width="300.0" height="28.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="250.0" y="514.5" font-size="13" font-weight="600" fill="#1f4e8c" text-anchor="middle">down GEMM</text>
+<line x1="250.0" y1="526.0" x2="250.0" y2="536.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="100.0" y="538.0" width="300.0" height="28.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="250.0" y="556.5" font-size="13" font-weight="600" fill="#1f4e8c" text-anchor="middle">× gate_mlp, + r</text>
+<text x="250.0" y="594.0" font-size="12" font-weight="normal" fill="#556575" text-anchor="middle">Rows round-trip through HBM between kernels.</text>
+<rect x="610.0" y="160.0" width="300.0" height="24.0" rx="12.0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<text x="760.0" y="176.0" font-size="11.5" font-weight="normal" fill="#26384b" text-anchor="middle">modulation rows of this layer and step</text>
+<text x="760.0" y="202.0" font-size="11.5" font-weight="normal" fill="#556575" text-anchor="middle">6 rows: (video, text, audio) tokens × (video, audio) timestep</text>
+<line x1="760.0" y1="212.0" x2="760.0" y2="224.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="510.0" y="226.0" width="500.0" height="66.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="760.0" y="247.0" font-size="13" font-weight="bold" fill="#1f4e8c" text-anchor="middle">modulated RMSNorm</text>
+<text x="760.0" y="266.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="middle">reads x and each token's row (modality, timestep)</text>
+<text x="760.0" y="284.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="middle">writes RMSNorm(x) · (1 + scale) + shift and a copy of x</text>
+<line x1="760.0" y1="294.0" x2="760.0" y2="306.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="510.0" y="308.0" width="500.0" height="30.0" rx="6" fill="#e7def6" stroke="#627080" stroke-width="1.2"/>
+<text x="760.0" y="327.5" font-size="13" font-weight="600" fill="#5b3c8f" text-anchor="middle">Q/K/V/gate projection, attention, output projection</text>
+<line x1="760.0" y1="340.0" x2="760.0" y2="352.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="510.0" y="354.0" width="500.0" height="66.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="760.0" y="375.0" font-size="13" font-weight="bold" fill="#1f4e8c" text-anchor="middle">gated residual + modulated RMSNorm</text>
+<text x="760.0" y="394.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="middle">r = x + gate_attn ⊙ attention output</text>
+<text x="760.0" y="412.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="middle">writes r and the MLP input RMSNorm(r) · (1 + scale) + shift</text>
+<line x1="760.0" y1="422.0" x2="760.0" y2="434.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="510.0" y="436.0" width="500.0" height="30.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="760.0" y="455.5" font-size="13" font-weight="600" fill="#1f4e8c" text-anchor="middle">merged gate/up GEMM, SiLU-and-mul, down GEMM</text>
+<line x1="760.0" y1="468.0" x2="760.0" y2="480.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="510.0" y="482.0" width="500.0" height="48.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="760.0" y="503.0" font-size="13" font-weight="bold" fill="#1f4e8c" text-anchor="middle">gated residual</text>
+<text x="760.0" y="522.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="middle">out = r + gate_mlp ⊙ MLP output</text>
+<text x="760.0" y="558.0" font-size="12" font-weight="normal" fill="#556575" text-anchor="middle">Each kernel takes a chunk as soon as the previous stage yields it.</text>
+<text x="250.0" y="122.0" font-size="16" font-weight="bold" fill="#152638" text-anchor="middle">1  Unfused</text>
+<text x="250.0" y="141.0" font-size="12" font-weight="normal" fill="#556575" text-anchor="middle">Conceptual baseline: one kernel per step</text>
+<text x="760.0" y="122.0" font-size="16" font-weight="bold" fill="#152638" text-anchor="middle">2  UniServe</text>
+<text x="760.0" y="141.0" font-size="12" font-weight="normal" fill="#556575" text-anchor="middle">Per chunk of rows, in the BF16 path</text>
+<rect x="360.0" y="640.0" width="26.0" height="13.0" rx="6.5" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<text x="394.0" y="651.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="start" textLength="78.0" lengthAdjust="spacingAndGlyphs">tensor in HBM</text>
+<rect x="502.0" y="640.0" width="26.0" height="13.0" rx="3" fill="#dfebfa" stroke="#627080" stroke-width="1"/>
+<text x="536.0" y="651.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="start" textLength="36.0" lengthAdjust="spacingAndGlyphs">kernel</text>
+<rect x="602.0" y="640.0" width="26.0" height="13.0" rx="3" fill="#e7def6" stroke="#627080" stroke-width="1"/>
+<text x="636.0" y="651.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="start" textLength="54.0" lengthAdjust="spacingAndGlyphs">attention</text>
+<text x="540.0" y="676.0" font-size="11.5" font-weight="normal" fill="#556575" text-anchor="middle">Source: uniserve_models/minimax_h3/transformer.py and uniserve/nn/functional/_norm.py at release 3cca4caa.</text>
+</svg>
