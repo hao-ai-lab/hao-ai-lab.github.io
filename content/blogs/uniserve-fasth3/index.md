@@ -116,6 +116,8 @@ UniServe's preprocessing kernel performs the learned Q/K RMSNorm, partial RoPE, 
 
 The kernel runs once per chunk rather than once per transformer block, so preprocessing overlaps communication: the all-gathers run on a separate communication stream, and while the compute stream projects and prepares one chunk, later chunks are still in flight. The wider fusion also avoids the intermediate full-sequence tensors that an unfused RMSNorm / RoPE / pack / pool / transpose path would materialize.
 
+{{< image src="img/fusion-preprocessing.svg" alt="Unfused attention preprocessing against UniServe's fused per-chunk kernel" width="100%" title="Figure 6. Attention preprocessing on one GPU. The unfused path is a conceptual baseline with one kernel per operation. UniServe's kernel reads each projected chunk once and writes every input that tile selection, fine attention, the coarse branch and the output combination read." >}}
+
 ### Fused output combination
 
 The fine sparse-attention output and the gated coarse output combine as:
@@ -128,11 +130,15 @@ UniServe's combination kernel evaluates this expression and writes each row dire
 
 This all-to-all is chunked and asynchronous as well. The combination kernel fills the send buffer one row interval at a time, and each interval's all-to-all starts on the communication stream as soon as its rows are written. The output projection, gated residual and MLP then consume completed intervals while later intervals are still in flight.
 
+{{< image src="img/fusion-output-exchange.svg" alt="Output combination written into the all-to-all send buffer and exchanged by row interval" width="100%" title="Figure 7. Output combination and exchange on one GPU. UniServe composes each row interval directly into the send-buffer slots of its destination GPUs and starts that interval's all-to-all at once; the output projection and MLP of an interval start when its exchange lands. The timeline shows order, not duration." >}}
+
 ### Fused modulation, normalization and residuals
 
 Each block applies AdaLN modulation around RMSNorm and a gated residual update. Schematically, the attention input is `RMSNorm(x) * (1 + scale_attn) + shift_attn`. After attention, the residual becomes `r = x + gate_attn * attention_output`, and the MLP input is the modulated RMSNorm of `r`.
 
 UniServe fuses these steps. The pre-attention kernel looks up each token's modulation row, selected by its modality and the current timestep, while it normalizes, and saves the residual input in the same pass as chunks arrive. The post-attention kernel produces both the gated residual and the modulated, normalized MLP input. A fused gate/up projection with SwiGLU feeds the down projection, followed by the MLP's gated residual update. In the BF16 path, finished chunks flow into the next stage without first concatenating the whole shard.
+
+{{< image src="img/fusion-modulation.svg" alt="AdaLN modulation, normalization and residual kernels of one DiT block" width="100%" title="Figure 8. AdaLN modulation, normalization and residuals in one DiT block. UniServe reads each token's precomputed modulation row inside the normalization kernels and writes the residual and the next stage's input in the same pass." >}}
 
 ## A batched, streaming decode path
 
@@ -142,7 +148,7 @@ The video VAE decoder reconstructs each temporal unit from overlapping spatial t
 
 UniServe concatenates a unit's 28 tiles along the batch dimension and decodes them in one call, then restores the grid and blends the overlaps. Tiles stay independent samples in the batch. The worker distributes temporal units across the four GPUs.
 
-{{< image src="img/media-placement.svg" alt="Spatial batching and temporal placement" width="100%" title="Figure 6. For four temporal units, UniServe issues four batch-28 decoder calls. FastVideo distributes temporal units across GPUs but loops over their spatial tiles. SGLang and vLLM-Omni distribute each unit's spatial tiles across GPUs." >}}
+{{< image src="img/media-placement.svg" alt="Spatial batching and temporal placement" width="100%" title="Figure 9. For four temporal units, UniServe issues four batch-28 decoder calls. FastVideo distributes temporal units across GPUs but loops over their spatial tiles. SGLang and vLLM-Omni distribute each unit's spatial tiles across GPUs." >}}
 
 For the 10-second sample's 14 temporal units, the traces show **14 decoder calls in UniServe**, versus **392 per-tile calls** in FastVideo and SGLang. Each batched call amortizes the host-side launch work over a whole unit.
 
@@ -166,7 +172,7 @@ vLLM-Omni offers a similar option, `preencode_mp4`, which encodes each decoded c
 
 The following traces use the same 10 s/1K prompt and seed on four GB200 GPUs, one request at a time, after warmup.
 
-{{< image src="img/request-timeline-10s-1k.svg" alt="Five-system complete-request timeline" width="100%" title="Figure 7. All panels share one time axis, starting at request submission. The dashed line marks receipt of the complete MP4. GPU bars span the first to the last correlated kernel across the four GPUs, including idle gaps. Host output bars can overlap GPU work and include any format conversion inside those functions." >}}
+{{< image src="img/request-timeline-10s-1k.svg" alt="Five-system complete-request timeline" width="100%" title="Figure 10. All panels share one time axis, starting at request submission. The dashed line marks receipt of the complete MP4. GPU bars span the first to the last correlated kernel across the four GPUs, including idle gaps. Host output bars can overlap GPU work and include any format conversion inside those functions." >}}
 
 | 10 s/1K request, seconds | Text encoder (GPU) | Refiner + denoising (GPU) | Decode (GPU) | End-to-end, profiled | End-to-end, unprofiled |
 | ------------------------ | ------------------ | ------------------------- | ------------ | -------------------- | ---------------------- |
@@ -278,7 +284,7 @@ We compare UniServe against two kinds of baselines.
 
 ### Latency
 
-{{< image src="img/latency-per-shape.svg" alt="Median latency per shape on every hardware configuration" width="100%" title="Figure 8. Median end-to-end latency of each shape, one request at a time. The two panels of a row share their y-axis. The folded tables below list every value." >}}
+{{< image src="img/latency-per-shape.svg" alt="Median latency per shape on every hardware configuration" width="100%" title="Figure 11. Median end-to-end latency of each shape, one request at a time. The two panels of a row share their y-axis. The folded tables below list every value." >}}
 
 **Four GB200 GPUs.** **Across the 72-request workload, UniServe BF16 has a median end-to-end latency of 14.24 s, compared with 17.80 s for SGLang, 18.17 s for FastVideo and 18.83 s for vLLM-Omni.** Across the six shapes, SGLang's median is 1.18 to 1.30 times UniServe's, FastVideo's 1.23 to 1.33 times and vLLM-Omni's 1.28 to 1.37 times.
 
@@ -353,7 +359,7 @@ We compare UniServe against two kinds of baselines.
 
 ### Throughput
 
-{{< image src="img/throughput-concurrency.svg" alt="Throughput at each concurrency on every hardware configuration" width="100%" title="Figure 9. Valid videos per second at each concurrency. On four GB200 GPUs, FastVideo's and vLLM-Omni's lines overlap. The folded tables below list every value with its p50 and p95 latency." >}}
+{{< image src="img/throughput-concurrency.svg" alt="Throughput at each concurrency on every hardware configuration" width="100%" title="Figure 12. Valid videos per second at each concurrency. On four GB200 GPUs, FastVideo's and vLLM-Omni's lines overlap. The folded tables below list every value with its p50 and p95 latency." >}}
 
 On four GB200 GPUs with one replica, every system's throughput is essentially flat across concurrency: higher concurrency adds queueing latency without adding throughput. **At each system's best concurrency, UniServe BF16's throughput is 24.0% above SGLang's, 32.6% above vLLM-Omni's and 32.7% above FastVideo's.** With two replicas on eight GPUs, C=1 leaves one replica idle and both are busy from C=2. **On two GB200 nodes, UniServe BF16 reaches 0.1283 videos/s, 14.9% above SGLang's best (0.1117 videos/s at C=8), 20.3% above FastVideo's (0.1067 videos/s at C=4) and 22.0% above vLLM-Omni's (0.1052 videos/s at C=8).** On the RTX PRO 6000, **UniServe BF16 reaches 0.0389 videos/s, 20.8% above SGLang's best (0.0322 videos/s at C=4), 39.9% above FastVideo's (0.0278 videos/s at C=4) and 45.4% above vLLM-Omni's (0.0267 videos/s at C=4)**. Each cell below gives throughput in valid videos per second, followed by p50 / p95 end-to-end latency in seconds, for one 32-request run.
 

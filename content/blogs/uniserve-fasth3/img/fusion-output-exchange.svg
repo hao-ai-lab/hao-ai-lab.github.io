@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 534" width="1080" height="534" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"/></marker></defs>
+<rect width="1080" height="534" fill="#ffffff"/>
+<rect x="40.0" y="96.0" width="400.0" height="344.0" rx="10" fill="#fafbfc" stroke="#d5dbe3" stroke-width="1"/>
+<rect x="460.0" y="96.0" width="580.0" height="344.0" rx="10" fill="#fafbfc" stroke="#d5dbe3" stroke-width="1"/>
+<text x="540.0" y="38.0" font-size="21" font-weight="bold" fill="#152638" text-anchor="middle">Output combination: write the send buffer directly, exchange by interval</text>
+<text x="540.0" y="61.0" font-size="13" font-weight="normal" fill="#556575" text-anchor="middle">One GPU with SP4 after attention: S rows for 14 local heads go back to the four GPUs that own each row.</text>
+<rect x="90.0" y="160.0" width="92.0" height="24.0" rx="12.0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<text x="136.0" y="176.0" font-size="11.5" font-weight="normal" fill="#26384b" text-anchor="middle">fine O</text>
+<rect x="194.0" y="160.0" width="92.0" height="24.0" rx="12.0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<text x="240.0" y="176.0" font-size="11.5" font-weight="normal" fill="#26384b" text-anchor="middle">gate G</text>
+<rect x="298.0" y="160.0" width="92.0" height="24.0" rx="12.0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<text x="344.0" y="176.0" font-size="11.5" font-weight="normal" fill="#26384b" text-anchor="middle">coarse O</text>
+<line x1="240.0" y1="186.0" x2="240.0" y2="200.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="90.0" y="202.0" width="300.0" height="32.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="240.0" y="222.5" font-size="13" font-weight="600" fill="#1f4e8c" text-anchor="middle">combine</text>
+<line x1="240.0" y1="236.0" x2="240.0" y2="248.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="90.0" y="250.0" width="300.0" height="24.0" rx="12.0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<text x="240.0" y="266.0" font-size="11.5" font-weight="normal" fill="#26384b" text-anchor="middle">combined O, S × 14 × 128</text>
+<line x1="240.0" y1="276.0" x2="240.0" y2="288.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="90.0" y="290.0" width="300.0" height="32.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="240.0" y="310.5" font-size="13" font-weight="600" fill="#1f4e8c" text-anchor="middle">permute + copy</text>
+<line x1="240.0" y1="324.0" x2="240.0" y2="336.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="90.0" y="338.0" width="300.0" height="24.0" rx="12.0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<text x="240.0" y="354.0" font-size="11.5" font-weight="normal" fill="#26384b" text-anchor="middle">send buffer</text>
+<line x1="240.0" y1="364.0" x2="240.0" y2="376.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="90.0" y="378.0" width="300.0" height="32.0" rx="6" fill="#ffe6be" stroke="#627080" stroke-width="1.2"/>
+<text x="240.0" y="398.5" font-size="13" font-weight="600" fill="#7a4b06" text-anchor="middle">all-to-all of the whole tensor</text>
+<rect x="484.0" y="160.0" width="80.0" height="24.0" rx="12.0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<text x="524.0" y="176.0" font-size="11.5" font-weight="normal" fill="#26384b" text-anchor="middle">fine O</text>
+<rect x="572.0" y="160.0" width="80.0" height="24.0" rx="12.0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<text x="612.0" y="176.0" font-size="11.5" font-weight="normal" fill="#26384b" text-anchor="middle">gate G</text>
+<rect x="660.0" y="160.0" width="80.0" height="24.0" rx="12.0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<text x="700.0" y="176.0" font-size="11.5" font-weight="normal" fill="#26384b" text-anchor="middle">coarse O</text>
+<line x1="612.0" y1="186.0" x2="612.0" y2="200.0" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<rect x="484.0" y="202.0" width="256.0" height="92.0" rx="6" fill="#dfebfa" stroke="#627080" stroke-width="1.2"/>
+<text x="612.0" y="224.0" font-size="13" font-weight="600" fill="#1f4e8c" text-anchor="middle">compose, per row interval</text>
+<text x="612.0" y="244.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="middle">O = fine O + G ⊙ coarse O of the tile</text>
+<text x="612.0" y="262.0" font-size="11.5" font-weight="normal" fill="#556575" text-anchor="middle">computed in FP32, stored as BF16</text>
+<text x="612.0" y="280.0" font-size="11.5" font-weight="normal" fill="#556575" text-anchor="middle">row r goes to the GPU that owns r</text>
+<text x="848.0" y="172.0" font-size="12" font-weight="600" fill="#26384b" text-anchor="middle">send buffer</text>
+<text x="782.0" y="192.0" font-size="11" font-weight="normal" fill="#556575" text-anchor="middle">GPU 0</text>
+<text x="826.0" y="192.0" font-size="11" font-weight="normal" fill="#556575" text-anchor="middle">GPU 1</text>
+<text x="870.0" y="192.0" font-size="11" font-weight="normal" fill="#556575" text-anchor="middle">GPU 2</text>
+<text x="914.0" y="192.0" font-size="11" font-weight="normal" fill="#556575" text-anchor="middle">GPU 3</text>
+<rect x="760.0" y="200.0" width="44.0" height="32.0" rx="0" fill="#ffe6be" stroke="#627080" stroke-width="1"/>
+<rect x="804.0" y="200.0" width="44.0" height="32.0" rx="0" fill="#ffe6be" stroke="#627080" stroke-width="1"/>
+<rect x="848.0" y="200.0" width="44.0" height="32.0" rx="0" fill="#ffe6be" stroke="#627080" stroke-width="1"/>
+<rect x="892.0" y="200.0" width="44.0" height="32.0" rx="0" fill="#ffe6be" stroke="#627080" stroke-width="1"/>
+<text x="944.0" y="220.0" font-size="11.5" font-weight="normal" fill="#556575" text-anchor="start">interval 1</text>
+<rect x="760.0" y="232.0" width="44.0" height="32.0" rx="0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<rect x="804.0" y="232.0" width="44.0" height="32.0" rx="0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<rect x="848.0" y="232.0" width="44.0" height="32.0" rx="0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<rect x="892.0" y="232.0" width="44.0" height="32.0" rx="0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<text x="944.0" y="252.0" font-size="11.5" font-weight="normal" fill="#556575" text-anchor="start">interval 2</text>
+<rect x="760.0" y="264.0" width="44.0" height="32.0" rx="0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<rect x="804.0" y="264.0" width="44.0" height="32.0" rx="0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<rect x="848.0" y="264.0" width="44.0" height="32.0" rx="0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<rect x="892.0" y="264.0" width="44.0" height="32.0" rx="0" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<text x="944.0" y="284.0" font-size="11.5" font-weight="normal" fill="#556575" text-anchor="start">interval 3</text>
+<text x="848.0" y="314.0" font-size="11" font-weight="normal" fill="#556575" text-anchor="middle">about 32 MiB per peer per interval</text>
+<path d="M 742 248 L 748 248 L 748 216.0 L 758 216.0" fill="none" stroke="#627080" stroke-width="1.4" marker-end="url(#arrow)"/>
+<text x="750.0" y="348.0" font-size="12" font-weight="600" fill="#26384b" text-anchor="middle">Two streams on this GPU (order only, not to scale)</text>
+<text x="578.0" y="374.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="end">compute</text>
+<text x="578.0" y="410.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="end">communication</text>
+<rect x="589.0" y="360.0" width="64.0" height="22.0" rx="3" fill="#e7def6" stroke="#627080" stroke-width="1"/>
+<text x="621.0" y="375.0" font-size="11" font-weight="normal" fill="#5b3c8f" text-anchor="middle">fine attn</text>
+<rect x="655.0" y="360.0" width="24.0" height="22.0" rx="3" fill="#dfebfa" stroke="#627080" stroke-width="1"/>
+<text x="667.0" y="375.0" font-size="11" font-weight="normal" fill="#1f4e8c" text-anchor="middle">c1</text>
+<rect x="681.0" y="360.0" width="24.0" height="22.0" rx="3" fill="#dfebfa" stroke="#627080" stroke-width="1"/>
+<text x="693.0" y="375.0" font-size="11" font-weight="normal" fill="#1f4e8c" text-anchor="middle">c2</text>
+<rect x="707.0" y="360.0" width="24.0" height="22.0" rx="3" fill="#dfebfa" stroke="#627080" stroke-width="1"/>
+<text x="719.0" y="375.0" font-size="11" font-weight="normal" fill="#1f4e8c" text-anchor="middle">c3</text>
+<rect x="681.0" y="396.0" width="78.0" height="22.0" rx="3" fill="#ffe6be" stroke="#627080" stroke-width="1"/>
+<text x="720.0" y="411.0" font-size="11" font-weight="normal" fill="#7a4b06" text-anchor="middle">all-to-all 1</text>
+<rect x="761.0" y="396.0" width="78.0" height="22.0" rx="3" fill="#ffe6be" stroke="#627080" stroke-width="1"/>
+<text x="800.0" y="411.0" font-size="11" font-weight="normal" fill="#7a4b06" text-anchor="middle">all-to-all 2</text>
+<rect x="841.0" y="396.0" width="78.0" height="22.0" rx="3" fill="#ffe6be" stroke="#627080" stroke-width="1"/>
+<text x="880.0" y="411.0" font-size="11" font-weight="normal" fill="#7a4b06" text-anchor="middle">all-to-all 3</text>
+<rect x="761.0" y="360.0" width="82.0" height="22.0" rx="3" fill="#dfebfa" stroke="#627080" stroke-width="1"/>
+<text x="802.0" y="375.0" font-size="11" font-weight="normal" fill="#1f4e8c" text-anchor="middle">proj+MLP 1</text>
+<line x1="760.0" y1="395.0" x2="760.0" y2="384.0" stroke="#7a4b06" stroke-width="1" stroke-dasharray="2,2"/>
+<rect x="845.0" y="360.0" width="82.0" height="22.0" rx="3" fill="#dfebfa" stroke="#627080" stroke-width="1"/>
+<text x="886.0" y="375.0" font-size="11" font-weight="normal" fill="#1f4e8c" text-anchor="middle">proj+MLP 2</text>
+<line x1="840.0" y1="395.0" x2="840.0" y2="384.0" stroke="#7a4b06" stroke-width="1" stroke-dasharray="2,2"/>
+<rect x="929.0" y="360.0" width="82.0" height="22.0" rx="3" fill="#dfebfa" stroke="#627080" stroke-width="1"/>
+<text x="970.0" y="375.0" font-size="11" font-weight="normal" fill="#1f4e8c" text-anchor="middle">proj+MLP 3</text>
+<line x1="920.0" y1="395.0" x2="920.0" y2="384.0" stroke="#7a4b06" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="240.0" y="122.0" font-size="16" font-weight="bold" fill="#152638" text-anchor="middle">1  Unfused</text>
+<text x="240.0" y="141.0" font-size="12" font-weight="normal" fill="#556575" text-anchor="middle">Conceptual baseline with separate steps</text>
+<text x="750.0" y="122.0" font-size="16" font-weight="bold" fill="#152638" text-anchor="middle">2  UniServe</text>
+<text x="750.0" y="141.0" font-size="12" font-weight="normal" fill="#556575" text-anchor="middle">The combination kernel writes each row into its destination's slot</text>
+<rect x="289.0" y="464.0" width="26.0" height="13.0" rx="6.5" fill="#f3f5f8" stroke="#627080" stroke-width="1"/>
+<text x="323.0" y="475.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="start" textLength="78.0" lengthAdjust="spacingAndGlyphs">tensor in HBM</text>
+<rect x="431.0" y="464.0" width="26.0" height="13.0" rx="3" fill="#dfebfa" stroke="#627080" stroke-width="1"/>
+<text x="465.0" y="475.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="start" textLength="36.0" lengthAdjust="spacingAndGlyphs">kernel</text>
+<rect x="531.0" y="464.0" width="26.0" height="13.0" rx="3" fill="#ffe6be" stroke="#627080" stroke-width="1"/>
+<text x="565.0" y="475.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="start" textLength="78.0" lengthAdjust="spacingAndGlyphs">communication</text>
+<rect x="673.0" y="464.0" width="26.0" height="13.0" rx="3" fill="#e7def6" stroke="#627080" stroke-width="1"/>
+<text x="707.0" y="475.0" font-size="12" font-weight="normal" fill="#26384b" text-anchor="start" textLength="54.0" lengthAdjust="spacingAndGlyphs">attention</text>
+<text x="540.0" y="500.0" font-size="11.5" font-weight="normal" fill="#556575" text-anchor="middle">c k: compose interval k. The output projection, gated residual and MLP of interval k start when its all-to-all lands.</text>
+<text x="540.0" y="518.0" font-size="11.5" font-weight="normal" fill="#556575" text-anchor="middle">Source: uniserve/nn/attention/_parallel.py and uniserve/distributed/chunks.py at release 3cca4caa.</text>
+</svg>
