@@ -166,10 +166,12 @@ Same protocol as our last post: a 5 s clip with audio at 832×480, end to end on
 |---|---:|---:|---:|
 | DGX Spark | 141.4 s | **66.4 s** | **61.7 s** |
 | 2× DGX Spark | 87.2 s | **50.1 s** | **44.7 s** |
-| RTX 5090 | 14.8 s | TODO | TODO |
+| RTX 5090 | 14.8 s | **14.1 s** | **12.6 s** |
 | RTX PRO 6000 | 13.5 s | TODO | TODO |
 
-<!-- TODO: 1344x768 column (runs in progress), 2x Spark, RTX rows. -->
+<!-- TODO: RTX PRO 6000 row; 1344x768 for Spark. -->
+
+At 1344×768 on the RTX 5090, a 5 s clip takes **36.6 s** with the 36-layer decoder and **33.3 s** with the 8-layer decoder, against 38.6 s in our last post.
 
 A 5 s clip on one DGX Spark now takes about a minute instead of almost two and a half: **2.3× faster**. The transformer gets faster from cuDNN FP4 GEMMs and from removing a padding copy before every FP4 activation, and the decoder goes from 43 s to 1.6 s. The NVFP4 decoders also lower peak GPU memory on the Spark by 5–6 GiB. Repeated runs with the same seed produce identical videos.
 
