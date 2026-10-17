@@ -36,7 +36,7 @@ Together they lay the foundation for tomorrow's release of **FastH3 OmniRef**, w
 ## TL;DR
 
 - **V2.1 improves V2 NVFP4** with quantization-aware distillation: sharper faces and fine texture, with no new artifacts, and no change in speed, memory or file layout. It is a drop-in replacement.
-- **The VAE decoder was the last part of FastH3 that was not in NVFP4.** We trained two NVFP4 decoders on FastH3 latents and wrote fused FP4 kernels for them. On one DGX Spark, decoding a 5 s, 480p clip drops from 43 s to 1.6 s.
+- **The VAE decoder was the last part of FastH3 that was not in NVFP4.** We trained two NVFP4 decoders on FastH3 latents and wrote fused FP4 kernels for them. On one DGX Spark, decoding a 5 s, 480p clip drops from 43 s to 1.6 s, and the whole clip from 141 s to 62 s.
 - **Both decoders beat LightVAE on its own benchmark.** The 36-layer decoder is faster than LightVAE-Lite and 1.9 dB better. The 8-layer decoder matches Lite's quality at 5.4× its speed and a fifth of its size.
 - **The whole stack is now 4-bit.** Text encoder, transformer and VAE decoder all run in NVFP4: 30 GiB of weights instead of 118 GiB for the same model in BF16, 3.9× smaller.
 - **Bring your own LoRA.** Point FastVideo at a MiniMax H3 LoRA. On NVFP4 and FP8 models it runs beside the 4-bit weights without modifying them.
@@ -160,16 +160,18 @@ With the decoder done, every large component of FastH3 text-to-video now runs in
 
 ### Faster end to end
 
-<!-- TODO: fill with V2.1 + each decoder, same protocol as the last post (5 s, 832x480 and 1344x768, warm, end to end). Spark numbers below are measured with V2. -->
+Same protocol as our last post: a 5 s clip with audio at 832×480, end to end on a warm server from prompt to finished MP4, the median of two runs on each of two prompts.
 
-| Machine | V2, light VAE (last post) | V2.1 + 36-layer decoder | V2.1 + 8-layer decoder |
+| Machine | Last post (V2) | **V2.1 + 36-layer decoder** | **V2.1 + 8-layer decoder** |
 |---|---:|---:|---:|
-| DGX Spark | 141.4 s | TODO | **70.9 s** |
+| DGX Spark | 141.4 s | **66.4 s** | **61.7 s** |
 | 2× DGX Spark | 87.2 s | TODO | TODO |
 | RTX 5090 | 14.8 s | TODO | TODO |
 | RTX PRO 6000 | 13.5 s | TODO | TODO |
 
-On a DGX Spark, end-to-end time halves: cuDNN FP4 GEMMs and removing a padding copy before every FP4 activation speed up the transformer, and the 8-layer decoder takes video decoding from 43 s to 1.6 s. At 768p, it takes decoding from 25.4 s to 3.9 s.
+<!-- TODO: 1344x768 column (runs in progress), 2x Spark, RTX rows. -->
+
+A 5 s clip on one DGX Spark now takes about a minute instead of almost two and a half: **2.3× faster**. The transformer gets faster from cuDNN FP4 GEMMs and from removing a padding copy before every FP4 activation, and the decoder goes from 43 s to 1.6 s. The NVFP4 decoders also lower peak GPU memory on the Spark by 5–6 GiB. Repeated runs with the same seed produce identical videos.
 
 ## Community LoRAs
 
