@@ -38,6 +38,7 @@ Together they lay the foundation for tomorrow's release of **FastH3 OmniRef**, w
 - **V2.1 improves V2 NVFP4** with quantization-aware distillation: sharper faces and fine texture, with no new artifacts, and no change in speed, memory or file layout. It is a drop-in replacement.
 - **The VAE decoder was the last part of FastH3 that was not in NVFP4.** We trained two NVFP4 decoders on FastH3 latents and wrote fused FP4 kernels for them. On one DGX Spark, decoding a 5 s, 480p clip drops from 43 s to 1.6 s.
 - **Both decoders beat LightVAE on its own benchmark.** The 36-layer decoder is faster than LightVAE-Lite and 1.9 dB better. The 8-layer decoder matches Lite's quality at 5.4× its speed and a fifth of its size.
+- **The whole stack is now 4-bit.** Text encoder, transformer and VAE decoder all run in NVFP4: 32 GB of weights instead of 127 GB for the same model in BF16, 3.9× smaller.
 - **Bring your own LoRA.** Point FastVideo at a MiniMax H3 LoRA. On NVFP4 and FP8 models it runs beside the 4-bit weights without modifying them.
 
 ## FastH3 V2.1
@@ -129,6 +130,32 @@ A 4-bit GEMM is only fast if everything around it is too. The decoder's blocks r
 - **Their quality claim did not hold on our clips:** Lite lost 2.0 dB here, against the 1.25 dB in their README. The numbers in their paper on real datasets (about −3 dB on UCF-101 and DAVIS) agree with ours.
 
 <!-- TODO(fig): zoomed crop grid on hard content (face, small text, foliage): original | ours 36L | ours 8L | LightVAE-Lite | TAEH3. Optional: a wipe slider original vs 8L. -->
+
+## The whole stack in NVFP4
+
+With the decoder done, every large component of FastH3 text-to-video now runs in NVFP4: the text encoder, the transformer and the VAE decoder. Here is what that buys against the same model kept in BF16.
+
+{{< image src="img/fig_stack_size.svg" alt="Stacked bars of the weights FastH3 loads for text-to-video: 127.1 GB for the same model in BF16 and 32.2 GB for the FastH3 V2.1 NVFP4 stack." width="100%" title="Figure 3. Weights loaded for text-to-video, by component." >}}
+
+<div class="v21-table">
+<table>
+<thead><tr><th>Component</th><th>Same model in BF16</th><th>FastH3 V2.1 stack</th><th>Smaller by</th></tr></thead>
+<tbody>
+<tr><td>Transformer linear layers (21.2B parameters)</td><td>42.4 GB</td><td class="win">11.9 GB, NVFP4</td><td class="win">3.6×</td></tr>
+<tr><td>Timestep (AdaLN) projections (13.0B)</td><td>26.0 GB</td><td class="win">0.15 GB, precomputed table</td><td class="win">170×</td></tr>
+<tr><td>Other transformer weights (0.8B)</td><td>1.7 GB</td><td>1.7 GB, BF16</td><td>—</td></tr>
+<tr><td>Text encoder, Qwen3-VL (25.8B)</td><td>51.5 GB</td><td class="win">16.5 GB, NVFP4</td><td class="win">3.1×</td></tr>
+<tr><td>VAE decoder (2.4B)</td><td>4.9 GB</td><td class="win">1.39 GB (36 layers) / 0.33 GB (8 layers)</td><td class="win">3.5× / 15×</td></tr>
+<tr><td>Audio VAE</td><td>0.6 GB</td><td>0.6 GB</td><td>—</td></tr>
+<tr class="ours"><td>Total</td><td>127.1 GB</td><td class="best">32.2 GB / 31.2 GB</td><td class="best">3.9× / 4.1×</td></tr>
+</tbody>
+</table>
+</div>
+
+- **NVFP4 stores a weight in about 4.5 bits** (4-bit values plus a shared FP8 scale for every 16), so 4-bit layers come out about 3.6× smaller than BF16.
+- **The timestep projections are not quantized at all.** FastH3 samples on a fixed eight-step schedule, so their outputs are precomputed once into a 155 MB table and the 26 GB of weights are never loaded.
+- **What stays in BF16** is small and sensitive: norms, embeddings, the input and output projections, the text encoder's vision tower and the audio VAE.
+- For reference, the BF16 V2 release on Hugging Face is 148 GB on disk, because it also carries the full text encoder and the FP32 VAE.
 
 ### Faster end to end
 
