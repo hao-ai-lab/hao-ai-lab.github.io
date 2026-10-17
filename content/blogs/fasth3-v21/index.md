@@ -165,7 +165,7 @@ Same protocol as our last post: a 5 s clip with audio at 832×480, end to end on
 | Machine | Last post (V2) | **V2.1 + 36-layer decoder** | **V2.1 + 8-layer decoder** |
 |---|---:|---:|---:|
 | DGX Spark | 141.4 s | **66.4 s** | **61.7 s** |
-| 2× DGX Spark | 87.2 s | **50.1 s** | TODO |
+| 2× DGX Spark | 87.2 s | **50.1 s** | **44.7 s** |
 | RTX 5090 | 14.8 s | TODO | TODO |
 | RTX PRO 6000 | 13.5 s | TODO | TODO |
 
