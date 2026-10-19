@@ -21,8 +21,6 @@ contentClass = "fasth3-v21-article"
     hidden = false
 +++
 
-<div class="v21-placeholder">Video montage placeholder: V2.1 clips with audio (close-up faces, fast motion), a decoder side-by-side, and one community LoRA. Replaces the cover image.</div>
-
 {{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" huggingface="https://huggingface.co/collections/FastVideo/fastvideo-fasth3" >}}
 
 FastH3 V2 runs an eight-step video and audio model in NVFP4 on consumer GPUs. V2.1 raises quality without changing the architecture, memory footprint or file layout by training the 4-bit model instead of only calibrating it.
@@ -225,6 +223,5 @@ We thank the NVIDIA Enterprise Products team (Pengcheng Li and Cliff Woolley) fo
 .fasth3-v21-article .v21-legend { font-size: 0.8rem; color: var(--secondary); margin: 0.2rem 0 1.4rem; }
 .fasth3-v21-article .v21-legend span { display: inline-block; margin-right: 0.8rem; padding: 0 0.35rem; font-weight: 700; color: #1f5fc4; }
 
-.fasth3-v21-article .v21-placeholder { margin: 1rem 0 1.6rem; padding: 3.2rem 1rem; text-align: center; border: 1.5px dashed #2a6fdb; border-radius: 10px; background: rgba(42, 111, 219, 0.06); color: var(--secondary); font-size: 0.9rem; aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; }
 .fasth3-v21-article .v21-legend span.best { box-shadow: inset 0 0 0 2px #2a6fdb; border-radius: 4px; }
 </style>
