@@ -5,7 +5,7 @@ url = "/blogs/fasth3-v21/"
 authors = ["Aryan Kumar", "Will Lin", "Hao Zhang"]
 author = "Aryan Kumar, Will Lin, Hao Zhang"
 ShowReadingTime = true
-draft = true
+draft = false
 contentClass = "fasth3-v21-article"
 [socialIcons]
     [[socialIcons.icon]]
@@ -16,7 +16,7 @@ contentClass = "fasth3-v21-article"
       url = "https://github.com/hao-ai-lab/FastVideo"
 [cover]
     image = "img/cover.jpg"
-    alt = "TODO cover"
+    alt = "FastH3 V2.1"
     caption = "FastH3 V2.1"
     hidden = true
 +++
@@ -25,33 +25,23 @@ contentClass = "fasth3-v21-article"
 
 {{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" huggingface="https://huggingface.co/collections/FastVideo/fastvideo-fasth3" >}}
 
-Two weeks ago we brought [FastH3 to consumer hardware](/blogs/fasth3-rtx/): an RTX 5090, RTX 4090, DGX Spark or Mac. Today we are releasing three things that make it better:
+FastH3 V2 runs an eight-step video and audio model in NVFP4 on consumer GPUs. V2.1 raises quality without changing the architecture, memory footprint or file layout by training the 4-bit model instead of only calibrating it.
 
-- **FastH3 V2.1**, a new NVFP4 checkpoint of FastH3 V2 with higher quality at the same speed and memory.
-- **Two NVFP4 VAE decoders**, trained on FastH3's own outputs. The 36-layer decoder matches the original H3 decoder; the 8-layer decoder is 15× faster than it. Both beat LightVAE, believed to be the best public lightweight decoder for H3.
+We are releasing three pieces:
+
+- **FastH3 V2.1**, the quantization-aware distillation (QAD) checkpoint of FastH3 V2. It keeps V2's memory footprint and file layout, and it matches or beats V2 end to end with FP4 attention.
+- **Two NVFP4 VAE decoders**, trained on FastH3's own outputs. The 36-layer decoder matches the original H3 decoder. The 8-layer decoder runs 15× faster. Both beat LightVAE on its own benchmark.
 - **Community LoRAs in FastVideo.** LoRAs trained for MiniMax H3 in ComfyUI and other common formats now load directly, including on NVFP4 models.
 
-Together they lay the foundation for tomorrow's release of **FastH3 OmniRef**, which uses all three. More [at the end](#tomorrow-fasth3-omniref).
+Together they form the foundation for tomorrow's release of **FastH3 OmniRef**, which uses all three. More [at the end](#tomorrow-fasth3-omniref).
 
-## TL;DR
+## FastH3 V2.1: QAD closes the PTQ quality gap
 
-- **V2.1 improves V2 NVFP4** with quantization-aware distillation: sharper faces and fine texture, with no new artifacts, and no change in speed, memory or file layout. It is a drop-in replacement.
-- **The VAE decoder was the last part of FastH3 that was not in NVFP4.** We trained two NVFP4 decoders on FastH3 latents and wrote fused FP4 kernels for them. On one DGX Spark, decoding a 5 s, 480p clip drops from 43 s to 1.6 s, and the whole clip from 141 s to 62 s.
-- **Both decoders beat LightVAE on its own benchmark.** The 36-layer decoder is faster than LightVAE-Lite and 1.9 dB better. The 8-layer decoder matches Lite's quality at 5.4× its speed and a fifth of its size.
-- **The whole stack is now 4-bit.** Text encoder, transformer and VAE decoder all run in NVFP4: 30 GiB of weights instead of 118 GiB for the same model in BF16, 3.9× smaller.
-- **Bring your own LoRA.** Point FastVideo at a MiniMax H3 LoRA. On NVFP4 and FP8 models it runs beside the 4-bit weights without modifying them.
+V2.1 is the quantization-aware distillation (QAD) checkpoint of FastH3 V2. V2 shipped with post-training quantization (PTQ): calibrate activation scales on 1,000 prompts, then round each weight to 4 bits. QAD goes one step further. The teacher is V2 in full precision. The student runs the deployed 4-bit weights and activations on all 350 linear layers and trains through the rounding, so the weights adapt to the quantized forward pass instead of carrying its error into the output.
 
-## FastH3 V2.1
-
-V2.1 is a new NVFP4 checkpoint of FastH3 V2. Same model, same files, same speed; better videos.
-
-<!-- TODO(fig): side-by-side clips, V2 | V2.1, same seed, DGX Spark: elderly-man close-up, laughing woman, mountain biker, night-market violinist. Source: ~/Desktop/V2-QAD-Spark/fg300/ -->
-
-Our first NVFP4 release used post-training quantization: calibrate activation scales on 1,000 prompts, then round every weight to 4 bits. Rounding nudges every prediction slightly, and over eight sampling steps the nudges add up to softer faces and less fine detail. For V2.1 we trained the 4-bit model to compensate, with **quantization-aware distillation (QAD)**:
-
-- **Teacher and student.** The teacher is V2 in full precision. The student is V2 with 4-bit weights and activations on all 350 linear layers, and it trains *through* the 4-bit rounding, so it learns weights that work well after rounding.
-- **Matching every step.** At each of the eight sampling steps, the student sees the teacher's input and learns to make the teacher's prediction, for video and audio. A quarter of the samples run on the student's own trajectory, so it also learns to recover from its own small errors.
-- **No data needed.** Training uses only text prompts: 3,000 prompts, 300 steps on two GB200 nodes, about five hours.
+- **Matching every step.** At each of the eight sampling steps, the student sees the teacher's input and learns the teacher's output. A quarter of the samples run on the student's own trajectory, so it also learns to recover from its own small errors.
+- **Text-only training.** The recipe uses 3,000 text prompts, 300 steps on two GB200 nodes, and about five hours.
+- **A shared recipe.** The same QAD method is the training path for the next FastH3 models, including OmniRef. <!-- TODO: link the QAD recipe docs page once FastVideo #1989 merges. -->
 
 The result, measured as error against full-precision V2 on 30 held-out prompts (lower is better):
 
@@ -63,20 +53,16 @@ The result, measured as error against full-precision V2 on 30 held-out prompts (
 <tr><td>Video</td><td>0.471</td><td class="win">0.382</td><td class="win">−19%</td></tr>
 <tr><td>Audio</td><td>0.391</td><td class="win">0.319</td><td class="win">−18%</td></tr>
 <tr><td>Final video after all 8 steps</td><td>0.817</td><td class="win">0.713</td><td class="win">−13%</td></tr>
-<tr><td>Speed, memory, file layout</td><td colspan="3">unchanged</td></tr>
+<tr><td>Memory, file layout</td><td colspan="3">unchanged</td></tr>
 </tbody>
 </table>
 </div>
 
-### What we learned: freeze what you don't quantize
+### Why the VSA gates stay in BF16
 
-Our first QAD run trained every linear layer, including the small gates that Video Sparse Attention uses to decide which parts of the video each token attends to. The training metric improved. The videos got worse: on fast motion, a dancer grew a ghostly double.
+Video Sparse Attention uses small gate projections to decide which video tiles each token attends to. Quantizing the linears changes the arithmetic. Changing the gates changes the selection itself, so the attention pattern no longer matches the one the model was trained with. V2.1 keeps the gates and normalization layers in BF16, and trains only the q/k/v/out and FFN projections, the same set the NVFP4 export quantizes.
 
-The gates are not where quantization error lives, but changing them changes *what the model looks at*, and no per-step error metric catches that. Restoring the original gates removed the artifacts completely. V2.1 freezes the gates and normalization layers, and it came out both cleaner and better on the metric (0.351 vs 0.362 at the same step).
-
-<!-- TODO(fig): 3-panel still, V2 | QAD with trained gates (ghost dancer) | V2.1. Source: ~/Desktop/V2-QAD-Spark/gate-test/frame_dancers_60.png -->
-
-We now check every QAD run on real videos, rendered through the deployed pipeline, before trusting its numbers.
+The result preserves tile selection while letting every quantized projection adapt to 4-bit arithmetic. We evaluate each QAD checkpoint on rendered clips through the deployed pipeline, in addition to teacher-forced metrics, before promoting it.
 
 ## NVFP4 VAE decoders
 
@@ -91,13 +77,11 @@ We trained two NVFP4 decoders, both distilled from the original 36-layer H3 deco
 
 ### Trained on FastH3's own outputs
 
-A decoder only has to be good on the latents it is given. Our first attempt trained on encoded real video and looked fine on real clips, but lost detail on FastH3 generations. The final decoders train on **latents generated by FastH3** itself (V2, V1, Trim and OmniRef), mixed with encoded real video:
+A decoder only has to be good on the latents it is given. We train on **latents generated by FastH3** itself, mixed with encoded real video, so the decoder sees the same distribution at training and inference:
 
 - **Teacher:** the original H3 decoder in full precision. **Loss:** pixel L1 plus LPIPS against the teacher's output, on random latent tiles.
 - **Students:** NVFP4 weights and activations in every transformer block; input/output projections and norms stay in higher precision.
 - **What the error is:** with 4-bit weights alone the decoder is nearly lossless. What remains comes from 4-bit activations, spread evenly across the blocks.
-
-They are trained on FastH3's latent distribution, which is H3's: we expect them to work with other H3-based models as well.
 
 ### Fused FP4 kernels
 
@@ -105,7 +89,7 @@ A 4-bit GEMM is only fast if everything around it is too. The decoder's blocks r
 
 ### Head to head with LightVAE
 
-[LightVAE](https://huggingface.co/lightx2v/LightVAE) is believed to be the best public lightweight decoder for H3: LightVAE-Lite keeps 12 of the 36 decoder layers and reports about 3× the original's speed. We compared against it **on LightVAE's own protocol**: 1344×768, 124 frames, bf16, eager mode, one warm-up and the median of three runs, on one GB200. LightVAE runs with its own code and weights, and every decoder receives the same latents from the original H3 encoder. The 20 test clips are 10 H3 generations and 10 live-action clips that no decoder has seen. Our harness reproduces LightVAE's PSNR exactly, and their speed claims hold (2.85× vs their claimed 2.96×).
+[LightVAE](https://huggingface.co/lightx2v/LightVAE) is a widely used public lightweight decoder for H3. LightVAE-Lite keeps 12 of the 36 decoder layers and reports about 3× the original's speed. We compared against it **on LightVAE's own protocol**: 1344×768, 124 frames, bf16, eager mode, one warm-up and the median of three runs, on one GB200. LightVAE runs with its own code and weights, and every decoder receives the same latents from the original H3 encoder. The 20 test clips are 10 H3 generations and 10 live-action clips that no decoder has seen. Our harness reproduces LightVAE's PSNR exactly, and their speed claims hold (2.85× vs their claimed 2.96×).
 
 <div class="v21-table">
 <table>
@@ -126,8 +110,8 @@ A 4-bit GEMM is only fast if everything around it is too. The decoder's blocks r
 
 - **36-layer vs LightVAE-Lite:** 1.9 dB better and essentially lossless (−0.10 dB against the original, where Lite loses 2.0), faster on their protocol (70 vs 51 FPS) and smaller. The one place it trails: in the best config, Lite's decoder is faster (184 vs 104 FPS), at 1.9 dB lower quality.
 - **8-layer vs LightVAE-Lite:** the same PSNR (31.73 vs 31.74 dB) with better LPIPS (0.096 vs 0.109), 5.4× faster on their protocol, 2.3× faster in the best config, and 5× smaller.
-- **On real footage and on generated video, at 480p, 720p and 768p,** the ranking is the same. Full tables are in the [appendix](#appendix-decoder-benchmark).
-- **Their quality claim did not hold on our clips:** Lite lost 2.0 dB here, against the 1.25 dB in their README. The numbers in their paper on real datasets (about −3 dB on UCF-101 and DAVIS) agree with ours.
+- **On real footage and on generated video, at 480p, 720p and 768p,** the ranking is the same.
+- **On our 20-clip protocol, Lite loses 2.0 dB; its README reports 1.25 dB.** Its paper's real-dataset results, about −3 dB on UCF-101 and DAVIS, are consistent with our measurement.
 
 <!-- TODO(fig): zoomed crop grid on hard content (face, small text, foliage): original | ours 36L | ours 8L | LightVAE-Lite | TAEH3. Optional: a wipe slider original vs 8L. -->
 
@@ -158,26 +142,15 @@ With the decoder done, every large component of FastH3 text-to-video now runs in
 - **The BF16 column is the same layers FastH3 runs.** H3 reads layer 50 of its 64-layer Qwen3-VL text encoder, so we keep only those 50 layers. The BF16 H3 checkpoint as released is 137.7 GiB, because it also carries the last 14 encoder layers, the language-model head, and the FP32 VAE encoder and decoder.
 - **Not all of it is on the GPU at once.** On a 32 GB RTX 5090, the transformer (12.7 GiB) and the decoder stay on the GPU, while the text encoder streams in one layer at a time from host memory and the timestep projections are never loaded. A DGX Spark keeps everything in its 128 GB of unified memory.
 
-### Faster end to end
+### End-to-end latency
 
-Same protocol as our last post: a 5 s clip with audio at 832×480, end to end on a warm server from prompt to finished MP4, the median of two runs on each of two prompts.
+Same protocol as our last post: end to end on a warm server from prompt to finished MP4, the median of four runs, with model load excluded. The figure uses the FP4 VSA attention lane.
 
-| Machine | Last post (V2) | **V2.1 + 36-layer decoder** | **V2.1 + 8-layer decoder** |
-|---|---:|---:|---:|
-| DGX Spark | 141.4 s | **66.4 s** | **61.7 s** |
-| 2× DGX Spark | 87.2 s | **50.1 s** | **44.7 s** |
-| RTX 5090 | 14.8 s | **14.1 s** | **12.6 s** |
-| RTX PRO 6000 | 13.5 s | TODO | TODO |
-
-<!-- TODO: RTX PRO 6000 row; 1344x768 for Spark. -->
-
-At 1344×768 on the RTX 5090, a 5 s clip takes **36.6 s** with the 36-layer decoder and **33.3 s** with the 8-layer decoder, against 38.6 s in our last post. A 10 s clip at 1344×768 (243 frames) also fits on the 32 GB card: **75.3 s** with the 8-layer decoder and **80.5 s** with the 36-layer decoder (with PyTorch's expandable-segments allocator).
-
-A 5 s clip on one DGX Spark now takes about a minute instead of almost two and a half: **2.3× faster**. The transformer gets faster from cuDNN FP4 GEMMs and from removing a padding copy before every FP4 activation, and the decoder goes from 43 s to 1.6 s. The NVFP4 decoders also lower peak GPU memory on the Spark by 5–6 GiB. Repeated runs with the same seed produce identical videos.
+{{< image src="img/fig_e2e.svg" alt="Two-panel grouped bar chart. Top: 5 s 832×480 clips for V2, V2.1 with the 36-layer decoder, and V2.1 with the 8-layer decoder. Bottom: 10 s 1344×768 clips for the two V2.1 decoders. Log scale." width="100%" title="Figure 4. End-to-end time with audio. Top: a 5 s, 832×480 clip. Bottom: a 10 s, 1344×768 clip. Every row is one machine; all times use FP4 VSA." >}}
 
 ## Community LoRAs
 
-The H3 community has already published many LoRAs, from camera moves to film looks. Most are published in ComfyUI or trainer layouts, and until now FastVideo could not read them. It now loads them with one line:
+The H3 community has published many LoRAs, from camera moves to film looks. Most use ComfyUI or trainer layouts. FastVideo loads them directly, including on NVFP4 models:
 
 ```python
 from fastvideo import VideoGenerator
@@ -191,33 +164,20 @@ generator = VideoGenerator.from_config(
         ),
     ))
 ```
-<!-- TODO: verify each example LoRA below loads and works on V2.1 NVFP4 before publishing; add the engine settings from the last post if needed. -->
 
 - **Formats:** ComfyUI, fal, ai-toolkit and musubi-tuner layouts, with `lora_A/lora_B` or `lora_down/lora_up` factors and per-layer alpha.
 - **On 4-bit models:** NVFP4 and FP8 weights stay packed and untouched; each LoRA runs as a small bf16 side branch next to its layer. Strength 0 reproduces the base model exactly, and strength can change at runtime.
-- **No silent failures:** a LoRA that matches no layers, or too few, fails to load with a list of what did not match, instead of quietly giving you the base model.
+- **Clear load errors:** a LoRA that matches no layers, or too few, fails with a list of what did not match instead of silently returning the base model.
 
-Some popular MiniMax H3 LoRAs to try:
-
-<!-- TODO(fig): base | LoRA gallery on V2.1 NVFP4 for 3-4 of these. Check each license. -->
-
-| LoRA | What it does |
-|---|---|
-| [`fal/MiniMax-H3-Realism-People-LoRA`](https://huggingface.co/fal/MiniMax-H3-Realism-People-LoRA) | Photorealistic people |
-| [`pablodawson/MiniMax-H3-360-Orbit-LoRA`](https://huggingface.co/pablodawson/MiniMax-H3-360-Orbit-LoRA) | 360° orbiting camera |
-| [`Jojocodex/minimax-h3-Camera-Motion-lora`](https://huggingface.co/Jojocodex/minimax-h3-Camera-Motion-lora) | Camera motion control |
-| [`KennethFal/vh5tape-vhs-lora-minimax-h3`](https://huggingface.co/KennethFal/vh5tape-vhs-lora-minimax-h3) | VHS tape look |
-| [`lovis93/studio-1939-old-animation-lora-minimax-h3`](https://huggingface.co/lovis93/studio-1939-old-animation-lora-minimax-h3) | 1930s animation style |
-
-Most community LoRAs are trained on base H3, which samples in 50 steps; FastH3 samples in 8. Style and motion LoRAs usually carry over, but the best strength can differ. Step-reduction ("turbo") LoRAs are not needed: FastH3 is already an 8-step model. See the community LoRA guide for details. <!-- TODO: link the docs page once FastVideo #1973 merges -->
+Most community LoRAs target base H3's 50-step schedule. FastH3 samples in eight steps, so style and motion LoRAs usually carry over, but the best strength can differ. Turbo LoRAs are unnecessary.
 
 ## Tomorrow: FastH3 OmniRef
 
-Tomorrow we release **FastH3 OmniRef** for consumer GPUs: video with audio generated from reference images, video and audio. It is built from today's pieces: the same QAD recipe, extended to 4-bit attention, and the NVFP4 decoders. Today's release is the foundation it runs on.
+Tomorrow we release **FastH3 OmniRef**: the general model and its training code in BF16, plus a consumer-hardware release. The consumer release uses the QAD recipe above, extended to 4-bit attention, and the NVFP4 decoders.
 
 <!-- TODO: one teaser clip. -->
 
-## Limitations
+## Known limitations
 
 - **The 8-layer decoder trades quality for speed.** Use the 36-layer decoder when detail matters.
 - **The NVFP4 decoders need a Blackwell GPU:** RTX 50 series, RTX PRO 6000, DGX Spark, or B200/GB200.
@@ -229,13 +189,8 @@ Tomorrow we release **FastH3 OmniRef** for consumer GPUs: video with audio gener
 |---|---|
 | FastH3 V2.1, NVFP4 (RTX 5090, RTX PRO 6000, DGX Spark) | [`FastVideo-FastH3-8-Step-V2.1-NVFP4-Consumer`](https://huggingface.co/FastVideo/FastVideo-FastH3-8-Step-V2.1-NVFP4-Consumer) |
 | NVFP4 VAE decoders: `quality-36L/` and `fast-8L/` | [`FastH3-NVFP4-VAE-Decoder`](https://huggingface.co/FastVideo/FastH3-NVFP4-VAE-Decoder) |
-| Community LoRAs | Guide <!-- TODO: docs link after #1973 merges --> |
 
 <!-- TODO: usage snippet selecting the decoder (env/config) once the public loader path is final. -->
-
-## Appendix: decoder benchmark
-
-<!-- TODO: by-content table (generated vs real), 480p and 720p tables, method notes. Source: ~/Desktop/VAE-benchmark.md -->
 
 ## Acknowledgements
 
