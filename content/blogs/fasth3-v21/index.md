@@ -17,7 +17,6 @@ contentClass = "fasth3-v21-article"
 [cover]
     image = "img/cover.png"
     alt = "FastH3-QAD-v2"
-    caption = "FastH3-QAD-v2"
     hidden = false
 +++
 
