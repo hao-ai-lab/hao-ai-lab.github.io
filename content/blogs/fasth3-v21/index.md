@@ -104,7 +104,7 @@ A 4-bit GEMM is only fast if everything around it is too. The decoder's blocks r
 
 <p class="v21-legend"><span class="best">best in column</span> <span class="win">ours, better than LightVAE-Lite</span> "Best config" puts all spatial tiles in one call and adds <code>torch.compile</code>, applied equally to every model.</p>
 
-{{< image src="img/fig_vae_pareto.svg" alt="Decoder FPS against PSNR for the original H3 decoder, LightVAE-Lite, TAEH3 and our two NVFP4 decoders." width="100%" title="Figure 2. Speed and quality of H3 VAE decoders on LightVAE's protocol (1344×768, one GB200). Up and to the right is better." >}}
+{{< image src="img/fig_vae_pareto.svg" alt="Decode latency against PSNR for the original H3 decoder, LightVAE-Lite, TAEH3 and our two NVFP4 decoders." width="100%" title="Figure 2. Quality against decode latency for H3 VAE decoders on LightVAE's protocol (1344×768, one GB200). Lower latency and higher PSNR are better." >}}
 
 - **36-layer vs LightVAE-Lite:** 1.9 dB better and essentially lossless (−0.10 dB against the original, where Lite loses 2.0), faster on their protocol (70 vs 51 FPS) and smaller. The one place it trails: in the best config, Lite's decoder is faster (184 vs 104 FPS), at 1.9 dB lower quality.
 - **8-layer vs LightVAE-Lite:** the same PSNR (31.73 vs 31.74 dB) with better LPIPS (0.096 vs 0.109), 5.4× faster on their protocol, 2.3× faster in the best config, and 5× smaller.
