@@ -1,5 +1,5 @@
 +++
-title = "FastH3 V2.1 and NVFP4 VAE Decoders: Better Quality, Faster Decoding, and Community LoRAs"
+title = "FastH3-QAD-v2 and NVFP4 VAE Decoders: Better Quality, Faster Decoding, and Community LoRAs"
 date = 2026-10-19T00:00:00-07:00
 url = "/blogs/fasth3-v21/"
 authors = ["Aryan Kumar", "Will Lin", "Hao Zhang"]
@@ -16,26 +16,26 @@ contentClass = "fasth3-v21-article"
       url = "https://github.com/hao-ai-lab/FastVideo"
 [cover]
     image = "img/cover.png"
-    alt = "FastH3 V2.1"
-    caption = "FastH3 V2.1"
+    alt = "FastH3-QAD-v2"
+    caption = "FastH3-QAD-v2"
     hidden = false
 +++
 
 {{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" huggingface="https://huggingface.co/collections/FastVideo/fastvideo-fasth3" >}}
 
-FastH3 V2 runs an eight-step video and audio model in NVFP4 on consumer GPUs. V2.1 raises quality without changing the architecture, memory footprint or file layout by training the 4-bit model instead of only calibrating it.
+FastH3 V2 runs an eight-step video and audio model in NVFP4 on consumer GPUs. FastH3-QAD-v2 raises quality without changing the architecture, memory footprint or file layout by training the 4-bit model instead of only calibrating it.
 
 We are releasing three pieces:
 
-- **FastH3 V2.1**, the quantization-aware distillation (QAD) checkpoint of FastH3 V2. It keeps V2's memory footprint and file layout, and it matches or beats V2 end to end with FP4 attention.
+- **FastH3-QAD-v2**, the quantization-aware distillation (QAD) checkpoint of FastH3 V2. It keeps V2's memory footprint and file layout, and it matches or beats V2 end to end with FP4 attention.
 - **Two NVFP4 VAE decoders**, trained on FastH3's own outputs. The 36-layer decoder matches the original H3 decoder. The 8-layer decoder runs 15× faster. Both beat LightVAE on its own benchmark.
 - **Community LoRAs in FastVideo.** LoRAs trained for MiniMax H3 in ComfyUI and other common formats now load directly, including on NVFP4 models.
 
 Together they form the foundation for tomorrow's release of **FastH3 OmniRef**, which uses all three. More [at the end](#tomorrow-fasth3-omniref).
 
-## FastH3 V2.1: QAD closes the PTQ quality gap
+## FastH3-QAD-v2: QAD closes the PTQ quality gap
 
-V2.1 is the quantization-aware distillation (QAD) checkpoint of FastH3 V2. V2 shipped with post-training quantization (PTQ): calibrate activation scales on 1,000 prompts, then round each weight to 4 bits. QAD goes one step further. The teacher is V2 in full precision. The student runs the deployed 4-bit weights and activations on all 350 linear layers and trains through the rounding, so the weights adapt to the quantized forward pass instead of carrying its error into the output.
+FastH3-QAD-v2 is the quantization-aware distillation (QAD) checkpoint of FastH3 V2. V2 shipped with post-training quantization (PTQ): calibrate activation scales on 1,000 prompts, then round each weight to 4 bits. QAD goes one step further. The teacher is V2 in full precision. The student runs the deployed 4-bit weights and activations on all 350 linear layers and trains through the rounding, so the weights adapt to the quantized forward pass instead of carrying its error into the output.
 
 - **Matching every step.** At each of the eight sampling steps, the student sees the teacher's input and learns the teacher's output. A quarter of the samples run on the student's own trajectory, so it also learns to recover from its own small errors.
 - **Text-only training.** The recipe uses 3,000 text prompts, 300 steps on two GB200 nodes, and about five hours.
@@ -45,7 +45,7 @@ The result, measured as error against full-precision V2 on 30 held-out prompts (
 
 <div class="v21-table">
 <table>
-<thead><tr><th>Error vs full-precision V2</th><th>V2 NVFP4</th><th>V2.1 NVFP4</th><th>Change</th></tr></thead>
+<thead><tr><th>Error vs full-precision V2</th><th>V2 NVFP4</th><th>FastH3-QAD-v2 NVFP4</th><th>Change</th></tr></thead>
 <tbody>
 <tr><td>Each sampling step, video + audio</td><td>0.431</td><td class="win">0.351</td><td class="win">−19%</td></tr>
 <tr><td>Video</td><td>0.471</td><td class="win">0.382</td><td class="win">−19%</td></tr>
@@ -58,7 +58,7 @@ The result, measured as error against full-precision V2 on 30 held-out prompts (
 
 ### Why the VSA gates stay in BF16
 
-Video Sparse Attention uses small gate projections to decide which video tiles each token attends to. Quantizing the linears changes the arithmetic. Changing the gates changes the selection itself, so the attention pattern no longer matches the one the model was trained with. V2.1 keeps the gates and normalization layers in BF16, and trains only the q/k/v/out and FFN projections, the same set the NVFP4 export quantizes.
+Video Sparse Attention uses small gate projections to decide which video tiles each token attends to. Quantizing the linears changes the arithmetic. Changing the gates changes the selection itself, so the attention pattern no longer matches the one the model was trained with. FastH3-QAD-v2 keeps the gates and normalization layers in BF16, and trains only the q/k/v/out and FFN projections, the same set the NVFP4 export quantizes.
 
 The result preserves tile selection while letting every quantized projection adapt to 4-bit arithmetic. We evaluate each QAD checkpoint on rendered clips through the deployed pipeline, in addition to teacher-forced metrics, before promoting it.
 
@@ -117,11 +117,11 @@ A 4-bit GEMM is only fast if everything around it is too. The decoder's blocks r
 
 With the decoder done, every large component of FastH3 text-to-video now runs in NVFP4: the text encoder, the transformer and the VAE decoder. Here is what that buys against the same model kept in BF16.
 
-{{< image src="img/fig_stack_size.svg" alt="Stacked bars of the weights FastH3 loads for text-to-video: 118.3 GiB for the same model in BF16 and 30.0 GiB for the FastH3 V2.1 NVFP4 stack." width="100%" title="Figure 3. Weights loaded for text-to-video, by component." >}}
+{{< image src="img/fig_stack_size.svg" alt="Stacked bars of the weights FastH3 loads for text-to-video: 118.3 GiB for the same model in BF16 and 30.0 GiB for the FastH3-QAD-v2 NVFP4 stack." width="100%" title="Figure 3. Weights loaded for text-to-video, by component." >}}
 
 <div class="v21-table">
 <table>
-<thead><tr><th>Component</th><th>Same model in BF16</th><th>FastH3 V2.1 stack</th><th>Smaller by</th></tr></thead>
+<thead><tr><th>Component</th><th>Same model in BF16</th><th>FastH3-QAD-v2 stack</th><th>Smaller by</th></tr></thead>
 <tbody>
 <tr><td>Transformer linear layers (21.2B parameters)</td><td>39.5 GiB</td><td class="win">11.1 GiB, NVFP4</td><td class="win">3.6×</td></tr>
 <tr><td>Timestep (AdaLN) projections (13.0B)</td><td>24.2 GiB</td><td class="win">0.14 GiB, precomputed table</td><td class="win">170×</td></tr>
@@ -144,7 +144,7 @@ With the decoder done, every large component of FastH3 text-to-video now runs in
 
 Same protocol as our last post: end to end on a warm server from prompt to finished MP4, the median of four runs, with model load excluded. The figure uses the FP4 VSA attention lane.
 
-{{< image src="img/fig_e2e.svg" alt="Two-panel grouped bar chart. Top: 5 s 832×480 clips for V2, V2.1 with the 36-layer decoder, and V2.1 with the 8-layer decoder. Bottom: 10 s 1344×768 clips for the two V2.1 decoders. Log scale." width="100%" title="Figure 4. End-to-end time with audio. Top: a 5 s, 832×480 clip. Bottom: a 10 s, 1344×768 clip. Every row is one machine; all times use FP4 VSA." >}}
+{{< image src="img/fig_e2e.svg" alt="Two-panel grouped bar chart. Top: 5 s 832×480 clips for V2, FastH3-QAD-v2 with the 36-layer decoder, and FastH3-QAD-v2 with the 8-layer decoder. Bottom: 10 s 1344×768 clips for the two FastH3-QAD-v2 decoders. Log scale." width="100%" title="Figure 4. End-to-end time with audio. Top: a 5 s, 832×480 clip. Bottom: a 10 s, 1344×768 clip. Every row is one machine; all times use FP4 VSA." >}}
 
 ## Community LoRAs
 
@@ -185,7 +185,7 @@ Tomorrow we release **FastH3 OmniRef**: the general model and its training code 
 
 | | |
 |---|---|
-| FastH3-QAD-v2 (V2.1), NVFP4 (RTX 5090, RTX PRO 6000, DGX Spark) | [`FastH3-QAD-v2`](https://huggingface.co/FastVideo/FastH3-QAD-v2) |
+| FastH3-QAD-v2, NVFP4 (RTX 5090, RTX PRO 6000, DGX Spark) | [`FastH3-QAD-v2`](https://huggingface.co/FastVideo/FastH3-QAD-v2) |
 | NVFP4 VAE decoders: `quality-36L/` and `fast-8L/` | [`FastH3-NVFP4-VAE-Decoder`](https://huggingface.co/FastVideo/FastH3-NVFP4-VAE-Decoder) |
 
 <!-- TODO: usage snippet selecting the decoder (env/config) once the public loader path is final. -->
