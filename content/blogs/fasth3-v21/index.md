@@ -15,10 +15,10 @@ contentClass = "fasth3-v21-article"
       name = "github"
       url = "https://github.com/hao-ai-lab/FastVideo"
 [cover]
-    image = "img/cover.jpg"
+    image = "img/cover.png"
     alt = "FastH3 V2.1"
     caption = "FastH3 V2.1"
-    hidden = true
+    hidden = false
 +++
 
 <div class="v21-placeholder">Video montage placeholder: V2.1 clips with audio (close-up faces, fast motion), a decoder side-by-side, and one community LoRA. Replaces the cover image.</div>
