@@ -156,7 +156,7 @@ from fastvideo.api import ComponentConfig, GeneratorConfig, PipelineSelection
 
 generator = VideoGenerator.from_config(
     GeneratorConfig(
-        model_path="FastVideo/FastVideo-FastH3-8-Step-V2.1-NVFP4-Consumer",
+        model_path="FastVideo/FastH3-QAD-v2",
         pipeline=PipelineSelection(
             components=ComponentConfig(lora_path="pablodawson/MiniMax-H3-360-Orbit-LoRA", lora_strength=0.8),
         ),
@@ -185,7 +185,7 @@ Tomorrow we release **FastH3 OmniRef**: the general model and its training code 
 
 | | |
 |---|---|
-| FastH3 V2.1, NVFP4 (RTX 5090, RTX PRO 6000, DGX Spark) | [`FastVideo-FastH3-8-Step-V2.1-NVFP4-Consumer`](https://huggingface.co/FastVideo/FastVideo-FastH3-8-Step-V2.1-NVFP4-Consumer) |
+| FastH3-QAD-v2 (V2.1), NVFP4 (RTX 5090, RTX PRO 6000, DGX Spark) | [`FastH3-QAD-v2`](https://huggingface.co/FastVideo/FastH3-QAD-v2) |
 | NVFP4 VAE decoders: `quality-36L/` and `fast-8L/` | [`FastH3-NVFP4-VAE-Decoder`](https://huggingface.co/FastVideo/FastH3-NVFP4-VAE-Decoder) |
 
 <!-- TODO: usage snippet selecting the decoder (env/config) once the public loader path is final. -->
