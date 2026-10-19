@@ -33,6 +33,13 @@ We are releasing three pieces:
 
 Together they form the foundation for tomorrow's release of **FastH3 OmniRef**, which uses all three. More [at the end](#tomorrow-fasth3-omniref).
 
+<figure class="v21-hero-video">
+  <video controls playsinline preload="metadata" poster="img/cover.png" width="1344" height="768" aria-label="FastH3-QAD-v2 world tour generated on two DGX Sparks">
+    <source src="img/videos/world-tour.mp4#t=0.1" type="video/mp4">
+  </video>
+  <figcaption>Six 10 s clips generated on two DGX Sparks with FastH3-QAD-v2 and both NVFP4 decoders. Turn the audio on.</figcaption>
+</figure>
+
 ## FastH3-QAD-v2: QAD closes the PTQ quality gap
 
 FastH3-QAD-v2 is the quantization-aware distillation (QAD) checkpoint of FastH3 V2. V2 shipped with post-training quantization (PTQ): calibrate activation scales on 1,000 prompts, then round each weight to 4 bits. QAD goes one step further. The teacher is V2 in full precision. The student runs the deployed 4-bit weights and activations on all 350 linear layers and trains through the rounding, so the weights adapt to the quantized forward pass instead of carrying its error into the output.
@@ -224,4 +231,7 @@ We thank the NVIDIA Enterprise Products team (Pengcheng Li and Cliff Woolley) fo
 .fasth3-v21-article .v21-legend span { display: inline-block; margin-right: 0.8rem; padding: 0 0.35rem; font-weight: 700; color: #1f5fc4; }
 
 .fasth3-v21-article .v21-legend span.best { box-shadow: inset 0 0 0 2px #2a6fdb; border-radius: 4px; }
+.fasth3-v21-article .v21-hero-video { margin: 1.2rem 0 1.8rem; }
+.fasth3-v21-article .v21-hero-video video { display: block; width: 100%; height: auto; border-radius: 10px; background: #000; }
+.fasth3-v21-article .v21-hero-video figcaption { margin-top: 0.5rem; font-size: 0.9rem; color: var(--secondary); }
 </style>
