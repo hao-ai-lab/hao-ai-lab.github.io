@@ -36,7 +36,9 @@
       "runtime": "SGLang",
       "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
       "parallelism": "Ulysses 4 x Ring 2; transformer attention=fa; conditioning cache disabled",
-      "runtime_torch": "2.14.1+cu130"
+      "runtime_torch": "2.14.1+cu130",
+      "request_quality": "lossless",
+      "reference_resize_mode": "diffusers"
     },
     "fast": {
       "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",

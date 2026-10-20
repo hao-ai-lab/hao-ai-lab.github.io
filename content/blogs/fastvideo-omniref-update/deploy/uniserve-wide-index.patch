@@ -1,0 +1,39 @@
+diff --git a/uniserve_kernels/src/uniserve_kernels/activation.py b/uniserve_kernels/src/uniserve_kernels/activation.py
+index a42efcc3..dfc5e5e1 100644
+--- a/uniserve_kernels/src/uniserve_kernels/activation.py
++++ b/uniserve_kernels/src/uniserve_kernels/activation.py
+@@ -104,9 +104,12 @@ if triton is not None:
+         """
+         pdl_prologue(PDL)
+
+-        offsets = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
++        # Widen before multiplying: extending an overflowed int32 offset
++        # would retain its negative value and admit it through the mask.
++        program = tl.program_id(0)
+         if WIDE:
+-            offsets = offsets.to(tl.int64)
++            program = program.to(tl.int64)
++        offsets = program * BLOCK + tl.arange(0, BLOCK)
+         mask = offsets < elements
+         row = offsets // n_cols
+         column = offsets - row * n_cols
+@@ -197,8 +200,7 @@ if triton is not None:
+         to ``partials_ptr[program]``.
+         """
+         # Flattened projections can exceed int32 offsets, so index in int64.
+-        offsets = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+-        offsets = offsets.to(tl.int64)
++        offsets = tl.program_id(0).to(tl.int64) * BLOCK + tl.arange(0, BLOCK)
+         mask = offsets < elements
+         row = offsets // width
+         column = offsets - row * width
+@@ -255,8 +257,7 @@ if triton is not None:
+         is contiguous. Programs tile the output and report magnitude partials
+         exactly as :func:`_value_first_swiglu_kernel` does.
+         """
+-        offsets = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+-        offsets = offsets.to(tl.int64)
++        offsets = tl.program_id(0).to(tl.int64) * BLOCK + tl.arange(0, BLOCK)
+         mask = offsets < elements
+         row = offsets // width
+         column = offsets - row * width

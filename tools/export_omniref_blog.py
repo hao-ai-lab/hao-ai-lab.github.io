@@ -76,6 +76,7 @@ def main():
         return relative
 
     profiles, poster_jobs = [], []
+    base_request_policies = set()
     for composition, label in COMPOSITIONS.items():
         for seconds in [5, 10, 15]:
             key = f"{composition}:{seconds}"
@@ -106,6 +107,9 @@ def main():
                 summary = json.loads(summary_path.read_text())
                 if summary.get("status") != "completed" or not summary.get("validation", {}).get("valid"):
                     raise ValueError("Unvalidated source summary")
+                if variant == "base":
+                    extra_params = summary["workload"]["video"]["extra_params"]
+                    base_request_policies.add((extra_params["quality"], extra_params["reference_resize_mode"]))
                 rows = [json.loads(line) for line in (summary_path.parent / "requests.jsonl").read_text().splitlines()]
                 rows.sort(key=lambda r: r["example"]["seed"])
                 if [r["example"]["seed"] for r in rows] != [0, 1, 2] or any(not r["success"] for r in rows):
@@ -149,6 +153,10 @@ def main():
                                                   profile["performance"]["fast"]["mean_s"])
             profiles.append(profile)
 
+    if len(base_request_policies) != 1:
+        raise ValueError("Base cohort must use one declared quality and reference-resize policy")
+    base_quality, base_reference_resize = next(iter(base_request_policies))
+
     def poster(job):
         source, relative = job
         target = output / relative
@@ -174,7 +182,8 @@ def main():
         "base": {"model": "MiniMaxAI/MiniMax-H3", "revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da",
                  "runtime": "SGLang", "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
                  "parallelism": "Ulysses 4 x Ring 2; transformer attention=fa; conditioning cache disabled",
-                 "runtime_torch": "2.14.1+cu130"},
+                 "runtime_torch": "2.14.1+cu130", "request_quality": base_quality,
+                 "reference_resize_mode": base_reference_resize},
         "fast": {"model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1", "revision": "88d512c5e7cc38dda499fbb65688ce58611f9c80",
                  "runtime": "UniServe", "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
                  "parallelism": "8-way Ulysses; native quality precision; conditioning cache disabled",

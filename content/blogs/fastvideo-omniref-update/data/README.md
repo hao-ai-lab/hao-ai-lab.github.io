@@ -14,6 +14,11 @@ The gallery's third output variant has no timing fields. Timing statistics
 use seeds 0, 1 and 2; the gallery consistently displays seed 0. Shared seeds
 and inputs do not establish numerical or perceptual parity.
 
+The Base cohort uses SGLang's `quality="lossless"` numerical policy and
+`reference_resize_mode="diffusers"`, recorded in `protocol.base`. It keeps
+original unquantized weights and dense attention but enables fusions that can
+change intermediate rounding. These are not `quality="exact"` measurements.
+
 Rebuild the three SVG figures using Python 3.12, Matplotlib 3.11.2 and NumPy
 2.5.4, from the repository root:
 
