@@ -1,5 +1,4 @@
 diff --git a/uniserve_kernels/src/uniserve_kernels/activation.py b/uniserve_kernels/src/uniserve_kernels/activation.py
-index a42efcc3..dfc5e5e1 100644
 --- a/uniserve_kernels/src/uniserve_kernels/activation.py
 +++ b/uniserve_kernels/src/uniserve_kernels/activation.py
 @@ -104,9 +104,12 @@ if triton is not None:

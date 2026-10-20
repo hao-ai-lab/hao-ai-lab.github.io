@@ -84,7 +84,6 @@ def main():
             profile = {"id": f"{composition}-{seconds}s", "composition": composition, "label": label,
                        "target_seconds": seconds, "seed": args.seed, "width": 1344, "height": 768,
                        "fps": 24, "gpu_count": args.gpu_count, "prompt": workload["prompt"],
-                       "prompt_sha256": hashlib.sha256(workload["prompt"].encode()).hexdigest(),
                        "conditions": [], "outputs": {}, "performance": {}}
             counters = {"image": 0, "video": 0, "audio": 0}
             for condition in workload["conditions"]:
@@ -96,8 +95,7 @@ def main():
                 if family == "video":
                     caption += " · with original audio"
                 relative = copy_asset(source, f"media/inputs/{source.name}")
-                profile["conditions"].append({"type": family, "caption": caption, "file": relative,
-                                               "sha256": assets[relative]["sha256"]})
+                profile["conditions"].append({"type": family, "caption": caption, "file": relative})
             for variant, (backend, vae, variant_label) in VARIANTS.items():
                 cell = next(c for c in selected if c["composition"] == composition and c["target_seconds"] == seconds
                             and c["backend"] == backend and c["vae_variant"] == vae)
@@ -133,10 +131,7 @@ def main():
                 profile["actual_video_seconds"] = shape["video_duration_s"]
                 poster = f"media/posters/{variant}-{composition}-{seconds}s-seed{args.seed}.jpg"
                 poster_jobs.append((source, poster))
-                profile["outputs"][variant] = {"label": variant_label, "file": relative, "poster": poster,
-                    "sha256": assets[relative]["sha256"], "summary_sha256": sha(summary_path),
-                    "code_commit": cell["code_commit"], "model": cell["model"],
-                    "decoder_revision": cell["decoder_revision"]}
+                profile["outputs"][variant] = {"label": variant_label, "file": relative, "poster": poster}
                 # The 36L lane is qualitative only. Never export any timing from it.
                 if variant != "decoder36":
                     measured = [r["e2e_ms"] / 1000 for r in rows]
@@ -169,7 +164,7 @@ def main():
     with ThreadPoolExecutor(max_workers=4) as pool:
         for relative, item in pool.map(poster, poster_jobs):
             assets[relative] = item
-    protocol = {"snapshot_utc": snapshot["updated_at"], "hardware": "NVIDIA GB200", "gpu_count": args.gpu_count,
+    settings = {"hardware": "NVIDIA GB200", "gpu_count": args.gpu_count,
         "nodes": 2, "gpus_per_node": 4, "hardware_proxy": "B200 proxy; B200 was not separately measured",
         "canvas": "1344x768", "fps": 24, "target_seconds": [5, 10, 15], "measured_seeds": [0, 1, 2],
         "warmup_seed": 42, "warmup_requests_per_profile": 1, "concurrency": 1,
@@ -178,23 +173,12 @@ def main():
         "speedup": "Base mean seconds / FastH3 Omni mean seconds; no normalization",
         "base_denoiser_evaluations": 50, "fast_denoiser_evaluations": 8,
         "reference_sizing": "enlarged reference image short edge 2048; native released preprocessing",
-        "media": "H.264 video and AAC stereo 32kHz audio; FFmpeg 8.1.2",
-        "base": {"model": "MiniMaxAI/MiniMax-H3", "revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da",
-                 "runtime": "SGLang", "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
-                 "parallelism": "Ulysses 4 x Ring 2; transformer attention=fa; conditioning cache disabled",
-                 "runtime_torch": "2.14.1+cu130", "request_quality": base_quality,
+        "media": "H.264 video and AAC stereo 32kHz audio",
+        "base": {"request_quality": base_quality,
                  "reference_resize_mode": base_reference_resize},
-        "fast": {"model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1", "revision": "88d512c5e7cc38dda499fbb65688ce58611f9c80",
-                 "runtime": "UniServe", "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
-                 "parallelism": "8-way Ulysses; native quality precision; conditioning cache disabled",
-                 "runtime_torch": "2.13.0+cu130"},
-        "decoder36": {"model": "FastVideo/FastH3-NVFP4-VAE-Decoder/quality-36L",
-                      "revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e",
-                      "adapter_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
-                      "scope": "gallery only; all timings omitted"},
         "comparison_scope": "model-and-serving-system comparison; not an isolated distillation or kernel ablation",
         "quality_scope": "matching inputs and seeds do not imply numerical or perceptual output parity"}
-    payload = {"schema_version": 1, "protocol": protocol, "profiles": profiles}
+    payload = {"schema_version": 1, "settings": settings, "profiles": profiles}
     (output / "data/benchmark.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
     with (output / "data/latency.csv").open("w", newline="") as f:
         writer = csv.writer(f, lineterminator="\n")
@@ -205,12 +189,13 @@ def main():
             writer.writerow([row["composition"], row["target_seconds"], args.gpu_count,
                 perf["base"]["mean_s"], perf["base"]["sample_std_s"], perf["fast"]["mean_s"],
                 perf["fast"]["sample_std_s"], perf["speedup"]])
-    (output / "data/media-manifest.json").write_text(json.dumps({"snapshot_utc": snapshot["updated_at"],
-        "gallery_seed": args.seed, "files": sorted(assets.values(), key=lambda item: item["file"])}, indent=2) + "\n")
+    (output / "data/media-manifest.json").unlink(missing_ok=True)
+    for seconds in [5, 10, 15]:
+        (output / f"img/latency-{seconds}s.svg").unlink(missing_ok=True)
 
     from plot_omniref_results import render_charts
     render_charts(payload, output / "img")
-    print(json.dumps({"snapshot_utc": snapshot["updated_at"], "profiles": len(profiles),
+    print(json.dumps({"profiles": len(profiles),
         "output_videos": 81, "copied_original_bytes": sum(x["bytes"] for x in assets.values() if x["treatment"] == "original bytes"),
         "speedup_min": min(x["performance"]["speedup"] for x in profiles),
         "speedup_max": max(x["performance"]["speedup"] for x in profiles)}, indent=2))

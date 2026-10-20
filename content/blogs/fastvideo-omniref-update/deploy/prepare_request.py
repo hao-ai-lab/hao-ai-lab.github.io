@@ -2,7 +2,6 @@
 """Download a gallery profile's references and write a UniServe ref2va request."""
 
 import argparse
-import hashlib
 import json
 from pathlib import Path
 from urllib.parse import urljoin
@@ -41,13 +40,8 @@ def main():
     conditions = []
     for reference in profile["conditions"]:
         destination = media_directory / Path(reference["file"]).name
-        content = destination.read_bytes() if destination.is_file() else b""
-        if hashlib.sha256(content).hexdigest() != reference["sha256"]:
-            with urlopen(urljoin(blog_url, reference["file"]), timeout=60) as response:
-                content = response.read()
-            if hashlib.sha256(content).hexdigest() != reference["sha256"]:
-                raise SystemExit(f"Reference checksum mismatch: {reference['file']}")
-            destination.write_bytes(content)
+        with urlopen(urljoin(blog_url, reference["file"]), timeout=60) as response:
+            destination.write_bytes(response.read())
         conditions.append(
             {"type": reference["type"], "role": "reference", "uri": destination.as_uri()}
         )
