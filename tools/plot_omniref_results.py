@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render the blog's figures from its published JSON (Matplotlib 3.11.2)."""
+"""Render a separate speedup chart for each output length."""
 import argparse
 import json
 from pathlib import Path
@@ -10,38 +10,38 @@ def render_charts(payload, output):
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     import numpy as np
+
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 11,
-                         "svg.fonttype": "none", "svg.hashsalt": "fasth3-omniref-20261020"})
+                         "svg.fonttype": "none", "svg.hashsalt": "fasth3-omniref"})
     output.mkdir(parents=True, exist_ok=True)
+    maximum = max(row["performance"]["speedup"] for row in payload["profiles"])
     for seconds in [5, 10, 15]:
         rows = [row for row in payload["profiles"] if row["target_seconds"] == seconds]
-        fig, ax = plt.subplots(figsize=(11, 6.9), layout="constrained")
-        y = np.arange(len(rows))
-        values_base = [row["performance"]["base"]["mean_s"] for row in rows]
-        values_fast = [row["performance"]["fast"]["mean_s"] for row in rows]
-        ax.barh(y - .18, values_base, height=.32, color="#697a91", label="Base · 50 evaluations")
-        ax.barh(y + .18, values_fast, height=.32, color="#168a70", label="FastH3 Omni · 8 evaluations")
-        xmax = max(values_base)
-        for i, row in enumerate(rows):
-            perf = row["performance"]
-            ax.text(values_base[i] + xmax*.015, i-.18, f"{values_base[i]:.2f}s", va="center", fontsize=9)
-            ax.text(values_fast[i] + xmax*.015, i+.18, f"{values_fast[i]:.2f}s  ·  {perf['speedup']:.2f}×",
-                    va="center", color="#126f5c", fontsize=9, weight="bold")
-        ax.set_yticks(y, [row["label"] for row in rows])
+        ratios = [row["performance"]["speedup"] for row in rows]
+        fig, ax = plt.subplots(figsize=(11, 4.8), layout="constrained")
+        positions = np.arange(len(rows))
+        ax.barh(positions, ratios, height=.62, color="#168a70")
+        for position, ratio in zip(positions, ratios):
+            ax.text(ratio + .13, position, f"{ratio:.2f}×",
+                    va="center", weight="bold", color="#126f5c")
+        ax.set_yticks(positions, [row["label"] for row in rows])
         ax.invert_yaxis()
-        ax.set_xlim(0, xmax * 1.19)
-        ax.set_xlabel("End-to-end latency, seconds (lower is better)")
-        ax.set_title(f"{seconds}s requests · 1344×768 with audio · 8×GB200", loc="left", pad=43, weight="bold", fontsize=15)
-        ax.legend(loc="lower left", bbox_to_anchor=(0, 1.015), ncol=1, frameon=False, fontsize=10)
+        ax.set_xlim(0, maximum * 1.14)
+        ax.axvline(1, color="#697a91", linestyle="--", linewidth=1)
+        ax.set_xlabel("Speedup over Base (higher is better)")
+        ax.set_title(f"{seconds}-second video + audio · 8×GB200 · 1344×768",
+                     loc="left", pad=15, fontsize=15, weight="bold")
         ax.xaxis.grid(True, alpha=.17)
         ax.set_axisbelow(True)
         for spine in ["top", "right", "left"]:
             ax.spines[spine].set_visible(False)
         ax.tick_params(axis="y", length=0)
-        target = output / f"latency-{seconds}s.svg"
-        fig.savefig(target, metadata={"Date": None,
-            "Title": f"Base versus FastH3 Omni latency for {seconds}s requests",
-            "Description": "Mean across seeds 0,1,2 after warmup 42. C1. Base/FastH3 multipliers use unrounded means. Original VAE for both lanes."})
+        target = output / f"speedup-{seconds}s.svg"
+        fig.savefig(target, metadata={
+            "Date": None, "Creator": None,
+            "Title": f"FastH3 Omni speedup over Base for {seconds}-second outputs",
+            "Description": "Base mean latency divided by FastH3 Omni mean latency. Original video VAE in both lanes.",
+        })
         plt.close(fig)
         target.write_text("\n".join(line.rstrip() for line in target.read_text().splitlines()) + "\n")
 

@@ -8,18 +8,35 @@
       <option value="15">15 seconds</option>
     </select>
   </div>
+  <p class="omni-chart-hint">Select a row to watch its matched outputs.</p>
+  <div class="omni-chart-legend"><span><i class="omni-bar-base" aria-hidden="true"></i> Base · 50 evaluations</span><span><i class="omni-bar-fast" aria-hidden="true"></i> FastH3 Omni · 8 evaluations</span></div>
   {{- range $seconds := slice 5 10 15 }}
-  <figure class="omni-chart" data-omni-chart="{{ $seconds }}"{{ if ne $seconds 5 }} hidden{{ end }}>
-    <div class="omni-chart-scroll">
-      <img src="img/latency-{{ $seconds }}s.svg" width="1100" height="690"
-        alt="End-to-end latency for {{ $seconds }} second requests on eight GB200 GPUs. Base versus FastH3 Omni; Base divided by FastH3 speedups are printed beside the student bars. Exact numbers are in the table below.">
-    </div>
-    <figcaption>Mean end-to-end latency for {{ $seconds }} s requests, including audio and MP4 output. Each green label gives Base / FastH3 Omni. Both timing lanes use the original H3 video VAE.</figcaption>
-  </figure>
+  {{- $max := 0.0 -}}
+  {{- range $data.profiles -}}
+    {{- if eq (int .target_seconds) $seconds -}}
+      {{- $max = math.Max $max (index .performance "base").mean_s -}}
+    {{- end -}}
+  {{- end -}}
+  <div class="omni-chart omni-bar-chart" data-omni-chart="{{ $seconds }}"{{ if ne $seconds 5 }} hidden{{ end }} aria-label="{{ $seconds }} second requests: mean end-to-end latency on eight GB200 GPUs">
+    {{- range $data.profiles }}
+    {{- if eq (int .target_seconds) $seconds }}
+    {{- $base := index .performance "base" }}
+    {{- $fast := index .performance "fast" }}
+    <a class="omni-bar-link" href="#omniref-example-{{ .composition }}-{{ .target_seconds }}s" data-omni-open="{{ .composition }}:{{ .target_seconds }}" data-omni-listen="fast" aria-label="View {{ .label }}, {{ .target_seconds }} second example. Base {{ printf "%.2f" $base.mean_s }} seconds, FastH3 Omni {{ printf "%.2f" $fast.mean_s }} seconds, {{ printf "%.2f" .performance.speedup }} times lower latency.">
+      <span class="omni-bar-label">{{ .label }}</span>
+      <span class="omni-bar-pair" aria-hidden="true">
+        <span class="omni-bar-row"><span class="omni-bar-track"><span class="omni-bar omni-bar-base" style="width:{{ mul (div $base.mean_s $max) 100 }}%"></span></span><span>{{ printf "%.2f s" $base.mean_s }}</span></span>
+        <span class="omni-bar-row"><span class="omni-bar-track"><span class="omni-bar omni-bar-fast" style="width:{{ mul (div $fast.mean_s $max) 100 }}%"></span></span><span>{{ printf "%.2f s" $fast.mean_s }}</span></span>
+      </span>
+      <strong class="omni-speedup">{{ printf "%.2f×" .performance.speedup }} <span aria-hidden="true">↗</span></strong>
+    </a>
+    {{- end }}
+    {{- end }}
+  </div>
   {{- end }}
-  <p class="omni-inspect-hint"><strong>Click any latency to inspect the example ↓</strong> See its full prompt, reference images, clips and audio, and all three generated outputs in the gallery immediately below.</p>
-  <details id="omniref-timings" class="omni-latency-details" open>
-    <summary>All 27 matched timing profiles · click a timing or View example</summary>
+  <p class="omni-data-links">Mean latency, including audio and MP4 delivery. Both lanes use the original VAE.</p>
+  <details id="omniref-timings" class="omni-latency-details">
+    <summary>Explore all 27 timings and their examples</summary>
     <div class="omni-table-scroll">
       <table>
         <caption>1344×768, 24 FPS, eight GB200 GPUs. Generation time in seconds, mean ± sample standard deviation; lower is better. Target is the requested output length.</caption>
@@ -42,15 +59,6 @@
       </table>
     </div>
   </details>
-  <p class="omni-data-links">Frozen {{ $data.protocol.snapshot_utc }}. Download the <a href="{{ (.Page.Resources.GetMatch "data/latency.csv").RelPermalink }}">timing CSV</a> or <a href="{{ (.Page.Resources.GetMatch "data/benchmark.json").RelPermalink }}">inputs, results and protocol JSON</a>.</p>
+  <p class="omni-data-links">Download the <a href="{{ (.Page.Resources.GetMatch "data/latency.csv").RelPermalink }}">timing CSV</a> or <a href="{{ (.Page.Resources.GetMatch "data/benchmark.json").RelPermalink }}">full benchmark JSON</a>.</p>
+<noscript><style>.omni-chart[hidden]{display:block}.omni-chart-controls{display:none}</style></noscript>
 </section>
-<style>
-.omni-results{margin:1.6rem 0 2rem}.omni-chart-controls{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin-bottom:.8rem}.omni-chart-controls label{font-weight:650}.omni-chart-controls select{font:inherit;color:var(--primary);background:var(--entry);border:1px solid var(--border);border-radius:7px;padding:.35rem .65rem}.omni-chart{margin:1rem 0 1.5rem}.omni-chart[hidden]{display:none}.omni-chart-scroll{overflow-x:auto;background:#fff;border-radius:10px;border:1px solid var(--border)}.omni-chart img{display:block;width:100%;min-width:690px;height:auto;margin:0}.omni-chart figcaption,.omni-data-links{font-size:.8rem;line-height:1.55;color:var(--secondary);text-indent:0!important}.omni-chart figcaption{margin:.65rem 0}.omni-latency-details summary{cursor:pointer;font-weight:650}.omni-table-scroll{overflow:auto;margin:.8rem 0}.omni-table-scroll table{font-size:.78rem;white-space:nowrap}.omni-table-scroll caption{text-align:left;font-size:.76rem;color:var(--secondary);margin:.5rem 0}.omni-table-scroll th,.omni-table-scroll td{padding:.55rem .65rem}.omni-table-scroll th[scope=row]{font-weight:500}.omni-speedup{color:#168a70;font-weight:750}.omni-data-links{margin-top:.75rem}
-</style>
-<style>
-.omni-chart figcaption{font-weight:normal}
-.omni-inspect-hint{padding:.8rem 1rem;border:1px solid var(--border);border-left:4px solid #168a70;border-radius:8px;font-size:.85rem;line-height:1.6;text-indent:0!important}.omni-inspect-hint strong{display:block}.omni-results a.omni-timing-link,.omni-results a.omni-example-link{display:inline-block;padding:.3rem .15rem;text-decoration:underline;text-underline-offset:3px;border-radius:4px}.omni-timing-link{font-variant-numeric:tabular-nums}.omni-example-link{font-weight:650}.omni-timing-link:hover,.omni-example-link:hover{background:var(--code-bg);color:var(--primary)}.omni-results a:focus-visible{outline:3px solid #168a70;outline-offset:3px}#omniref-timings{scroll-margin-top:1rem}
-/* The theme's unbroken footer credit overflows narrow screens. This override
-   is loaded only by the OmniRef article, preserving the shared theme. */
-@media(max-width:650px){.footer span:last-child{white-space:normal}}
-</style>

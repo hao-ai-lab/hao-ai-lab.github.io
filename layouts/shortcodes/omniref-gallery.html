@@ -1,7 +1,5 @@
 {{- $data := transform.Unmarshal (.Page.Resources.GetMatch "data/benchmark.json").Content -}}
 <section class="omni-gallery" data-omni-gallery aria-label="Matched Base, FastH3 Omni and 36-layer VAE output gallery">
-  <p class="omni-gallery-intro"><strong>Inspect an example.</strong> Click a timing above or choose references and a requested length here. The three outputs, reference media and full prompt are displayed together below.</p>
-  <a class="omni-back-to-results" href="#omniref-timings">↑ Back to timings</a>
   <div class="omni-gallery-filters">
     <label for="omni-composition">References
       <select id="omni-composition" data-omni-composition>
@@ -15,25 +13,27 @@
     <label for="omni-gallery-duration">Requested length
       <select id="omni-gallery-duration" data-omni-duration><option value="5">5 seconds</option><option value="10">10 seconds</option><option value="15">15 seconds</option></select>
     </label>
-    <span class="omni-gallery-fixed">8×GB200 · seed {{ $data.protocol.gallery_seed }} · 1344×768</span>
+    <button type="button" data-omni-next>Next example →</button>
+    <span class="omni-gallery-fixed">8×GB200 · seed {{ $data.settings.gallery_seed }}</span>
   </div>
   <div class="omni-gallery-playback">
     <button type="button" data-omni-play>Play together</button>
     <button type="button" data-omni-pause>Pause all</button>
     <label for="omni-audio">Listen to
-      <select id="omni-audio" data-omni-audio><option value="base">Base</option><option value="fast">FastH3 Omni</option><option value="decoder36">FastH3 Omni · 36L VAE</option><option value="none">None</option></select>
+      <select id="omni-audio" data-omni-audio><option value="base">Base</option><option value="fast" selected>FastH3 Omni</option><option value="decoder36">FastH3 Omni · 36L VAE</option><option value="none">Mute all</option></select>
     </label>
   </div>
-  <p class="omni-gallery-status" data-omni-status role="status" aria-live="polite">Use each player's controls to inspect video and audio. Play together restarts all three clips.</p>
+  <p class="omni-gallery-status" data-omni-status role="status" aria-live="polite">Playback starts when you press play. Choose one soundtrack with Listen to.</p>
   {{- range $index, $profile := $data.profiles }}
   <article id="omniref-example-{{ .composition }}-{{ .target_seconds }}s" class="omni-gallery-panel" data-omni-profile="{{ .composition }}:{{ .target_seconds }}"{{ if ne $index 0 }} hidden{{ end }}>
-    <h4 tabindex="-1">{{ .label }} · {{ .target_seconds }} s request</h4>
+    <h3 tabindex="-1">{{ .label }} · {{ .target_seconds }} s request</h3>
     <p class="omni-profile-meta">{{ .frames }} frames · 24 FPS · stereo audio · matching prompt, references, seed and GPU count</p>
     <div class="omni-output-grid">
       {{- range $variant := slice "base" "fast" "decoder36" }}
       {{- $sample := index $profile.outputs $variant }}
       <figure class="omni-output">
-        <figcaption>{{ $sample.label }}</figcaption>
+        <figcaption><strong>{{ $sample.label }}</strong>
+          <span>{{ if eq $variant "decoder36" }}Quality comparison{{ else }}{{ $timing := index $profile.performance $variant }}{{ printf "%.2f s" $timing.mean_s }} mean latency{{ end }}</span></figcaption>
         <video controls playsinline preload="none" width="1344" height="768" poster="{{ $sample.poster }}"
           data-omni-variant="{{ $variant }}" aria-label="{{ $sample.label }}, {{ $profile.label }}, {{ $profile.target_seconds }} second request, seed {{ $profile.seed }}">
           <source src="{{ $sample.file }}" type="video/mp4">
@@ -43,8 +43,11 @@
       </figure>
       {{- end }}
     </div>
+    {{- $base := index .performance "base" }}
+    {{- $fast := index .performance "fast" }}
+    <p class="omni-example-timing"><strong>{{ printf "%.2f×" .performance.speedup }} lower latency</strong> for this workload. {{ printf "%.2f s" $base.mean_s }} → {{ printf "%.2f s" $fast.mean_s }} end to end (three-seed means).</p>
     <details class="omni-input-details" open>
-      <summary>Reference inputs ({{ len .conditions }})</summary>
+      <summary><span class="omni-detail-label">Source references ({{ len .conditions }})</span><svg class="omni-disclosure-chevron" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m9 5 7 7-7 7"/></svg></summary>
       <div class="omni-input-grid">
         {{- range .conditions }}
         <figure>
@@ -60,16 +63,10 @@
         {{- end }}
       </div>
     </details>
-    <details class="omni-prompt-details" open><summary>Full prompt</summary><pre>{{ .prompt }}</pre></details>
+    <details class="omni-prompt-details"><summary><span class="omni-detail-label">Full prompt</span><svg class="omni-disclosure-chevron" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m9 5 7 7-7 7"/></svg></summary><button type="button" class="omni-copy" data-omni-copy hidden>Copy full prompt</button><pre>{{ .prompt }}</pre></details>
   </article>
   {{- end }}
   <noscript><p>JavaScript is disabled: all 27 matched profiles are displayed.</p><style>.omni-gallery .omni-gallery-panel[hidden]{display:block}.omni-gallery-playback,.omni-gallery-filters{display:none}</style></noscript>
-  <p class="omni-gallery-note">The gallery uses seed {{ $data.protocol.gallery_seed }} for all 27 profiles. Matching seeds support comparison; they do not imply numerical or perceptual output parity. The 36L VAE variant is included for visual and audio inspection only.</p>
+  <p class="omni-gallery-note">1344×768 · 24 FPS · stereo audio. Downloads preserve the generated MP4s. Latencies are three-seed means; the displayed videos use seed {{ $data.settings.gallery_seed }}.</p>
 </section>
 <script src="{{ (.Page.Resources.GetMatch "gallery.js").RelPermalink }}" defer></script>
-<style>
-.omni-gallery{margin:1.3rem 0 2.3rem}.omni-gallery-filters,.omni-gallery-playback{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin:.8rem 0}.omni-gallery label{display:flex;align-items:center;gap:.4rem;font-size:.8rem;font-weight:600}.omni-gallery select,.omni-gallery button{font:inherit;font-size:.8rem;color:var(--primary);background:var(--entry);border:1px solid var(--border);border-radius:7px;padding:.4rem .6rem;max-width:100%}.omni-gallery button{cursor:pointer;font-weight:650}.omni-gallery button:hover{border-color:#168a70}.omni-gallery-fixed,.omni-gallery-status,.omni-profile-meta,.omni-gallery-note{font-size:.75rem;color:var(--secondary);text-indent:0!important;line-height:1.6}.omni-gallery-status{min-height:1.5em}.omni-gallery-panel[hidden]{display:none}.omni-gallery-panel h4{font-size:1rem;margin:1rem 0 .3rem}.omni-profile-meta{margin:0 0 .8rem}.omni-output-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem}.omni-output{min-width:0;margin:0!important}.omni-output figcaption{min-height:3em;font-size:.76rem;line-height:1.4;font-weight:700;text-align:center;display:flex;align-items:center;justify-content:center}.omni-output video{display:block;width:100%;height:auto;aspect-ratio:1344/768;background:#111;border-radius:8px}.omni-video-download{display:block;font-size:.68rem;text-align:center;margin:.35rem 0 .7rem}.omni-input-details,.omni-prompt-details{padding:.65rem .8rem;margin:.65rem 0;border:1px solid var(--border);border-radius:8px}.omni-gallery summary{font-size:.8rem;font-weight:650;cursor:pointer}.omni-input-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:.8rem;margin-top:.8rem}.omni-input-grid figure{min-width:0;margin:0!important}.omni-input-grid img,.omni-input-grid video{display:block;width:100%;max-height:190px;object-fit:contain;border-radius:6px}.omni-input-grid audio{display:block;width:100%;min-width:0}.omni-input-grid figcaption{font-size:.67rem;line-height:1.5;margin-top:.35rem;text-align:center}.omni-prompt-details pre{font-size:.7rem;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;max-height:24rem;overflow:auto;margin:.7rem 0 0;padding:.75rem}.omni-gallery-note{margin:1rem 0}@media(max-width:650px){.omni-output-grid{grid-template-columns:1fr}.omni-output figcaption{min-height:0;margin:.6rem 0}.omni-gallery label{flex-wrap:wrap}.omni-gallery-fixed{width:100%}}
-</style>
-<style>
-.omni-gallery{scroll-margin-top:1rem}.omni-gallery-intro,.omni-back-to-results{font-size:.8rem;line-height:1.6;text-indent:0!important}.omni-gallery a.omni-back-to-results{text-decoration:underline;text-underline-offset:3px}.omni-gallery-panel{scroll-margin-top:1rem}.omni-gallery-panel h4:focus-visible,.omni-gallery a:focus-visible,.omni-gallery button:focus-visible,.omni-gallery select:focus-visible,.omni-gallery summary:focus-visible{outline:3px solid #168a70;outline-offset:3px;border-radius:4px}
-</style>

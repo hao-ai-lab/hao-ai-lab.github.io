@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="520" viewBox="0 0 1440 520" role="img" aria-labelledby="title desc">
+  <title id="title">FastH3 OmniRef — 5.6–11.9× lower latency</title>
+  <desc id="desc">Abstract denoising trajectories converge into eight green evaluation markers. End-to-end speedup over Base’s lossless-policy serving recipe across 27 matched workloads on eight GB200 GPUs.</desc>
+  <defs>
+    <linearGradient id="fade"><stop stop-color="#718096" stop-opacity=".05"/><stop offset=".7" stop-color="#718096" stop-opacity=".4"/><stop offset="1" stop-color="#168a70" stop-opacity=".6"/></linearGradient>
+  </defs>
+  <rect width="1440" height="520" rx="8" fill="#f7f9f8"/>
+  <g fill="none" stroke="url(#fade)" stroke-width="1.5">
+    <path d="M720 60C900 60 875 215 1090 215H1380"/>
+    <path d="M720 110C880 110 905 225 1090 225H1380"/>
+    <path d="M720 160C900 160 915 235 1090 235H1380"/>
+    <path d="M720 210C900 210 925 245 1090 245H1380"/>
+    <path d="M720 310C900 310 925 255 1090 255H1380"/>
+    <path d="M720 360C900 360 915 265 1090 265H1380"/>
+    <path d="M720 410C880 410 905 275 1090 275H1380"/>
+    <path d="M720 460C900 460 875 285 1090 285H1380"/>
+  </g>
+  <g fill="#168a70">
+    <rect x="1106" y="204" width="8" height="92" rx="2" opacity=".2"/>
+    <rect x="1142" y="204" width="8" height="92" rx="2" opacity=".3"/>
+    <rect x="1178" y="204" width="8" height="92" rx="2" opacity=".4"/>
+    <rect x="1214" y="204" width="8" height="92" rx="2" opacity=".5"/>
+    <rect x="1250" y="204" width="8" height="92" rx="2" opacity=".6"/>
+    <rect x="1286" y="204" width="8" height="92" rx="2" opacity=".7"/>
+    <rect x="1322" y="204" width="8" height="92" rx="2" opacity=".85"/>
+    <rect x="1358" y="204" width="8" height="92" rx="2"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="64" y="88" font-size="26" fill="#333">FastH3 OmniRef</text>
+    <text x="60" y="251" font-size="112" font-weight="600" letter-spacing="-5" fill="#1e1e1e">5.6–11.9×</text>
+    <text x="64" y="307" font-size="30" fill="#555">lower end-to-end latency</text>
+    <text x="64" y="397" font-size="23" fill="#168a70">50 → 8 transformer evaluations</text>
+    <text x="64" y="466" font-size="18" fill="#666">8×GB200 · 27 workloads · Base lossless policy</text>
+  </g>
+</svg>
