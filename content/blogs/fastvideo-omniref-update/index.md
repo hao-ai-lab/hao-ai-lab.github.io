@@ -1,7 +1,7 @@
 +++
 title = "FastVideo FastH3 Omni: Open Source Real-Time Minimax FastH3 Ref2VA on NVIDIA Blackwell, RTX Spark, and RTX GPUs."
 description = "MiniMax H3 video and audio with up to approximately 12× lower end-to-end latency on eight GB200 GPUs, plus optimized NVFP4 QAD checkpoints for local AI."
-date = 2026-10-19T00:00:00Z
+date = 2026-10-20T00:00:00-07:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
 ShowReadingTime = false
@@ -141,7 +141,7 @@ Nine reference compositions × three clip lengths (5, 10 and 15 seconds), measur
 
 ## Get started
 
-Download the model weights from the [FastH3 Omni collection](https://huggingface.co/collections/FastVideo/fasth3-omniref), then follow the [UniServe setup](#deploy-fasth3-omni-with-uniserve) to generate video and audio from your own references.
+Download the model weights from the [FastH3 Omni collection](https://huggingface.co/collections/FastVideo/fasth3-omni), then follow the [UniServe setup](#deploy-fasth3-omni-with-uniserve) to generate video and audio from your own references.
 
 ## Acknowledgements
 
