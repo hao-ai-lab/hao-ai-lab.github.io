@@ -119,7 +119,7 @@ source .venv/bin/activate
 
 Then pick your GPUs and run the steps from the UniServe checkout:
 
-{{< omni_deploy >}}
+{{< uniserve_deploy model="omni" >}}
 
 The [UniServe serving guide](https://github.com/hao-ai-lab/uniserve/blob/main/docs/minimax_h3/minimax_h3.md) covers every option and request field.
 

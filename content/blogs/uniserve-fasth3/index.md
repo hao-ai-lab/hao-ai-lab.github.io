@@ -226,7 +226,7 @@ UniServe also runs as an experimental backend for [NVIDIA Dynamo](https://github
 
 ## Deploy UniServe
 
-Choose a GPU, a goal and a checkpoint to get the deployment file and the commands that serve FastH3 with UniServe. The [FastH3 guide](https://github.com/hao-ai-lab/UniServe/blob/3cca4caafd7a8b3cdf841b625509b0c1c8edf6c1/docs/fast_h3/fast_h3.md) covers installation and every other option.
+Install UniServe as in its [README](https://github.com/hao-ai-lab/uniserve#install), then choose a model and GPUs to get the deployment file and the commands that serve it. The [serving guide](https://github.com/hao-ai-lab/uniserve/blob/main/docs/minimax_h3/minimax_h3.md) covers every other option.
 
 {{< uniserve_deploy >}}
 

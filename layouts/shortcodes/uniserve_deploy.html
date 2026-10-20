@@ -1,25 +1,28 @@
 {{- /*
-  UniServe FastH3 deployment configurator.
+  UniServe deployment configurator for FastH3 and FastH3 Omni.
 
-  The deployment files under assets/uniserve/fast_h3/ are byte-for-byte
-  copies of UniServe's configs/fast_h3/. The page embeds their text so the
+  The deployment files under assets/uniserve/minimax_h3/ are byte-for-byte
+  copies of UniServe's configs/minimax_h3/. The page embeds their text so the
   reader sees and downloads exactly the file the command names; the script
-  only assembles command lines from the selections below.
+  only assembles command lines from the selections below. The `model`
+  parameter selects the model shown first: "fasth3" (default) or "omni".
 */ -}}
-{{- $names := slice "ulysses4" "ulysses8" "ulysses8-two-node" "ulysses4x2" "ulysses4x2-two-node" "dp8-text-tp8" -}}
+{{- $names := slice "ulysses4" "ulysses8" "ulysses8-two-node" "ulysses4x2" "ulysses4x2-two-node" "dp8-text-tp8" "ulysses1-reference" "ulysses2-reference" "ulysses4-reference" "ulysses8-reference" "ulysses8-reference-two-node" -}}
 {{- $files := dict -}}
 {{- range $names -}}
-  {{- $files = merge $files (dict . (resources.Get (printf "uniserve/fast_h3/%s.json" .)).Content) -}}
+  {{- $files = merge $files (dict . (resources.Get (printf "uniserve/minimax_h3/%s.json" .)).Content) -}}
 {{- end -}}
-<div class="usd" id="uniserve-deploy">
+<div class="usd" id="uniserve-deploy" data-model="{{ .Get "model" | default "fasth3" }}">
   <div class="usd-controls">
+    <div class="usd-row"><span class="usd-label" id="usd-model-label">Model</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-model-label" data-field="model"></div></div>
     <div class="usd-row"><span class="usd-label" id="usd-hardware-label">GPU</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-hardware-label" data-field="hardware"></div></div>
     <div class="usd-row"><span class="usd-label" id="usd-size-label">GPUs</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-size-label" data-field="size"></div></div>
-    <div class="usd-row"><span class="usd-label" id="usd-goal-label">Optimize for</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-goal-label" data-field="goal"></div></div>
-    <div class="usd-row"><span class="usd-label" id="usd-checkpoint-label">Checkpoint</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-checkpoint-label" data-field="checkpoint"></div></div>
-    <div class="usd-row" data-row="precision"><span class="usd-label" id="usd-precision-label">Precision</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-precision-label" data-field="precision"></div></div>
-    <div class="usd-row"><span class="usd-label" id="usd-seconds-label">Longest clip</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-seconds-label" data-field="seconds"></div></div>
-    <div class="usd-row"><span class="usd-label" id="usd-prompt-label">Longest prompt</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-prompt-label" data-field="prompt"></div></div>
+    <div class="usd-row" data-for="fasth3"><span class="usd-label" id="usd-goal-label">Optimize for</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-goal-label" data-field="goal"></div></div>
+    <div class="usd-row" data-for="fasth3"><span class="usd-label" id="usd-checkpoint-label">Checkpoint</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-checkpoint-label" data-field="checkpoint"></div></div>
+    <div class="usd-row" data-for="fasth3" data-row="precision"><span class="usd-label" id="usd-precision-label">Precision</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-precision-label" data-field="precision"></div></div>
+    <div class="usd-row" data-for="fasth3"><span class="usd-label" id="usd-seconds-label">Longest clip</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-seconds-label" data-field="seconds"></div></div>
+    <div class="usd-row" data-for="fasth3"><span class="usd-label" id="usd-prompt-label">Longest prompt</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-prompt-label" data-field="prompt"></div></div>
+    <div class="usd-row" data-for="omni"><span class="usd-label" id="usd-sizing-label">Reference sizing</span><div class="usd-options" role="radiogroup" aria-labelledby="usd-sizing-label" data-field="sizing"></div></div>
   </div>
   <p class="usd-summary" data-out="summary"></p>
   <div class="usd-steps" data-out="steps"></div>
@@ -33,13 +36,8 @@
 (function () {
   "use strict";
 
-  // Deployment file text by name, as shipped in configs/fast_h3/.
+  // Deployment file text by name, as shipped in configs/minimax_h3/.
   const FILES = {{ $files }};
-
-  const REPOSITORY = {
-    bf16: "FastVideo/FastVideo-FastH3-8-Step-V2",
-    nvfp4: "FastVideo/FastVideo-FastH3-8-Step-V2-NVFP4",
-  };
 
   const LAYOUTS = {
     "ulysses4": "One replica on four GPUs: a Ulysses4 denoiser and a TP4 text encoder.",
@@ -48,64 +46,77 @@
     "ulysses4x2": "Two replicas, each a Ulysses4 denoiser with its own TP4 text encoder.",
     "ulysses4x2-two-node": "Two replicas, one per node, each a Ulysses4 denoiser with its own TP4 text encoder.",
     "dp8-text-tp8": "Eight one-GPU replicas that share one TP8 text encoder.",
+    "ulysses1-reference": "One replica on one GPU.",
+    "ulysses2-reference": "One replica on two GPUs.",
+    "ulysses4-reference": "One replica on four GPUs.",
+    "ulysses8-reference": "One replica on eight GPUs.",
+    "ulysses8-reference-two-node": "One replica across both nodes, four GPUs on each.",
   };
 
-  // Every combination below has been served end to end. `slots` is the
-  // number of concurrently resident requests; `ladder` lists the prompt-token
-  // capacities startup prepares, cut at the chosen prompt limit; `maxSeconds`
-  // and `maxPrompt` are the largest limits a deployment was run with.
-  const HARDWARE = [
-    {
-      id: "gb200", label: "GB200", blackwell: true,
-      sizes: [
-        {
-          id: "4", label: "4 GPUs, one node",
-          goals: {
-            latency: { file: "ulysses4", slots: 2 },
-            throughput: { file: "ulysses4", slots: 2 },
-          },
-        },
-        {
-          id: "8", label: "8 GPUs, two nodes", twoNodes: true,
-          goals: {
-            latency: { file: "ulysses8-two-node", slots: 2, flags: ["--graph-policy off"] },
-            throughput: { file: "ulysses4x2-two-node", slots: 4 },
-          },
-        },
-      ],
+  // FastH3. Every combination below has been served end to end. `slots` is
+  // the number of concurrently resident requests; `ladder` lists the
+  // prompt-token capacities startup prepares, cut at the chosen prompt
+  // limit; `maxSeconds` and `maxPrompt` are the largest limits a deployment
+  // was run with.
+  const FASTH3 = {
+    repository: {
+      bf16: "FastVideo/FastVideo-FastH3-8-Step-V2",
+      nvfp4: "FastVideo/FastVideo-FastH3-8-Step-V2-NVFP4",
     },
-    {
-      id: "rtx", label: "RTX PRO 6000", blackwell: true,
-      sizes: [
-        {
-          id: "8", label: "8 GPUs, one node",
-          goals: {
-            latency: { file: "ulysses8", slots: 2, flags: ["--graph-policy off", "--mem-fraction-static 0.92"], ladder: [1024, 10240, 16384] },
-            throughput: { file: "ulysses4x2", slots: 4, flags: ["--graph-policy off", "--mem-fraction-static 0.92"], ladder: [1024, 10240, 16384] },
+    directory: { bf16: "models/FastH3", nvfp4: "models/FastH3-NVFP4" },
+    hardware: [
+      {
+        id: "gb200", label: "GB200", blackwell: true, environment: "NCCL_NVLS_ENABLE=0 ",
+        sizes: [
+          {
+            id: "4", label: "4 GPUs, one node",
+            goals: {
+              latency: { file: "ulysses4", slots: 2 },
+              throughput: { file: "ulysses4", slots: 2 },
+            },
           },
-        },
-      ],
-    },
-    {
-      id: "h200", label: "H200", blackwell: false,
-      sizes: [
-        {
-          id: "4", label: "4 GPUs, one node",
-          goals: {
-            latency: { file: "ulysses4", slots: 2, flags: ["--mem-fraction-static 0.92"], ladder: [1024, 16384] },
-            throughput: { file: "ulysses4", slots: 2, flags: ["--mem-fraction-static 0.92"], ladder: [1024, 16384] },
+          {
+            id: "8", label: "8 GPUs, two nodes", twoNodes: true,
+            goals: {
+              latency: { file: "ulysses8-two-node", slots: 2, flags: ["--graph-policy off"] },
+              throughput: { file: "ulysses4x2-two-node", slots: 4 },
+            },
           },
-        },
-        {
-          id: "8", label: "8 GPUs, one node",
-          goals: {
-            latency: { file: "ulysses8", slots: 2, flags: ["--mem-fraction-static 0.92"], ladder: [1024, 10240], maxPrompt: 10240 },
-            throughput: { file: "dp8-text-tp8", slots: 8, maxSeconds: 5, maxPrompt: 1024 },
+        ],
+      },
+      {
+        id: "rtx", label: "RTX PRO 6000", blackwell: true, environment: "",
+        sizes: [
+          {
+            id: "8", label: "8 GPUs, one node",
+            goals: {
+              latency: { file: "ulysses8", slots: 2, flags: ["--graph-policy off", "--mem-fraction-static 0.92"], ladder: [1024, 10240, 16384] },
+              throughput: { file: "ulysses4x2", slots: 4, flags: ["--graph-policy off", "--mem-fraction-static 0.92"], ladder: [1024, 10240, 16384] },
+            },
           },
-        },
-      ],
-    },
-  ];
+        ],
+      },
+      {
+        id: "h200", label: "H200", blackwell: false, environment: "NCCL_CUMEM_HOST_ENABLE=1 ",
+        sizes: [
+          {
+            id: "4", label: "4 GPUs, one node",
+            goals: {
+              latency: { file: "ulysses4", slots: 2, flags: ["--mem-fraction-static 0.92"], ladder: [1024, 16384] },
+              throughput: { file: "ulysses4", slots: 2, flags: ["--mem-fraction-static 0.92"], ladder: [1024, 16384] },
+            },
+          },
+          {
+            id: "8", label: "8 GPUs, one node",
+            goals: {
+              latency: { file: "ulysses8", slots: 2, flags: ["--mem-fraction-static 0.92"], ladder: [1024, 10240], maxPrompt: 10240 },
+              throughput: { file: "dp8-text-tp8", slots: 8, maxSeconds: 5, maxPrompt: 1024 },
+            },
+          },
+        ],
+      },
+    ],
+  };
 
   const GOALS = [
     { id: "latency", label: "Latency" },
@@ -138,14 +149,129 @@
   const DEFAULT_SECONDS = 15;
   const DEFAULT_PROMPT = 16384;
 
+  // FastH3 Omni. Every combination below has been served end to end with
+  // these options. `seconds` is the longest admitted clip and `resolutions`
+  // the canvases startup prepares.
+  const ENLARGE = "--mm-processor-kwargs '{\"enlarge_references\":true}'";
+  const SCALED = [
+    "--max-model-len 24576",
+    "--video-text-capacities 4096,7168,8192,9216,10240,12288,15360",
+    "--max-condition-rows 56192",
+  ];
+  const ENLARGED = [
+    ENLARGE,
+    "--max-model-len 48128",
+    "--video-text-capacities 4096,7168,8192,10240,14336,15360,22528,37888",
+    "--max-condition-rows 79104",
+  ];
+  const OMNI = {
+    repository: "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+    directory: "models/FastH3-Omni",
+    blog: "https://haoailab.com/blogs/fastvideo-omniref-update/",
+    hardware: [
+      {
+        id: "gb200", label: "GB200", environment: "NCCL_NVLS_ENABLE=0 ",
+        sizes: [
+          {
+            id: "1", label: "1 GPU",
+            sizings: {
+              scaled: {
+                file: "ulysses1-reference", seconds: 15, resolutions: "768p and 480p",
+                flags: [
+                  "--video-resolutions 768p,480p", "--mem-fraction-static 0.96",
+                  "--max-model-len 15360",
+                  "--video-text-capacities 4096,7168,8192,9216,10240,12288,15360",
+                  "--max-condition-rows 45056",
+                ],
+                note: "For 768p requests of 15 s, or of 10 s with a reference video, add --graph-policy off.",
+              },
+            },
+          },
+          {
+            id: "2", label: "2 GPUs",
+            sizings: {
+              scaled: {
+                file: "ulysses2-reference", seconds: 15, resolutions: "768p and 480p",
+                flags: ["--video-resolutions 768p,480p", "--mem-fraction-static 0.92", ...SCALED],
+              },
+            },
+          },
+          {
+            id: "4", label: "4 GPUs, one node",
+            sizings: {
+              enlarged: {
+                file: "ulysses4-reference", seconds: 5, resolutions: "768p",
+                flags: [ENLARGE, "--max-video-seconds 5", "--max-model-len 8192", "--video-text-capacities 8192", "--max-condition-rows 49152"],
+              },
+              scaled: {
+                file: "ulysses4-reference", seconds: 15, resolutions: "768p and 480p",
+                flags: ["--video-resolutions 768p,480p", ...SCALED],
+              },
+            },
+          },
+          {
+            id: "8", label: "8 GPUs, two nodes", twoNodes: true,
+            sizings: {
+              enlarged: { file: "ulysses8-reference-two-node", seconds: 15, resolutions: "768p", flags: ENLARGED },
+              scaled: {
+                file: "ulysses8-reference-two-node", seconds: 15, resolutions: "768p and 480p",
+                flags: ["--video-resolutions 768p,480p", ...SCALED],
+              },
+            },
+          },
+        ],
+      },
+      {
+        id: "rtx", label: "RTX PRO 6000", environment: "",
+        sizes: [
+          {
+            id: "8", label: "8 GPUs, one node",
+            sizings: {
+              scaled: {
+                file: "ulysses8-reference", seconds: 15, resolutions: "768p",
+                flags: ["--mem-fraction-static 0.92", "--graph-policy off", ...SCALED],
+              },
+            },
+          },
+        ],
+      },
+      {
+        id: "h200", label: "H200", environment: "",
+        sizes: [
+          {
+            id: "8", label: "8 GPUs, one node",
+            sizings: {
+              enlarged: { file: "ulysses8-reference", seconds: 15, resolutions: "768p", flags: ["--mem-fraction-static 0.92", ...ENLARGED] },
+              scaled: { file: "ulysses8-reference", seconds: 15, resolutions: "768p", flags: ["--mem-fraction-static 0.92", ...SCALED] },
+            },
+          },
+        ],
+      },
+    ],
+  };
+  const SIZINGS = [
+    { id: "enlarged", label: "Enlarged, as in the FastH3 Omni post" },
+    { id: "scaled", label: "Scale down only" },
+  ];
+  const MODELS = [
+    { id: "fasth3", label: "FastH3, text to video" },
+    { id: "omni", label: "FastH3 Omni, reference to video" },
+  ];
+
   const root = document.getElementById("uniserve-deploy");
   const state = {
-    hardware: "gb200", size: "4", goal: "latency", checkpoint: "bf16",
-    precision: "quality", seconds: DEFAULT_SECONDS, prompt: DEFAULT_PROMPT,
+    model: root.dataset.model === "omni" ? "omni" : "fasth3",
+    hardware: "gb200", size: root.dataset.model === "omni" ? "8" : "4",
+    goal: "latency", checkpoint: "bf16", precision: "quality",
+    seconds: DEFAULT_SECONDS, prompt: DEFAULT_PROMPT, sizing: "enlarged",
   };
 
+  function catalog() {
+    return state.model === "omni" ? OMNI : FASTH3;
+  }
+
   function hardware() {
-    return HARDWARE.find((item) => item.id === state.hardware);
+    return catalog().hardware.find((item) => item.id === state.hardware);
   }
 
   function size() {
@@ -153,7 +279,7 @@
   }
 
   function deployment() {
-    return size().goals[state.goal];
+    return state.model === "omni" ? size().sizings[state.sizing] : size().goals[state.goal];
   }
 
   // The limits a reader chose, capped by what the deployment was run with.
@@ -169,8 +295,17 @@
 
   // Keep every selection valid after another one changes.
   function reconcile() {
+    if (!catalog().hardware.some((item) => item.id === state.hardware)) {
+      state.hardware = catalog().hardware[0].id;
+    }
     if (!hardware().sizes.some((item) => item.id === state.size)) {
-      state.size = hardware().sizes[0].id;
+      state.size = hardware().sizes[hardware().sizes.length - 1].id;
+    }
+    if (state.model === "omni") {
+      if (!size().sizings[state.sizing]) {
+        state.sizing = Object.keys(size().sizings)[0];
+      }
+      return;
     }
     if (!hardware().blackwell) {
       state.checkpoint = "bf16";
@@ -252,12 +387,11 @@
     done();
   }
 
-  // Returns the commands for the current selection.
-  function commands() {
-    const chosen = deployment();
+  // The steps for the current FastH3 selection.
+  function fasth3Steps(chosen, twoNodes, environment) {
     const limit = limits();
-    const twoNodes = Boolean(size().twoNodes);
-    const args = ["--workers configs/fast_h3/" + chosen.file + ".json"];
+    const directory = FASTH3.directory[state.checkpoint];
+    const args = ["--workers configs/minimax_h3/" + chosen.file + ".json"];
     if (twoNodes) {
       args.push("--host-identity rank-0");
     }
@@ -279,38 +413,68 @@
     if (state.checkpoint === "bf16" && precision.config) {
       args.push("--quantization-config '" + precision.config + "'");
     }
-
-    const directory = "/workspace/models/" + REPOSITORY[state.checkpoint].split("/")[1];
-    const download = [
-      "export H3_MODEL=" + directory,
-      'hf download ' + REPOSITORY[state.checkpoint] + ' --local-dir "$H3_MODEL"',
-    ].join("\n");
-    const environment = twoNodes ? "NCCL_NVLS_ENABLE=0 " : "";
-    const serve = commandLines(environment + 'uniserve serve "$H3_MODEL"', args);
-    // The head listens on every interface and logs 0.0.0.0 with its port;
-    // the launcher reaches it through rank-0's own address.
-    const launcher = environment + "uniserve-host --head <rank-0 address>:<port> --host-identity rank-1";
-    const request = commandLines("curl --fail-with-body --max-time 600 http://127.0.0.1:8000/v1/videos/sync", [
+    const request = commandLines("curl --fail-with-body http://127.0.0.1:8000/v1/videos/sync", [
       "-H 'Content-Type: application/json'",
       "-d '" + JSON.stringify({
         model: "FastH3",
+        task: "t2va",
         prompt: "A clear stream flows through a green forest while birds sing.",
-        seconds: 5,
-        seed: 1000,
+        target: { short_edge: 768, aspect_ratio: "16:9", duration_seconds: 5 },
       }) + "'",
       "--output forest.mp4",
     ]);
-    return { download, serve, launcher, request, twoNodes };
+    return {
+      download: "hf download " + FASTH3.repository[state.checkpoint] + " --local-dir " + directory,
+      serve: commandLines(environment + "uniserve serve " + directory, args),
+      request,
+    };
   }
 
-  function render() {
-    reconcile();
+  // The steps for the current FastH3 Omni selection.
+  function omniSteps(chosen, twoNodes, environment) {
+    const args = ["--workers configs/minimax_h3/" + chosen.file + ".json"];
+    if (twoNodes) {
+      args.push("--host-identity rank-0");
+    }
+    args.push(
+      "--served-model-name FastH3-Omni", "--host 0.0.0.0", "--max-running-requests 2",
+      '--media-directory "$PWD/omni-media"', ...chosen.flags,
+    );
+    return {
+      download: "hf download " + OMNI.repository + " --local-dir " + OMNI.directory,
+      prepare: [
+        "curl -fLO " + OMNI.blog + "deploy/prepare_request.py",
+        "python prepare_request.py --composition image-voice --seconds 5",
+      ].join("\n"),
+      serve: commandLines(environment + "uniserve serve " + OMNI.directory, args),
+      request: commandLines("curl --fail-with-body http://127.0.0.1:8000/v1/videos/sync", [
+        "-H 'Content-Type: application/json'",
+        "--data-binary @omni-request.json",
+        "--output omni.mp4",
+      ]),
+    };
+  }
+
+  function renderControls() {
+    const omni = state.model === "omni";
+    for (const row of root.querySelectorAll("[data-for]")) {
+      row.hidden = row.dataset.for !== state.model;
+    }
+    options("model", MODELS.map((item) => ({ value: item.id, label: item.label })));
+    options("hardware", catalog().hardware.map((item) => ({ value: item.id, label: item.label })));
+    options("size", hardware().sizes.map((item) => ({ value: item.id, label: item.label })));
+    if (omni) {
+      options("sizing", SIZINGS.map((item) => ({
+        value: item.id,
+        label: item.label,
+        disabled: !size().sizings[item.id],
+        title: size().sizings[item.id] ? "" : "Not run with this deployment",
+      })));
+      return;
+    }
     const chosen = deployment();
     const limit = limits();
     const blackwell = hardware().blackwell;
-
-    options("hardware", HARDWARE.map((item) => ({ value: item.id, label: item.label })));
-    options("size", hardware().sizes.map((item) => ({ value: item.id, label: item.label })));
     options("goal", GOALS.map((item) => ({ value: item.id, label: item.label })));
     options("checkpoint", CHECKPOINTS.map((item) => ({
       value: item.id,
@@ -335,22 +499,44 @@
       disabled: item.tokens > (chosen.maxPrompt || DEFAULT_PROMPT),
       title: item.tokens > (chosen.maxPrompt || DEFAULT_PROMPT) ? "Not run with this deployment" : "",
     })), limit.prompt);
+  }
 
-    const out = commands();
-    root.querySelector('[data-out="summary"]').textContent = LAYOUTS[chosen.file] + " Up to " + chosen.slots + " requests are resident at once.";
-    const steps = root.querySelector('[data-out="steps"]');
-    steps.replaceChildren(
-      block(out.twoNodes ? "1. Download the checkpoint on both nodes, at the same path" : "1. Download the checkpoint", out.download),
-      block(out.twoNodes ? "2. Start the head on the node named rank-0" : "2. Start the server", out.serve,
-        "Run from the UniServe repository. Startup prepares every admitted request shape before /health reports ready."),
-    );
-    if (out.twoNodes) {
-      steps.append(block("3. Start the launcher on the node named rank-1", out.launcher,
-        "The head logs \"awaiting a launcher\" with address=\"0.0.0.0:<port>\"; use that port with an address of rank-0 that rank-1 can reach. Both nodes need the same UniServe build and Python environment."));
+  function render() {
+    reconcile();
+    renderControls();
+    const omni = state.model === "omni";
+    const chosen = deployment();
+    const twoNodes = Boolean(size().twoNodes);
+    const environment = hardware().environment;
+    const out = omni ? omniSteps(chosen, twoNodes, environment) : fasth3Steps(chosen, twoNodes, environment);
+    const slots = omni ? 2 : chosen.slots;
+
+    root.querySelector('[data-out="summary"]').textContent = LAYOUTS[chosen.file]
+      + (omni ? " Serves " + chosen.resolutions + " requests up to " + chosen.seconds + " s." : "")
+      + " Up to " + slots + " requests are resident at once.";
+
+    const steps = [
+      [twoNodes ? "Download the checkpoint on both nodes, at the same path" : "Download the checkpoint", out.download],
+    ];
+    if (omni) {
+      steps.push(["Prepare a gallery request", out.prepare,
+        "Writes omni-request.json and its reference files. Compositions: image, image-voice, images3, images9, clip, video, clips3, mixed and full, at 5, 10 or 15 s."]);
     }
-    steps.append(block((out.twoNodes ? "4" : "3") + ". Generate a video", out.request));
+    steps.push([twoNodes ? "Start the head on the node named rank-0" : "Start the server", out.serve,
+      [chosen.note, "Run from the UniServe repository. Startup prepares every admitted request shape before /health reports ready."].filter(Boolean).join(" ")]);
+    if (twoNodes) {
+      // The head listens on every interface and logs 0.0.0.0 with its port;
+      // the launcher reaches it through rank-0's own address.
+      steps.push(["Start the launcher on the node named rank-1",
+        environment + "uniserve-host --head <rank-0 address>:<port> --host-identity rank-1",
+        "The head logs \"awaiting a launcher\" with address=\"0.0.0.0:<port>\"; use that port with an address of rank-0 that rank-1 can reach. Both nodes need the same UniServe build and Python environment."]);
+    }
+    steps.push(["Generate a video", out.request]);
+    root.querySelector('[data-out="steps"]').replaceChildren(
+      ...steps.map(([title, text, note], index) => block((index + 1) + ". " + title, text, note)),
+    );
 
-    root.querySelector('[data-out="file-path"]').textContent = "configs/fast_h3/" + chosen.file + ".json";
+    root.querySelector('[data-out="file-path"]').textContent = "configs/minimax_h3/" + chosen.file + ".json";
     root.querySelector('[data-out="file"]').textContent = FILES[chosen.file];
   }
 
@@ -358,10 +544,9 @@
     copyText(event.currentTarget, FILES[deployment().file]);
   });
   root.querySelector('[data-action="download-file"]').addEventListener("click", () => {
-    const name = deployment().file + ".json";
     const link = document.createElement("a");
     link.href = URL.createObjectURL(new Blob([FILES[deployment().file]], { type: "application/json" }));
-    link.download = name;
+    link.download = deployment().file + ".json";
     link.click();
     URL.revokeObjectURL(link.href);
   });
@@ -489,7 +674,7 @@
   color: var(--primary);
   cursor: pointer;
 }
-/* Deployment files run to a few hundred lines; scroll inside the block. */
+/* Deployment files run to dozens of lines; scroll inside the block. */
 .usd-file pre code {
   max-height: 24em;
   overflow-y: auto;

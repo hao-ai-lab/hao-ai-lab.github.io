@@ -1,7 +1,7 @@
 [
   {
     "id": "text-0",
-    "memory_fraction": 0.26,
+    "mem_fraction_static": 0.26,
     "ranks": [
       { "node": "rank-0", "device": "cuda:0" },
       { "node": "rank-0", "device": "cuda:1" },
@@ -18,7 +18,7 @@
   },
   {
     "id": "text-1",
-    "memory_fraction": 0.26,
+    "mem_fraction_static": 0.26,
     "ranks": [
       { "node": "rank-1", "device": "cuda:0" },
       { "node": "rank-1", "device": "cuda:1" },
@@ -35,7 +35,7 @@
   },
   {
     "id": "flow-0",
-    "memory_fraction": 0.73,
+    "mem_fraction_static": 0.73,
     "ranks": [
       { "node": "rank-0", "device": "cuda:0" },
       { "node": "rank-0", "device": "cuda:1" },
@@ -43,7 +43,7 @@
       { "node": "rank-0", "device": "cuda:3" }
     ],
     "components": {
-      "denoiser": {
+      "transformer": {
         "ranks": [0, 1, 2, 3],
         "parallel_config": {
           "sequence_parallel": { "kind": "ulysses", "ulysses_degree": 4 }
@@ -51,22 +51,24 @@
       },
       "video_decoder": {
         "ranks": [0, 1, 2, 3],
-        "parallel_config": {},
-        "distribution": "temporal_units",
-        "units_per_rank": 1
+        "parallel_config": {}
       },
       "audio_decoder": {
         "ranks": [0, 1, 2, 3],
         "parallel_config": {},
-        "distribution": "temporal_units",
-        "units_per_rank": 1
+        "distribution": "temporal_units"
+      },
+      "latent_encoder": {
+        "ranks": [0, 1, 2, 3],
+        "parallel_config": {},
+        "distribution": "temporal_units"
       }
     },
     "queue_depth": 6
   },
   {
     "id": "flow-1",
-    "memory_fraction": 0.73,
+    "mem_fraction_static": 0.73,
     "ranks": [
       { "node": "rank-1", "device": "cuda:0" },
       { "node": "rank-1", "device": "cuda:1" },
@@ -74,7 +76,7 @@
       { "node": "rank-1", "device": "cuda:3" }
     ],
     "components": {
-      "denoiser": {
+      "transformer": {
         "ranks": [0, 1, 2, 3],
         "parallel_config": {
           "sequence_parallel": { "kind": "ulysses", "ulysses_degree": 4 }
@@ -82,15 +84,17 @@
       },
       "video_decoder": {
         "ranks": [0, 1, 2, 3],
-        "parallel_config": {},
-        "distribution": "temporal_units",
-        "units_per_rank": 1
+        "parallel_config": {}
       },
       "audio_decoder": {
         "ranks": [0, 1, 2, 3],
         "parallel_config": {},
-        "distribution": "temporal_units",
-        "units_per_rank": 1
+        "distribution": "temporal_units"
+      },
+      "latent_encoder": {
+        "ranks": [0, 1, 2, 3],
+        "parallel_config": {},
+        "distribution": "temporal_units"
       }
     },
     "queue_depth": 6
@@ -104,11 +108,9 @@
       { "node": "rank-0", "device": "cpu" }
     ],
     "components": {
-      "video_encoder": {
+      "video_codec": {
         "ranks": [0, 1, 2, 3],
-        "parallel_config": {},
-        "distribution": "temporal_units",
-        "units_per_rank": 1
+        "parallel_config": {}
       }
     },
     "queue_depth": 6
@@ -122,11 +124,22 @@
       { "node": "rank-1", "device": "cpu" }
     ],
     "components": {
-      "video_encoder": {
+      "video_codec": {
         "ranks": [0, 1, 2, 3],
-        "parallel_config": {},
-        "distribution": "temporal_units",
-        "units_per_rank": 1
+        "parallel_config": {}
+      }
+    },
+    "queue_depth": 6
+  },
+  {
+    "id": "reader",
+    "ranks": [
+      { "node": "rank-0", "device": "cpu" }
+    ],
+    "components": {
+      "media_reader": {
+        "ranks": [0],
+        "parallel_config": {}
       }
     },
     "queue_depth": 6
