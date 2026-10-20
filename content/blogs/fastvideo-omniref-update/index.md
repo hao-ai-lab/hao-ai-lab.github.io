@@ -1,12 +1,12 @@
 +++
-title = "FastVideo Update: FastH3 OmniRef, Matched Results and Open Training"
+title = "FastH3 OmniRef Release"
 date = 2026-10-19T00:00:00Z
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
 ShowReadingTime = true
 ShowToc = true
 math = true
-draft = true
+draft = false
 contentClass = "post-content-justified"
 [socialIcons]
     [[socialIcons.icon]]
