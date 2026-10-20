@@ -1,7 +1,7 @@
 +++
 title = "FastVideo FastH3 Omni: Open Source Real-Time Minimax FastH3 Ref2VA on NVIDIA Blackwell, RTX Spark, and RTX GPUs."
 description = "MiniMax H3 video and audio with up to approximately 12× lower end-to-end latency on eight GB200 GPUs, plus optimized NVFP4 QAD checkpoints for local AI."
-date = 2026-10-19T00:00:00Z
+date = 2026-10-20T00:00:00Z
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
 ShowReadingTime = false
@@ -92,12 +92,12 @@ FastH3 Omni also runs locally on **NVIDIA DGX Spark and RTX 5090 through FastVid
 
 | Device | Weights and inference recipe |
 | --- | --- |
-| DGX Spark (GB10, 128 GB unified memory) | [NVFP4 QAD weights](https://huggingface.co/FastVideo/FastH3-OmniRef-NVFP4-QAD) · [`spark` recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_spark.yaml) |
-| RTX 5090 (32 GB) | [NVFP4 QAD weights](https://huggingface.co/FastVideo/FastH3-OmniRef-NVFP4-QAD) · [`rtx-5090` recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_rtx5090.yaml) |
+| DGX Spark (GB10, 128 GB unified memory) | [NVFP4 QAD weights](https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD) · [`spark` recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_spark.yaml) |
+| RTX 5090 (32 GB) | [NVFP4 QAD weights](https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD) · [`rtx-5090` recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_rtx5090.yaml) |
 
 **QAD means quantization-aware distillation:** these weights are trained for NVFP4 execution on Blackwell. Install FastVideo with the [DGX Spark setup guide](https://haoailab.com/FastVideo/getting_started/installation/spark/) or [NVIDIA GPU setup guide](https://haoailab.com/FastVideo/getting_started/installation/gpu/). Both device profiles default to 480p; Spark keeps the model components resident, while the RTX 5090 profile offloads the text encoder and requires a precomputed AdaLN table. The local inference guide covers preparing that table, composing the model directory and selecting the decoder. Keep the recipe's attention and precision settings.
 
-For **FP8**, use the [FastH3 Omni FP8 weights](https://huggingface.co/FastVideo/FastH3-OmniRef-FP8) and the guide's [FP8 device profile](https://github.com/hao-ai-lab/FastVideo/blob/main/docs/inference/fasth3_omniref.md#device-profiles); the [RTX 4090 recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_rtx4090.yaml) shows layerwise offload for a device without FP4 support. Its text encoder must also match the hardware: the bundled NVFP4 encoder needs Blackwell, so other GPUs need compatible BF16 encoder components. NVFP4 QAD and FP8 are separate numerical variants; their outputs can differ from the BF16 release.
+For **FP8 in ComfyUI**, use the [FastH3 Omni FP8 ComfyUI checkpoint](https://huggingface.co/FastVideo/FastH3-Omni-FP8-Comfy). Native FastVideo inference requires a compatible dense or FP8 export; follow the guide's [FP8 device profile](https://github.com/hao-ai-lab/FastVideo/blob/main/docs/inference/fasth3_omniref.md#device-profiles) and [RTX 4090 recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_rtx4090.yaml) for layerwise offload. The text encoder must also match the hardware: the bundled NVFP4 encoder needs Blackwell, so other GPUs need compatible BF16 encoder components. NVFP4 QAD and FP8 are separate numerical variants; their outputs can differ from the BF16 release.
 
 Optional [NVFP4 VAE decoders](https://huggingface.co/FastVideo/FastH3-NVFP4-VAE-Decoder) provide a **36-layer quality** tier and an **8-layer fast** tier. Follow the guide's `--decoder` setup; these local configurations have their own resolution, memory and precision choices, so the eight-GB200 timings above do not describe their speed.
 
@@ -141,7 +141,7 @@ Nine reference compositions × three clip lengths (5, 10 and 15 seconds), measur
 
 ## Get started
 
-Download the model weights from the [FastH3 Omni collection](https://huggingface.co/collections/FastVideo/fasth3-omniref), then follow the [UniServe setup](#deploy-fasth3-omni-with-uniserve) to generate video and audio from your own references.
+Download the model weights from the [FastH3 Omni collection](https://huggingface.co/collections/FastVideo/fasth3-omni), then follow the [UniServe setup](#deploy-fasth3-omni-with-uniserve) to generate video and audio from your own references.
 
 ## Acknowledgements
 
