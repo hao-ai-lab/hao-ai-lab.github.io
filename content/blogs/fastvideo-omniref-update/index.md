@@ -1,5 +1,5 @@
 +++
-title = "FastVideo FastH3 OmniRef: Open Source Real-Time MiniMax H3 Ref2VA Video Generation on NVIDIA Blackwell GPUs on FastVideo Uniserve"
+title = "FastVideo FastH3 OmniRef: Open-Weight Distilled MiniMax H3 Reference-to-Video with Up to 12x Speedup on NVIDIA Blackwell GPUs"
 date = 2026-10-19T00:00:00Z
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -44,7 +44,7 @@ ComfyUI support is available. Our local AI blog post and release are planned for
 
 - **Eight transformer evaluations**, down from Base’s 50, with image, video and audio references.
 - **5.6–11.9× lower end-to-end latency** across 27 matched workloads on eight GB200 GPUs. This compares full serving recipes, using Base’s `lossless` numerical policy; [methodology](#benchmark-methodology).
-- **Real-time Generation on FastVideo Uniserve**: On particular OmniRef tasks, FastVideo Uniserve achieves real time generation speeds for 768p videos for 5s, 10s, and 15s clips.
+- **Real-time Generation on FastVideo UniServe**: On particular OmniRef tasks, FastVideo UniServe achieves real time generation speeds for 768p videos for 5s, 10s, and 15s clips.
 - **See and hear the outputs below.** Change the references or clip length, then play the matched examples together. Reference inputs are expanded; open the full prompt when you need it.
 - **Partners.** Thanks to [Nuva Lab](https://nuvalab.ai/), [Reactor Inc.](https://www.reactor.inc/), NVIDIA FastGen Team, and NVIDIA Enterprise products for their collaboration and support.
 

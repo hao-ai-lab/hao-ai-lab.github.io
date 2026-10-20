@@ -27,7 +27,7 @@ summary = "UniServe serves FastH3 8-Step text-to-video-with-audio faster than re
 **TL;DR**
 
 **FastVideo [UniServe](https://github.com/hao-ai-lab/UniServe) is a serving engine for FastH3 8-Step text-to-video-with-audio generation (more models to come!), built for production serving with our partners [Nuva Lab](https://nuvalab.ai/) and [Reactor](https://www.reactor.inc/):**
-- **Production Ready on Day 0.** Uniserve is serving production API traffic on [Reactor](https://www.reactor.inc/) and [Nuva Lab](https://nuvalab.ai/)!
+- **Production Ready on Day 0.** UniServe is serving production API traffic on [Reactor](https://www.reactor.inc/) and [Nuva Lab](https://nuvalab.ai/)!
 - **Faster than real time.** On eight NVIDIA GB200 GPUs, a 5-second 1344×768 clip with audio from a 1K-token prompt arrives as a finished MP4 in 3.1 s and a 10-second clip in 6.2 s (5.3 s with NVFP4).
 - **Throughput.** About 11,000 videos a day on eight NVIDIA GB200 GPUs and 3,400 on eight RTX PRO 6000 GPUs for a mix of 5- to 15-second clips: 6.4 and 21.2 GPU-seconds per second of generated video.
 - **Fastest open-source serving.** 1.2–1.8× lower median latency for a 10-second clip with a 1K-token prompt, and 15–45% higher throughput under load, than FastVideo, vLLM-Omni and SGLang.
