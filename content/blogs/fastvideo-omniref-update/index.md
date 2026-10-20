@@ -1,5 +1,5 @@
 +++
-title = "FastVideo FastH3 OmniRef Open Source: Real-Time Video Generation on NVIDIA Blackwell GPUs using FastVideo Uniserve"
+title = "FastVideo FastH3 OmniRef: Open Source Real-Time MiniMax H3 Ref2VA Video Generation on NVIDIA Blackwell GPUs on FastVideo Uniserve"
 date = 2026-10-19T00:00:00Z
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
