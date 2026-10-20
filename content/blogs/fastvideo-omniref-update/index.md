@@ -1,5 +1,5 @@
 +++
-title = "FastVideo FastH3 OmniRef: Open-Weight Distilled MiniMax H3 Reference-to-Video with Up to 12x Speedup on NVIDIA Blackwell GPUs"
+title = "FastVideo FastH3 OmniRef: Open Source Real-Time MiniMax H3 Ref2VA Video Generation on NVIDIA Blackwell GPUs on FastVideo UniServe"
 date = 2026-10-19T00:00:00Z
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
