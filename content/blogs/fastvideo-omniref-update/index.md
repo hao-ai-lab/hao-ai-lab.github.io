@@ -1,5 +1,5 @@
 +++
-title = "FastVideo Update: OmniRef Distillation and Open Training"
+title = "FastVideo Update: FastH3 OmniRef, Matched Results and Open Training"
 date = 2026-10-19T00:00:00Z
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -22,8 +22,7 @@ Working release draft. The introduction and TL;DR will expand as other sections 
 Before publication:
 - Confirm the release name, date, authors and checkpoint links.
 - Add the other release sections at the marked insertion point.
-- Add matched teacher/student videos with audio and the supplied references.
-- Add quality and end-to-end latency results for the exact release checkpoint.
+- Complete the release quality assessment; the matched examples are qualitative.
 - Replace implementation PR links with merged documentation when available.
 Keep private dataset versions, corpus composition, internal paths and run IDs out of this post.
 -->
@@ -34,19 +33,37 @@ This update develops that training path around **Parallel Decoding Distillation 
 
 ## TL;DR
 
-- **OmniRef distillation conditions on text and references.** The training path supports image and video references, optionally accompanied by audio references, for joint video/audio generation.
-- **We combine PDD and DMD in one student objective.** Parallel interval predictions learn from a frozen teacher, while distribution matching trains the resulting clean video/audio estimate.
-- **The training implementation and preprocessing are available for review.** The [OmniRef training PR](https://github.com/hao-ai-lab/FastVideo/pull/1984) includes model adapters, the combined objective, a configurable recipe and reference-aware preprocessing.
+FastH3 OmniRef extends FastH3 to reference-guided video and audio. This update brings the eight-forward student, matched results against Base, and the PDD+DMD training path together.
+
+### Speed
+
+- **5.6–11.9× lower end-to-end latency on eight GB200 GPUs**, across 27 matched reference workloads. Base runs 50 denoising evaluations and FastH3 Omni runs eight. Both timing lanes use the original video VAE; the comparison includes the complete model and serving recipes.
+
+### Quality
+
+- **Real references, full prompts and audio.** The [matched gallery](#matched-reference-inputs-and-outputs) shows Base, FastH3 Omni and FastH3 Omni with the trained 36-layer NVFP4 VAE for every workload, using a shared seed and request geometry.
+- **Inspect the outputs directly.** The examples are qualitative comparisons; matching inputs and seeds do not establish output parity.
+
+### Openness
+
+- **PDD and DMD in one student objective.** Parallel interval predictions learn from a frozen teacher, while distribution matching trains the resulting clean video/audio estimate.
+- **Training and reference-aware preprocessing are available for review.** The [OmniRef training PR](https://github.com/hao-ai-lab/FastVideo/pull/1984) includes model adapters, the combined objective, a configurable recipe and preprocessing for users' own reference-conditioned data.
 
 <!-- Add the other release highlights to this list when their sections are ready. -->
+
+## Results at a glance
+
+We compare nine reference compositions at three requested clip lengths: 5, 10 and 15 seconds. Every point uses the same prompt, reference files, 1344×768 target canvas and eight GB200 GPUs. The bars include reference encoding, denoising, video/audio decoding and delivery of the finished MP4. Each speedup is **Base mean latency divided by FastH3 Omni mean latency**, using the original video VAE in both lanes.
+
+{{< omniref-results >}}
+
+The reference mix matters. Three short clips and nine images put different demands on the encoders and the joint attention sequence, even when the target dimensions match. We show all 27 completed profiles, with the sampling protocol and runtime differences [below](#benchmark-methodology), rather than carrying over text-only FastH3 results.
 
 ## OmniRef: PDD + DMD for reference-guided video and audio
 
 A text prompt describes what should happen. References can supply additional information about who or what appears, the scene, or the audio. An OmniRef request combines those inputs: for example, a character image, a short audio reference and a prompt asking for a new scene.
 
 Distillation must preserve that conditioning throughout training. In FastVideo's reference-conditioned path, the ordered references stay available to the student, teacher and learned score model. Denoising and training losses act on the **target video and audio**, with reference information retained as conditioning. This separation also lets a target use a different resolution or duration from its references.
-
-<!-- Demo placement: show the supplied reference image/video/audio, full prompt, then matched teacher and student outputs. Include audio controls and multiple seeds. -->
 
 ### Predicting several intervals in one evaluation
 
@@ -82,11 +99,26 @@ The sparse student uses Video Sparse Attention, with dense attention for the tea
 
 Reference-aware preprocessing is included with the training code. It encodes text, clean reference conditions and target video/audio latents while preserving reference order and geometry. Users can prepare their own data and change the training recipe through the modular trainer's YAML configuration.
 
-### Results and examples
+## Matched reference inputs and outputs
 
-**Results and reference-conditioned examples will be added before publication.** The comparison will use the same prompts, supplied references, target dimensions and audio-enabled output settings for the teacher and student. We will report the checkpoint, transformer evaluation count, hardware and end-to-end latency alongside the samples.
+Choose a reference composition and clip length to inspect the same request across **Base**, **FastH3 Omni**, and **FastH3 Omni · 36L VAE**. All three outputs use seed 0 on eight GB200 GPUs, with the same prompt, ordered reference files and target geometry. The gallery contains every one of the 27 profiles in the timing comparison, with no selection by output appearance.
 
-<!-- Add the finalized quality results, multiple-seed gallery and timing table here. Do not carry over T2AV speedups or training MFU measurements as OmniRef results. -->
+The third column uses the trained quality decoder from our [NVFP4 VAE release](/blogs/fasth3-v21/#nvfp4-vae-decoders). It keeps FastH3 Omni's student and reference encoders and changes the output video decoder. It is included for visual and audio inspection; the performance comparison above covers Base and original-VAE FastH3 Omni.
+
+The gallery's native decoder adapter preserves calibration boundaries with separate normalization, RoPE, residual and SwiGLU operations. It differs from the fused FastVideo decoder implementation described in that release.
+
+Open **Reference inputs** to see the supplied images, clips and audio, and **Full prompt** for the complete instruction. **Play together** starts all three videos; **Listen to** selects the soundtrack. The MP4 downloads preserve the generated files unchanged.
+
+{{< omniref-gallery >}}
+
+## Benchmark methodology
+
+- **Hardware and scope.** Eight NVIDIA GB200 GPUs across two four-GPU trays. GB200 is our proxy for B200; B200 was not separately measured. These results describe the eight-GPU cohort.
+- **Matched inputs.** Nine reference compositions × three requested lengths, all at 1344×768 and 24 FPS. The aligned outputs contain 124, 243 or 362 frames. Images use the released enlarged-reference mode with a 2048-pixel short edge. Reference clips retain their real soundtracks and standalone audio remains a real input.
+- **Measurement.** One request at a time, one warmup with seed 42 for each profile, then measured seeds 0, 1 and 2. The table reports the arithmetic mean and sample standard deviation of client end-to-end time until the complete MP4 is available. Model loading and server startup are excluded. No latency is inferred from historical results, missing cells or memory failures, and no timing is normalized to another workload.
+- **Model and runtime.** Base is MiniMax H3 Ref2VA with 50 denoising evaluations; FastH3 Omni uses the 32-interval PDD student with eight fused evaluations and VSA. The Base lane uses Ulysses 4 × Ring 2 with the native FlashAttention transformer backend; the student uses eight-way Ulysses. Conditioning caches are disabled. Model weights, attention patterns and serving implementations differ, so this compares complete model/runtime recipes, not an isolated distillation or kernel ablation.
+- **Provenance.** The frozen data records the [Base runtime source](https://github.com/sgl-project/sglang/tree/ab580b2e060059c0f8387b598a9f648dcec13f93) at `ab580b2e`, the [FastH3 Omni runtime source](https://github.com/hao-ai-lab/UniServe/tree/04a49444f3ba77db51d9eee231dac0a40bf1652a) at `04a49444`, Base checkpoint `9bfb6693` and OmniRef student `88d512c5`, with complete revisions and sample hashes in the downloadable JSON. The gallery's 36L decoder is pinned separately. Its timings are not included in the public performance data.
+- **Reading the examples.** The timing statistics use three seeds; the gallery consistently uses seed 0. A shared seed does not imply numerical or perceptual output parity across different models or runtimes. The examples support direct inspection and are not a quantitative quality evaluation.
 
 <!-- OTHER RELEASE SECTIONS: insert the additional sections here before finalizing the title, opening and TL;DR. -->
 
@@ -94,4 +126,12 @@ Reference-aware preprocessing is included with the training code. It encodes tex
 
 The [OmniRef PDD+DMD training PR](https://github.com/hao-ai-lab/FastVideo/pull/1984) contains the implementation, preprocessing and example recipe. The [T2AV DMD training PR](https://github.com/hao-ai-lab/FastVideo/pull/1985) separately publishes the training path used for FastH3 8-Step V2, updated with recent runtime optimizations. Both are draft PRs while validation continues.
 
-We build on [MiniMax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3) and the NVIDIA FastGen team's [PDD work](https://research.nvidia.com/labs/genair/pdd/). The next additions to this post will cover the release checkpoints, reference-conditioned examples and measured results.
+Release checkpoint links, the broader quality assessment and the other update sections will be finalized before publication.
+
+## Acknowledgements
+
+FastH3 builds on [MiniMax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3). We thank the MiniMax team for releasing its weights and code.
+
+We thank the NVIDIA Enterprise Products team (Pengcheng Li and Cliff Woolley) for the Video Sparse Attention kernel used by FastH3. We thank the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team (Julius Berner, Chao Liu and Arash Vahdat) for the DMD2 framework and H3 reference work, and for introducing [Parallel Decoding Distillation](https://research.nvidia.com/labs/genair/pdd/).
+
+We thank [Nuva Lab](https://nuvalab.ai/) for bringing production-grounded creative video workflows to FastH3, and the upstream serving, kernel and open-source communities whose implementations make these experiments possible. We also acknowledge the [vLLM project](https://vllm.ai/), [NVIDIA](https://www.nvidia.com/en-us/) and [MBZUAI](https://mbzuai.ac.ae/) for their support of FastVideo.

@@ -1,0 +1,46 @@
+{{- $data := transform.Unmarshal (.Page.Resources.GetMatch "data/benchmark.json").Content -}}
+<section class="omni-results" aria-label="Base versus FastH3 Omni end-to-end latency">
+  <div class="omni-chart-controls" data-omni-chart-controls>
+    <label for="omni-chart-duration">Requested clip length</label>
+    <select id="omni-chart-duration" data-omni-chart-duration>
+      <option value="5">5 seconds</option>
+      <option value="10">10 seconds</option>
+      <option value="15">15 seconds</option>
+    </select>
+  </div>
+  {{- range $seconds := slice 5 10 15 }}
+  <figure class="omni-chart" data-omni-chart="{{ $seconds }}"{{ if ne $seconds 5 }} hidden{{ end }}>
+    <div class="omni-chart-scroll">
+      <img src="img/latency-{{ $seconds }}s.svg" width="1100" height="690"
+        alt="End-to-end latency for {{ $seconds }} second requests on eight GB200 GPUs. Base versus FastH3 Omni; Base divided by FastH3 speedups are printed beside the student bars. Exact numbers are in the table below.">
+    </div>
+    <figcaption>Mean end-to-end latency for {{ $seconds }} s requests, including audio and MP4 output. Each green label gives Base / FastH3 Omni. Both timing lanes use the original H3 video VAE.</figcaption>
+  </figure>
+  {{- end }}
+  <details class="omni-latency-details">
+    <summary>All 27 matched timing profiles · mean ± sample standard deviation</summary>
+    <div class="omni-table-scroll">
+      <table>
+        <caption>1344×768, 24 FPS, eight GB200 GPUs. Seconds; lower is better.</caption>
+        <thead><tr><th scope="col">References</th><th scope="col">Target</th><th scope="col">Base</th><th scope="col">FastH3 Omni</th><th scope="col">Base / FastH3</th></tr></thead>
+        <tbody>
+        {{- range $data.profiles }}
+        {{- $base := index .performance "base" }}
+        {{- $fast := index .performance "fast" }}
+        <tr><th scope="row">{{ .label }}</th><td>{{ .target_seconds }} s</td><td>{{ printf "%.2f ± %.2f" $base.mean_s $base.sample_std_s }}</td><td>{{ printf "%.2f ± %.2f" $fast.mean_s $fast.sample_std_s }}</td><td class="omni-speedup">{{ printf "%.2f×" .performance.speedup }}</td></tr>
+        {{- end }}
+        </tbody>
+      </table>
+    </div>
+  </details>
+  <p class="omni-data-links">Frozen {{ $data.protocol.snapshot_utc }}. Download the <a href="{{ (.Page.Resources.GetMatch "data/latency.csv").RelPermalink }}">timing CSV</a> or <a href="{{ (.Page.Resources.GetMatch "data/benchmark.json").RelPermalink }}">inputs, results and protocol JSON</a>.</p>
+</section>
+<style>
+.omni-results{margin:1.6rem 0 2rem}.omni-chart-controls{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin-bottom:.8rem}.omni-chart-controls label{font-weight:650}.omni-chart-controls select{font:inherit;color:var(--primary);background:var(--entry);border:1px solid var(--border);border-radius:7px;padding:.35rem .65rem}.omni-chart{margin:1rem 0 1.5rem}.omni-chart[hidden]{display:none}.omni-chart-scroll{overflow-x:auto;background:#fff;border-radius:10px;border:1px solid var(--border)}.omni-chart img{display:block;width:100%;min-width:690px;height:auto;margin:0}.omni-chart figcaption,.omni-data-links{font-size:.8rem;line-height:1.55;color:var(--secondary);text-indent:0!important}.omni-chart figcaption{margin:.65rem 0}.omni-latency-details summary{cursor:pointer;font-weight:650}.omni-table-scroll{overflow:auto;margin:.8rem 0}.omni-table-scroll table{font-size:.78rem;white-space:nowrap}.omni-table-scroll caption{text-align:left;font-size:.76rem;color:var(--secondary);margin:.5rem 0}.omni-table-scroll th,.omni-table-scroll td{padding:.55rem .65rem}.omni-table-scroll th[scope=row]{font-weight:500}.omni-speedup{color:#168a70;font-weight:750}.omni-data-links{margin-top:.75rem}
+</style>
+<style>
+.omni-chart figcaption{font-weight:normal}
+/* The theme's unbroken footer credit overflows narrow screens. This override
+   is loaded only by the OmniRef article, preserving the shared theme. */
+@media(max-width:650px){.footer span:last-child{white-space:normal}}
+</style>
