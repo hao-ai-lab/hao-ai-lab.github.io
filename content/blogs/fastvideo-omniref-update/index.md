@@ -102,233 +102,26 @@ Optional [NVFP4 VAE decoders](https://huggingface.co/FastVideo/FastH3-NVFP4-VAE-
 
 ## Deploy FastH3 Omni with UniServe
 
-Find the checkpoints in the [FastH3 Omni weights collection](https://huggingface.co/collections/FastVideo/fasth3-omniref).
-
-The walkthrough below serves the same [eight-forward FastH3 Omni student](https://huggingface.co/FastVideo/FastVideo-FastH3-Omni-8-Step-V1) used in the gallery, with its original video VAE. It starts with one image and one audio reference on **four GB200 GPUs**, then shows the **eight-GPU, two-host** configuration for the larger reference mixes. The model's task is **`ref2va`**: reference-conditioned video and audio.
-
-{{< omniref-details title="Open the complete deployment walkthrough" >}}
-
-Install [UniServe](https://github.com/hao-ai-lab/uniserve) and apply the [large-index correction](deploy/uniserve-wide-index.patch) below for large reference mixes. For other hardware and deployment layouts, see the [UniServe FastH3 guide](https://github.com/hao-ai-lab/uniserve/blob/main/docs/minimax_h3/minimax_h3.md).
-
-{{< omniref-details title="1. Install UniServe and its GPU dependencies" id="1-install-uniserve-and-its-gpu-dependencies" >}}
-
-Use Linux with the **CUDA 13 development toolkit**, a compatible NVIDIA driver, **Python 3.12**, and a C++ compiler. The commands below assume Ubuntu 24.04. Install FFmpeg and `ffprobe` as well: reference media is processed on the server. Check `nvidia-smi` and `nvcc --version` before building; a CUDA runtime image alone does not supply the compiler.
+Install [UniServe](https://github.com/hao-ai-lab/uniserve) on every node:
 
 ```bash
-sudo apt-get update
-sudo apt-get install -y \
-  build-essential pkg-config cmake git curl ca-certificates \
-  python3.12 python3.12-dev python3.12-venv ffmpeg
-
+git clone https://github.com/hao-ai-lab/uniserve.git && cd uniserve
+apt-get update && apt-get install -y build-essential python3.12-dev pkg-config cmake \
+  git curl ca-certificates nasm zlib1g-dev xz-utils
+scripts/install-ffmpeg.sh
 curl -LsSf https://astral.sh/uv/install.sh | sh
-curl -sSf https://sh.rustup.rs | sh -s -- \
-  -y --profile minimal --default-toolchain stable
-
-export CUDA_HOME=/usr/local/cuda
+curl -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable
+export CUDA_HOME=/usr/local/cuda MAX_JOBS=2
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$CUDA_HOME/bin:$PATH"
-export MAX_JOBS=2
-
-git clone https://github.com/hao-ai-lab/uniserve.git
-cd uniserve
-
-export OMNI_BLOG="https://haoailab.com/blogs/fastvideo-omniref-update/"
-curl --fail --location \
-  "${OMNI_BLOG}deploy/uniserve-wide-index.patch" \
-  --output omni-wide-index.patch
-git apply --check omni-wide-index.patch
-git apply omni-wide-index.patch
-
-uv sync --locked --python /usr/bin/python3.12 --extra gpu
+uv sync --locked --python 3.12 --extra gpu
 source .venv/bin/activate
-uniserve serve --help
-ffprobe -version
 ```
 
-`uv sync` builds the Rust server, host launcher, worker IPC extension and native kernels, and installs the locked GPU providers. Keep the `gpu` extra when syncing this environment again. Building on a machine without visible GPUs also requires `TORCH_CUDA_ARCH_LIST` for the deployment hardware; for GB200/B200, use `10.0`. The first model startup may compile additional kernels and prepare request layouts before reporting ready.
+Then pick your GPUs and run the steps from the UniServe checkout:
 
-The patch widens activation indices **before** multiplying a block offset. Without it, large reference mixes can overflow signed 32-bit indexing and trigger an illegal GPU memory access. It changes indexing, not model weights, precision, reference geometry or the denoising schedule. Apply it on both hosts of a two-host deployment before installation.
+{{< uniserve_deploy model="omni" >}}
 
-{{< /omniref-details >}}
-
-{{< omniref-details title="2. Download the model weights" id="2-download-the-model-weights" >}}
-
-Keep the shell in the UniServe checkout. Authenticate with a Hugging Face account that has access to the model when required, then download it:
-
-```bash
-hf auth login
-
-export OMNI_MODEL="$PWD/models/FastH3-Omni-8-Step-V1"
-hf download FastVideo/FastVideo-FastH3-Omni-8-Step-V1 \
-  --local-dir "$OMNI_MODEL"
-```
-
-The download supplies `transformer_ref`, the schedulers and `fastvideo_inference.json`. UniServe automatically downloads the required text encoder, tokenizer, processor and video/audio VAEs into the Hugging Face cache when they are missing. Keep that cache writable and allow network access during the first startup. Use the native UniServe-compatible model directory, including `fastvideo_inference.json`.
-
-{{< /omniref-details >}}
-
-{{< omniref-details title="3. Prepare a real gallery request" id="3-prepare-a-real-gallery-request" >}}
-
-The [downloadable request helper](deploy/prepare_request.py) downloads a gallery profile's reference files and writes a ready-to-send JSON request. It preserves the full prompt, ordered conditions, output geometry and seed. Run it from the same checkout before starting the server:
-
-```bash
-export OMNI_MEDIA="$PWD/omni-media"
-export OMNI_BLOG="https://haoailab.com/blogs/fastvideo-omniref-update/"
-
-curl --fail --location \
-  "${OMNI_BLOG}deploy/prepare_request.py" \
-  --output prepare_omni_request.py
-
-python prepare_omni_request.py \
-  --blog-url "$OMNI_BLOG" \
-  --composition image-voice --seconds 5 --seed 0 \
-  --media-directory "$OMNI_MEDIA" \
-  --output omni-request.json
-```
-
-This selects the gallery's **Image + voice, 5-second** example. The generated conditions use absolute `file://` URIs under `OMNI_MEDIA`. Those paths must exist on the server; a file on a separate client machine is not automatically uploaded. The helper uses the public article URL by default; when previewing locally, pass the preview's article URL with `--blog-url`.
-
-{{< /omniref-details >}}
-
-{{< omniref-details title="4. Start the reference-conditioned server" id="4-start-the-reference-conditioned-server" >}}
-
-In the same terminal, select four local GPUs and launch the **reference** deployment:
-
-```bash
-CUDA_VISIBLE_DEVICES=0,1,2,3 NCCL_NVLS_ENABLE=0 \
-uniserve serve "$OMNI_MODEL" \
-  --workers configs/minimax_h3/ulysses4-reference.json \
-  --served-model-name FastH3-Omni \
-  --host 0.0.0.0 --port 8000 \
-  --max-running-requests 2 \
-  --max-video-seconds 5 \
-  --video-resolutions 768p --video-aspect-ratios 16:9 \
-  --max-model-len 8192 --video-text-capacities 8192 \
-  --max-condition-rows 49152 \
-  --mm-processor-kwargs '{"enlarge_references":true}' \
-  --dtype bfloat16 --quantization-config '{"mode":"quality"}' \
-  --mem-fraction-static 0.70 \
-  --media-directory "$OMNI_MEDIA"
-```
-
-`ulysses4-reference.json` places `transformer_ref`, the text and reference encoders, and the video/audio decoders across the four GPUs. The CPU worker reads media and produces the finished MP4. `enlarge_references` matches the released reference sizing used for this article. The `quality` precision preset retains the original decoder; it is separate from SGLang's request-quality policy discussed in the methodology.
-
-This quickstart admits 768p landscape outputs up to five seconds, with bounded prompt and reference storage. Its capacities cover the image-plus-voice example, not every gallery composition. The checkpoint supplies the **32-interval PDD schedule, eight transformer forwards, 128-row VSA tiles and trained reference policy** automatically. Do not add diffusion-step, CFG or SGLang-specific quality fields to a UniServe request.
-
-{{< /omniref-details >}}
-
-{{< omniref-details title="5. Generate and download video with audio" id="5-generate-and-download-video-with-audio" >}}
-
-Leave the server running. In a second terminal, return to the same checkout, activate the environment, and wait for readiness:
-
-```bash
-source .venv/bin/activate
-
-curl --fail-with-body http://127.0.0.1:8000/health
-curl --fail-with-body http://127.0.0.1:8000/v1/models
-curl --fail-with-body http://127.0.0.1:8000/v1/capabilities \
-  | python -m json.tool
-```
-
-Continue when `/health` succeeds. The capabilities response should advertise **`ref2va`**, the served canvases and duration limit, condition capacity and the checkpoint's schedule. Startup preparation is excluded from the latency figures above; there is no fixed startup-time estimate for this walkthrough.
-
-```bash
-curl --fail-with-body \
-  http://127.0.0.1:8000/v1/videos/sync \
-  -H 'Content-Type: application/json' \
-  --data-binary @omni-request.json \
-  --output omni-output.mp4
-
-ffprobe -v error \
-  -show_entries stream=codec_name,width,height,r_frame_rate,sample_rate,channels \
-  -of json omni-output.mp4
-```
-
-The response is the completed MP4, with 1344×768 H.264 video at 24 FPS and stereo 32-kHz AAC audio. A requested five seconds produces 124 frames under the model's frame-alignment rule. Open the file locally to inspect both the video and soundtrack.
-
-For your own input, keep the same request structure and change `prompt`, `conditions` and `seed`. Each condition has `type`, `role: "reference"` and `uri`; the prompt names the ordered references as `<Picture 1>`, `<Video 1>` and `<Audio 1>`. The `model` field must match `FastH3-Omni`. Requests use `target.short_edge`, `target.aspect_ratio` and `target.duration_seconds`; `/v1/capabilities` gives the limits of the running deployment.
-
-For a job that should be polled, send the same JSON to `POST /v1/videos`, then inspect `GET /v1/videos/{id}` and download `GET /v1/videos/{id}/content` after its status becomes `completed`. Keep the server running until the job's output has been downloaded.
-
-{{< /omniref-details >}}
-
-{{< omniref-details title="6. Serve the larger mixes on eight GB200 GPUs" id="6-serve-the-larger-mixes-on-eight-gb200-gpus" >}}
-
-For four GPUs on each of two hosts, install the same UniServe source and environment on both, with identical absolute paths for the checkout, Python environment, model and Hugging Face cache. Share or replicate those model/cache directories and the media directory at the same paths. Use a network that connects the workers' NCCL traffic and host-launcher connections.
-
-Stop the four-GPU server before replacing it. On the head host, run from the same UniServe checkout with the paths from the quickstart:
-
-```bash
-source .venv/bin/activate
-export OMNI_MODEL="$PWD/models/FastH3-Omni-8-Step-V1"
-export OMNI_MEDIA="$PWD/omni-media"
-
-CUDA_VISIBLE_DEVICES=0,1,2,3 NCCL_NVLS_ENABLE=0 \
-uniserve serve "$OMNI_MODEL" \
-  --workers configs/minimax_h3/ulysses8-reference-two-node.json \
-  --host-identity rank-0 \
-  --served-model-name FastH3-Omni \
-  --host 0.0.0.0 --port 8000 \
-  --max-running-requests 2 \
-  --max-video-seconds 15 \
-  --video-resolutions 768p --video-aspect-ratios 16:9 \
-  --max-model-len 48128 \
-  --video-text-capacities 4096,7168,8192,10240,14336,15360,22528,37888 \
-  --max-condition-rows 79104 \
-  --mm-processor-kwargs '{"enlarge_references":true}' \
-  --dtype bfloat16 --quantization-config '{"mode":"quality"}' \
-  --mem-fraction-static 0.70 \
-  --media-directory "$OMNI_MEDIA"
-```
-
-The head logs `awaiting a launcher` with an address such as `0.0.0.0:PORT`. **Use the port in that log, not the HTTP port 8000.** On the second host, activate the identical environment and connect using the head's reachable IP or hostname:
-
-```bash
-source .venv/bin/activate
-CUDA_VISIBLE_DEVICES=0,1,2,3 NCCL_NVLS_ENABLE=0 \
-uniserve-host --head HEAD_HOST:PORT --host-identity rank-1
-```
-
-Replace `HEAD_HOST:PORT` with that head address and launcher port. Once the head becomes healthy, the same request endpoint works. The larger capacities accommodate this article's nine reference compositions at requested lengths of 5, 10 and 15 seconds, including nine square images plus three two-second clips. They are capacities for these specific inputs, not a promise that every nine-image/three-video request fits.
-
-For example, in another terminal in the head's checkout, use the same helper to prepare the largest gallery profile:
-
-```bash
-source .venv/bin/activate
-export OMNI_MEDIA="$PWD/omni-media"
-export OMNI_BLOG="https://haoailab.com/blogs/fastvideo-omniref-update/"
-
-python prepare_omni_request.py \
-  --blog-url "$OMNI_BLOG" \
-  --composition full --seconds 15 --seed 0 \
-  --media-directory "$OMNI_MEDIA" \
-  --output omni-full-15s.json
-
-curl --fail-with-body \
-  http://127.0.0.1:8000/v1/videos/sync \
-  -H 'Content-Type: application/json' \
-  --data-binary @omni-full-15s.json \
-  --output omni-full-15s.mp4
-```
-
-The helper also accepts `image`, `images3`, `images9`, `clip`, `video`, `clips3` and `mixed`. Keep FFmpeg and `ffprobe` on `PATH`, or set `--ffmpeg /absolute/path/to/ffmpeg --ffprobe /absolute/path/to/ffprobe` on the server. Keep the original VAE for the timing lane in this article. The gallery's trained 36-layer decoder requires a separately composed checkpoint; selecting a generic quantization preset does not install that decoder.
-
-{{< /omniref-details >}}
-
-{{< omniref-details title="Deployment checks" id="deployment-checks" >}}
-
-| Symptom | What to check |
-| --- | --- |
-| A checkpoint download returns 401 or 404 | Confirm the exact repository name, the release's availability and the account used by `hf auth login`. |
-| A component is missing at startup | Check network access, Hugging Face authentication and write access to the cache so UniServe can download the required files. |
-| A reference file is refused | Its absolute path must exist under `--media-directory` on the server. Keep FFmpeg and `ffprobe` available to that process. |
-| Startup runs out of memory or a request exceeds a bound | Use the appropriate deployment and explicit duration, prompt and condition capacities. Larger or longer references need more storage; increasing a bound does not create GPU memory. |
-| A two-host head waits for a launcher | Match `rank-0`/`rank-1`, connect to the logged launcher port, and check that both hosts use the same source, environment and absolute paths. |
-
-For a container deployment, follow the [UniServe Docker build instructions](https://github.com/hao-ai-lab/uniserve/blob/main/docs/minimax_h3/minimax_h3.md#build-and-run-with-docker), include FFmpeg in the image, and mount the model, Hugging Face cache and reference directory at the paths the server uses. Worker IPC also needs sufficient shared memory and pinned-memory access. The native installation above is the complete walkthrough for this article.
-
-{{< /omniref-details >}}
-
-{{< /omniref-details >}}
+The [UniServe serving guide](https://github.com/hao-ai-lab/uniserve/blob/main/docs/minimax_h3/minimax_h3.md) covers every option and request field.
 
 ## Benchmark methodology
 
