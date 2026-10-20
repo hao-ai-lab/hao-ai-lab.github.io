@@ -34,6 +34,7 @@ ComfyUI support is available. Our local AI blog post and release are planned for
 - **Eight transformer evaluations**, down from Base’s 50, with image, video and audio references.
 - **5.6–11.9× lower end-to-end latency** across 27 matched workloads on eight GB200 GPUs. This compares full serving recipes, using Base’s `lossless` numerical policy; [methodology](#benchmark-methodology).
 - **See and hear the outputs below.** Change the references or clip length, then play the matched examples together. Reference inputs are expanded; open the full prompt when you need it.
+- **Partners.** Thanks to [Nuva Lab](https://nuvalab.ai/) and [Reactor Inc.](https://www.reactor.inc/) for their collaboration and support.
 
 ## Matched reference inputs and outputs
 
