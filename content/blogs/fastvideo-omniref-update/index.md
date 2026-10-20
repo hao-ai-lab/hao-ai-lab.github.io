@@ -1,5 +1,5 @@
 +++
-title = "FastH3 OmniRef Release"
+title = "FastVideo FastH3 OmniRef Open Source: Real-Time Video Generation on NVIDIA Blackwell GPUs using FastVideo Uniserve"
 date = 2026-10-19T00:00:00Z
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -12,6 +12,7 @@ omnirefInteractive = true
     image = "img/cover.svg"
     alt = "FastH3 OmniRef: 5.6–11.9 times lower end-to-end latency across 27 matched workloads on eight GB200 GPUs, compared with Base’s lossless-policy serving recipe."
     relative = true
+    hiddenInSingle = true
 [socialIcons]
     [[socialIcons.icon]]
       name = "twitter"
@@ -29,12 +30,22 @@ FastVideo is open-sourcing **FastH3 OmniRef**, a distilled MiniMax H3 model for 
 
 ComfyUI support is available. Our local AI blog post and release are planned for tomorrow, **October 21**.
 
+<div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
+  <video controls playsinline preload="metadata"
+    aria-label="FastH3 OmniRef trilingual sample with background music"
+    style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
+    <source src="media/hero/trilingual-bgm-1080p.mp4" type="video/mp4">
+    Your browser does not support MP4 video with audio.
+  </video>
+</div>
+
 ## TL;DR
 
 - **Eight transformer evaluations**, down from Base’s 50, with image, video and audio references.
 - **5.6–11.9× lower end-to-end latency** across 27 matched workloads on eight GB200 GPUs. This compares full serving recipes, using Base’s `lossless` numerical policy; [methodology](#benchmark-methodology).
+- **Real-time Generation on FastVideo Uniserve**: On particular OmniRef tasks, FastVideo Uniserve achieves real time generation speeds for 768p videos for 5s, 10s, and 15s clips.
 - **See and hear the outputs below.** Change the references or clip length, then play the matched examples together. Reference inputs are expanded; open the full prompt when you need it.
-- **Partners.** Thanks to [Nuva Lab](https://nuvalab.ai/) and [Reactor Inc.](https://www.reactor.inc/) for their collaboration and support.
+- **Partners.** Thanks to [Nuva Lab](https://nuvalab.ai/), [Reactor Inc.](https://www.reactor.inc/), NVIDIA FastGen Team, and NVIDIA Enterprise products for their collaboration and support.
 
 ## Matched reference inputs and outputs
 
@@ -61,6 +72,8 @@ FastH3 OmniRef combines **Parallel Decoding Distillation (PDD)** with **Distribu
 | GPUs | 64 NVIDIA B300 |
 | Training steps | 3,500 |
 | Estimated compute | Approximately 7,800 GPU-hours |
+
+The training code is in FastVideo: see the [OmniRef DMPDD training guide](https://github.com/hao-ai-lab/FastVideo/blob/main/docs/training/omniref_dmpdd.md).
 
 ## Deploy FastH3 OmniRef with UniServe
 
