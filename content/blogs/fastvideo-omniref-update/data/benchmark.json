@@ -1,0 +1,2852 @@
+{
+  "schema_version": 1,
+  "protocol": {
+    "snapshot_utc": "2026-10-20T06:53:34.352209+00:00",
+    "hardware": "NVIDIA GB200",
+    "gpu_count": 8,
+    "nodes": 2,
+    "gpus_per_node": 4,
+    "hardware_proxy": "B200 proxy; B200 was not separately measured",
+    "canvas": "1344x768",
+    "fps": 24,
+    "target_seconds": [
+      5,
+      10,
+      15
+    ],
+    "measured_seeds": [
+      0,
+      1,
+      2
+    ],
+    "warmup_seed": 42,
+    "warmup_requests_per_profile": 1,
+    "concurrency": 1,
+    "gallery_seed": 0,
+    "latency": "client end-to-end to completed MP4;startup excluded",
+    "aggregation": "arithmetic mean and sample standard deviation across three measured seeds",
+    "speedup": "Base mean seconds / FastH3 Omni mean seconds; no normalization",
+    "base_denoiser_evaluations": 50,
+    "fast_denoiser_evaluations": 8,
+    "reference_sizing": "enlarged reference image short edge 2048; native released preprocessing",
+    "media": "H.264 video and AAC stereo 32kHz audio; FFmpeg 8.1.2",
+    "base": {
+      "model": "MiniMaxAI/MiniMax-H3",
+      "revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da",
+      "runtime": "SGLang",
+      "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+      "parallelism": "Ulysses 4 x Ring 2; transformer attention=fa; conditioning cache disabled",
+      "runtime_torch": "2.14.1+cu130",
+      "request_quality": "lossless",
+      "reference_resize_mode": "diffusers"
+    },
+    "fast": {
+      "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+      "revision": "88d512c5e7cc38dda499fbb65688ce58611f9c80",
+      "runtime": "UniServe",
+      "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+      "parallelism": "8-way Ulysses; native quality precision; conditioning cache disabled",
+      "runtime_torch": "2.13.0+cu130"
+    },
+    "decoder36": {
+      "model": "FastVideo/FastH3-NVFP4-VAE-Decoder/quality-36L",
+      "revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e",
+      "adapter_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+      "scope": "gallery only; all timings omitted"
+    },
+    "comparison_scope": "model-and-serving-system comparison; not an isolated distillation or kernel ablation",
+    "quality_scope": "matching inputs and seeds do not imply numerical or perceptual output parity"
+  },
+  "profiles": [
+    {
+      "id": "image-5s",
+      "composition": "image",
+      "label": "1 image",
+      "target_seconds": 5,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n\nsummary:\n[reference generation] <Subject 1> makes breakfast in a sunlit kitchen and speaks warmly to the camera.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n\ndetailed_description:\nThe target video is in a realistic live-action style with warm morning light.\n[Shot 1] A medium close-up with a slow push-in. In a sunlit kitchen, <Subject 1> (S1) sets a bowl of oranges on the wooden counter, wipes his hands on a striped towel, looks into the camera and says with a relaxed smile, <d>[English] Breakfast is on me today, so take your time.</d> Morning light falls across his shoulders and the steam of a kettle drifts behind him.\n\noverall_soundscape:\nBright kitchen room tone, a kettle beginning to whistle, and birdsong drifting through an open window.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "5d92f5ca934cca0aa5648f5d654afe6f1c6fe3ed8ad4db016a3bc7e0afa1c6ed",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/hf_character_action_reference.png",
+          "sha256": "01a6c6f29e1ce9d414276e6e2eca06b171e5a68dd54a86074a4ab77bb9cb8883"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-image-5s-seed0.mp4",
+          "poster": "media/posters/base-image-5s-seed0.jpg",
+          "sha256": "617b8898d449aa13206e97d65703bdc3582c874427482d97a83bd97926b06b3a",
+          "summary_sha256": "7089cc593cd14412d68221e89a20c301b139af5690a04f0c5d6fa3bdda9028ff",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-image-5s-seed0.mp4",
+          "poster": "media/posters/fast-image-5s-seed0.jpg",
+          "sha256": "7170b9338946a59fe23d871216762b968927f1939f9f9f00f3d330322c6c17ad",
+          "summary_sha256": "0e150504be617c5df806814a7b6e37f897cd576dda503f94e8f0203e63fd4166",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-image-5s-seed0.mp4",
+          "poster": "media/posters/decoder36-image-5s-seed0.jpg",
+          "sha256": "9e0708dacb3a4f95eed13026fcc0dbc25b1bd52baa5bc7b79b5d077d959e9c18",
+          "summary_sha256": "b09228ce69fb2c96c382eccdf0f8747699b971303bb30d116cb47ea7039baa5f",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 35.43855305567073,
+          "sample_std_s": 0.058240637634473194,
+          "measured_seconds": [
+            35.37135303701507,
+            35.46989696403034,
+            35.47440916596679
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 5.66829071372437,
+          "sample_std_s": 0.01889530389227691,
+          "measured_seconds": [
+            5.655375283909962,
+            5.659519303124398,
+            5.68997755413875
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 6.2520704821764
+      },
+      "frames": 124,
+      "actual_video_seconds": 5.166666666666667
+    },
+    {
+      "id": "image-10s",
+      "composition": "image",
+      "label": "1 image",
+      "target_seconds": 10,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n\nsummary:\n[reference generation] <Subject 1> makes breakfast in a sunlit kitchen and speaks warmly to the camera.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1], [Shot 2]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n\ndetailed_description:\nThe target video is in a realistic live-action style with warm morning light.\n[Shot 1] A medium close-up with a slow push-in. In a sunlit kitchen, <Subject 1> (S1) sets a bowl of oranges on the wooden counter, wipes his hands on a striped towel, looks into the camera and says with a relaxed smile, <d>[English] Breakfast is on me today, so take your time.</d> Morning light falls across his shoulders and the steam of a kettle drifts behind him.\n[Shot 2] At 00:05.000, the shot cuts to a close shot over the counter. <Subject 1> (S1) slices an orange in half on a wooden board, squeezes it into a glass and slides the glass toward the camera, saying, <d>[English] Fresh juice first.</d> A drop runs down the glass in the sunlight.\n\noverall_soundscape:\nBright kitchen room tone, a kettle beginning to whistle, and birdsong drifting through an open window.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "a2f939210dc81ca778deca6c592872f978e6acea84bbe5235be312b81e2ab77c",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/hf_character_action_reference.png",
+          "sha256": "01a6c6f29e1ce9d414276e6e2eca06b171e5a68dd54a86074a4ab77bb9cb8883"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-image-10s-seed0.mp4",
+          "poster": "media/posters/base-image-10s-seed0.jpg",
+          "sha256": "75579f2829adc18c49d7fc4e50fddd7b1809721a740957bec249fb61033b59b4",
+          "summary_sha256": "b0466e80ea22eda4e0b9d3716511663ea5afea7fca9184e69d202551bc9fc1c8",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-image-10s-seed0.mp4",
+          "poster": "media/posters/fast-image-10s-seed0.jpg",
+          "sha256": "950e31f1887f406a35db6dbff0ab5f84ca81025d2f006942edb312b524df2c5f",
+          "summary_sha256": "f2168bd8ea98dbbeae7854da08a813647efe08e33ec845446b3b1772963807ce",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-image-10s-seed0.mp4",
+          "poster": "media/posters/decoder36-image-10s-seed0.jpg",
+          "sha256": "5656b214c06b6d1998fc6ae36d49757d486862af0e74b36f79e69243fff4c470",
+          "summary_sha256": "593aa7238a5849f8bc7d64a386ee13fb8e1027df5dc2822f8b815ac95e871c00",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 78.53238428733312,
+          "sample_std_s": 0.013348087854205003,
+          "measured_seconds": [
+            78.5455206540064,
+            78.53279810602544,
+            78.51883410196751
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 9.37390313623473,
+          "sample_std_s": 0.012632052208678385,
+          "measured_seconds": [
+            9.385046843905002,
+            9.360180694842711,
+            9.376481869956478
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 8.377767846113851
+      },
+      "frames": 243,
+      "actual_video_seconds": 10.125
+    },
+    {
+      "id": "image-15s",
+      "composition": "image",
+      "label": "1 image",
+      "target_seconds": 15,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n\nsummary:\n[reference generation] <Subject 1> makes breakfast in a sunlit kitchen and speaks warmly to the camera.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1], [Shot 2], [Shot 3]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n\ndetailed_description:\nThe target video is in a realistic live-action style with warm morning light.\n[Shot 1] A medium close-up with a slow push-in. In a sunlit kitchen, <Subject 1> (S1) sets a bowl of oranges on the wooden counter, wipes his hands on a striped towel, looks into the camera and says with a relaxed smile, <d>[English] Breakfast is on me today, so take your time.</d> Morning light falls across his shoulders and the steam of a kettle drifts behind him.\n[Shot 2] At 00:05.000, the shot cuts to a close shot over the counter. <Subject 1> (S1) slices an orange in half on a wooden board, squeezes it into a glass and slides the glass toward the camera, saying, <d>[English] Fresh juice first.</d> A drop runs down the glass in the sunlight.\n[Shot 3] At 00:10.000, the shot cuts to a medium wide shot of the whole kitchen. <Subject 1> lifts the whistling kettle off the stove, pours hot water into a teapot and turns back to the camera with a grin as the steam rises past the open window.\n\noverall_soundscape:\nBright kitchen room tone, a kettle beginning to whistle, and birdsong drifting through an open window.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "59dab877e935288e08d3fe52ceb2d0a774da56e2472e6322eace7769ca80f69b",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/hf_character_action_reference.png",
+          "sha256": "01a6c6f29e1ce9d414276e6e2eca06b171e5a68dd54a86074a4ab77bb9cb8883"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-image-15s-seed0.mp4",
+          "poster": "media/posters/base-image-15s-seed0.jpg",
+          "sha256": "cfa7caeb99b1a8aa37473d40f0df35c4b9e5797edcf2b14dcb05799e0afa98fb",
+          "summary_sha256": "eabc0bc5bdb98e09d3faaf5faca3a52ad8bd3d04792c8f9eec69688a45e6f6f0",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-image-15s-seed0.mp4",
+          "poster": "media/posters/fast-image-15s-seed0.jpg",
+          "sha256": "9586c94168b8091439f9ae8f219d95be727165b902dd053f1e0865240f58e496",
+          "summary_sha256": "1a23b06d078152ac1017b8e9113a3fb6236ad2a275dfbbc5f465661f1aa5b285",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-image-15s-seed0.mp4",
+          "poster": "media/posters/decoder36-image-15s-seed0.jpg",
+          "sha256": "b7b16f846f9e7ca1a6a7cf1d04e8d30be3920a2fcf1318e5f5900539d8b99661",
+          "summary_sha256": "6fbb974dac6e5d2fc0ac2f0a43033ca4a29f1a2a3bbae8390faa00208baf0769",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 139.69463913034028,
+          "sample_std_s": 0.11786345437191431,
+          "measured_seconds": [
+            139.73413636902114,
+            139.78768133500125,
+            139.5620996869984
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 14.141940217077112,
+          "sample_std_s": 0.008489523078824073,
+          "measured_seconds": [
+            14.14658638718538,
+            14.147092547034845,
+            14.132141717011109
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 9.878039150642985
+      },
+      "frames": 362,
+      "actual_video_seconds": 15.083333333333334
+    },
+    {
+      "id": "image-voice-5s",
+      "composition": "image-voice",
+      "label": "Image + voice",
+      "target_seconds": 5,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Audio 1> is the voice-timbre reference for <Subject 1> (S1).\n\nsummary:\n[reference generation + audio reference] <Subject 1> finishes cooking dinner in a kitchen and speaks to the camera in the voice timbre of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Audio 1>: reference - its vocal timbre guides the dialogue delivery of <Subject 1> without copying the original signal.\n\ndetailed_description:\nThe target video is in a realistic live-action style with soft evening light.\n[Shot 1] A medium close-up with a slow push-in. In a warm kitchen, <Subject 1> (S1) dries his hands on a towel, looks into the camera and says, using the voice timbre referenced from <Audio 1>, <d>[English] Dinner is almost ready, come sit down.</d>\n\noverall_soundscape:\nQuiet kitchen room tone with a faint refrigerator hum, a simmering pot and the clink of plates.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "d75ae7f307248afb1682bf878b2283daacc5439e6d3896511096aefed64d8c42",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/hf_character_action_reference.png",
+          "sha256": "01a6c6f29e1ce9d414276e6e2eca06b171e5a68dd54a86074a4ab77bb9cb8883"
+        },
+        {
+          "type": "audio",
+          "caption": "Audio 1",
+          "file": "media/inputs/official_ref2va_1_audio.mp3",
+          "sha256": "2a48d447b343b38a2c504d5281a0c97c688db0ba87931ed9282c598bd6752454"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-image-voice-5s-seed0.mp4",
+          "poster": "media/posters/base-image-voice-5s-seed0.jpg",
+          "sha256": "2bd36bae5542038e15c5b902ce37a8ead460c35bb725ad568f3cea99ec1f2f43",
+          "summary_sha256": "62a039b2ce2cab51019b7c7a8d871a540410269e8508212515bbed8371a4c096",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-image-voice-5s-seed0.mp4",
+          "poster": "media/posters/fast-image-voice-5s-seed0.jpg",
+          "sha256": "74bf53c7c5604454cb2f78ff6199054e9aa8e5b138e415cf83e44fcc5aaba3e2",
+          "summary_sha256": "84aca4de555d85a1ed391cb50da25f95858d4b68aeb71e275dbbae16563c9721",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-image-voice-5s-seed0.mp4",
+          "poster": "media/posters/decoder36-image-voice-5s-seed0.jpg",
+          "sha256": "09115bbe89027289a082db7d30b648faa7f334b11d582ef94a97b5ae92fc413a",
+          "summary_sha256": "d72ef0fdf42f8826521d6ad51d9f37ddf1deb5ccbc6c50836fa9e616d6d678da",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 35.922478002340846,
+          "sample_std_s": 0.0658791712909475,
+          "measured_seconds": [
+            35.88077245501336,
+            35.88823494402459,
+            35.998426607984584
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 5.84164546111909,
+          "sample_std_s": 0.0092929772293238,
+          "measured_seconds": [
+            5.840988451149315,
+            5.832698424113914,
+            5.8512495080940425
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 6.149376616816991
+      },
+      "frames": 124,
+      "actual_video_seconds": 5.166666666666667
+    },
+    {
+      "id": "image-voice-10s",
+      "composition": "image-voice",
+      "label": "Image + voice",
+      "target_seconds": 10,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Audio 1> is the voice-timbre reference for <Subject 1> (S1).\n\nsummary:\n[reference generation + audio reference] <Subject 1> finishes cooking dinner in a kitchen and speaks to the camera in the voice timbre of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1], [Shot 2]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Audio 1>: reference - its vocal timbre guides the dialogue delivery of <Subject 1> without copying the original signal.\n\ndetailed_description:\nThe target video is in a realistic live-action style with soft evening light.\n[Shot 1] A medium close-up with a slow push-in. In a warm kitchen, <Subject 1> (S1) dries his hands on a towel, looks into the camera and says, using the voice timbre referenced from <Audio 1>, <d>[English] Dinner is almost ready, come sit down.</d>\n[Shot 2] At 00:05.000, the shot cuts to a close shot of the stove. <Subject 1> (S1) lifts the lid of a pot, tastes the sauce from a wooden spoon, nods and says in the same voice, <d>[English] A little more salt, and it is perfect.</d> Steam curls up past his face.\n\noverall_soundscape:\nQuiet kitchen room tone with a faint refrigerator hum, a simmering pot and the clink of plates.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "f2a3ff2149e40b511f9928fd42013d6f60de1b77c7bb912b9b5d60093a74d4cf",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/hf_character_action_reference.png",
+          "sha256": "01a6c6f29e1ce9d414276e6e2eca06b171e5a68dd54a86074a4ab77bb9cb8883"
+        },
+        {
+          "type": "audio",
+          "caption": "Audio 1",
+          "file": "media/inputs/official_ref2va_1_audio.mp3",
+          "sha256": "2a48d447b343b38a2c504d5281a0c97c688db0ba87931ed9282c598bd6752454"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-image-voice-10s-seed0.mp4",
+          "poster": "media/posters/base-image-voice-10s-seed0.jpg",
+          "sha256": "feb980c3b30bf3f0232fd548a39008557b36c9f285e81dc067c99348a5f80e69",
+          "summary_sha256": "1721f458df84965be7e0d4db84c1892a3f39ea82917ca22221032816880a5626",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-image-voice-10s-seed0.mp4",
+          "poster": "media/posters/fast-image-voice-10s-seed0.jpg",
+          "sha256": "f8e5274d599c2179dfb64742f803d494a1cb52ff800a13f394d0efa8069d7508",
+          "summary_sha256": "ea4e647d46c767eeaec3395651e009e4f08200c553447b5e95c30be1c69e913e",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-image-voice-10s-seed0.mp4",
+          "poster": "media/posters/decoder36-image-voice-10s-seed0.jpg",
+          "sha256": "10caffa9ef6846d75a70956cf2b96499d23d066c8a8bef6afadfe8c61542db1c",
+          "summary_sha256": "2da7a5cfac4d06a46d89539dad84c36c32cefee50aa0cc95b6de65ec30bdfd53",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 79.92020194465294,
+          "sample_std_s": 0.058157222712808376,
+          "measured_seconds": [
+            79.8530666679726,
+            79.95238990098005,
+            79.95514926500618
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 9.712229180304954,
+          "sample_std_s": 0.14528203992712482,
+          "measured_seconds": [
+            9.632657385896891,
+            9.879913937067613,
+            9.624116217950359
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 8.228821670180515
+      },
+      "frames": 243,
+      "actual_video_seconds": 10.125
+    },
+    {
+      "id": "image-voice-15s",
+      "composition": "image-voice",
+      "label": "Image + voice",
+      "target_seconds": 15,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Audio 1> is the voice-timbre reference for <Subject 1> (S1).\n\nsummary:\n[reference generation + audio reference] <Subject 1> finishes cooking dinner in a kitchen and speaks to the camera in the voice timbre of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1], [Shot 2], [Shot 3]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Audio 1>: reference - its vocal timbre guides the dialogue delivery of <Subject 1> without copying the original signal.\n\ndetailed_description:\nThe target video is in a realistic live-action style with soft evening light.\n[Shot 1] A medium close-up with a slow push-in. In a warm kitchen, <Subject 1> (S1) dries his hands on a towel, looks into the camera and says, using the voice timbre referenced from <Audio 1>, <d>[English] Dinner is almost ready, come sit down.</d>\n[Shot 2] At 00:05.000, the shot cuts to a close shot of the stove. <Subject 1> (S1) lifts the lid of a pot, tastes the sauce from a wooden spoon, nods and says in the same voice, <d>[English] A little more salt, and it is perfect.</d> Steam curls up past his face.\n[Shot 3] At 00:10.000, the shot cuts to a medium wide shot. <Subject 1> (S1) carries two plates to a small table by the window, sets them down, looks back at the camera and says, <d>[English] Come on, before it gets cold.</d>\n\noverall_soundscape:\nQuiet kitchen room tone with a faint refrigerator hum, a simmering pot and the clink of plates.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "bbe200d867cc5d490c0f4946663d0ca495f5f8acc5f9e7c0217718c0d119eeee",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/hf_character_action_reference.png",
+          "sha256": "01a6c6f29e1ce9d414276e6e2eca06b171e5a68dd54a86074a4ab77bb9cb8883"
+        },
+        {
+          "type": "audio",
+          "caption": "Audio 1",
+          "file": "media/inputs/official_ref2va_1_audio.mp3",
+          "sha256": "2a48d447b343b38a2c504d5281a0c97c688db0ba87931ed9282c598bd6752454"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-image-voice-15s-seed0.mp4",
+          "poster": "media/posters/base-image-voice-15s-seed0.jpg",
+          "sha256": "51d462918e7e5f269c47cbe99241db5f60c16b5ced1c0da91554c4f9af4e26e5",
+          "summary_sha256": "e3252e5c4b810aa57c343257c06b0bc0c62aea0f16b223707fce7384d14c71f9",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-image-voice-15s-seed0.mp4",
+          "poster": "media/posters/fast-image-voice-15s-seed0.jpg",
+          "sha256": "5ee668c3a3c7e0d125650437122fa3326f84c8c16638b984e34d61a4dc12103b",
+          "summary_sha256": "e5497d5c11049269dd5e814b2b073ad8abe9aca8515da834ca7d17912baa948b",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-image-voice-15s-seed0.mp4",
+          "poster": "media/posters/decoder36-image-voice-15s-seed0.jpg",
+          "sha256": "9aebc88f560c8b483f794c64b490a781760fffdc68f119b08d1a5954bcd49ae0",
+          "summary_sha256": "e31177a8b4287cbe3388630679f41ebbef69607041e51e05a16d56f3bd475318",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 140.91230595269008,
+          "sample_std_s": 0.06212420050404835,
+          "measured_seconds": [
+            140.98403667705134,
+            140.87577450100798,
+            140.8771066800109
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 14.435537573959058,
+          "sample_std_s": 0.0025606747585788492,
+          "measured_seconds": [
+            14.434969826834276,
+            14.43833447410725,
+            14.433308420935646
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 9.761486555712922
+      },
+      "frames": 362,
+      "actual_video_seconds": 15.083333333333334
+    },
+    {
+      "id": "images3-5s",
+      "composition": "images3",
+      "label": "3 images",
+      "target_seconds": 5,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Subject 2> is the pair of silver wraparound sunglasses shown from three angles in <Picture 2>.\n<Subject 3> is the environment in <Picture 3>: a warmly lit traditional Japanese dining room with a family gathered around a low table.\n\nsummary:\n[reference generation] <Subject 1>, wearing <Subject 2>, joins the family dinner in <Subject 3> and shares the meal.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Subject 2> (appears in [Shot 1]): fully_preserved - the silver wraparound frame and dark lenses of the sunglasses are retained.\n<Subject 3> (appears in [Shot 1]): fully_preserved - the paper doors, low wooden table, warm lantern light and the family are retained.\n\ndetailed_description:\nThe target video is in a realistic live-action style with warm lantern light.\n[Shot 1] A medium wide shot with a gentle handheld drift. <Subject 1> (S1) slides open the paper door of <Subject 3>, with <Subject 2> pushed up on his forehead. He smiles, lowers the sunglasses, bows slightly and says, <d>[English] Sorry I'm late, the train was packed.</d> The family laughs and makes room for him at the low table while steam rises from the bowls of ramen.\n\noverall_soundscape:\nSoft family chatter, clinking ceramic bowls, the slide of a paper door and the hiss of a simmering pot.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "2606c003f9d0f8ebefc0754bf86b77f34bd15345d2dab562ff92aa1a96859b4f",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/hf_character_action_reference.png",
+          "sha256": "01a6c6f29e1ce9d414276e6e2eca06b171e5a68dd54a86074a4ab77bb9cb8883"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 2",
+          "file": "media/inputs/hf_fashion_glasses_reference_3.png",
+          "sha256": "7b1491e5a227f226fa1395e71ac89a84358a435d974acb9f9065b9ded0982cbe"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 3",
+          "file": "media/inputs/official_fl2va_0_image.png",
+          "sha256": "352e959e08b886406d3766cee25ebe7bbf679e6d53eeffbd1c607b8dc93e2068"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-images3-5s-seed0.mp4",
+          "poster": "media/posters/base-images3-5s-seed0.jpg",
+          "sha256": "3904351b31bb2cedabe149747df414c3d42a2f6b89fbf0a88ad74358803ec94c",
+          "summary_sha256": "2e837edeea64cc2f7dda7abf0263f823b3a737ea803e0a9bc42e519cd66253ef",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-images3-5s-seed0.mp4",
+          "poster": "media/posters/fast-images3-5s-seed0.jpg",
+          "sha256": "354a8d8a6dac507f3aef772d309f8b461137262ec656f5b688cc9b964d2ff8a9",
+          "summary_sha256": "a284bddeb76813f14937966e487dabaf2ea3f93fb8924512a0db26200f077948",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-images3-5s-seed0.mp4",
+          "poster": "media/posters/decoder36-images3-5s-seed0.jpg",
+          "sha256": "c35d53075ccaa3410f322db8e6a6b6d952d62b99c551a669a77889105558d80d",
+          "summary_sha256": "3e45119f14526c8219b24991d35a7a730840b12a7a564d4f7cbacbd637b41d03",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 73.09455884131603,
+          "sample_std_s": 0.9769753039105809,
+          "measured_seconds": [
+            72.34318519500084,
+            72.7415077299811,
+            74.19898359896615
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 12.421142409710834,
+          "sample_std_s": 0.006399473759445845,
+          "measured_seconds": [
+            12.416745302034542,
+            12.418197778984904,
+            12.428484148113057
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 5.884688898194323
+      },
+      "frames": 124,
+      "actual_video_seconds": 5.166666666666667
+    },
+    {
+      "id": "images3-10s",
+      "composition": "images3",
+      "label": "3 images",
+      "target_seconds": 10,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Subject 2> is the pair of silver wraparound sunglasses shown from three angles in <Picture 2>.\n<Subject 3> is the environment in <Picture 3>: a warmly lit traditional Japanese dining room with a family gathered around a low table.\n\nsummary:\n[reference generation] <Subject 1>, wearing <Subject 2>, joins the family dinner in <Subject 3> and shares the meal.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1], [Shot 2]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Subject 2> (appears in [Shot 1], [Shot 2]): fully_preserved - the silver wraparound frame and dark lenses of the sunglasses are retained.\n<Subject 3> (appears in [Shot 1], [Shot 2]): fully_preserved - the paper doors, low wooden table, warm lantern light and the family are retained.\n\ndetailed_description:\nThe target video is in a realistic live-action style with warm lantern light.\n[Shot 1] A medium wide shot with a gentle handheld drift. <Subject 1> (S1) slides open the paper door of <Subject 3>, with <Subject 2> pushed up on his forehead. He smiles, lowers the sunglasses, bows slightly and says, <d>[English] Sorry I'm late, the train was packed.</d> The family laughs and makes room for him at the low table while steam rises from the bowls of ramen.\n[Shot 2] At 00:05.000, the shot cuts to a medium shot across the table. <Subject 1> kneels at the low table, takes off <Subject 2> and sets them beside his bowl. The child across from him picks up the sunglasses, tries them on, and the whole family laughs.\n\noverall_soundscape:\nSoft family chatter, clinking ceramic bowls, the slide of a paper door and the hiss of a simmering pot.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "e42bb8d29a5ce27045319c5d5e7274ccf3251914009654a2ba36f5c9fa10ff5a",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/hf_character_action_reference.png",
+          "sha256": "01a6c6f29e1ce9d414276e6e2eca06b171e5a68dd54a86074a4ab77bb9cb8883"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 2",
+          "file": "media/inputs/hf_fashion_glasses_reference_3.png",
+          "sha256": "7b1491e5a227f226fa1395e71ac89a84358a435d974acb9f9065b9ded0982cbe"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 3",
+          "file": "media/inputs/official_fl2va_0_image.png",
+          "sha256": "352e959e08b886406d3766cee25ebe7bbf679e6d53eeffbd1c607b8dc93e2068"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-images3-10s-seed0.mp4",
+          "poster": "media/posters/base-images3-10s-seed0.jpg",
+          "sha256": "5f81b88369f6ade7bd9288cc75570fd362ebccd3f858d70daa1edc6833f3f5e5",
+          "summary_sha256": "7f594a9ea13f2eb826742571a22c7491c0643815b238d44db6a878049bfeefd6",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-images3-10s-seed0.mp4",
+          "poster": "media/posters/fast-images3-10s-seed0.jpg",
+          "sha256": "db735bb6d2a200e83b23fb37785f71da158978814fd2cb71b09fbba8758e3eba",
+          "summary_sha256": "0816154c436d9c40985a1a12dea3228c0b642ebf0b2a91422adfd7375fe9d7d3",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-images3-10s-seed0.mp4",
+          "poster": "media/posters/decoder36-images3-10s-seed0.jpg",
+          "sha256": "6174d070409487a1c89085a2523990dc5df7d721afcc4321c0b32b06d00ed265",
+          "summary_sha256": "70624da46f86fa58022924de1ad535beb22f46dc470e2973745f50d85d221269",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 131.25289688501894,
+          "sample_std_s": 0.01982337014850291,
+          "measured_seconds": [
+            131.24267110199435,
+            131.2402744720457,
+            131.2757450810168
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 19.152300127083436,
+          "sample_std_s": 0.05856982268760325,
+          "measured_seconds": [
+            19.122103007975966,
+            19.219805982196704,
+            19.114991391077638
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 6.853114039259079
+      },
+      "frames": 243,
+      "actual_video_seconds": 10.125
+    },
+    {
+      "id": "images3-15s",
+      "composition": "images3",
+      "label": "3 images",
+      "target_seconds": 15,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Subject 2> is the pair of silver wraparound sunglasses shown from three angles in <Picture 2>.\n<Subject 3> is the environment in <Picture 3>: a warmly lit traditional Japanese dining room with a family gathered around a low table.\n\nsummary:\n[reference generation] <Subject 1>, wearing <Subject 2>, joins the family dinner in <Subject 3> and shares the meal.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1], [Shot 2], [Shot 3]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Subject 2> (appears in [Shot 1], [Shot 2]): fully_preserved - the silver wraparound frame and dark lenses of the sunglasses are retained.\n<Subject 3> (appears in [Shot 1], [Shot 2], [Shot 3]): fully_preserved - the paper doors, low wooden table, warm lantern light and the family are retained.\n\ndetailed_description:\nThe target video is in a realistic live-action style with warm lantern light.\n[Shot 1] A medium wide shot with a gentle handheld drift. <Subject 1> (S1) slides open the paper door of <Subject 3>, with <Subject 2> pushed up on his forehead. He smiles, lowers the sunglasses, bows slightly and says, <d>[English] Sorry I'm late, the train was packed.</d> The family laughs and makes room for him at the low table while steam rises from the bowls of ramen.\n[Shot 2] At 00:05.000, the shot cuts to a medium shot across the table. <Subject 1> kneels at the low table, takes off <Subject 2> and sets them beside his bowl. The child across from him picks up the sunglasses, tries them on, and the whole family laughs.\n[Shot 3] At 00:10.000, the shot cuts to a close-up of a steaming bowl of ramen. <Subject 1> (S1) lifts noodles with his chopsticks, takes a bite and says, <d>[English] This is worth the trip.</d> The lantern light glows on the lacquered table.\n\noverall_soundscape:\nSoft family chatter, clinking ceramic bowls, the slide of a paper door and the hiss of a simmering pot.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "270e0d5374a78019f5c4d0b4137970379cc0b4cb7b5b2ff0c3dd25ecd371d656",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/hf_character_action_reference.png",
+          "sha256": "01a6c6f29e1ce9d414276e6e2eca06b171e5a68dd54a86074a4ab77bb9cb8883"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 2",
+          "file": "media/inputs/hf_fashion_glasses_reference_3.png",
+          "sha256": "7b1491e5a227f226fa1395e71ac89a84358a435d974acb9f9065b9ded0982cbe"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 3",
+          "file": "media/inputs/official_fl2va_0_image.png",
+          "sha256": "352e959e08b886406d3766cee25ebe7bbf679e6d53eeffbd1c607b8dc93e2068"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-images3-15s-seed0.mp4",
+          "poster": "media/posters/base-images3-15s-seed0.jpg",
+          "sha256": "5b0e7e7c55f7262d88bf25dacf65819afc3596a46c0892c6f243807679d4486c",
+          "summary_sha256": "d8045415082d95f06a0ca52bad3e1b3c756097fdc6f2e9609894a9fff4641990",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-images3-15s-seed0.mp4",
+          "poster": "media/posters/fast-images3-15s-seed0.jpg",
+          "sha256": "db6cde3cdd97908690c358c18dabcdc21c50bf6d01f4959a369008199144d000",
+          "summary_sha256": "79922460d7bcd57e3f6e9400260a06ee8409caa9db4c3d7996d2e313be228151",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-images3-15s-seed0.mp4",
+          "poster": "media/posters/decoder36-images3-15s-seed0.jpg",
+          "sha256": "9fd2fc646d630380a79af57090a424051f7f33da9538585df772c2c07589f7a4",
+          "summary_sha256": "03604c0ec69b736a7f2f88b6ad26faa6153cf8119fe21f09352c4f315f4ef234",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 206.8765430636704,
+          "sample_std_s": 0.138467136439225,
+          "measured_seconds": [
+            206.7778816630016,
+            206.81691233097808,
+            207.0348351970315
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 26.532887148981292,
+          "sample_std_s": 0.01347773797958985,
+          "measured_seconds": [
+            26.517897497862577,
+            26.536758138099685,
+            26.544005810981616
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 7.796985752137164
+      },
+      "frames": 362,
+      "actual_video_seconds": 15.083333333333334
+    },
+    {
+      "id": "images9-5s",
+      "composition": "images9",
+      "label": "9 images",
+      "target_seconds": 5,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Subject 2> is the model in the black sleeveless dress in <Picture 3> and <Picture 4>.\n<Subject 3> is the clay fox in <Picture 6>.\n<Subject 4> is the pair of silver wraparound sunglasses in <Picture 5>.\n<Subject 5> is the white robotic arm in <Picture 9>.\n<Subject 6> is the family dining room in <Picture 2>.\n<Subject 7> is the starship observation deck in <Picture 7>.\n<Subject 8> is the noir title-card style of <Picture 8>.\n\nsummary:\n[reference generation] A five-shot sunglasses commercial cuts between a family dinner, a fashion studio, a clay forest, a robot lab and a starship deck, and ends on a noir title card.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Subject 2> (appears in [Shot 2]): fully_preserved - the model's braided hair and black sleeveless dress are retained.\n<Subject 3> (appears in [Shot 3]): fully_preserved - the clay fox's shape and stop-motion texture are retained.\n<Subject 4> (appears in [Shot 1], [Shot 2], [Shot 3], [Shot 4], [Shot 5]): fully_preserved - the silver wraparound frame and dark lenses are retained.\n<Subject 5> (appears in [Shot 4]): fully_preserved - the white robotic arm and its black gripper are retained.\n<Subject 6> (appears in [Shot 1]): fully_preserved - the low table and warm light of the dining room are retained.\n<Subject 7> (appears in [Shot 5]): fully_preserved - the great window and the starfield of the observation deck are retained.\n<Subject 8> (appears in [Shot 5]): weak_reference - the closing card follows its flat noir palette and lettering.\n\ndetailed_description:\nThe target video is a fast-cut commercial that changes visual style with each shot.\n[Shot 1] A live-action medium shot. <Subject 1> sits down at the table of <Subject 6> and puts on <Subject 4>.\n[Shot 2] At 00:01.000, the shot cuts to a white-cyclorama fashion studio, where <Subject 2> turns toward the camera wearing <Subject 4>.\n[Shot 3] At 00:02.000, the shot cuts to stop-motion clay animation: <Subject 3> finds <Subject 4> on a mossy stump and tries them on.\n[Shot 4] At 00:03.000, the shot cuts to a white table, where <Subject 5> lifts <Subject 4> and holds them up to the light.\n[Shot 5] At 00:04.000, the shot cuts to <Subject 7>: a silhouetted captain slips on <Subject 4>, and the frame cuts to a title card in the style of <Subject 8>.\n\noverall_soundscape:\nQuick cuts carry a dinner murmur, a camera shutter, rustling leaves, a servo whir and a low starship hum.\n\nnon_diegetic_music:\nA cool jazz bass line with brushed drums at a steady medium tempo.",
+      "prompt_sha256": "25d538a0a9582e990fb309608a76cd9174a356d6761323512a7c00c3fd5db9d0",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/square_character_action_reference.png",
+          "sha256": "302834b5a2777bd3d27e80cba22ed0ac745b1d57e0f91b81c77d9a398069966a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 2",
+          "file": "media/inputs/square_official_fl2va_0_image.png",
+          "sha256": "e371087e704d622b95dbf5e5c7ef105f186547c4ef504d7da313b50568075101"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 3",
+          "file": "media/inputs/square_fashion_glasses_reference_1.png",
+          "sha256": "be83d96db5c20db65c216ece6032b582dc0604c7e797f63139cfa3bda7b2718a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 4",
+          "file": "media/inputs/square_fashion_glasses_reference_2.png",
+          "sha256": "00aa4fc6302aded43c0afa01741df19599f9d5d9c5c9469370c8074881aee30a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 5",
+          "file": "media/inputs/square_fashion_glasses_reference_3.png",
+          "sha256": "d7d4302b9b3f836df9ac1c5c612f326ec71d092745a40d22758a2fca09a49542"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 6",
+          "file": "media/inputs/square_fl2va_clay_fox_reference.png",
+          "sha256": "6ae992e1725cd2b99c577f171067b20f78e0f99fadd2bc3cf25986921a6c44a5"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 7",
+          "file": "media/inputs/square_h3_cinematic_shot_3s.png",
+          "sha256": "7c738d2d834ed7db642d266ab4a4cfa0c24d489557a2f2cbe7b8cff22f2d07fa"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 8",
+          "file": "media/inputs/square_h3_suspense_title_2s.png",
+          "sha256": "70da4ef513a308017a40d42d2299a0e39310921cf9786dc07927e1009c698933"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 9",
+          "file": "media/inputs/square_robot_arm_red_cube_1s.png",
+          "sha256": "b7f0ab6fddd807b1ac285a88b86e04f3f5e380b004a8253a243ba987a042e8be"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-images9-5s-seed0.mp4",
+          "poster": "media/posters/base-images9-5s-seed0.jpg",
+          "sha256": "2f8e8283197259c52765cc5ca0f684fec74d9352d64ea79df1343842c0df40eb",
+          "summary_sha256": "cf81ce5586edfdd929bf87d6a38a43a110831ab259e6e3720496afab6c3a8de6",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-images9-5s-seed0.mp4",
+          "poster": "media/posters/fast-images9-5s-seed0.jpg",
+          "sha256": "35354bba61d928461a2228725aca2eb83fae944b2690b30df8cc76d683180e19",
+          "summary_sha256": "434fed8eed359db58655ffdb294e8ddb80f08894dfb98bd929b6c131c890f984",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-images9-5s-seed0.mp4",
+          "poster": "media/posters/decoder36-images9-5s-seed0.jpg",
+          "sha256": "815f8ff83d126bae60223636c4acfad36e4d4a6e26c2d5948e1105d3383e0013",
+          "summary_sha256": "275a1249d5175dcf2cec54d7e3443faebae57d2da5d880e65e97bea03e947151",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 121.61350872767314,
+          "sample_std_s": 0.046004131898873424,
+          "measured_seconds": [
+            121.59475235798163,
+            121.57984589604894,
+            121.66592792898882
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 21.588712421633925,
+          "sample_std_s": 0.01170487817517591,
+          "measured_seconds": [
+            21.575838191900402,
+            21.59871251694858,
+            21.59158655605279
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 5.633198791689167
+      },
+      "frames": 124,
+      "actual_video_seconds": 5.166666666666667
+    },
+    {
+      "id": "images9-10s",
+      "composition": "images9",
+      "label": "9 images",
+      "target_seconds": 10,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Subject 2> is the model in the black sleeveless dress in <Picture 3> and <Picture 4>.\n<Subject 3> is the clay fox in <Picture 6>.\n<Subject 4> is the pair of silver wraparound sunglasses in <Picture 5>.\n<Subject 5> is the white robotic arm in <Picture 9>.\n<Subject 6> is the family dining room in <Picture 2>.\n<Subject 7> is the starship observation deck in <Picture 7>.\n<Subject 8> is the noir title-card style of <Picture 8>.\n\nsummary:\n[reference generation] A five-shot sunglasses commercial cuts between a family dinner, a fashion studio, a clay forest, a robot lab and a starship deck, and ends on a noir title card.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Subject 2> (appears in [Shot 2]): fully_preserved - the model's braided hair and black sleeveless dress are retained.\n<Subject 3> (appears in [Shot 3]): fully_preserved - the clay fox's shape and stop-motion texture are retained.\n<Subject 4> (appears in [Shot 1], [Shot 2], [Shot 3], [Shot 4], [Shot 5]): fully_preserved - the silver wraparound frame and dark lenses are retained.\n<Subject 5> (appears in [Shot 4]): fully_preserved - the white robotic arm and its black gripper are retained.\n<Subject 6> (appears in [Shot 1]): fully_preserved - the low table and warm light of the dining room are retained.\n<Subject 7> (appears in [Shot 5]): fully_preserved - the great window and the starfield of the observation deck are retained.\n<Subject 8> (appears in [Shot 5]): weak_reference - the closing card follows its flat noir palette and lettering.\n\ndetailed_description:\nThe target video is a fast-cut commercial that changes visual style with each shot.\n[Shot 1] A live-action medium shot. <Subject 1> sits down at the table of <Subject 6> and puts on <Subject 4>.\n[Shot 2] At 00:02.000, the shot cuts to a white-cyclorama fashion studio, where <Subject 2> turns toward the camera wearing <Subject 4>.\n[Shot 3] At 00:04.000, the shot cuts to stop-motion clay animation: <Subject 3> finds <Subject 4> on a mossy stump and tries them on.\n[Shot 4] At 00:06.000, the shot cuts to a white table, where <Subject 5> lifts <Subject 4> and holds them up to the light.\n[Shot 5] At 00:08.000, the shot cuts to <Subject 7>: a silhouetted captain slips on <Subject 4>, and the frame cuts to a title card in the style of <Subject 8>.\n\noverall_soundscape:\nQuick cuts carry a dinner murmur, a camera shutter, rustling leaves, a servo whir and a low starship hum.\n\nnon_diegetic_music:\nA cool jazz bass line with brushed drums at a steady medium tempo.",
+      "prompt_sha256": "be70663b26074bd7f9c63ce64789b074dd76df712948682cfa6e4e993a3b321f",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/square_character_action_reference.png",
+          "sha256": "302834b5a2777bd3d27e80cba22ed0ac745b1d57e0f91b81c77d9a398069966a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 2",
+          "file": "media/inputs/square_official_fl2va_0_image.png",
+          "sha256": "e371087e704d622b95dbf5e5c7ef105f186547c4ef504d7da313b50568075101"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 3",
+          "file": "media/inputs/square_fashion_glasses_reference_1.png",
+          "sha256": "be83d96db5c20db65c216ece6032b582dc0604c7e797f63139cfa3bda7b2718a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 4",
+          "file": "media/inputs/square_fashion_glasses_reference_2.png",
+          "sha256": "00aa4fc6302aded43c0afa01741df19599f9d5d9c5c9469370c8074881aee30a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 5",
+          "file": "media/inputs/square_fashion_glasses_reference_3.png",
+          "sha256": "d7d4302b9b3f836df9ac1c5c612f326ec71d092745a40d22758a2fca09a49542"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 6",
+          "file": "media/inputs/square_fl2va_clay_fox_reference.png",
+          "sha256": "6ae992e1725cd2b99c577f171067b20f78e0f99fadd2bc3cf25986921a6c44a5"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 7",
+          "file": "media/inputs/square_h3_cinematic_shot_3s.png",
+          "sha256": "7c738d2d834ed7db642d266ab4a4cfa0c24d489557a2f2cbe7b8cff22f2d07fa"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 8",
+          "file": "media/inputs/square_h3_suspense_title_2s.png",
+          "sha256": "70da4ef513a308017a40d42d2299a0e39310921cf9786dc07927e1009c698933"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 9",
+          "file": "media/inputs/square_robot_arm_red_cube_1s.png",
+          "sha256": "b7f0ab6fddd807b1ac285a88b86e04f3f5e380b004a8253a243ba987a042e8be"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-images9-10s-seed0.mp4",
+          "poster": "media/posters/base-images9-10s-seed0.jpg",
+          "sha256": "69ff5d2a6d60778adfd5691507920df6886ad627105e1f75c1330f23224c4ff0",
+          "summary_sha256": "18f70e5446537e71d0d92274632cde98d06f94c97bfc02ebe008d1b792db974e",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-images9-10s-seed0.mp4",
+          "poster": "media/posters/fast-images9-10s-seed0.jpg",
+          "sha256": "5c27515e1997528edbf9ef9f86196c4922290e30f7f535a3d552270f91579f48",
+          "summary_sha256": "fe7c55a4ba71f35b9dc49e9b3b781b9b48763fd083109d61e2c169b42bd14c64",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-images9-10s-seed0.mp4",
+          "poster": "media/posters/decoder36-images9-10s-seed0.jpg",
+          "sha256": "c3a254a9e24a54511c081cd4388b2070ee3f7d54c6ca6d345597e816d4f5b2fe",
+          "summary_sha256": "b6c8716fbfe762808d5e599bc70a3d2b1919191dbd686453a6f68f96fb8e64d3",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 193.94788071833318,
+          "sample_std_s": 0.05444215624088368,
+          "measured_seconds": [
+            193.8873188960133,
+            193.96356205298798,
+            193.99276120599825
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 30.795576869665336,
+          "sample_std_s": 0.014092646849861525,
+          "measured_seconds": [
+            30.794670596020296,
+            30.781959231942892,
+            30.810100781032816
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 6.297913545804634
+      },
+      "frames": 243,
+      "actual_video_seconds": 10.125
+    },
+    {
+      "id": "images9-15s",
+      "composition": "images9",
+      "label": "9 images",
+      "target_seconds": 15,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Subject 2> is the model in the black sleeveless dress in <Picture 3> and <Picture 4>.\n<Subject 3> is the clay fox in <Picture 6>.\n<Subject 4> is the pair of silver wraparound sunglasses in <Picture 5>.\n<Subject 5> is the white robotic arm in <Picture 9>.\n<Subject 6> is the family dining room in <Picture 2>.\n<Subject 7> is the starship observation deck in <Picture 7>.\n<Subject 8> is the noir title-card style of <Picture 8>.\n\nsummary:\n[reference generation] A five-shot sunglasses commercial cuts between a family dinner, a fashion studio, a clay forest, a robot lab and a starship deck, and ends on a noir title card.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Subject 2> (appears in [Shot 2]): fully_preserved - the model's braided hair and black sleeveless dress are retained.\n<Subject 3> (appears in [Shot 3]): fully_preserved - the clay fox's shape and stop-motion texture are retained.\n<Subject 4> (appears in [Shot 1], [Shot 2], [Shot 3], [Shot 4], [Shot 5]): fully_preserved - the silver wraparound frame and dark lenses are retained.\n<Subject 5> (appears in [Shot 4]): fully_preserved - the white robotic arm and its black gripper are retained.\n<Subject 6> (appears in [Shot 1]): fully_preserved - the low table and warm light of the dining room are retained.\n<Subject 7> (appears in [Shot 5]): fully_preserved - the great window and the starfield of the observation deck are retained.\n<Subject 8> (appears in [Shot 5]): weak_reference - the closing card follows its flat noir palette and lettering.\n\ndetailed_description:\nThe target video is a fast-cut commercial that changes visual style with each shot.\n[Shot 1] A live-action medium shot. <Subject 1> sits down at the table of <Subject 6> and puts on <Subject 4>.\n[Shot 2] At 00:03.000, the shot cuts to a white-cyclorama fashion studio, where <Subject 2> turns toward the camera wearing <Subject 4>.\n[Shot 3] At 00:06.000, the shot cuts to stop-motion clay animation: <Subject 3> finds <Subject 4> on a mossy stump and tries them on.\n[Shot 4] At 00:09.000, the shot cuts to a white table, where <Subject 5> lifts <Subject 4> and holds them up to the light.\n[Shot 5] At 00:12.000, the shot cuts to <Subject 7>: a silhouetted captain slips on <Subject 4>, and the frame cuts to a title card in the style of <Subject 8>.\n\noverall_soundscape:\nQuick cuts carry a dinner murmur, a camera shutter, rustling leaves, a servo whir and a low starship hum.\n\nnon_diegetic_music:\nA cool jazz bass line with brushed drums at a steady medium tempo.",
+      "prompt_sha256": "124cfd376eec9ba18efdcaac275e1198ece72969c81595a83c618188a4cb8a74",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/square_character_action_reference.png",
+          "sha256": "302834b5a2777bd3d27e80cba22ed0ac745b1d57e0f91b81c77d9a398069966a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 2",
+          "file": "media/inputs/square_official_fl2va_0_image.png",
+          "sha256": "e371087e704d622b95dbf5e5c7ef105f186547c4ef504d7da313b50568075101"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 3",
+          "file": "media/inputs/square_fashion_glasses_reference_1.png",
+          "sha256": "be83d96db5c20db65c216ece6032b582dc0604c7e797f63139cfa3bda7b2718a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 4",
+          "file": "media/inputs/square_fashion_glasses_reference_2.png",
+          "sha256": "00aa4fc6302aded43c0afa01741df19599f9d5d9c5c9469370c8074881aee30a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 5",
+          "file": "media/inputs/square_fashion_glasses_reference_3.png",
+          "sha256": "d7d4302b9b3f836df9ac1c5c612f326ec71d092745a40d22758a2fca09a49542"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 6",
+          "file": "media/inputs/square_fl2va_clay_fox_reference.png",
+          "sha256": "6ae992e1725cd2b99c577f171067b20f78e0f99fadd2bc3cf25986921a6c44a5"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 7",
+          "file": "media/inputs/square_h3_cinematic_shot_3s.png",
+          "sha256": "7c738d2d834ed7db642d266ab4a4cfa0c24d489557a2f2cbe7b8cff22f2d07fa"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 8",
+          "file": "media/inputs/square_h3_suspense_title_2s.png",
+          "sha256": "70da4ef513a308017a40d42d2299a0e39310921cf9786dc07927e1009c698933"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 9",
+          "file": "media/inputs/square_robot_arm_red_cube_1s.png",
+          "sha256": "b7f0ab6fddd807b1ac285a88b86e04f3f5e380b004a8253a243ba987a042e8be"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-images9-15s-seed0.mp4",
+          "poster": "media/posters/base-images9-15s-seed0.jpg",
+          "sha256": "0531376860e3437195786e9c1972763e58c42862be6150b9b42b69d17abb6e95",
+          "summary_sha256": "9e2aa1677dfa2cb061d71ea0ea88b8e5ea3d1b56b8c2a68ef4588eec05713ec0",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-images9-15s-seed0.mp4",
+          "poster": "media/posters/fast-images9-15s-seed0.jpg",
+          "sha256": "15613b39f5d04ea94f1239524245ab03b862a126cd5a5f9428628bcbb49e28bb",
+          "summary_sha256": "965f603c1fe85f40fa677a511cda28c48f84afcd3fe5e89de5fc742a614c5d58",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-images9-15s-seed0.mp4",
+          "poster": "media/posters/decoder36-images9-15s-seed0.jpg",
+          "sha256": "a71243355b36ce44e517b38b4a5ef1347a267693c65e44b07f6f09ee85d5206c",
+          "summary_sha256": "3af2f650f0cfa32c33ea42e46560488f977929487351e5fe3518b81adbf5703f",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 282.81492259803537,
+          "sample_std_s": 0.05242696851702442,
+          "measured_seconds": [
+            282.75438981404295,
+            282.844538164034,
+            282.8458398160292
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 41.56994981404083,
+          "sample_std_s": 0.010942846546245187,
+          "measured_seconds": [
+            41.57516728108749,
+            41.557374665979296,
+            41.57730749505572
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 6.8033501089893225
+      },
+      "frames": 362,
+      "actual_video_seconds": 15.083333333333334
+    },
+    {
+      "id": "clip-5s",
+      "composition": "clip",
+      "label": "1 short clip",
+      "target_seconds": 5,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Subject 2> is the environment in <Video 1>: a grassy hill at golden hour with white lambs grazing.\n<Audio 1> is the synchronized audio track of <Video 1>, a soft background music.\n\nsummary:\n[reference generation + audio reference] <Subject 1> spends a quiet moment with the black lamb in <Subject 2>, over music in the manner of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the man's blonde hair, pink suit, white shirt, rings and the black lamb are retained.\n<Subject 2> (appears in [Shot 1]): fully_preserved - the grassy hill, golden light and grazing lambs are retained.\n<Audio 1>: reference - the soft background music is referenced throughout.\n\ndetailed_description:\nThe target video is in a realistic photographic style with golden-hour light.\n[Shot 1] A steady medium shot. <Subject 1> cradles the black lamb in the warm, low sunlight of <Subject 2>. The lamb lifts its head and nuzzles his chin; he laughs softly, tilts his head toward the camera and grins while the white lambs keep grazing on the hill.\n\noverall_soundscape:\nA light breeze over the grass and distant bleating, beneath gentle music in the manner of <Audio 1>.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "12e975c7cdca40ba2a1c68da06d3ba40cdbf7d01e7b7650ad86b7551b8159b78",
+      "conditions": [
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/clip_official_ref2va_0_2s.mp4",
+          "sha256": "ccd38d9f8e6c851fa7e0841c53141e7f13c9cfc0c6d5e06fc3103bdb2b29ede2"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-clip-5s-seed0.mp4",
+          "poster": "media/posters/base-clip-5s-seed0.jpg",
+          "sha256": "f05e468f3ca98d0fe1b80bcf6874667304ed8b314274c023b7f1c4450692c69f",
+          "summary_sha256": "83528c586b0c84bd0d1f5859520888b588339cf0dd13463dc25bd75009183415",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-clip-5s-seed0.mp4",
+          "poster": "media/posters/fast-clip-5s-seed0.jpg",
+          "sha256": "6f73e084831931fbb71886e4777bf0db86dc3a92a14a55e75030d480539d12d4",
+          "summary_sha256": "020a99a32b7c936e6c07d8fe5f2928fb3f6d9e4f202f95385bfbe6747bff65b9",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-clip-5s-seed0.mp4",
+          "poster": "media/posters/decoder36-clip-5s-seed0.jpg",
+          "sha256": "6c89e07ff7010b71ad565756b7a570161b935c17656bd39fdfc89a9f79151c0d",
+          "summary_sha256": "f3c8879b2ff5cfa8870aa8ba21c89cca071a4824384fed98771b1d1826b2e503",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 36.062882283004,
+          "sample_std_s": 0.12518041700765417,
+          "measured_seconds": [
+            35.94807549403049,
+            36.044228543003555,
+            36.196342811977956
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 5.1663130777888,
+          "sample_std_s": 0.005713337080356295,
+          "measured_seconds": [
+            5.169865147210658,
+            5.169351533986628,
+            5.159722552169114
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 6.980390413822741
+      },
+      "frames": 124,
+      "actual_video_seconds": 5.166666666666667
+    },
+    {
+      "id": "clip-10s",
+      "composition": "clip",
+      "label": "1 short clip",
+      "target_seconds": 10,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Subject 2> is the environment in <Video 1>: a grassy hill at golden hour with white lambs grazing.\n<Audio 1> is the synchronized audio track of <Video 1>, a soft background music.\n\nsummary:\n[reference generation + audio reference] <Subject 1> spends a quiet moment with the black lamb in <Subject 2>, over music in the manner of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1], [Shot 2]): fully_preserved - the man's blonde hair, pink suit, white shirt, rings and the black lamb are retained.\n<Subject 2> (appears in [Shot 1], [Shot 2]): fully_preserved - the grassy hill, golden light and grazing lambs are retained.\n<Audio 1>: reference - the soft background music is referenced throughout.\n\ndetailed_description:\nThe target video is in a realistic photographic style with golden-hour light.\n[Shot 1] A steady medium shot. <Subject 1> cradles the black lamb in the warm, low sunlight of <Subject 2>. The lamb lifts its head and nuzzles his chin; he laughs softly, tilts his head toward the camera and grins while the white lambs keep grazing on the hill.\n[Shot 2] At 00:05.000, the shot cuts to a wide shot from down the hill. <Subject 1> walks slowly through the flock with the black lamb in his arms, the white lambs parting around his legs and the long grass bending in the breeze.\n\noverall_soundscape:\nA light breeze over the grass and distant bleating, beneath gentle music in the manner of <Audio 1>.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "f05eb3822419b217ed3e789415dbc646293840e3edaa68b3a35ff968f335f9d6",
+      "conditions": [
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/clip_official_ref2va_0_2s.mp4",
+          "sha256": "ccd38d9f8e6c851fa7e0841c53141e7f13c9cfc0c6d5e06fc3103bdb2b29ede2"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-clip-10s-seed0.mp4",
+          "poster": "media/posters/base-clip-10s-seed0.jpg",
+          "sha256": "26a98dd8c332d2d22e27841a8c5d0462ce64b35a714263714de3ab8fe9ef3021",
+          "summary_sha256": "3b07b6ad9318441e411c4c2e16bc55561bc4c977f8468bb7b01bef204ec618db",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-clip-10s-seed0.mp4",
+          "poster": "media/posters/fast-clip-10s-seed0.jpg",
+          "sha256": "c26a1eefbb3303362be87d5899988b7554bff9577078c614500f86fac59991dc",
+          "summary_sha256": "77412c620320f03ab55fb5c81d26c6b91f2e4cb1dc8e2e28a4e3e4b5e8a3c875",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-clip-10s-seed0.mp4",
+          "poster": "media/posters/decoder36-clip-10s-seed0.jpg",
+          "sha256": "435dc0f2dba9210e9c608404c8ed032e6a0518739f102963ac58497aa96e6128",
+          "summary_sha256": "3ec7a6c7ad88fb46c9d8da432703cfa55268127aea5dcc6120d9589c7e885255",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 79.73047793000781,
+          "sample_std_s": 0.018366907796284096,
+          "measured_seconds": [
+            79.72240123804659,
+            79.7514991670032,
+            79.71753338497365
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 8.062355255708098,
+          "sample_std_s": 0.0069079275843772605,
+          "measured_seconds": [
+            8.061800054972991,
+            8.055741682182997,
+            8.069524029968306
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 9.889229065360164
+      },
+      "frames": 243,
+      "actual_video_seconds": 10.125
+    },
+    {
+      "id": "clip-15s",
+      "composition": "clip",
+      "label": "1 short clip",
+      "target_seconds": 15,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Subject 2> is the environment in <Video 1>: a grassy hill at golden hour with white lambs grazing.\n<Audio 1> is the synchronized audio track of <Video 1>, a soft background music.\n\nsummary:\n[reference generation + audio reference] <Subject 1> spends a quiet moment with the black lamb in <Subject 2>, over music in the manner of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1], [Shot 2], [Shot 3]): fully_preserved - the man's blonde hair, pink suit, white shirt, rings and the black lamb are retained.\n<Subject 2> (appears in [Shot 1], [Shot 2], [Shot 3]): fully_preserved - the grassy hill, golden light and grazing lambs are retained.\n<Audio 1>: reference - the soft background music is referenced throughout.\n\ndetailed_description:\nThe target video is in a realistic photographic style with golden-hour light.\n[Shot 1] A steady medium shot. <Subject 1> cradles the black lamb in the warm, low sunlight of <Subject 2>. The lamb lifts its head and nuzzles his chin; he laughs softly, tilts his head toward the camera and grins while the white lambs keep grazing on the hill.\n[Shot 2] At 00:05.000, the shot cuts to a wide shot from down the hill. <Subject 1> walks slowly through the flock with the black lamb in his arms, the white lambs parting around his legs and the long grass bending in the breeze.\n[Shot 3] At 00:10.000, the shot cuts to a close shot near the ground. <Subject 1> kneels and sets the black lamb down among the white lambs; it shakes its ears and trots off, and he watches it go with a smile, his rings catching the light.\n\noverall_soundscape:\nA light breeze over the grass and distant bleating, beneath gentle music in the manner of <Audio 1>.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "eeb47815beeaaa80ddce84ea326fdb4c45b97040dc6d9faa2f2b3e359f11fd47",
+      "conditions": [
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/clip_official_ref2va_0_2s.mp4",
+          "sha256": "ccd38d9f8e6c851fa7e0841c53141e7f13c9cfc0c6d5e06fc3103bdb2b29ede2"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-clip-15s-seed0.mp4",
+          "poster": "media/posters/base-clip-15s-seed0.jpg",
+          "sha256": "ee8525d7405773fc255191b73a06fdb6dea506361f867b6cd848c2ea4d51d298",
+          "summary_sha256": "fba91e3c6db0533d28447b7610677ceb01f97973f11c9c054a409e433ace6f2d",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-clip-15s-seed0.mp4",
+          "poster": "media/posters/fast-clip-15s-seed0.jpg",
+          "sha256": "c70b616c084860a815a5ca54c0694bf58ad71378104673a48a06087ea3cee427",
+          "summary_sha256": "814f1c9685b660c9a44095ceb731caefad67f44061de195a2a2e3739877b03cb",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-clip-15s-seed0.mp4",
+          "poster": "media/posters/decoder36-clip-15s-seed0.jpg",
+          "sha256": "c1e3445dbdd49cb43c364716b159dd3d046614ef29fdbd0672047214312d78a3",
+          "summary_sha256": "0d25aff5d8911c0378efb613456755071f620ccd5d5f4dda64d94168daa05a81",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 140.29390113899717,
+          "sample_std_s": 0.16635365778268807,
+          "measured_seconds": [
+            140.19495453697164,
+            140.4859602630022,
+            140.20078861701768
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 11.762368205313882,
+          "sample_std_s": 0.010254680097150063,
+          "measured_seconds": [
+            11.75392372906208,
+            11.759401801042259,
+            11.773779085837305
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 11.927351591970794
+      },
+      "frames": 362,
+      "actual_video_seconds": 15.083333333333334
+    },
+    {
+      "id": "video-5s",
+      "composition": "video",
+      "label": "1 long clip",
+      "target_seconds": 5,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Subject 2> is the environment in <Video 1>: a grassy hill at golden hour with white lambs grazing.\n<Audio 1> is the synchronized audio track of <Video 1>, a soft background music.\n\nsummary:\n[reference generation + audio reference] <Subject 1> spends a quiet moment with the black lamb in <Subject 2>, over music in the manner of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the man's blonde hair, pink suit, white shirt, rings and the black lamb are retained.\n<Subject 2> (appears in [Shot 1]): fully_preserved - the grassy hill, golden light and grazing lambs are retained.\n<Audio 1>: reference - the soft background music is referenced throughout.\n\ndetailed_description:\nThe target video is in a realistic photographic style with golden-hour light.\n[Shot 1] A steady medium shot. <Subject 1> cradles the black lamb in the warm, low sunlight of <Subject 2>. The lamb lifts its head and nuzzles his chin; he laughs softly, tilts his head toward the camera and grins while the white lambs keep grazing on the hill.\n\noverall_soundscape:\nA light breeze over the grass and distant bleating, beneath gentle music in the manner of <Audio 1>.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "12e975c7cdca40ba2a1c68da06d3ba40cdbf7d01e7b7650ad86b7551b8159b78",
+      "conditions": [
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/official_ref2va_0_video.mp4",
+          "sha256": "d6edc20ac82aa980c9cbd0b05b371f60d12dc8d018492e571b42de0086819c41"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-video-5s-seed0.mp4",
+          "poster": "media/posters/base-video-5s-seed0.jpg",
+          "sha256": "6799c026a71f02487f8220aec6523817d163d43ebe7eb41d1af01c25fe4ef7ac",
+          "summary_sha256": "bbd08b724720ca7edc71a8d2c5f49e49f4d9a6cfa0a08facbdac34ed42162689",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-video-5s-seed0.mp4",
+          "poster": "media/posters/fast-video-5s-seed0.jpg",
+          "sha256": "f54ea335fc8fd7631cfc91d48ef86c022bbd482555c668c096ec031ebfc60b75",
+          "summary_sha256": "d25dd38737e6c79c40cd9b1be8728c8d95c8e419d5d5606b66b37fd59526a7a9",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-video-5s-seed0.mp4",
+          "poster": "media/posters/decoder36-video-5s-seed0.jpg",
+          "sha256": "d791f4a1e7f68a153cf2d51f6c5ac944c3619e50f719a6c6930732daa33d7ac8",
+          "summary_sha256": "02b2fbfb410be02dd8d3d8572826f814928d807c5695f1d831e1c21364500386",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 69.92695426667342,
+          "sample_std_s": 0.002800567660624819,
+          "measured_seconds": [
+            69.92412307101768,
+            69.92701656202553,
+            69.92972316697706
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 8.336950273020193,
+          "sample_std_s": 0.004138709271642053,
+          "measured_seconds": [
+            8.341374794952571,
+            8.336302179144695,
+            8.333173844963312
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 8.38759402139762
+      },
+      "frames": 124,
+      "actual_video_seconds": 5.166666666666667
+    },
+    {
+      "id": "video-10s",
+      "composition": "video",
+      "label": "1 long clip",
+      "target_seconds": 10,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Subject 2> is the environment in <Video 1>: a grassy hill at golden hour with white lambs grazing.\n<Audio 1> is the synchronized audio track of <Video 1>, a soft background music.\n\nsummary:\n[reference generation + audio reference] <Subject 1> spends a quiet moment with the black lamb in <Subject 2>, over music in the manner of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1], [Shot 2]): fully_preserved - the man's blonde hair, pink suit, white shirt, rings and the black lamb are retained.\n<Subject 2> (appears in [Shot 1], [Shot 2]): fully_preserved - the grassy hill, golden light and grazing lambs are retained.\n<Audio 1>: reference - the soft background music is referenced throughout.\n\ndetailed_description:\nThe target video is in a realistic photographic style with golden-hour light.\n[Shot 1] A steady medium shot. <Subject 1> cradles the black lamb in the warm, low sunlight of <Subject 2>. The lamb lifts its head and nuzzles his chin; he laughs softly, tilts his head toward the camera and grins while the white lambs keep grazing on the hill.\n[Shot 2] At 00:05.000, the shot cuts to a wide shot from down the hill. <Subject 1> walks slowly through the flock with the black lamb in his arms, the white lambs parting around his legs and the long grass bending in the breeze.\n\noverall_soundscape:\nA light breeze over the grass and distant bleating, beneath gentle music in the manner of <Audio 1>.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "f05eb3822419b217ed3e789415dbc646293840e3edaa68b3a35ff968f335f9d6",
+      "conditions": [
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/official_ref2va_0_video.mp4",
+          "sha256": "d6edc20ac82aa980c9cbd0b05b371f60d12dc8d018492e571b42de0086819c41"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-video-10s-seed0.mp4",
+          "poster": "media/posters/base-video-10s-seed0.jpg",
+          "sha256": "8dee04a70857185cccc7b9320acb19bfe7d884b8ba81630d9fa6eea75949be21",
+          "summary_sha256": "b1c9e90d593d9bf587c3e049b064545a17eb10f7514c10d752256347e8c460f7",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-video-10s-seed0.mp4",
+          "poster": "media/posters/fast-video-10s-seed0.jpg",
+          "sha256": "56d01a4569b42c44e4700e8894ac6d4b5481e4899f1a9a830f8aea8d4df4d71d",
+          "summary_sha256": "bec3a5f5b62cc3a4c9fa8c4ba0ac85427cd3995b5cba0454330aeeb4d48fff8b",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-video-10s-seed0.mp4",
+          "poster": "media/posters/decoder36-video-10s-seed0.jpg",
+          "sha256": "95e62d161b9e9ab566848d1ae458d9b54afd3862de13f1a80d52de99ae9dd594",
+          "summary_sha256": "f0dcebcf80e53b3e9012af5e3a17f0a74d952f461cd29fb5fcd1933d838a29ff",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 139.2705134356705,
+          "sample_std_s": 0.02484170062159256,
+          "measured_seconds": [
+            139.29687754396582,
+            139.2671196620213,
+            139.24754310102435
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 13.506877736654133,
+          "sample_std_s": 0.03160007395520295,
+          "measured_seconds": [
+            13.481284708017483,
+            13.497150655835867,
+            13.542197846109048
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 10.311081224769419
+      },
+      "frames": 243,
+      "actual_video_seconds": 10.125
+    },
+    {
+      "id": "video-15s",
+      "composition": "video",
+      "label": "1 long clip",
+      "target_seconds": 15,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Subject 2> is the environment in <Video 1>: a grassy hill at golden hour with white lambs grazing.\n<Audio 1> is the synchronized audio track of <Video 1>, a soft background music.\n\nsummary:\n[reference generation + audio reference] <Subject 1> spends a quiet moment with the black lamb in <Subject 2>, over music in the manner of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1], [Shot 2], [Shot 3]): fully_preserved - the man's blonde hair, pink suit, white shirt, rings and the black lamb are retained.\n<Subject 2> (appears in [Shot 1], [Shot 2], [Shot 3]): fully_preserved - the grassy hill, golden light and grazing lambs are retained.\n<Audio 1>: reference - the soft background music is referenced throughout.\n\ndetailed_description:\nThe target video is in a realistic photographic style with golden-hour light.\n[Shot 1] A steady medium shot. <Subject 1> cradles the black lamb in the warm, low sunlight of <Subject 2>. The lamb lifts its head and nuzzles his chin; he laughs softly, tilts his head toward the camera and grins while the white lambs keep grazing on the hill.\n[Shot 2] At 00:05.000, the shot cuts to a wide shot from down the hill. <Subject 1> walks slowly through the flock with the black lamb in his arms, the white lambs parting around his legs and the long grass bending in the breeze.\n[Shot 3] At 00:10.000, the shot cuts to a close shot near the ground. <Subject 1> kneels and sets the black lamb down among the white lambs; it shakes its ears and trots off, and he watches it go with a smile, his rings catching the light.\n\noverall_soundscape:\nA light breeze over the grass and distant bleating, beneath gentle music in the manner of <Audio 1>.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "eeb47815beeaaa80ddce84ea326fdb4c45b97040dc6d9faa2f2b3e359f11fd47",
+      "conditions": [
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/official_ref2va_0_video.mp4",
+          "sha256": "d6edc20ac82aa980c9cbd0b05b371f60d12dc8d018492e571b42de0086819c41"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-video-15s-seed0.mp4",
+          "poster": "media/posters/base-video-15s-seed0.jpg",
+          "sha256": "dff85d4ee6f975b929fe3c258f8928e42806d613ad002c525e9db081ae51f124",
+          "summary_sha256": "ec34c9857524fcc8a4f543cce0b33e556b7c1d4f60a5511f8540f3021edce7f0",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-video-15s-seed0.mp4",
+          "poster": "media/posters/fast-video-15s-seed0.jpg",
+          "sha256": "a80d439d6a6b68b9a8eb4bcd429c44054d3d296df914ac350c9c0b5b8c941304",
+          "summary_sha256": "73d8f7f981a882b63fcb9232902e7ca715a15b5882b351d1e8771bd1e976d5db",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-video-15s-seed0.mp4",
+          "poster": "media/posters/decoder36-video-15s-seed0.jpg",
+          "sha256": "9c6676bd33a85468dd47639bed415b46328e561915c383d8b3f664ee5109cd4e",
+          "summary_sha256": "b381e4f570476a98cf9ea711b65b14f7c2d49b352ee4a4ee72ebcf05f92307a2",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 215.74971013966328,
+          "sample_std_s": 0.16778376777258394,
+          "measured_seconds": [
+            215.6278522890061,
+            215.68019984196872,
+            215.94107828801498
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 18.407617761287838,
+          "sample_std_s": 0.04033983759025736,
+          "measured_seconds": [
+            18.453869292978197,
+            18.389277322916314,
+            18.379706667969003
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 11.72067526268369
+      },
+      "frames": 362,
+      "actual_video_seconds": 15.083333333333334
+    },
+    {
+      "id": "clips3-5s",
+      "composition": "clips3",
+      "label": "3 clips",
+      "target_seconds": 5,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Subject 2> is the white robotic arm with a black gripper in <Video 2>.\n<Subject 3> is the dark starship observation deck in <Video 3>.\n<Audio 1>, <Audio 2> and <Audio 3> are the synchronized audio tracks of <Video 1>, <Video 2> and <Video 3>.\n\nsummary:\n[reference generation + audio reference] A three-shot sequence shows <Subject 1> in a golden pasture, <Subject 2> at work on a white table and the great window of <Subject 3>, with sound in the manner of <Audio 1>, <Audio 2> and <Audio 3>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the man's blonde hair, pink suit and the black lamb are retained.\n<Subject 2> (appears in [Shot 2]): fully_preserved - the white robotic arm and its black gripper are retained.\n<Subject 3> (appears in [Shot 3]): fully_preserved - the dark deck, its great window and the starfield are retained.\n<Audio 1>: reference - the pasture's soft music is referenced in the first shot.\n<Audio 2>: reference - the servo whir is referenced in the second shot.\n<Audio 3>: reference - the low starship hum is referenced in the third shot.\n\ndetailed_description:\nThe target video is in a realistic photographic style.\n[Shot 1] <Subject 1> holds the black lamb in a golden pasture and looks up at the sky while soft music in the manner of <Audio 1> plays.\n[Shot 2] At 00:01.667, the shot cuts to a white table, where <Subject 2> grips a red cube and drops it into a glass jar with a servo whir like <Audio 2>.\n[Shot 3] At 00:03.333, the shot cuts to <Subject 3>: the camera pushes in toward the great window, where a fleet of ships drifts past the stars over a low hum like <Audio 3>.\n\noverall_soundscape:\nThe pasture's soft music gives way to a servo whir and then a low starship hum.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "9f253812e6f99f040e882fb0cf23c441ba69f2c6d35ef402237aa1281c85f089",
+      "conditions": [
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/clip_official_ref2va_0_2s.mp4",
+          "sha256": "ccd38d9f8e6c851fa7e0841c53141e7f13c9cfc0c6d5e06fc3103bdb2b29ede2"
+        },
+        {
+          "type": "video",
+          "caption": "Video 2 · with original audio",
+          "file": "media/inputs/clip_robot_arm_red_cube_2s.mp4",
+          "sha256": "32e98da3ec57623a15fe45d3c666b87c5af7e8966cf1221c8613ec402ec33900"
+        },
+        {
+          "type": "video",
+          "caption": "Video 3 · with original audio",
+          "file": "media/inputs/clip_h3_cinematic_shot_2s.mp4",
+          "sha256": "d62416d7f8634a90acb5180c3ef70e12c90c4686d7aeaaad028a052d8bde0899"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-clips3-5s-seed0.mp4",
+          "poster": "media/posters/base-clips3-5s-seed0.jpg",
+          "sha256": "5643c8ae2ead4eee1a73138ae472cad22dceacca255278e24f17b9e4542e663a",
+          "summary_sha256": "089e379e7ad4722e962566cb1244b7b47289f94353eeb0c14e721d004d9aea9f",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-clips3-5s-seed0.mp4",
+          "poster": "media/posters/fast-clips3-5s-seed0.jpg",
+          "sha256": "2666201cc3e8a60fb0100c335a66fdd033219f24fed79375d8dc1e8a833b47b4",
+          "summary_sha256": "be4f3f4ff11ebb93420f39c6aede5d80167827677d87c907d8ac127ab4ecfdeb",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-clips3-5s-seed0.mp4",
+          "poster": "media/posters/decoder36-clips3-5s-seed0.jpg",
+          "sha256": "67904ceb7a8d40c1273521edb7e78f0028e119159fda4530fbcb3df25dc47437",
+          "summary_sha256": "a10f5f6e3c380171fa7727dae7809b266d93864ff596ff3b401785a3fc00ca5c",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 74.34509099967545,
+          "sample_std_s": 0.0861188631937047,
+          "measured_seconds": [
+            74.28441829001531,
+            74.3071955780033,
+            74.44365913100773
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 9.448077250737697,
+          "sample_std_s": 0.010358993461790254,
+          "measured_seconds": [
+            9.43644911213778,
+            9.451462629018351,
+            9.45632001105696
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 7.868806427664492
+      },
+      "frames": 124,
+      "actual_video_seconds": 5.166666666666667
+    },
+    {
+      "id": "clips3-10s",
+      "composition": "clips3",
+      "label": "3 clips",
+      "target_seconds": 10,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Subject 2> is the white robotic arm with a black gripper in <Video 2>.\n<Subject 3> is the dark starship observation deck in <Video 3>.\n<Audio 1>, <Audio 2> and <Audio 3> are the synchronized audio tracks of <Video 1>, <Video 2> and <Video 3>.\n\nsummary:\n[reference generation + audio reference] A three-shot sequence shows <Subject 1> in a golden pasture, <Subject 2> at work on a white table and the great window of <Subject 3>, with sound in the manner of <Audio 1>, <Audio 2> and <Audio 3>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the man's blonde hair, pink suit and the black lamb are retained.\n<Subject 2> (appears in [Shot 2]): fully_preserved - the white robotic arm and its black gripper are retained.\n<Subject 3> (appears in [Shot 3]): fully_preserved - the dark deck, its great window and the starfield are retained.\n<Audio 1>: reference - the pasture's soft music is referenced in the first shot.\n<Audio 2>: reference - the servo whir is referenced in the second shot.\n<Audio 3>: reference - the low starship hum is referenced in the third shot.\n\ndetailed_description:\nThe target video is in a realistic photographic style.\n[Shot 1] <Subject 1> holds the black lamb in a golden pasture and looks up at the sky while soft music in the manner of <Audio 1> plays.\n[Shot 2] At 00:03.333, the shot cuts to a white table, where <Subject 2> grips a red cube and drops it into a glass jar with a servo whir like <Audio 2>.\n[Shot 3] At 00:06.667, the shot cuts to <Subject 3>: the camera pushes in toward the great window, where a fleet of ships drifts past the stars over a low hum like <Audio 3>.\n\noverall_soundscape:\nThe pasture's soft music gives way to a servo whir and then a low starship hum.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "1ab60d7028ecfcb12be765ca2396708805d05da1743d11a826ddda9389664ba8",
+      "conditions": [
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/clip_official_ref2va_0_2s.mp4",
+          "sha256": "ccd38d9f8e6c851fa7e0841c53141e7f13c9cfc0c6d5e06fc3103bdb2b29ede2"
+        },
+        {
+          "type": "video",
+          "caption": "Video 2 · with original audio",
+          "file": "media/inputs/clip_robot_arm_red_cube_2s.mp4",
+          "sha256": "32e98da3ec57623a15fe45d3c666b87c5af7e8966cf1221c8613ec402ec33900"
+        },
+        {
+          "type": "video",
+          "caption": "Video 3 · with original audio",
+          "file": "media/inputs/clip_h3_cinematic_shot_2s.mp4",
+          "sha256": "d62416d7f8634a90acb5180c3ef70e12c90c4686d7aeaaad028a052d8bde0899"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-clips3-10s-seed0.mp4",
+          "poster": "media/posters/base-clips3-10s-seed0.jpg",
+          "sha256": "d1eafd3d631214e3f40cc9bfc60f52c73dd55398e5a27a848dd1a2e0f5b84cee",
+          "summary_sha256": "5f074de059fb9a006a298cb552790e4d19a98013689deaaeaf1e3b4af0b59ad7",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-clips3-10s-seed0.mp4",
+          "poster": "media/posters/fast-clips3-10s-seed0.jpg",
+          "sha256": "9b975b3e52b2b3aec841f1e2d7d60fb61939af34de6995cf0f385154ed85f8b8",
+          "summary_sha256": "1bdf2530fa36749a8137f7f9c2e8aaad3565e0248185f80d2f602447070fb12e",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-clips3-10s-seed0.mp4",
+          "poster": "media/posters/decoder36-clips3-10s-seed0.jpg",
+          "sha256": "cec68c193684d1a9603a484e05420e121a28a0ac287d24beb8b8003e68738b48",
+          "summary_sha256": "9631158d2ee21593179a4a3634570362619797adba009a529087fc62d7f8f404",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 132.62300849001622,
+          "sample_std_s": 0.06212935872163365,
+          "measured_seconds": [
+            132.69381296104984,
+            132.57760113698896,
+            132.59761137200985
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 13.549096170347184,
+          "sample_std_s": 0.03993070410644651,
+          "measured_seconds": [
+            13.592919077957049,
+            13.514769979054108,
+            13.539599454030395
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 9.788328817110896
+      },
+      "frames": 243,
+      "actual_video_seconds": 10.125
+    },
+    {
+      "id": "clips3-15s",
+      "composition": "clips3",
+      "label": "3 clips",
+      "target_seconds": 15,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Subject 2> is the white robotic arm with a black gripper in <Video 2>.\n<Subject 3> is the dark starship observation deck in <Video 3>.\n<Audio 1>, <Audio 2> and <Audio 3> are the synchronized audio tracks of <Video 1>, <Video 2> and <Video 3>.\n\nsummary:\n[reference generation + audio reference] A three-shot sequence shows <Subject 1> in a golden pasture, <Subject 2> at work on a white table and the great window of <Subject 3>, with sound in the manner of <Audio 1>, <Audio 2> and <Audio 3>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the man's blonde hair, pink suit and the black lamb are retained.\n<Subject 2> (appears in [Shot 2]): fully_preserved - the white robotic arm and its black gripper are retained.\n<Subject 3> (appears in [Shot 3]): fully_preserved - the dark deck, its great window and the starfield are retained.\n<Audio 1>: reference - the pasture's soft music is referenced in the first shot.\n<Audio 2>: reference - the servo whir is referenced in the second shot.\n<Audio 3>: reference - the low starship hum is referenced in the third shot.\n\ndetailed_description:\nThe target video is in a realistic photographic style.\n[Shot 1] <Subject 1> holds the black lamb in a golden pasture and looks up at the sky while soft music in the manner of <Audio 1> plays.\n[Shot 2] At 00:05.000, the shot cuts to a white table, where <Subject 2> grips a red cube and drops it into a glass jar with a servo whir like <Audio 2>.\n[Shot 3] At 00:10.000, the shot cuts to <Subject 3>: the camera pushes in toward the great window, where a fleet of ships drifts past the stars over a low hum like <Audio 3>.\n\noverall_soundscape:\nThe pasture's soft music gives way to a servo whir and then a low starship hum.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "1a7e04e5e9d9f20f9aad5cfc6b8b4e9181db05103aa2860f8564e7a519056438",
+      "conditions": [
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/clip_official_ref2va_0_2s.mp4",
+          "sha256": "ccd38d9f8e6c851fa7e0841c53141e7f13c9cfc0c6d5e06fc3103bdb2b29ede2"
+        },
+        {
+          "type": "video",
+          "caption": "Video 2 · with original audio",
+          "file": "media/inputs/clip_robot_arm_red_cube_2s.mp4",
+          "sha256": "32e98da3ec57623a15fe45d3c666b87c5af7e8966cf1221c8613ec402ec33900"
+        },
+        {
+          "type": "video",
+          "caption": "Video 3 · with original audio",
+          "file": "media/inputs/clip_h3_cinematic_shot_2s.mp4",
+          "sha256": "d62416d7f8634a90acb5180c3ef70e12c90c4686d7aeaaad028a052d8bde0899"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-clips3-15s-seed0.mp4",
+          "poster": "media/posters/base-clips3-15s-seed0.jpg",
+          "sha256": "06cd6032c0fe38705b5e7a35ea771ed08ba64411132c575016287462427e57d5",
+          "summary_sha256": "a2073a9373704da960016a4ee81798d4971ab9414f757d087f973df5adac18a3",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-clips3-15s-seed0.mp4",
+          "poster": "media/posters/fast-clips3-15s-seed0.jpg",
+          "sha256": "6c1e8e393b61bc1500935c25e2ca46d2b2fabf4c60e7c6ef4aabb173a06539a3",
+          "summary_sha256": "f9759aaf425b3a4307df6473ac9ae577e5bf74675134c45ef85315596468fe5a",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-clips3-15s-seed0.mp4",
+          "poster": "media/posters/decoder36-clips3-15s-seed0.jpg",
+          "sha256": "d5fd4bf26384fdfa31aac22e0a3c3c0f9b62b7e5e03ee8989cfd507948010e89",
+          "summary_sha256": "8ff1f24778dcefbe9e2f998efdd2e2ad093773b4855bf8ed936e0a68817de0a3",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 206.43853406897202,
+          "sample_std_s": 0.2091587000206405,
+          "measured_seconds": [
+            206.33237703994382,
+            206.67948321899166,
+            206.3037419479806
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 18.378265630997095,
+          "sample_std_s": 0.005370571279043227,
+          "measured_seconds": [
+            18.37207352509722,
+            18.381067737936974,
+            18.381655629957095
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 11.232753852506587
+      },
+      "frames": 362,
+      "actual_video_seconds": 15.083333333333334
+    },
+    {
+      "id": "mixed-5s",
+      "composition": "mixed",
+      "label": "Image + video + voice",
+      "target_seconds": 5,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Subject 2> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Subject 3> is the environment in <Video 1>: a grassy hill at golden hour with white lambs grazing.\n<Audio 1> is the synchronized audio track of <Video 1>, a soft background music.\n<Audio 2> is the voice-timbre reference for <Subject 1> (S1).\n\nsummary:\n[reference generation + audio reference] <Subject 1> walks into <Subject 3> and greets <Subject 2>, speaking in the voice timbre of <Audio 2> over music in the manner of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Subject 2> (appears in [Shot 1]): fully_preserved - the man's blonde hair, pink suit and the black lamb are retained.\n<Subject 3> (appears in [Shot 1]): fully_preserved - the grassy hill, golden light and grazing lambs are retained.\n<Audio 1>: reference - the soft background music is referenced beneath the dialogue.\n<Audio 2>: reference - its vocal timbre guides the dialogue delivery of <Subject 1> without copying the original signal.\n\ndetailed_description:\nThe target video is in a realistic photographic style with golden-hour light.\n[Shot 1] A steady medium shot of <Subject 3>. <Subject 2> cradles the black lamb in the warm sunlight as <Subject 1> (S1) steps into frame from the left, waves and says, using the voice timbre referenced from <Audio 2>, <d>[English] There you are, the whole farm is looking for that lamb.</d> <Subject 2> laughs and lifts the lamb a little higher.\n\noverall_soundscape:\nA light breeze over the grass, distant bleating and soft footsteps, beneath gentle music in the manner of <Audio 1>.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "14ea1519ee31949d96eb69e5eed651683489213a5a3f384dd821135aed322318",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/hf_character_action_reference.png",
+          "sha256": "01a6c6f29e1ce9d414276e6e2eca06b171e5a68dd54a86074a4ab77bb9cb8883"
+        },
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/official_ref2va_0_video.mp4",
+          "sha256": "d6edc20ac82aa980c9cbd0b05b371f60d12dc8d018492e571b42de0086819c41"
+        },
+        {
+          "type": "audio",
+          "caption": "Audio 1",
+          "file": "media/inputs/official_ref2va_1_audio.mp3",
+          "sha256": "2a48d447b343b38a2c504d5281a0c97c688db0ba87931ed9282c598bd6752454"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-mixed-5s-seed0.mp4",
+          "poster": "media/posters/base-mixed-5s-seed0.jpg",
+          "sha256": "f26f5cd763984c5c064957bb139955a79a1a30a871024afe2e0aaaf07547b0b5",
+          "summary_sha256": "11f4538a181f984028bbf71f11b49799faea78413bf4d2e79adddea9396bee88",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-mixed-5s-seed0.mp4",
+          "poster": "media/posters/fast-mixed-5s-seed0.jpg",
+          "sha256": "979acd896159eabb2a0c10e8d2ff205c0e2c06b3cf7b503f86553737577f7327",
+          "summary_sha256": "e31e15502c13c89aeb6b00215e0ea36531eb351d7ceed5353234a87290ed284a",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-mixed-5s-seed0.mp4",
+          "poster": "media/posters/decoder36-mixed-5s-seed0.jpg",
+          "sha256": "20e5241fa1096201a5a956c1915ea9de855c27ff784359fd263039359b91050e",
+          "summary_sha256": "f5db0822c013a52ba8b175850942ad9857966cc51b3c3290820cf3f4167d07b1",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 94.13728581630858,
+          "sample_std_s": 0.07057947975904619,
+          "measured_seconds": [
+            94.21840859699296,
+            94.08995805296581,
+            94.10349079896696
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 13.060403493931517,
+          "sample_std_s": 0.0032006345453233468,
+          "measured_seconds": [
+            13.056708194082603,
+            13.062199852894992,
+            13.062302434816957
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 7.207839012022043
+      },
+      "frames": 124,
+      "actual_video_seconds": 5.166666666666667
+    },
+    {
+      "id": "mixed-10s",
+      "composition": "mixed",
+      "label": "Image + video + voice",
+      "target_seconds": 10,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Subject 2> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Subject 3> is the environment in <Video 1>: a grassy hill at golden hour with white lambs grazing.\n<Audio 1> is the synchronized audio track of <Video 1>, a soft background music.\n<Audio 2> is the voice-timbre reference for <Subject 1> (S1).\n\nsummary:\n[reference generation + audio reference] <Subject 1> walks into <Subject 3> and greets <Subject 2>, speaking in the voice timbre of <Audio 2> over music in the manner of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1], [Shot 2]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Subject 2> (appears in [Shot 1], [Shot 2]): fully_preserved - the man's blonde hair, pink suit and the black lamb are retained.\n<Subject 3> (appears in [Shot 1], [Shot 2]): fully_preserved - the grassy hill, golden light and grazing lambs are retained.\n<Audio 1>: reference - the soft background music is referenced beneath the dialogue.\n<Audio 2>: reference - its vocal timbre guides the dialogue delivery of <Subject 1> without copying the original signal.\n\ndetailed_description:\nThe target video is in a realistic photographic style with golden-hour light.\n[Shot 1] A steady medium shot of <Subject 3>. <Subject 2> cradles the black lamb in the warm sunlight as <Subject 1> (S1) steps into frame from the left, waves and says, using the voice timbre referenced from <Audio 2>, <d>[English] There you are, the whole farm is looking for that lamb.</d> <Subject 2> laughs and lifts the lamb a little higher.\n[Shot 2] At 00:05.000, the shot cuts to a two-shot from the side. <Subject 1> (S1) reaches out and scratches the lamb behind its ears and says in the same voice, <d>[English] He looks far too comfortable to come home.</d> <Subject 2> grins and shakes his head while the white lambs graze behind them.\n\noverall_soundscape:\nA light breeze over the grass, distant bleating and soft footsteps, beneath gentle music in the manner of <Audio 1>.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "b1cd56e48fba0e24aca3d851b539c9862ce2d1698ff37c191d6752ac13f437de",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/hf_character_action_reference.png",
+          "sha256": "01a6c6f29e1ce9d414276e6e2eca06b171e5a68dd54a86074a4ab77bb9cb8883"
+        },
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/official_ref2va_0_video.mp4",
+          "sha256": "d6edc20ac82aa980c9cbd0b05b371f60d12dc8d018492e571b42de0086819c41"
+        },
+        {
+          "type": "audio",
+          "caption": "Audio 1",
+          "file": "media/inputs/official_ref2va_1_audio.mp3",
+          "sha256": "2a48d447b343b38a2c504d5281a0c97c688db0ba87931ed9282c598bd6752454"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-mixed-10s-seed0.mp4",
+          "poster": "media/posters/base-mixed-10s-seed0.jpg",
+          "sha256": "c659eaca0bcaf57869abf8892b91071456612916408bea21f056bbb86c881b93",
+          "summary_sha256": "3abb834a4b5a35e5a823ea46565a96fce8e7f31d2b2c6af683daabcabb76780b",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-mixed-10s-seed0.mp4",
+          "poster": "media/posters/fast-mixed-10s-seed0.jpg",
+          "sha256": "ab08d9f8b209dbf17816e11a9fa1a0479651c95bf70643c14144f2da6b171bb8",
+          "summary_sha256": "d978d50f21e3831c0f482aed19f2ad1581781db9f39e8cc5ad8d73bfdb2b1cb5",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-mixed-10s-seed0.mp4",
+          "poster": "media/posters/decoder36-mixed-10s-seed0.jpg",
+          "sha256": "7698f934cef84f9c5aa07eac4b97cbe8d0668bb98c61348689ef6ce705e1ffb1",
+          "summary_sha256": "92ad064ded30daaf3f3682fb85e74cc6d4b87801cbd8bcfb6ec300a2c239104f",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 172.37049457599642,
+          "sample_std_s": 0.09582312516330484,
+          "measured_seconds": [
+            172.47736188396811,
+            172.34189245803282,
+            172.29222938598832
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 19.747013999071594,
+          "sample_std_s": 0.0031701915640889398,
+          "measured_seconds": [
+            19.744587775086984,
+            19.750600967090577,
+            19.74585325503722
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 8.72893970623105
+      },
+      "frames": 243,
+      "actual_video_seconds": 10.125
+    },
+    {
+      "id": "mixed-15s",
+      "composition": "mixed",
+      "label": "Image + video + voice",
+      "target_seconds": 15,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Subject 2> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Subject 3> is the environment in <Video 1>: a grassy hill at golden hour with white lambs grazing.\n<Audio 1> is the synchronized audio track of <Video 1>, a soft background music.\n<Audio 2> is the voice-timbre reference for <Subject 1> (S1).\n\nsummary:\n[reference generation + audio reference] <Subject 1> walks into <Subject 3> and greets <Subject 2>, speaking in the voice timbre of <Audio 2> over music in the manner of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1], [Shot 2], [Shot 3]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Subject 2> (appears in [Shot 1], [Shot 2], [Shot 3]): fully_preserved - the man's blonde hair, pink suit and the black lamb are retained.\n<Subject 3> (appears in [Shot 1], [Shot 2], [Shot 3]): fully_preserved - the grassy hill, golden light and grazing lambs are retained.\n<Audio 1>: reference - the soft background music is referenced beneath the dialogue.\n<Audio 2>: reference - its vocal timbre guides the dialogue delivery of <Subject 1> without copying the original signal.\n\ndetailed_description:\nThe target video is in a realistic photographic style with golden-hour light.\n[Shot 1] A steady medium shot of <Subject 3>. <Subject 2> cradles the black lamb in the warm sunlight as <Subject 1> (S1) steps into frame from the left, waves and says, using the voice timbre referenced from <Audio 2>, <d>[English] There you are, the whole farm is looking for that lamb.</d> <Subject 2> laughs and lifts the lamb a little higher.\n[Shot 2] At 00:05.000, the shot cuts to a two-shot from the side. <Subject 1> (S1) reaches out and scratches the lamb behind its ears and says in the same voice, <d>[English] He looks far too comfortable to come home.</d> <Subject 2> grins and shakes his head while the white lambs graze behind them.\n[Shot 3] At 00:10.000, the shot cuts to a wide shot from down the hill. <Subject 1> and <Subject 2> walk side by side toward the camera through the flock, the black lamb still in <Subject 2>'s arms, their long shadows stretching across the grass.\n\noverall_soundscape:\nA light breeze over the grass, distant bleating and soft footsteps, beneath gentle music in the manner of <Audio 1>.\n\nnon_diegetic_music:\nN/A",
+      "prompt_sha256": "f5594f9aae9f2d4c2262e3eb75ce90e85b954f00d6d3b0a7c2f6dfd5339b72b0",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/hf_character_action_reference.png",
+          "sha256": "01a6c6f29e1ce9d414276e6e2eca06b171e5a68dd54a86074a4ab77bb9cb8883"
+        },
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/official_ref2va_0_video.mp4",
+          "sha256": "d6edc20ac82aa980c9cbd0b05b371f60d12dc8d018492e571b42de0086819c41"
+        },
+        {
+          "type": "audio",
+          "caption": "Audio 1",
+          "file": "media/inputs/official_ref2va_1_audio.mp3",
+          "sha256": "2a48d447b343b38a2c504d5281a0c97c688db0ba87931ed9282c598bd6752454"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-mixed-15s-seed0.mp4",
+          "poster": "media/posters/base-mixed-15s-seed0.jpg",
+          "sha256": "fee5e0faf3ac446fd5cc8018fcb5c6da563eea81108c2fc4b3e310f6e23eba26",
+          "summary_sha256": "c2b55bba50860cb330ac04c7d9bbfcf19f3115cf51963d57d2e03d8c1e1c0ff5",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-mixed-15s-seed0.mp4",
+          "poster": "media/posters/fast-mixed-15s-seed0.jpg",
+          "sha256": "24f532bb75676f3784c23698199e3b76cb1f1d4792cf436d1a5edef9994974b2",
+          "summary_sha256": "bf9447408639f079b319dd953b1d69b320b86f246c95463bc9c279f9ffba2115",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-mixed-15s-seed0.mp4",
+          "poster": "media/posters/decoder36-mixed-15s-seed0.jpg",
+          "sha256": "cf365fb7d7a3c3cd20bb917a70837e45792e18911def3a15c624a75b4284770d",
+          "summary_sha256": "2fb7bb96041cbd58ea25e6feda0ccb04be8883937bb0dac5d9bd9ebcca399132",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 257.70798912632745,
+          "sample_std_s": 0.06287601855036154,
+          "measured_seconds": [
+            257.7749586729915,
+            257.69878816598793,
+            257.6502205400029
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 26.71353052626364,
+          "sample_std_s": 0.005738865692638722,
+          "measured_seconds": [
+            26.718373663024977,
+            26.715025920886546,
+            26.707191994879395
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 9.64709583680673
+      },
+      "frames": 362,
+      "actual_video_seconds": 15.083333333333334
+    },
+    {
+      "id": "full-5s",
+      "composition": "full",
+      "label": "9 images + 3 clips",
+      "target_seconds": 5,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Subject 2> is the model in the black sleeveless dress in <Picture 3> and <Picture 4>.\n<Subject 3> is the clay fox in <Picture 6>.\n<Subject 4> is the pair of silver wraparound sunglasses in <Picture 5>.\n<Subject 5> is the white robotic arm in <Picture 9> and <Video 2>.\n<Subject 6> is the family dining room in <Picture 2>.\n<Subject 7> is the starship observation deck in <Picture 7> and <Video 3>.\n<Subject 8> is the noir title-card style of <Picture 8>.\n<Subject 9> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Audio 1>, <Audio 2> and <Audio 3> are the synchronized audio tracks of <Video 1>, <Video 2> and <Video 3>.\n\nsummary:\n[reference generation + audio reference] A six-shot sunglasses commercial cuts between a family dinner, a fashion studio, a clay forest, a golden pasture, a robot lab and a starship deck, and ends on a noir title card.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Subject 2> (appears in [Shot 2]): fully_preserved - the model's braided hair and black sleeveless dress are retained.\n<Subject 3> (appears in [Shot 3]): fully_preserved - the clay fox's shape and stop-motion texture are retained.\n<Subject 4> (appears in [Shot 1], [Shot 2], [Shot 3], [Shot 4], [Shot 5], [Shot 6]): fully_preserved - the silver wraparound frame and dark lenses are retained.\n<Subject 5> (appears in [Shot 5]): fully_preserved - the white robotic arm and its motion are retained.\n<Subject 6> (appears in [Shot 1]): fully_preserved - the low table and warm light of the dining room are retained.\n<Subject 7> (appears in [Shot 6]): fully_preserved - the great window and the drifting fleet are retained.\n<Subject 8> (appears in [Shot 6]): weak_reference - the closing card follows its flat noir palette and lettering.\n<Subject 9> (appears in [Shot 4]): fully_preserved - the man's blonde hair, pink suit and the black lamb are retained.\n<Audio 1>: reference - the pasture's soft music is referenced in the fourth shot.\n<Audio 2>: reference - the servo whir is referenced in the fifth shot.\n<Audio 3>: reference - the low starship hum is referenced in the sixth shot.\n\ndetailed_description:\nThe target video is a fast-cut commercial that changes visual style with each shot.\n[Shot 1] A live-action medium shot. <Subject 1> sits down at the table of <Subject 6> and puts on <Subject 4>.\n[Shot 2] At 00:00.833, the shot cuts to a white-cyclorama fashion studio, where <Subject 2> turns toward the camera wearing <Subject 4>.\n[Shot 3] At 00:01.667, the shot cuts to stop-motion clay animation: <Subject 3> finds <Subject 4> on a mossy stump and tries them on.\n[Shot 4] At 00:02.500, the shot cuts to a golden pasture, where <Subject 9> slides <Subject 4> onto his nose with one hand while holding the black lamb, over soft music in the manner of <Audio 1>.\n[Shot 5] At 00:03.333, the shot cuts to a white table, where <Subject 5> lifts <Subject 4> and holds them up to the light with a servo whir like <Audio 2>.\n[Shot 6] At 00:04.167, the shot cuts to <Subject 7>: a silhouetted captain slips on <Subject 4> before the great window over a low hum like <Audio 3>, and the frame cuts to a title card in the style of <Subject 8>.\n\noverall_soundscape:\nQuick cuts carry a dinner murmur, a camera shutter, rustling leaves, a breeze over grass, a servo whir and a low starship hum.\n\nnon_diegetic_music:\nA cool jazz bass line with brushed drums at a steady medium tempo.",
+      "prompt_sha256": "bcfe6920bc9c1d2be6906b880c1cc2ce4014c3638b51dd233a5824b7eaef7eda",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/square_character_action_reference.png",
+          "sha256": "302834b5a2777bd3d27e80cba22ed0ac745b1d57e0f91b81c77d9a398069966a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 2",
+          "file": "media/inputs/square_official_fl2va_0_image.png",
+          "sha256": "e371087e704d622b95dbf5e5c7ef105f186547c4ef504d7da313b50568075101"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 3",
+          "file": "media/inputs/square_fashion_glasses_reference_1.png",
+          "sha256": "be83d96db5c20db65c216ece6032b582dc0604c7e797f63139cfa3bda7b2718a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 4",
+          "file": "media/inputs/square_fashion_glasses_reference_2.png",
+          "sha256": "00aa4fc6302aded43c0afa01741df19599f9d5d9c5c9469370c8074881aee30a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 5",
+          "file": "media/inputs/square_fashion_glasses_reference_3.png",
+          "sha256": "d7d4302b9b3f836df9ac1c5c612f326ec71d092745a40d22758a2fca09a49542"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 6",
+          "file": "media/inputs/square_fl2va_clay_fox_reference.png",
+          "sha256": "6ae992e1725cd2b99c577f171067b20f78e0f99fadd2bc3cf25986921a6c44a5"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 7",
+          "file": "media/inputs/square_h3_cinematic_shot_3s.png",
+          "sha256": "7c738d2d834ed7db642d266ab4a4cfa0c24d489557a2f2cbe7b8cff22f2d07fa"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 8",
+          "file": "media/inputs/square_h3_suspense_title_2s.png",
+          "sha256": "70da4ef513a308017a40d42d2299a0e39310921cf9786dc07927e1009c698933"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 9",
+          "file": "media/inputs/square_robot_arm_red_cube_1s.png",
+          "sha256": "b7f0ab6fddd807b1ac285a88b86e04f3f5e380b004a8253a243ba987a042e8be"
+        },
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/clip_official_ref2va_0_2s.mp4",
+          "sha256": "ccd38d9f8e6c851fa7e0841c53141e7f13c9cfc0c6d5e06fc3103bdb2b29ede2"
+        },
+        {
+          "type": "video",
+          "caption": "Video 2 · with original audio",
+          "file": "media/inputs/clip_robot_arm_red_cube_2s.mp4",
+          "sha256": "32e98da3ec57623a15fe45d3c666b87c5af7e8966cf1221c8613ec402ec33900"
+        },
+        {
+          "type": "video",
+          "caption": "Video 3 · with original audio",
+          "file": "media/inputs/clip_h3_cinematic_shot_2s.mp4",
+          "sha256": "d62416d7f8634a90acb5180c3ef70e12c90c4686d7aeaaad028a052d8bde0899"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-full-5s-seed0.mp4",
+          "poster": "media/posters/base-full-5s-seed0.jpg",
+          "sha256": "d56d7b7afa2ed94629e5fdb1cde4dee0e0a1165a995888606e794fc7eda4ba4a",
+          "summary_sha256": "178fa631beefdee57e9e6144edf72388be91304736ec39109ac3aa25fd55a8d8",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-full-5s-seed0.mp4",
+          "poster": "media/posters/fast-full-5s-seed0.jpg",
+          "sha256": "fa24d7302f5ac6aa1a0f66060fb148e564624f113ec86621bf39a21a69866634",
+          "summary_sha256": "389c1d70d50d591d163773d47661d62dac594721dc99a8b2fc745917ac1b0946",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-full-5s-seed0.mp4",
+          "poster": "media/posters/decoder36-full-5s-seed0.jpg",
+          "sha256": "a70164566c4988b69a0a5d7c2d7c5d881b9bb9323753367dd7a0e238d6a29bc3",
+          "summary_sha256": "0c14f1df32729b9b4513fd309e57e243bac1badbc40be7cbd351cbf17c6845d5",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 219.89730588699845,
+          "sample_std_s": 0.13630394775413066,
+          "measured_seconds": [
+            219.74091394298011,
+            219.96017423499143,
+            219.99082948302384
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 37.38071476706924,
+          "sample_std_s": 0.03122306025679131,
+          "measured_seconds": [
+            37.348596648080274,
+            37.41095830104314,
+            37.382589352084324
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 5.882640480719707
+      },
+      "frames": 124,
+      "actual_video_seconds": 5.166666666666667
+    },
+    {
+      "id": "full-10s",
+      "composition": "full",
+      "label": "9 images + 3 clips",
+      "target_seconds": 10,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Subject 2> is the model in the black sleeveless dress in <Picture 3> and <Picture 4>.\n<Subject 3> is the clay fox in <Picture 6>.\n<Subject 4> is the pair of silver wraparound sunglasses in <Picture 5>.\n<Subject 5> is the white robotic arm in <Picture 9> and <Video 2>.\n<Subject 6> is the family dining room in <Picture 2>.\n<Subject 7> is the starship observation deck in <Picture 7> and <Video 3>.\n<Subject 8> is the noir title-card style of <Picture 8>.\n<Subject 9> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Audio 1>, <Audio 2> and <Audio 3> are the synchronized audio tracks of <Video 1>, <Video 2> and <Video 3>.\n\nsummary:\n[reference generation + audio reference] A six-shot sunglasses commercial cuts between a family dinner, a fashion studio, a clay forest, a golden pasture, a robot lab and a starship deck, and ends on a noir title card.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Subject 2> (appears in [Shot 2]): fully_preserved - the model's braided hair and black sleeveless dress are retained.\n<Subject 3> (appears in [Shot 3]): fully_preserved - the clay fox's shape and stop-motion texture are retained.\n<Subject 4> (appears in [Shot 1], [Shot 2], [Shot 3], [Shot 4], [Shot 5], [Shot 6]): fully_preserved - the silver wraparound frame and dark lenses are retained.\n<Subject 5> (appears in [Shot 5]): fully_preserved - the white robotic arm and its motion are retained.\n<Subject 6> (appears in [Shot 1]): fully_preserved - the low table and warm light of the dining room are retained.\n<Subject 7> (appears in [Shot 6]): fully_preserved - the great window and the drifting fleet are retained.\n<Subject 8> (appears in [Shot 6]): weak_reference - the closing card follows its flat noir palette and lettering.\n<Subject 9> (appears in [Shot 4]): fully_preserved - the man's blonde hair, pink suit and the black lamb are retained.\n<Audio 1>: reference - the pasture's soft music is referenced in the fourth shot.\n<Audio 2>: reference - the servo whir is referenced in the fifth shot.\n<Audio 3>: reference - the low starship hum is referenced in the sixth shot.\n\ndetailed_description:\nThe target video is a fast-cut commercial that changes visual style with each shot.\n[Shot 1] A live-action medium shot. <Subject 1> sits down at the table of <Subject 6> and puts on <Subject 4>.\n[Shot 2] At 00:01.667, the shot cuts to a white-cyclorama fashion studio, where <Subject 2> turns toward the camera wearing <Subject 4>.\n[Shot 3] At 00:03.333, the shot cuts to stop-motion clay animation: <Subject 3> finds <Subject 4> on a mossy stump and tries them on.\n[Shot 4] At 00:05.000, the shot cuts to a golden pasture, where <Subject 9> slides <Subject 4> onto his nose with one hand while holding the black lamb, over soft music in the manner of <Audio 1>.\n[Shot 5] At 00:06.667, the shot cuts to a white table, where <Subject 5> lifts <Subject 4> and holds them up to the light with a servo whir like <Audio 2>.\n[Shot 6] At 00:08.333, the shot cuts to <Subject 7>: a silhouetted captain slips on <Subject 4> before the great window over a low hum like <Audio 3>, and the frame cuts to a title card in the style of <Subject 8>.\n\noverall_soundscape:\nQuick cuts carry a dinner murmur, a camera shutter, rustling leaves, a breeze over grass, a servo whir and a low starship hum.\n\nnon_diegetic_music:\nA cool jazz bass line with brushed drums at a steady medium tempo.",
+      "prompt_sha256": "7fd66f56d17ffad730ccc4ef0cbbd491c5646408e0d4b6b9ddfc722cba66c96f",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/square_character_action_reference.png",
+          "sha256": "302834b5a2777bd3d27e80cba22ed0ac745b1d57e0f91b81c77d9a398069966a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 2",
+          "file": "media/inputs/square_official_fl2va_0_image.png",
+          "sha256": "e371087e704d622b95dbf5e5c7ef105f186547c4ef504d7da313b50568075101"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 3",
+          "file": "media/inputs/square_fashion_glasses_reference_1.png",
+          "sha256": "be83d96db5c20db65c216ece6032b582dc0604c7e797f63139cfa3bda7b2718a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 4",
+          "file": "media/inputs/square_fashion_glasses_reference_2.png",
+          "sha256": "00aa4fc6302aded43c0afa01741df19599f9d5d9c5c9469370c8074881aee30a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 5",
+          "file": "media/inputs/square_fashion_glasses_reference_3.png",
+          "sha256": "d7d4302b9b3f836df9ac1c5c612f326ec71d092745a40d22758a2fca09a49542"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 6",
+          "file": "media/inputs/square_fl2va_clay_fox_reference.png",
+          "sha256": "6ae992e1725cd2b99c577f171067b20f78e0f99fadd2bc3cf25986921a6c44a5"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 7",
+          "file": "media/inputs/square_h3_cinematic_shot_3s.png",
+          "sha256": "7c738d2d834ed7db642d266ab4a4cfa0c24d489557a2f2cbe7b8cff22f2d07fa"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 8",
+          "file": "media/inputs/square_h3_suspense_title_2s.png",
+          "sha256": "70da4ef513a308017a40d42d2299a0e39310921cf9786dc07927e1009c698933"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 9",
+          "file": "media/inputs/square_robot_arm_red_cube_1s.png",
+          "sha256": "b7f0ab6fddd807b1ac285a88b86e04f3f5e380b004a8253a243ba987a042e8be"
+        },
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/clip_official_ref2va_0_2s.mp4",
+          "sha256": "ccd38d9f8e6c851fa7e0841c53141e7f13c9cfc0c6d5e06fc3103bdb2b29ede2"
+        },
+        {
+          "type": "video",
+          "caption": "Video 2 · with original audio",
+          "file": "media/inputs/clip_robot_arm_red_cube_2s.mp4",
+          "sha256": "32e98da3ec57623a15fe45d3c666b87c5af7e8966cf1221c8613ec402ec33900"
+        },
+        {
+          "type": "video",
+          "caption": "Video 3 · with original audio",
+          "file": "media/inputs/clip_h3_cinematic_shot_2s.mp4",
+          "sha256": "d62416d7f8634a90acb5180c3ef70e12c90c4686d7aeaaad028a052d8bde0899"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-full-10s-seed0.mp4",
+          "poster": "media/posters/base-full-10s-seed0.jpg",
+          "sha256": "d04266125abd0cc5c63cba9b189bce0792d63d24cea14ff8cb0d8135bd9ba814",
+          "summary_sha256": "56c4522ba41b685b67fbd1854d13b26d60e231b0ff1cf04e024851ac330cad80",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-full-10s-seed0.mp4",
+          "poster": "media/posters/fast-full-10s-seed0.jpg",
+          "sha256": "21b326b40e34271a0d9539ec709842a61fcbc6bc15f983c16c22aff05438472c",
+          "summary_sha256": "1591ea5315da79101038820cc51b833e615deaf89374bffd9d11d5171483bd2a",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-full-10s-seed0.mp4",
+          "poster": "media/posters/decoder36-full-10s-seed0.jpg",
+          "sha256": "aacf407b31c79337f738944bad12879c56ee0e93270908608c2640cd96ba397d",
+          "summary_sha256": "aa8c1bb767df8e143028731e506d88a52ced625008f48d602c6e5aa2d5a951be",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 314.15691652236274,
+          "sample_std_s": 0.13206951664013808,
+          "measured_seconds": [
+            314.29475149605423,
+            314.0314879990183,
+            314.1445100720157
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 48.37904121199002,
+          "sample_std_s": 0.03887000946685597,
+          "measured_seconds": [
+            48.35105221392587,
+            48.42342221504077,
+            48.362649207003415
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 6.493657349383428
+      },
+      "frames": 243,
+      "actual_video_seconds": 10.125
+    },
+    {
+      "id": "full-15s",
+      "composition": "full",
+      "label": "9 images + 3 clips",
+      "target_seconds": 15,
+      "seed": 0,
+      "width": 1344,
+      "height": 768,
+      "fps": 24,
+      "gpu_count": 8,
+      "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Subject 2> is the model in the black sleeveless dress in <Picture 3> and <Picture 4>.\n<Subject 3> is the clay fox in <Picture 6>.\n<Subject 4> is the pair of silver wraparound sunglasses in <Picture 5>.\n<Subject 5> is the white robotic arm in <Picture 9> and <Video 2>.\n<Subject 6> is the family dining room in <Picture 2>.\n<Subject 7> is the starship observation deck in <Picture 7> and <Video 3>.\n<Subject 8> is the noir title-card style of <Picture 8>.\n<Subject 9> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Audio 1>, <Audio 2> and <Audio 3> are the synchronized audio tracks of <Video 1>, <Video 2> and <Video 3>.\n\nsummary:\n[reference generation + audio reference] A six-shot sunglasses commercial cuts between a family dinner, a fashion studio, a clay forest, a golden pasture, a robot lab and a starship deck, and ends on a noir title card.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Subject 2> (appears in [Shot 2]): fully_preserved - the model's braided hair and black sleeveless dress are retained.\n<Subject 3> (appears in [Shot 3]): fully_preserved - the clay fox's shape and stop-motion texture are retained.\n<Subject 4> (appears in [Shot 1], [Shot 2], [Shot 3], [Shot 4], [Shot 5], [Shot 6]): fully_preserved - the silver wraparound frame and dark lenses are retained.\n<Subject 5> (appears in [Shot 5]): fully_preserved - the white robotic arm and its motion are retained.\n<Subject 6> (appears in [Shot 1]): fully_preserved - the low table and warm light of the dining room are retained.\n<Subject 7> (appears in [Shot 6]): fully_preserved - the great window and the drifting fleet are retained.\n<Subject 8> (appears in [Shot 6]): weak_reference - the closing card follows its flat noir palette and lettering.\n<Subject 9> (appears in [Shot 4]): fully_preserved - the man's blonde hair, pink suit and the black lamb are retained.\n<Audio 1>: reference - the pasture's soft music is referenced in the fourth shot.\n<Audio 2>: reference - the servo whir is referenced in the fifth shot.\n<Audio 3>: reference - the low starship hum is referenced in the sixth shot.\n\ndetailed_description:\nThe target video is a fast-cut commercial that changes visual style with each shot.\n[Shot 1] A live-action medium shot. <Subject 1> sits down at the table of <Subject 6> and puts on <Subject 4>.\n[Shot 2] At 00:02.500, the shot cuts to a white-cyclorama fashion studio, where <Subject 2> turns toward the camera wearing <Subject 4>.\n[Shot 3] At 00:05.000, the shot cuts to stop-motion clay animation: <Subject 3> finds <Subject 4> on a mossy stump and tries them on.\n[Shot 4] At 00:07.500, the shot cuts to a golden pasture, where <Subject 9> slides <Subject 4> onto his nose with one hand while holding the black lamb, over soft music in the manner of <Audio 1>.\n[Shot 5] At 00:10.000, the shot cuts to a white table, where <Subject 5> lifts <Subject 4> and holds them up to the light with a servo whir like <Audio 2>.\n[Shot 6] At 00:12.500, the shot cuts to <Subject 7>: a silhouetted captain slips on <Subject 4> before the great window over a low hum like <Audio 3>, and the frame cuts to a title card in the style of <Subject 8>.\n\noverall_soundscape:\nQuick cuts carry a dinner murmur, a camera shutter, rustling leaves, a breeze over grass, a servo whir and a low starship hum.\n\nnon_diegetic_music:\nA cool jazz bass line with brushed drums at a steady medium tempo.",
+      "prompt_sha256": "0c25ae4ba261adcf58c7dfca1bef30b081b66c9932276f70cc00c9e8a42ee3c4",
+      "conditions": [
+        {
+          "type": "image",
+          "caption": "Picture 1",
+          "file": "media/inputs/square_character_action_reference.png",
+          "sha256": "302834b5a2777bd3d27e80cba22ed0ac745b1d57e0f91b81c77d9a398069966a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 2",
+          "file": "media/inputs/square_official_fl2va_0_image.png",
+          "sha256": "e371087e704d622b95dbf5e5c7ef105f186547c4ef504d7da313b50568075101"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 3",
+          "file": "media/inputs/square_fashion_glasses_reference_1.png",
+          "sha256": "be83d96db5c20db65c216ece6032b582dc0604c7e797f63139cfa3bda7b2718a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 4",
+          "file": "media/inputs/square_fashion_glasses_reference_2.png",
+          "sha256": "00aa4fc6302aded43c0afa01741df19599f9d5d9c5c9469370c8074881aee30a"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 5",
+          "file": "media/inputs/square_fashion_glasses_reference_3.png",
+          "sha256": "d7d4302b9b3f836df9ac1c5c612f326ec71d092745a40d22758a2fca09a49542"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 6",
+          "file": "media/inputs/square_fl2va_clay_fox_reference.png",
+          "sha256": "6ae992e1725cd2b99c577f171067b20f78e0f99fadd2bc3cf25986921a6c44a5"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 7",
+          "file": "media/inputs/square_h3_cinematic_shot_3s.png",
+          "sha256": "7c738d2d834ed7db642d266ab4a4cfa0c24d489557a2f2cbe7b8cff22f2d07fa"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 8",
+          "file": "media/inputs/square_h3_suspense_title_2s.png",
+          "sha256": "70da4ef513a308017a40d42d2299a0e39310921cf9786dc07927e1009c698933"
+        },
+        {
+          "type": "image",
+          "caption": "Picture 9",
+          "file": "media/inputs/square_robot_arm_red_cube_1s.png",
+          "sha256": "b7f0ab6fddd807b1ac285a88b86e04f3f5e380b004a8253a243ba987a042e8be"
+        },
+        {
+          "type": "video",
+          "caption": "Video 1 · with original audio",
+          "file": "media/inputs/clip_official_ref2va_0_2s.mp4",
+          "sha256": "ccd38d9f8e6c851fa7e0841c53141e7f13c9cfc0c6d5e06fc3103bdb2b29ede2"
+        },
+        {
+          "type": "video",
+          "caption": "Video 2 · with original audio",
+          "file": "media/inputs/clip_robot_arm_red_cube_2s.mp4",
+          "sha256": "32e98da3ec57623a15fe45d3c666b87c5af7e8966cf1221c8613ec402ec33900"
+        },
+        {
+          "type": "video",
+          "caption": "Video 3 · with original audio",
+          "file": "media/inputs/clip_h3_cinematic_shot_2s.mp4",
+          "sha256": "d62416d7f8634a90acb5180c3ef70e12c90c4686d7aeaaad028a052d8bde0899"
+        }
+      ],
+      "outputs": {
+        "base": {
+          "label": "Base",
+          "file": "media/outputs/base-full-15s-seed0.mp4",
+          "poster": "media/posters/base-full-15s-seed0.jpg",
+          "sha256": "d7326e343746c64b64ce0d185d7ed91ef767d98e00bea053a1c43bb10d216404",
+          "summary_sha256": "e48e89aa9dda40741c893306e6884e222c0bcf5563074460e269258dfc29327f",
+          "code_commit": "ab580b2e060059c0f8387b598a9f648dcec13f93",
+          "model": "MiniMaxAI/MiniMax-H3",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "fast": {
+          "label": "FastH3 Omni",
+          "file": "media/outputs/fast-full-15s-seed0.mp4",
+          "poster": "media/posters/fast-full-15s-seed0.jpg",
+          "sha256": "7e9de6e646b45ffbe7fbda2471e60dfe9b45beeb5c4b259db1ac1406fa53c0a8",
+          "summary_sha256": "e96f14b88bb54c1d10d2805332263d34301c51defc7bdf3f5822358c4a495b86",
+          "code_commit": "04a49444f3ba77db51d9eee231dac0a40bf1652a",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "9bfb6693f2cf6de171db46d1aa586f67d773a1da"
+        },
+        "decoder36": {
+          "label": "FastH3 Omni · 36L VAE",
+          "file": "media/outputs/decoder36-full-15s-seed0.mp4",
+          "poster": "media/posters/decoder36-full-15s-seed0.jpg",
+          "sha256": "2e25a36249ff9e914d889d11a3120c070c2c63dc09c6932e25e043d5326dbd29",
+          "summary_sha256": "612bb97fdee297629c5bbdc8aa1191e979469ec8f4edb96c779a31359c1e69a6",
+          "code_commit": "995a6ca388d2421d3196b62fcecb2737ccaf5496",
+          "model": "FastVideo/FastVideo-FastH3-Omni-8-Step-V1",
+          "decoder_revision": "ddd17469cab7e490b1a04baaf26b247f0f0dcf0e"
+        }
+      },
+      "performance": {
+        "base": {
+          "mean_s": 422.1996387276643,
+          "sample_std_s": 0.2164798269318032,
+          "measured_seconds": [
+            422.3884274539887,
+            421.96335487201577,
+            422.2471338569885
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "fast": {
+          "mean_s": 59.77270269401682,
+          "sample_std_s": 0.04741506772720853,
+          "measured_seconds": [
+            59.719835055060685,
+            59.786809785990044,
+            59.81146324099973
+          ],
+          "measured_seeds": [
+            0,
+            1,
+            2
+          ]
+        },
+        "speedup": 7.0634189136293815
+      },
+      "frames": 362,
+      "actual_video_seconds": 15.083333333333334
+    }
+  ]
+}
