@@ -28,8 +28,37 @@
     selectAudio();
     status.textContent = "Matched seed 0 clips. Select Play together or use each player's controls.";
   };
-  composition.addEventListener("change", selectProfile);
-  duration.addEventListener("change", selectProfile);
+  const inspectProfile = (panel, listen) => {
+    [composition.value, duration.value] = panel.dataset.omniProfile.split(":");
+    if (listen) audio.value = listen;
+    selectProfile();
+    panel.querySelectorAll("details").forEach((details) => { details.open = true; });
+    status.textContent = "Selected example: three seed 0 outputs, reference inputs and full prompt below. Playback starts only when you press play.";
+    panel.querySelector("h4").focus({ preventScroll: true });
+    gallery.scrollIntoView({ block: "start" });
+  };
+  const inspectHash = () => {
+    const panel = panels.find((candidate) => `#${candidate.id}` === window.location.hash);
+    if (panel) inspectProfile(panel);
+    return Boolean(panel);
+  };
+  document.querySelectorAll("a[data-omni-open]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const panel = panels.find((candidate) => candidate.dataset.omniProfile === link.dataset.omniOpen);
+      if (!panel) return;
+      event.preventDefault();
+      if (window.location.hash !== link.hash) window.history.pushState(null, "", link.hash);
+      inspectProfile(panel, link.dataset.omniListen);
+    });
+  });
+  window.addEventListener("hashchange", inspectHash);
+  const browseProfile = () => {
+    selectProfile();
+    window.history.replaceState(null, "", `#${activePanel().id}`);
+  };
+  composition.addEventListener("change", browseProfile);
+  duration.addEventListener("change", browseProfile);
   audio.addEventListener("change", selectAudio);
   gallery.querySelector("[data-omni-pause]").addEventListener("click", () => {
     pauseAll();
@@ -49,4 +78,5 @@
     }
   });
   selectProfile();
+  inspectHash();
 })();

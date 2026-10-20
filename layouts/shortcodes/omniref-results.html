@@ -17,17 +17,26 @@
     <figcaption>Mean end-to-end latency for {{ $seconds }} s requests, including audio and MP4 output. Each green label gives Base / FastH3 Omni. Both timing lanes use the original H3 video VAE.</figcaption>
   </figure>
   {{- end }}
-  <details class="omni-latency-details">
-    <summary>All 27 matched timing profiles · mean ± sample standard deviation</summary>
+  <p class="omni-inspect-hint"><strong>Click any latency to inspect the example ↓</strong> See its full prompt, reference images, clips and audio, and all three generated outputs in the gallery immediately below.</p>
+  <details id="omniref-timings" class="omni-latency-details" open>
+    <summary>All 27 matched timing profiles · click a timing or View example</summary>
     <div class="omni-table-scroll">
       <table>
-        <caption>1344×768, 24 FPS, eight GB200 GPUs. Seconds; lower is better.</caption>
-        <thead><tr><th scope="col">References</th><th scope="col">Target</th><th scope="col">Base</th><th scope="col">FastH3 Omni</th><th scope="col">Base / FastH3</th></tr></thead>
+        <caption>1344×768, 24 FPS, eight GB200 GPUs. Generation time in seconds, mean ± sample standard deviation; lower is better. Target is the requested output length.</caption>
+        <thead><tr><th scope="col">References</th><th scope="col">Target</th><th scope="col">Base</th><th scope="col">FastH3 Omni</th><th scope="col">Base / FastH3</th><th scope="col">Prompt, inputs & outputs</th></tr></thead>
         <tbody>
         {{- range $data.profiles }}
         {{- $base := index .performance "base" }}
         {{- $fast := index .performance "fast" }}
-        <tr><th scope="row">{{ .label }}</th><td>{{ .target_seconds }} s</td><td>{{ printf "%.2f ± %.2f" $base.mean_s $base.sample_std_s }}</td><td>{{ printf "%.2f ± %.2f" $fast.mean_s $fast.sample_std_s }}</td><td class="omni-speedup">{{ printf "%.2f×" .performance.speedup }}</td></tr>
+        {{- $key := printf "%s:%v" .composition .target_seconds }}
+        {{- $anchor := printf "omniref-example-%s-%vs" .composition .target_seconds }}
+        <tr>
+          <th scope="row">{{ .label }}</th><td>{{ .target_seconds }} s</td>
+          <td><a class="omni-timing-link" href="#{{ $anchor }}" data-omni-open="{{ $key }}" data-omni-listen="base" aria-label="Inspect Base: {{ .label }}, {{ .target_seconds }} second output. Prompt, references and three generated videos.">{{ printf "%.2f ± %.2f" $base.mean_s $base.sample_std_s }}</a></td>
+          <td><a class="omni-timing-link" href="#{{ $anchor }}" data-omni-open="{{ $key }}" data-omni-listen="fast" aria-label="Inspect FastH3 Omni: {{ .label }}, {{ .target_seconds }} second output. Prompt, references and three generated videos.">{{ printf "%.2f ± %.2f" $fast.mean_s $fast.sample_std_s }}</a></td>
+          <td class="omni-speedup">{{ printf "%.2f×" .performance.speedup }}</td>
+          <td><a class="omni-example-link" href="#{{ $anchor }}" data-omni-open="{{ $key }}" data-omni-listen="fast" aria-label="View example: {{ .label }}, {{ .target_seconds }} second output">View example ↓</a></td>
+        </tr>
         {{- end }}
         </tbody>
       </table>
@@ -40,6 +49,7 @@
 </style>
 <style>
 .omni-chart figcaption{font-weight:normal}
+.omni-inspect-hint{padding:.8rem 1rem;border:1px solid var(--border);border-left:4px solid #168a70;border-radius:8px;font-size:.85rem;line-height:1.6;text-indent:0!important}.omni-inspect-hint strong{display:block}.omni-results a.omni-timing-link,.omni-results a.omni-example-link{display:inline-block;padding:.3rem .15rem;text-decoration:underline;text-underline-offset:3px;border-radius:4px}.omni-timing-link{font-variant-numeric:tabular-nums}.omni-example-link{font-weight:650}.omni-timing-link:hover,.omni-example-link:hover{background:var(--code-bg);color:var(--primary)}.omni-results a:focus-visible{outline:3px solid #168a70;outline-offset:3px}#omniref-timings{scroll-margin-top:1rem}
 /* The theme's unbroken footer credit overflows narrow screens. This override
    is loaded only by the OmniRef article, preserving the shared theme. */
 @media(max-width:650px){.footer span:last-child{white-space:normal}}

@@ -55,9 +55,23 @@ FastH3 OmniRef extends FastH3 to reference-guided video and audio. This update b
 
 We compare nine reference compositions at three requested clip lengths: 5, 10 and 15 seconds. Every point uses the same prompt, reference files, 1344×768 target canvas and eight GB200 GPUs. The bars include reference encoding, denoising, video/audio decoding and delivery of the finished MP4. Each speedup is **Base mean latency divided by FastH3 Omni mean latency**, using the original video VAE in both lanes.
 
+**Explore the measurements:** the chart shows the selected requested clip length; the table includes all three lengths. Click an underlined timing or **View example** to see that request’s prompt, reference media and generated outputs directly below.
+
 {{< omniref-results >}}
 
 The reference mix matters. Three short clips and nine images put different demands on the encoders and the joint attention sequence, even when the target dimensions match. We show all 27 completed profiles, with the sampling protocol and runtime differences [below](#benchmark-methodology), rather than carrying over text-only FastH3 results.
+
+## Matched reference inputs and outputs
+
+Choose a reference composition and clip length to inspect the same request across **Base**, **FastH3 Omni**, and **FastH3 Omni · 36L VAE**. All three outputs use seed 0 on eight GB200 GPUs, with the same prompt, ordered reference files and target geometry. The gallery contains every one of the 27 profiles in the timing comparison, with no selection by output appearance.
+
+The third column uses the trained quality decoder from our [NVFP4 VAE release](/blogs/fasth3-v21/#nvfp4-vae-decoders). It keeps FastH3 Omni's student and reference encoders and changes the output video decoder. It is included for visual and audio inspection; the performance comparison above covers Base and original-VAE FastH3 Omni.
+
+The gallery's native decoder adapter preserves calibration boundaries with separate normalization, RoPE, residual and SwiGLU operations. It differs from the fused FastVideo decoder implementation described in that release.
+
+**Click any underlined latency or “View example” in the table above** to open its matching request here. The reference images, clips, audio and full prompt are expanded alongside the three outputs. You can also browse with the reference and clip-length selectors. **Play together** starts all three videos; **Listen to** selects the soundtrack. The MP4 downloads preserve the generated files unchanged.
+
+{{< omniref-gallery >}}
 
 ## OmniRef: PDD + DMD for reference-guided video and audio
 
@@ -98,18 +112,6 @@ An OmniRef sequence contains the prompt, references and target video/audio token
 The sparse student uses Video Sparse Attention, with dense attention for the teacher and fake-score model. The training code also includes native Blackwell sparse-attention backward support, BF16 communication for H3 attention inputs and sharded FP32-sensitive modules. Optional compilation and activation offload provide further controls for the compute/memory tradeoff. Their benefit depends on the shape mix and hardware, so they are configuration choices rather than a fixed speedup claim.
 
 Reference-aware preprocessing is included with the training code. It encodes text, clean reference conditions and target video/audio latents while preserving reference order and geometry. Users can prepare their own data and change the training recipe through the modular trainer's YAML configuration.
-
-## Matched reference inputs and outputs
-
-Choose a reference composition and clip length to inspect the same request across **Base**, **FastH3 Omni**, and **FastH3 Omni · 36L VAE**. All three outputs use seed 0 on eight GB200 GPUs, with the same prompt, ordered reference files and target geometry. The gallery contains every one of the 27 profiles in the timing comparison, with no selection by output appearance.
-
-The third column uses the trained quality decoder from our [NVFP4 VAE release](/blogs/fasth3-v21/#nvfp4-vae-decoders). It keeps FastH3 Omni's student and reference encoders and changes the output video decoder. It is included for visual and audio inspection; the performance comparison above covers Base and original-VAE FastH3 Omni.
-
-The gallery's native decoder adapter preserves calibration boundaries with separate normalization, RoPE, residual and SwiGLU operations. It differs from the fused FastVideo decoder implementation described in that release.
-
-Open **Reference inputs** to see the supplied images, clips and audio, and **Full prompt** for the complete instruction. **Play together** starts all three videos; **Listen to** selects the soundtrack. The MP4 downloads preserve the generated files unchanged.
-
-{{< omniref-gallery >}}
 
 ## Benchmark methodology
 
