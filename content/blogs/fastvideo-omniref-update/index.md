@@ -31,6 +31,8 @@ Keep private dataset versions, corpus composition, internal paths and run IDs ou
 
 Our [first FastH3 release](/blogs/fasth3-preview/) brought few-step distillation to text-to-video generation with audio. Since then, we have worked on [production serving](/blogs/uniserve-fasth3/) and [running FastH3 on consumer hardware](/blogs/fasth3-rtx/). We are now extending FastVideo's distillation stack to **OmniRef**: generating video and audio from text together with visual and audio references.
 
+**Model weights: [FastH3 OmniRef collection on Hugging Face](https://huggingface.co/collections/FastVideo/fasth3-omniref).**
+
 This update develops that training path around **Parallel Decoding Distillation (PDD) and Distribution Matching Distillation (DMD)**. PDD teaches the student to advance through several denoising intervals in one transformer evaluation. DMD adds a learning signal on the student's completed output. Together, they let us train a few-step student while retaining the multimodal conditioning that makes reference-guided generation useful.
 
 ## TL;DR
@@ -48,6 +50,7 @@ FastH3 OmniRef extends FastH3 to reference-guided video and audio. This update b
 
 ### Openness
 
+- **Weights.** Browse the [FastH3 OmniRef collection on Hugging Face](https://huggingface.co/collections/FastVideo/fasth3-omniref).
 - **PDD and DMD in one student objective.** Parallel interval predictions learn from a frozen teacher, while distribution matching trains the resulting clean video/audio estimate.
 - **Training and reference-aware preprocessing are available for review.** The [OmniRef training PR](https://github.com/hao-ai-lab/FastVideo/pull/1984) includes model adapters, the combined objective, a configurable recipe and preprocessing for users' own reference-conditioned data.
 - **Deploy with UniServe.** The [installation walkthrough](#deploy-fasth3-omniref-with-uniserve) includes pinned checkpoints, a four-GPU quickstart, the two-host configuration and a helper for preparing the gallery's real requests.
@@ -79,6 +82,8 @@ The gallery's native decoder adapter preserves calibration boundaries with separ
 {{< omniref-gallery >}}
 
 ## Deploy FastH3 OmniRef with UniServe
+
+Find the checkpoints in the [FastH3 OmniRef weights collection](https://huggingface.co/collections/FastVideo/fasth3-omniref).
 
 The walkthrough below serves the same [eight-forward OmniRef student](https://huggingface.co/FastVideo/FastVideo-FastH3-Omni-8-Step-V1) used in the gallery, with its original video VAE. It starts with one image and one audio reference on **four GB200 GPUs**, then shows the **eight-GPU, two-host** configuration for the larger reference mixes. The model's task is **`ref2va`**: reference-conditioned video and audio.
 
