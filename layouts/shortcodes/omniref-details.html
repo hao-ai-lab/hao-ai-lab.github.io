@@ -1,0 +1,4 @@
+<details class="omni-disclosure"{{ with .Get "id" }} id="{{ . }}"{{ end }}>
+  <summary>{{ .Get "title" }}</summary>
+  <div class="omni-disclosure-body">{{ .Inner | .Page.RenderString (dict "display" "block") }}</div>
+</details>

@@ -1,0 +1,6 @@
+{{- if .Params.omnirefInteractive -}}
+  {{- with .Resources.GetMatch "article.css" -}}
+  {{- $style := . | fingerprint -}}
+  <link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
+  {{- end -}}
+{{- end -}}
