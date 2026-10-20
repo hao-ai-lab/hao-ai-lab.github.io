@@ -37,6 +37,7 @@ ComfyUI support is available. Our local AI blog post and release are planned for
     <source src="media/hero/trilingual-bgm-1080p.mp4" type="video/mp4">
     Your browser does not support MP4 video with audio.
   </video>
+  <p style="margin: 0.5rem 0 0; text-align: center; font-size: 0.9em; opacity: 0.75;">This entire video was generated with FastH3 OmniRef on FastVideo.</p>
 </div>
 
 ## TL;DR
