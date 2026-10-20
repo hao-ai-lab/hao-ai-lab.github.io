@@ -30,7 +30,7 @@ We are releasing three pieces:
 - **Two NVFP4 VAE decoders**, trained on FastH3's own outputs. The 36-layer decoder matches the original H3 decoder. The 8-layer decoder runs 15× faster. Both beat LightVAE on its own benchmark.
 - **Community LoRAs in FastVideo.** LoRAs trained for MiniMax H3 in ComfyUI and other common formats now load directly, including on NVFP4 models.
 
-Together they form the foundation for tomorrow's release of **FastH3 OmniRef**, which uses all three. More [at the end](#tomorrow-fasth3-omniref).
+Together they form the foundation for tomorrow's release of **FastH3 Omni**, which uses all three. More [at the end](#tomorrow-fasth3-omni).
 
 <figure class="v21-hero-video">
   <video controls playsinline preload="metadata" poster="img/cover.png" width="1344" height="768" aria-label="FastH3-QAD-v2 world tour generated on two DGX Sparks">
@@ -175,9 +175,9 @@ generator = VideoGenerator.from_config(
 
 Most community LoRAs target base H3's 50-step schedule. FastH3 samples in eight steps, so style and motion LoRAs usually carry over, but the best strength can differ. Turbo LoRAs are unnecessary.
 
-## Tomorrow: FastH3 OmniRef
+## Tomorrow: FastH3 Omni
 
-Tomorrow we release **FastH3 OmniRef**: the general model and its training code in BF16, plus a consumer-hardware release. The consumer release uses the QAD recipe above, extended to 4-bit attention, and the NVFP4 decoders.
+Tomorrow we release **FastH3 Omni**: the general model and its training code in BF16, plus a consumer-hardware release. The consumer release uses the QAD recipe above, extended to 4-bit attention, and the NVFP4 decoders.
 
 <!-- TODO: one teaser clip. -->
 

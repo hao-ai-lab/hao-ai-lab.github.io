@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="520" viewBox="0 0 1440 520" role="img" aria-labelledby="title desc">
-  <title id="title">FastH3 OmniRef — 5.6–11.9× lower latency</title>
+  <title id="title">FastH3 Omni — 5.6–11.9× lower latency</title>
   <desc id="desc">Abstract denoising trajectories converge into eight green evaluation markers. End-to-end speedup over Base’s lossless-policy serving recipe across 27 matched workloads on eight GB200 GPUs.</desc>
   <defs>
     <linearGradient id="fade"><stop stop-color="#718096" stop-opacity=".05"/><stop offset=".7" stop-color="#718096" stop-opacity=".4"/><stop offset="1" stop-color="#168a70" stop-opacity=".6"/></linearGradient>
@@ -26,7 +26,7 @@
     <rect x="1358" y="204" width="8" height="92" rx="2"/>
   </g>
   <g font-family="Arial, Helvetica, sans-serif">
-    <text x="64" y="88" font-size="26" fill="#333">FastH3 OmniRef</text>
+    <text x="64" y="88" font-size="26" fill="#333">FastH3 Omni</text>
     <text x="60" y="251" font-size="112" font-weight="600" letter-spacing="-5" fill="#1e1e1e">5.6–11.9×</text>
     <text x="64" y="307" font-size="30" fill="#555">lower end-to-end latency</text>
     <text x="64" y="397" font-size="23" fill="#168a70">50 → 8 transformer evaluations</text>

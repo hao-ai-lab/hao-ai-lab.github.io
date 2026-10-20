@@ -1,5 +1,5 @@
 +++
-title = "FastVideo FastH3 OmniRef: Open Source Real-Time MiniMax H3 Ref2VA Video Generation on NVIDIA Blackwell GPUs on FastVideo UniServe"
+title = "FastVideo FastH3 Omni: Open Source Real-Time MiniMax H3 Ref2VA Video Generation on NVIDIA Blackwell GPUs on FastVideo UniServe"
 date = 2026-10-19T00:00:00Z
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -10,7 +10,7 @@ contentClass = "post-content-justified omniref-article"
 omnirefInteractive = true
 [cover]
     image = "img/cover.svg"
-    alt = "FastH3 OmniRef: 5.6–11.9 times lower end-to-end latency across 27 matched workloads on eight GB200 GPUs, compared with Base’s lossless-policy serving recipe."
+    alt = "FastH3 Omni: 5.6–11.9 times lower end-to-end latency across 27 matched workloads on eight GB200 GPUs, compared with Base’s lossless-policy serving recipe."
     relative = true
     hiddenInSingle = true
 [socialIcons]
@@ -24,20 +24,20 @@ omnirefInteractive = true
 
 {{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" huggingface="https://huggingface.co/collections/FastVideo/fasth3-omniref" >}}
 
-FastVideo is open-sourcing **FastH3 OmniRef**, a distilled MiniMax H3 model for reference-guided video and audio. Give it a prompt plus images, video clips and a voice reference to generate a finished video with synchronized sound.
+FastVideo is open-sourcing **FastH3 Omni**, a distilled MiniMax H3 model for reference-guided video and audio. Give it a prompt plus images, video clips and a voice reference to generate a finished video with synchronized sound.
 
-[Model weights](https://huggingface.co/collections/FastVideo/fasth3-omniref) · [Deployment guide](#deploy-fasth3-omniref-with-uniserve)
+[Model weights](https://huggingface.co/collections/FastVideo/fasth3-omniref) · [Deployment guide](#deploy-fasth3-omni-with-uniserve)
 
 ComfyUI support is available. Our local AI blog post and release are planned for tomorrow, **October 21**.
 
 <div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
   <video controls playsinline preload="metadata"
-    aria-label="FastH3 OmniRef trilingual sample with background music"
+    aria-label="FastH3 Omni trilingual sample with background music"
     style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
     <source src="media/hero/trilingual-bgm-1080p.mp4" type="video/mp4">
     Your browser does not support MP4 video with audio.
   </video>
-  <p style="margin: 0.5rem 0 0; text-align: center; font-size: 0.9em; opacity: 0.75;">This entire video was generated with FastH3 OmniRef on FastVideo.</p>
+  <p style="margin: 0.5rem 0 0; text-align: center; font-size: 0.9em; opacity: 0.75;">This entire video was generated with FastH3 Omni on FastVideo.</p>
 </div>
 
 ## TL;DR
@@ -66,7 +66,7 @@ Both lanes use the original video VAE. Base uses SGLang’s `quality="lossless"`
 
 ## PDD + DMD
 
-FastH3 OmniRef combines **Parallel Decoding Distillation (PDD)** with **Distribution Matching Distillation (DMD)**. PDD predicts several denoising updates per transformer evaluation; DMD helps train the completed video and audio output. Reference conditioning is retained throughout generation. For the method and its illustrations, see the [PDD paper](https://arxiv.org/abs/2607.26004).
+FastH3 Omni combines **Parallel Decoding Distillation (PDD)** with **Distribution Matching Distillation (DMD)**. PDD predicts several denoising updates per transformer evaluation; DMD helps train the completed video and audio output. Reference conditioning is retained throughout generation. For the method and its illustrations, see the [PDD paper](https://arxiv.org/abs/2607.26004).
 
 - **PDD: many updates per forward.** The student's output heads are widened from one velocity prediction to a 32-interval fine time grid. At inference those heads run as eight fused blocks of four, so one transformer evaluation advances four intervals and the full trajectory takes eight evaluations instead of Base's 50. A teacher-supervised head loss keeps every head's update consistent with the frozen Base model.
 - **DMD: match the finished output.** On top of PDD, a trainable critic models the distribution of the student's samples while the frozen Base teacher supplies the target; the student is updated to close the gap between them on the completed video and audio, not just on each individual step. Critic and student updates alternate, with several critic updates per student update.
@@ -83,9 +83,9 @@ Huge thanks to the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team (Jul
 
 The training code is in FastVideo: see the [OmniRef DMPDD training guide](https://github.com/hao-ai-lab/FastVideo/blob/main/docs/training/omniref_dmpdd.md).
 
-## Deploy FastH3 OmniRef with UniServe
+## Deploy FastH3 Omni with UniServe
 
-Find the checkpoints in the [FastH3 OmniRef weights collection](https://huggingface.co/collections/FastVideo/fasth3-omniref).
+Find the checkpoints in the [FastH3 Omni weights collection](https://huggingface.co/collections/FastVideo/fasth3-omniref).
 
 The walkthrough below serves the same [eight-forward OmniRef student](https://huggingface.co/FastVideo/FastVideo-FastH3-Omni-8-Step-V1) used in the gallery, with its original video VAE. It starts with one image and one audio reference on **four GB200 GPUs**, then shows the **eight-GPU, two-host** configuration for the larger reference mixes. The model's task is **`ref2va`**: reference-conditioned video and audio.
 
@@ -330,7 +330,7 @@ Nine reference compositions × three clip lengths (5, 10 and 15 seconds), measur
 
 ## Get started
 
-Download the model weights from the [FastH3 OmniRef collection](https://huggingface.co/collections/FastVideo/fasth3-omniref), then follow the [UniServe setup](#deploy-fasth3-omniref-with-uniserve) to generate video and audio from your own references.
+Download the model weights from the [FastH3 Omni collection](https://huggingface.co/collections/FastVideo/fasth3-omniref), then follow the [UniServe setup](#deploy-fasth3-omni-with-uniserve) to generate video and audio from your own references.
 
 ## Acknowledgements
 
@@ -338,4 +338,4 @@ FastH3 builds on [MiniMax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3). We t
 
 We thank the NVIDIA Enterprise Products team (Pengcheng Li and Cliff Woolley) for the Video Sparse Attention kernel used by FastH3. We thank the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team (Julius Berner, Chao Liu and Arash Vahdat) for the DMD2 framework and H3 reference work, and for introducing [Parallel Decoding Distillation](https://research.nvidia.com/labs/genair/pdd/).
 
-We thank [Nuva Lab](https://nuvalab.ai/) for bringing production-grounded creative video workflows to FastH3, and the upstream serving, kernel and open-source communities whose implementations make these experiments possible. We also acknowledge [Reactor](https://www.reactor.inc/) for supporting FastH3 OmniRef, and the [vLLM project](https://vllm.ai/), [NVIDIA](https://www.nvidia.com/en-us/) and [MBZUAI](https://mbzuai.ac.ae/) for their support of FastVideo.
+We thank [Nuva Lab](https://nuvalab.ai/) for bringing production-grounded creative video workflows to FastH3, and the upstream serving, kernel and open-source communities whose implementations make these experiments possible. We also acknowledge [Reactor](https://www.reactor.inc/) for supporting FastH3 Omni, and the [vLLM project](https://vllm.ai/), [NVIDIA](https://www.nvidia.com/en-us/) and [MBZUAI](https://mbzuai.ac.ae/) for their support of FastVideo.
