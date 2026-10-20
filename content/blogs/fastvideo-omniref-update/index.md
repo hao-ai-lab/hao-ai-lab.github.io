@@ -68,7 +68,12 @@ Both lanes use the original video VAE. Base uses SGLang’s `quality="lossless"`
 
 FastH3 OmniRef combines **Parallel Decoding Distillation (PDD)** with **Distribution Matching Distillation (DMD)**. PDD predicts several denoising updates per transformer evaluation; DMD helps train the completed video and audio output. Reference conditioning is retained throughout generation. For the method and its illustrations, see the [PDD paper](https://arxiv.org/abs/2607.26004).
 
-Huge thanks to the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team (Julius Berner, Chao Liu and Arash Vahdat), who introduced PDD and whose DMD2 framework and H3 reference work this model builds on.
+- **PDD: many updates per forward.** The student's output heads are widened from one velocity prediction to a 32-interval fine time grid. At inference those heads run as eight fused blocks of four, so one transformer evaluation advances four intervals and the full trajectory takes eight evaluations instead of Base's 50. A teacher-supervised head loss keeps every head's update consistent with the frozen Base model.
+- **DMD: match the finished output.** On top of PDD, a trainable critic models the distribution of the student's samples while the frozen Base teacher supplies the target; the student is updated to close the gap between them on the completed video and audio, not just on each individual step. Critic and student updates alternate, with several critic updates per student update.
+- **References stay clean conditioning.** Reference images, videos and audio are never noised: they condition the student, teacher and critic in every forward, and only the target video and audio enter the noising and the losses.
+- **Sparse throughout.** The student trains and samples with Video Sparse Attention on 128-row tiles, so the sparsity used for serving is the sparsity it was trained with.
+
+Huge thanks to the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team (Julius Berner, Chao Liu and Arash Vahdat), who introduced PDD and whose DMD2 framework and H3 reference work this model builds on. FastVideo's PDD and DMPDD trainers adapt the PDD objectives from the [FastGen repository](https://github.com/NVlabs/FastGen) to FastVideo's MiniMax H3 model, sequence-parallel and checkpoint interfaces.
 
 | Training | Amount |
 | --- | --- |
