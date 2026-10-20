@@ -46,7 +46,7 @@ ComfyUI support is available. Our local AI blog post and release are planned for
 - **5.6–11.9× lower end-to-end latency** across 27 matched workloads on eight GB200 GPUs. This compares full serving recipes, using Base’s `lossless` numerical policy; [methodology](#benchmark-methodology).
 - **Real-time Generation on FastVideo UniServe**: On particular OmniRef tasks, FastVideo UniServe achieves real time generation speeds for 768p videos for 5s, 10s, and 15s clips.
 - **See and hear the outputs below.** Change the references or clip length, then play the matched examples together. Reference inputs are expanded; open the full prompt when you need it.
-- **Partners.** Thanks to [Nuva Lab](https://nuvalab.ai/), [Reactor Inc.](https://www.reactor.inc/), NVIDIA FastGen Team, and NVIDIA Enterprise products for their collaboration and support.
+- **Partners.** Thanks to [Nuva Lab](https://nuvalab.ai/), [Reactor](https://www.reactor.inc/), NVIDIA FastGen Team, and NVIDIA Enterprise products for their collaboration and support.
 
 ## Matched reference inputs and outputs
 
@@ -331,4 +331,4 @@ FastH3 builds on [MiniMax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3). We t
 
 We thank the NVIDIA Enterprise Products team (Pengcheng Li and Cliff Woolley) for the Video Sparse Attention kernel used by FastH3. We thank the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team (Julius Berner, Chao Liu and Arash Vahdat) for the DMD2 framework and H3 reference work, and for introducing [Parallel Decoding Distillation](https://research.nvidia.com/labs/genair/pdd/).
 
-We thank [Nuva Lab](https://nuvalab.ai/) for bringing production-grounded creative video workflows to FastH3, and the upstream serving, kernel and open-source communities whose implementations make these experiments possible. We also acknowledge [Reactor Inc.](https://www.reactor.inc/) for supporting FastH3 OmniRef, and the [vLLM project](https://vllm.ai/), [NVIDIA](https://www.nvidia.com/en-us/) and [MBZUAI](https://mbzuai.ac.ae/) for their support of FastVideo.
+We thank [Nuva Lab](https://nuvalab.ai/) for bringing production-grounded creative video workflows to FastH3, and the upstream serving, kernel and open-source communities whose implementations make these experiments possible. We also acknowledge [Reactor](https://www.reactor.inc/) for supporting FastH3 OmniRef, and the [vLLM project](https://vllm.ai/), [NVIDIA](https://www.nvidia.com/en-us/) and [MBZUAI](https://mbzuai.ac.ae/) for their support of FastVideo.
