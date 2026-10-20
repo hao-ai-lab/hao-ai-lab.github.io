@@ -1,4 +1,4 @@
-# OmniRef comparison data
+# FastH3 Omni comparison data
 
 - `benchmark.json`: measurement settings, full prompts, ordered reference files, output video paths, measured latencies and speedups.
 - `latency.csv`: all 27 timing rows, with the original video VAE in both timing lanes.

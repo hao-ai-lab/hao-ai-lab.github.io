@@ -1,5 +1,5 @@
 +++
-title = "FastVideo FastH3 Omni: Open Source Real-Time MiniMax H3 Ref2VA Video Generation on NVIDIA Blackwell GPUs on FastVideo UniServe"
+title = "FastVideo FastH3 Omni: Open Source Real-Time MiniMax H3 Ref2VA Video Generation on NVIDIA Blackwell GPUs on FastVideo UniServe. Optimized NVFP4 checkpoints for DGX Spark and RTX GPUs."
 date = 2026-10-19T00:00:00Z
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -26,7 +26,7 @@ omnirefInteractive = true
 
 FastVideo is open-sourcing **FastH3 Omni**, a distilled MiniMax H3 model for reference-guided video and audio. Give it a prompt plus images, video clips and a voice reference to generate a finished video with synchronized sound.
 
-[Model weights](https://huggingface.co/collections/FastVideo/fasth3-omniref) · [Deployment guide](#deploy-fasth3-omni-with-uniserve)
+[Model weights](https://huggingface.co/collections/FastVideo/fasth3-omniref) · [UniServe deployment](#deploy-fasth3-omni-with-uniserve) · [Local AI with FastVideo](#local-ai-with-fastvideo)
 
 ComfyUI support is available. Our local AI blog post and release are planned for tomorrow, **October 21**.
 
@@ -44,7 +44,8 @@ ComfyUI support is available. Our local AI blog post and release are planned for
 
 - **Eight transformer evaluations**, down from Base’s 50, with image, video and audio references.
 - **5.6–11.9× lower end-to-end latency** across 27 matched workloads on eight GB200 GPUs. This compares full serving recipes, using Base’s `lossless` numerical policy; [methodology](#benchmark-methodology).
-- **Real-time Generation on FastVideo UniServe**: On particular OmniRef tasks, FastVideo UniServe achieves real time generation speeds for 768p videos for 5s, 10s, and 15s clips.
+- **Real-time Generation on FastVideo UniServe**: On particular FastH3 Omni tasks, FastVideo UniServe achieves real time generation speeds for 768p videos for 5s, 10s, and 15s clips.
+- **Local AI.** Run on [DGX Spark or RTX 5090 with FastVideo](#local-ai-with-fastvideo), using the NVFP4 QAD weights and device recipes.
 - **See and hear the outputs below.** Change the references or clip length, then play the matched examples together. Reference inputs are expanded; open the full prompt when you need it.
 - **Partners.** Thanks to [Nuva Lab](https://nuvalab.ai/), [Reactor](https://www.reactor.inc/), NVIDIA FastGen Team, and NVIDIA Enterprise products for their collaboration and support.
 
@@ -81,13 +82,28 @@ Huge thanks to the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team (Jul
 | Training steps | 3,500 |
 | Estimated compute | Approximately 7,800 GPU-hours |
 
-The training code is in FastVideo: see the [OmniRef DMPDD training guide](https://github.com/hao-ai-lab/FastVideo/blob/main/docs/training/omniref_dmpdd.md).
+The training code is in FastVideo: see the [FastH3 Omni DMPDD training guide](https://github.com/hao-ai-lab/FastVideo/blob/main/docs/training/omniref_dmpdd.md).
+
+## Local AI with FastVideo
+
+FastH3 Omni also runs locally on **NVIDIA DGX Spark and RTX 5090 through FastVideo**. Start with the [FastVideo cookbook](https://haoailab.com/FastVideo/cookbook/) and [FastH3 Omni recipe builder](https://haoailab.com/FastVideo/cookbook/minimax-h3/fasth3-omniref/), then follow the [local inference guide](https://github.com/hao-ai-lab/FastVideo/blob/main/docs/inference/fasth3_omniref.md) for model setup and reference inputs.
+
+| Device | Weights and inference recipe |
+| --- | --- |
+| DGX Spark (GB10, 128 GB unified memory) | [NVFP4 QAD weights](https://huggingface.co/FastVideo/FastH3-OmniRef-NVFP4-QAD) · [`spark` recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_spark.yaml) |
+| RTX 5090 (32 GB) | [NVFP4 QAD weights](https://huggingface.co/FastVideo/FastH3-OmniRef-NVFP4-QAD) · [`rtx-5090` recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_rtx5090.yaml) |
+
+**QAD means quantization-aware distillation:** these weights are trained for NVFP4 execution on Blackwell. Install FastVideo with the [DGX Spark setup guide](https://haoailab.com/FastVideo/getting_started/installation/spark/) or [NVIDIA GPU setup guide](https://haoailab.com/FastVideo/getting_started/installation/gpu/). Both device profiles default to 480p; Spark keeps the model components resident, while the RTX 5090 profile offloads the text encoder and requires a precomputed AdaLN table. The local inference guide covers preparing that table, composing the model directory and selecting the decoder. Keep the recipe's attention and precision settings.
+
+For **FP8**, use the [FastH3 Omni FP8 weights](https://huggingface.co/FastVideo/FastH3-OmniRef-FP8) and the guide's [FP8 device profile](https://github.com/hao-ai-lab/FastVideo/blob/main/docs/inference/fasth3_omniref.md#device-profiles); the [RTX 4090 recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_rtx4090.yaml) shows layerwise offload for a device without FP4 support. Its text encoder must also match the hardware: the bundled NVFP4 encoder needs Blackwell, so other GPUs need compatible BF16 encoder components. NVFP4 QAD and FP8 are separate numerical variants; their outputs can differ from the BF16 release.
+
+Optional [NVFP4 VAE decoders](https://huggingface.co/FastVideo/FastH3-NVFP4-VAE-Decoder) provide a **36-layer quality** tier and an **8-layer fast** tier. Follow the guide's `--decoder` setup; these local configurations have their own resolution, memory and precision choices, so the eight-GB200 timings above do not describe their speed.
 
 ## Deploy FastH3 Omni with UniServe
 
 Find the checkpoints in the [FastH3 Omni weights collection](https://huggingface.co/collections/FastVideo/fasth3-omniref).
 
-The walkthrough below serves the same [eight-forward OmniRef student](https://huggingface.co/FastVideo/FastVideo-FastH3-Omni-8-Step-V1) used in the gallery, with its original video VAE. It starts with one image and one audio reference on **four GB200 GPUs**, then shows the **eight-GPU, two-host** configuration for the larger reference mixes. The model's task is **`ref2va`**: reference-conditioned video and audio.
+The walkthrough below serves the same [eight-forward FastH3 Omni student](https://huggingface.co/FastVideo/FastVideo-FastH3-Omni-8-Step-V1) used in the gallery, with its original video VAE. It starts with one image and one audio reference on **four GB200 GPUs**, then shows the **eight-GPU, two-host** configuration for the larger reference mixes. The model's task is **`ref2va`**: reference-conditioned video and audio.
 
 {{< omniref-details title="Open the complete deployment walkthrough" >}}
 
@@ -114,12 +130,12 @@ export MAX_JOBS=2
 git clone https://github.com/hao-ai-lab/uniserve.git
 cd uniserve
 
-export OMNIREF_BLOG="https://haoailab.com/blogs/fastvideo-omniref-update/"
+export OMNI_BLOG="https://haoailab.com/blogs/fastvideo-omniref-update/"
 curl --fail --location \
-  "${OMNIREF_BLOG}deploy/uniserve-wide-index.patch" \
-  --output omniref-wide-index.patch
-git apply --check omniref-wide-index.patch
-git apply omniref-wide-index.patch
+  "${OMNI_BLOG}deploy/uniserve-wide-index.patch" \
+  --output omni-wide-index.patch
+git apply --check omni-wide-index.patch
+git apply omni-wide-index.patch
 
 uv sync --locked --python /usr/bin/python3.12 --extra gpu
 source .venv/bin/activate
@@ -140,9 +156,9 @@ Keep the shell in the UniServe checkout. Authenticate with a Hugging Face accoun
 ```bash
 hf auth login
 
-export OMNIREF_MODEL="$PWD/models/FastH3-Omni-8-Step-V1"
+export OMNI_MODEL="$PWD/models/FastH3-Omni-8-Step-V1"
 hf download FastVideo/FastVideo-FastH3-Omni-8-Step-V1 \
-  --local-dir "$OMNIREF_MODEL"
+  --local-dir "$OMNI_MODEL"
 ```
 
 The download supplies `transformer_ref`, the schedulers and `fastvideo_inference.json`. UniServe automatically downloads the required text encoder, tokenizer, processor and video/audio VAEs into the Hugging Face cache when they are missing. Keep that cache writable and allow network access during the first startup. Use the native UniServe-compatible model directory, including `fastvideo_inference.json`.
@@ -154,21 +170,21 @@ The download supplies `transformer_ref`, the schedulers and `fastvideo_inference
 The [downloadable request helper](deploy/prepare_request.py) downloads a gallery profile's reference files and writes a ready-to-send JSON request. It preserves the full prompt, ordered conditions, output geometry and seed. Run it from the same checkout before starting the server:
 
 ```bash
-export OMNIREF_MEDIA="$PWD/omniref-media"
-export OMNIREF_BLOG="https://haoailab.com/blogs/fastvideo-omniref-update/"
+export OMNI_MEDIA="$PWD/omni-media"
+export OMNI_BLOG="https://haoailab.com/blogs/fastvideo-omniref-update/"
 
 curl --fail --location \
-  "${OMNIREF_BLOG}deploy/prepare_request.py" \
-  --output prepare_omniref_request.py
+  "${OMNI_BLOG}deploy/prepare_request.py" \
+  --output prepare_omni_request.py
 
-python prepare_omniref_request.py \
-  --blog-url "$OMNIREF_BLOG" \
+python prepare_omni_request.py \
+  --blog-url "$OMNI_BLOG" \
   --composition image-voice --seconds 5 --seed 0 \
-  --media-directory "$OMNIREF_MEDIA" \
-  --output omniref-request.json
+  --media-directory "$OMNI_MEDIA" \
+  --output omni-request.json
 ```
 
-This selects the gallery's **Image + voice, 5-second** example. The generated conditions use absolute `file://` URIs under `OMNIREF_MEDIA`. Those paths must exist on the server; a file on a separate client machine is not automatically uploaded. The helper uses the public article URL by default; when previewing locally, pass the preview's article URL with `--blog-url`.
+This selects the gallery's **Image + voice, 5-second** example. The generated conditions use absolute `file://` URIs under `OMNI_MEDIA`. Those paths must exist on the server; a file on a separate client machine is not automatically uploaded. The helper uses the public article URL by default; when previewing locally, pass the preview's article URL with `--blog-url`.
 
 {{< /omniref-details >}}
 
@@ -178,9 +194,9 @@ In the same terminal, select four local GPUs and launch the **reference** deploy
 
 ```bash
 CUDA_VISIBLE_DEVICES=0,1,2,3 NCCL_NVLS_ENABLE=0 \
-uniserve serve "$OMNIREF_MODEL" \
+uniserve serve "$OMNI_MODEL" \
   --workers configs/minimax_h3/ulysses4-reference.json \
-  --served-model-name FastH3-OmniRef \
+  --served-model-name FastH3-Omni \
   --host 0.0.0.0 --port 8000 \
   --max-running-requests 2 \
   --max-video-seconds 5 \
@@ -190,7 +206,7 @@ uniserve serve "$OMNIREF_MODEL" \
   --mm-processor-kwargs '{"enlarge_references":true}' \
   --dtype bfloat16 --quantization-config '{"mode":"quality"}' \
   --mem-fraction-static 0.70 \
-  --media-directory "$OMNIREF_MEDIA"
+  --media-directory "$OMNI_MEDIA"
 ```
 
 `ulysses4-reference.json` places `transformer_ref`, the text and reference encoders, and the video/audio decoders across the four GPUs. The CPU worker reads media and produces the finished MP4. `enlarge_references` matches the released reference sizing used for this article. The `quality` precision preset retains the original decoder; it is separate from SGLang's request-quality policy discussed in the methodology.
@@ -218,17 +234,17 @@ Continue when `/health` succeeds. The capabilities response should advertise **`
 curl --fail-with-body \
   http://127.0.0.1:8000/v1/videos/sync \
   -H 'Content-Type: application/json' \
-  --data-binary @omniref-request.json \
-  --output omniref-output.mp4
+  --data-binary @omni-request.json \
+  --output omni-output.mp4
 
 ffprobe -v error \
   -show_entries stream=codec_name,width,height,r_frame_rate,sample_rate,channels \
-  -of json omniref-output.mp4
+  -of json omni-output.mp4
 ```
 
 The response is the completed MP4, with 1344×768 H.264 video at 24 FPS and stereo 32-kHz AAC audio. A requested five seconds produces 124 frames under the model's frame-alignment rule. Open the file locally to inspect both the video and soundtrack.
 
-For your own input, keep the same request structure and change `prompt`, `conditions` and `seed`. Each condition has `type`, `role: "reference"` and `uri`; the prompt names the ordered references as `<Picture 1>`, `<Video 1>` and `<Audio 1>`. The `model` field must match `FastH3-OmniRef`. Requests use `target.short_edge`, `target.aspect_ratio` and `target.duration_seconds`; `/v1/capabilities` gives the limits of the running deployment.
+For your own input, keep the same request structure and change `prompt`, `conditions` and `seed`. Each condition has `type`, `role: "reference"` and `uri`; the prompt names the ordered references as `<Picture 1>`, `<Video 1>` and `<Audio 1>`. The `model` field must match `FastH3-Omni`. Requests use `target.short_edge`, `target.aspect_ratio` and `target.duration_seconds`; `/v1/capabilities` gives the limits of the running deployment.
 
 For a job that should be polled, send the same JSON to `POST /v1/videos`, then inspect `GET /v1/videos/{id}` and download `GET /v1/videos/{id}/content` after its status becomes `completed`. Keep the server running until the job's output has been downloaded.
 
@@ -242,14 +258,14 @@ Stop the four-GPU server before replacing it. On the head host, run from the sam
 
 ```bash
 source .venv/bin/activate
-export OMNIREF_MODEL="$PWD/models/FastH3-Omni-8-Step-V1"
-export OMNIREF_MEDIA="$PWD/omniref-media"
+export OMNI_MODEL="$PWD/models/FastH3-Omni-8-Step-V1"
+export OMNI_MEDIA="$PWD/omni-media"
 
 CUDA_VISIBLE_DEVICES=0,1,2,3 NCCL_NVLS_ENABLE=0 \
-uniserve serve "$OMNIREF_MODEL" \
+uniserve serve "$OMNI_MODEL" \
   --workers configs/minimax_h3/ulysses8-reference-two-node.json \
   --host-identity rank-0 \
-  --served-model-name FastH3-OmniRef \
+  --served-model-name FastH3-Omni \
   --host 0.0.0.0 --port 8000 \
   --max-running-requests 2 \
   --max-video-seconds 15 \
@@ -260,7 +276,7 @@ uniserve serve "$OMNIREF_MODEL" \
   --mm-processor-kwargs '{"enlarge_references":true}' \
   --dtype bfloat16 --quantization-config '{"mode":"quality"}' \
   --mem-fraction-static 0.70 \
-  --media-directory "$OMNIREF_MEDIA"
+  --media-directory "$OMNI_MEDIA"
 ```
 
 The head logs `awaiting a launcher` with an address such as `0.0.0.0:PORT`. **Use the port in that log, not the HTTP port 8000.** On the second host, activate the identical environment and connect using the head's reachable IP or hostname:
@@ -277,20 +293,20 @@ For example, in another terminal in the head's checkout, use the same helper to 
 
 ```bash
 source .venv/bin/activate
-export OMNIREF_MEDIA="$PWD/omniref-media"
-export OMNIREF_BLOG="https://haoailab.com/blogs/fastvideo-omniref-update/"
+export OMNI_MEDIA="$PWD/omni-media"
+export OMNI_BLOG="https://haoailab.com/blogs/fastvideo-omniref-update/"
 
-python prepare_omniref_request.py \
-  --blog-url "$OMNIREF_BLOG" \
+python prepare_omni_request.py \
+  --blog-url "$OMNI_BLOG" \
   --composition full --seconds 15 --seed 0 \
-  --media-directory "$OMNIREF_MEDIA" \
-  --output omniref-full-15s.json
+  --media-directory "$OMNI_MEDIA" \
+  --output omni-full-15s.json
 
 curl --fail-with-body \
   http://127.0.0.1:8000/v1/videos/sync \
   -H 'Content-Type: application/json' \
-  --data-binary @omniref-full-15s.json \
-  --output omniref-full-15s.mp4
+  --data-binary @omni-full-15s.json \
+  --output omni-full-15s.mp4
 ```
 
 The helper also accepts `image`, `images3`, `images9`, `clip`, `video`, `clips3` and `mixed`. Keep FFmpeg and `ffprobe` on `PATH`, or set `--ffmpeg /absolute/path/to/ffmpeg --ffprobe /absolute/path/to/ffprobe` on the server. Keep the original VAE for the timing lane in this article. The gallery's trained 36-layer decoder requires a separately composed checkpoint; selecting a generic quantization preset does not install that decoder.

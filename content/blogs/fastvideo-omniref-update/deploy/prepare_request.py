@@ -16,9 +16,9 @@ def main():
     parser.add_argument("--composition", default="image-voice")
     parser.add_argument("--seconds", type=int, choices=(5, 10, 15), default=5)
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--model", default="FastH3-OmniRef")
-    parser.add_argument("--media-directory", type=Path, default=Path("omniref-media"))
-    parser.add_argument("--output", type=Path, default=Path("omniref-request.json"))
+    parser.add_argument("--model", default="FastH3-Omni")
+    parser.add_argument("--media-directory", type=Path, default=Path("omni-media"))
+    parser.add_argument("--output", type=Path, default=Path("omni-request.json"))
     args = parser.parse_args()
     blog_url = args.blog_url.rstrip("/") + "/"
     with urlopen(urljoin(blog_url, "data/benchmark.json"), timeout=30) as response:
