@@ -1,5 +1,6 @@
 +++
-title = "FastVideo FastH3 Omni: Open Source Real-Time MiniMax H3 Ref2VA Video Generation on NVIDIA Blackwell GPUs on FastVideo UniServe. Optimized NVFP4 checkpoints for DGX Spark and RTX GPUs."
+title = "FastVideo FastH3 Omni: Open Source Real-Time Minimax FastH3 Ref2VA on NVIDIA Blackwell, RTX Spark, and RTX GPUs."
+description = "MiniMax H3 video and audio with up to approximately 12× lower end-to-end latency on eight GB200 GPUs, plus optimized NVFP4 QAD checkpoints for local AI."
 date = 2026-10-19T00:00:00Z
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
