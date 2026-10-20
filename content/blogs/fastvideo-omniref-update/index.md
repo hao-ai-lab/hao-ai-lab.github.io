@@ -23,11 +23,12 @@ omnirefInteractive = true
       url = "https://github.com/hao-ai-lab/FastVideo"
 +++
 
-{{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" huggingface="https://huggingface.co/collections/FastVideo/fasth3-omniref" >}}
+{{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" huggingface="https://huggingface.co/collections/FastVideo/fasth3-omni" >}}
+
 
 FastVideo is open-sourcing **FastH3 Omni**, a distilled MiniMax H3 model for reference-guided video and audio. Give it a prompt plus images, video clips and a voice reference to generate a finished video with synchronized sound.
 
-[Model weights](https://huggingface.co/collections/FastVideo/fasth3-omniref) · [UniServe deployment](#deploy-fasth3-omni-with-uniserve) · [Local AI with FastVideo](#local-ai-with-fastvideo)
+[Model weights](https://huggingface.co/collections/FastVideo/fasth3-omni) · [UniServe deployment](#deploy-fasth3-omni-with-uniserve) · [Local AI with FastVideo](#local-ai-with-fastvideo)
 
 ComfyUI support is available. Our local AI blog post and release are planned for tomorrow, **October 21**.
 
