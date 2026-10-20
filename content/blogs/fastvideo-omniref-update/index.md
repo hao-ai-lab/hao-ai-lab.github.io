@@ -68,6 +68,8 @@ Both lanes use the original video VAE. Base uses SGLang’s `quality="lossless"`
 
 FastH3 OmniRef combines **Parallel Decoding Distillation (PDD)** with **Distribution Matching Distillation (DMD)**. PDD predicts several denoising updates per transformer evaluation; DMD helps train the completed video and audio output. Reference conditioning is retained throughout generation. For the method and its illustrations, see the [PDD paper](https://arxiv.org/abs/2607.26004).
 
+Huge thanks to the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team (Julius Berner, Chao Liu and Arash Vahdat), who introduced PDD and whose DMD2 framework and H3 reference work this model builds on.
+
 | Training | Amount |
 | --- | --- |
 | GPUs | 64 NVIDIA B300 |
