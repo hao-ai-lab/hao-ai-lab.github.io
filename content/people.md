@@ -56,6 +56,8 @@ summary: people
 
 {{< lab_member name="Aaron Feng" role="Master Intern" image="aaron_feng.jpg" academic="https://aaronzhfeng.github.io" twitter="https://x.com/aaronzhfeng">}}
 
+{{< lab_member name="Ruirui Yang" role="Master Intern" image="ruirui_yang.jpg" academic="https://r2-y.github.io/ruiruiyang.github.io/" linkedin="https://www.linkedin.com/in/ruirui-rein-yang-b92ba4204">}}
+
 {{< lab_member name="Jinzhe Pan" role="Undergrad Intern" image="llama_placeholder.png" academic="https://github.com/Eigensystem">}}
 
 {{< lab_member name="Shao Duan" role="Undergrad Intern" image="shao.png" academic="https://github.com/shaoxiongduan">}}
