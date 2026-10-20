@@ -76,7 +76,7 @@ love to use it in real commerical workload beyond an academic experimentation.
 
 ### What’s Next
 
-- Follow us along for image ref (FL2VA) and full omni ref (Ref2VA) coming in the next a few weeks   
+- Follow us along for image ref (FL2VA) and FastH3 Omni (Ref2VA) coming in the next a few weeks
 - Motion and more generation quality improvements
 - Nvfp4 and GPU memory reduction. 
 - Optimizations targeting local AI devices including RTX, DGX Sparks, and Apple MLX.
@@ -371,7 +371,7 @@ We thank [Nuva Lab](https://nuvalab.ai/) for bringing production grounding to
 FastH3 through its experience with real-world creative video-agent workloads.
 Its production-aligned post-training insights help bridge open-source research
 to practical data-assisted distillation for commercial video workflows, with
-Omni Ref as the next focus.
+FastH3 Omni as the next focus.
 
 We thank the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) (Julius Berner, Chao Liu, Arash Vahdat) team for
 the DMD2 framework and H3 reference experiment that helped us align the score

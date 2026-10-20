@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export a valid matched OmniRef cohort, preserving videos and hiding 36L timings.
+"""Export a valid matched FastH3 Omni cohort, preserving videos and hiding 36L timings.
 
 The input is a frozen matrix API response. Raw deployment receipts are checked
 locally, then only publication fields are exported. Absolute paths, service

@@ -45,7 +45,7 @@ FastH3-QAD-v2 is the quantization-aware distillation (QAD) checkpoint of FastH3 
 
 - **Matching every step.** At each of the eight sampling steps, the student sees the teacher's input and learns the teacher's output. A quarter of the samples run on the student's own trajectory, so it also learns to recover from its own small errors.
 - **Text-only training.** The recipe uses 3,000 text prompts, 300 steps on two GB200 nodes, and about five hours.
-- **A shared recipe.** The same QAD method is the training path for the next FastH3 models, including OmniRef. <!-- TODO: link the QAD recipe docs page once FastVideo #1989 merges. -->
+- **A shared recipe.** The same QAD method is the training path for the next FastH3 models, including FastH3 Omni. <!-- TODO: link the QAD recipe docs page once FastVideo #1989 merges. -->
 
 The result, measured as error against full-precision V2 on 30 held-out prompts (lower is better):
 
