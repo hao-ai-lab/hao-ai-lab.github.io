@@ -98,3 +98,12 @@
 /* Reserve space while expanded references load. */
 .omni-gallery .omni-input-grid img,.omni-gallery .omni-input-grid video { height: 190px; margin: 0; }
 .omni-gallery .omni-input-grid figcaption { font-size: .7rem; font-weight: 400; }
+
+/* Local post: tables and charts scroll horizontally on narrow screens instead of clipping. */
+.omni-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.omni-table-wrap table { min-width: 520px; }
+@media (max-width: 640px) {
+  .olat-row, .shist-row { grid-template-columns: 6.25rem 1fr !important; gap: .6rem !important; }
+  .olat-track, .shist-track { margin-right: 3.4rem; }
+  .olat-label, .shist-label { font-size: .8em !important; }
+}
