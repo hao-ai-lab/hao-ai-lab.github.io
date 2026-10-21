@@ -1,0 +1,487 @@
+{
+ "schema_version": 1,
+ "settings": {
+  "width": 832,
+  "height": 480,
+  "fps": 24,
+  "seconds": 5,
+  "seed": 0
+ },
+ "profiles": [
+  {
+   "composition": "image",
+   "label": "1 image",
+   "seed": 0,
+   "frames": 124,
+   "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n\nsummary:\n[reference generation] <Subject 1> makes breakfast in a sunlit kitchen and speaks warmly to the camera.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n\ndetailed_description:\nThe target video is in a realistic live-action style with warm morning light.\n[Shot 1] A medium close-up with a slow push-in. In a sunlit kitchen, <Subject 1> (S1) sets a bowl of oranges on the wooden counter, wipes his hands on a striped towel, looks into the camera and says with a relaxed smile, <d>[English] Breakfast is on me today, so take your time.</d> Morning light falls across his shoulders and the steam of a kettle drifts behind him.\n\noverall_soundscape:\nBright kitchen room tone, a kettle beginning to whistle, and birdsong drifting through an open window.\n\nnon_diegetic_music:\nN/A",
+   "conditions": [
+    {
+     "type": "image",
+     "caption": "Picture 1",
+     "file": "/blogs/fastvideo-omniref-update/media/inputs/hf_character_action_reference.png"
+    }
+   ],
+   "gb200_8x_768p_s": 5.67,
+   "spark": {
+    "1x36_480": 192.0,
+    "2x36_480": 130.1,
+    "1x8_480": 184.1,
+    "2x8_480": 124.9,
+    "1x36_768": 361.3,
+    "2x36_768": 217.8,
+    "1x8_768": 346.7,
+    "2x8_768": 210.3
+   },
+   "m5max_36l_480p_s": 1172.62,
+   "outputs": [
+    {
+     "key": "spark36",
+     "label": "DGX Spark \u00b7 36L decoder",
+     "time": 192.0,
+     "time_note": "three-seed mean",
+     "file": "media/outputs/spark1x-36l-image-480p.mp4",
+     "poster": "media/posters/spark1x-36l-image-480p.jpg"
+    },
+    {
+     "key": "spark8",
+     "label": "DGX Spark \u00b7 8L decoder",
+     "time": 184.1,
+     "time_note": "three-seed mean",
+     "file": "media/outputs/spark1x-8l-image-480p.mp4",
+     "poster": "media/posters/spark1x-8l-image-480p.jpg"
+    },
+    {
+     "key": "m5max",
+     "label": "Apple M5 Max \u00b7 36L decoder",
+     "time": 1172.62,
+     "time_note": "single run",
+     "file": "media/outputs/m5max-36l-image-480p.mp4",
+     "poster": "media/posters/m5max-36l-image-480p.jpg"
+    }
+   ]
+  },
+  {
+   "composition": "image-voice",
+   "label": "Image + voice",
+   "seed": 0,
+   "frames": 124,
+   "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Audio 1> is the voice-timbre reference for <Subject 1> (S1).\n\nsummary:\n[reference generation + audio reference] <Subject 1> finishes cooking dinner in a kitchen and speaks to the camera in the voice timbre of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Audio 1>: reference - its vocal timbre guides the dialogue delivery of <Subject 1> without copying the original signal.\n\ndetailed_description:\nThe target video is in a realistic live-action style with soft evening light.\n[Shot 1] A medium close-up with a slow push-in. In a warm kitchen, <Subject 1> (S1) dries his hands on a towel, looks into the camera and says, using the voice timbre referenced from <Audio 1>, <d>[English] Dinner is almost ready, come sit down.</d>\n\noverall_soundscape:\nQuiet kitchen room tone with a faint refrigerator hum, a simmering pot and the clink of plates.\n\nnon_diegetic_music:\nN/A",
+   "conditions": [
+    {
+     "type": "image",
+     "caption": "Picture 1",
+     "file": "/blogs/fastvideo-omniref-update/media/inputs/hf_character_action_reference.png"
+    },
+    {
+     "type": "audio",
+     "caption": "Audio 1",
+     "file": "/blogs/fastvideo-omniref-update/media/inputs/official_ref2va_1_audio.mp3"
+    }
+   ],
+   "gb200_8x_768p_s": 5.84,
+   "spark": {
+    "1x36_480": 198.3,
+    "2x36_480": 128.6,
+    "1x8_480": 191.1,
+    "2x8_480": 122.1,
+    "1x36_768": 378.5,
+    "2x36_768": 220.9,
+    "1x8_768": 362.3,
+    "2x8_768": 211.1
+   },
+   "m5max_36l_480p_s": 1203.64,
+   "outputs": [
+    {
+     "key": "spark36",
+     "label": "DGX Spark \u00b7 36L decoder",
+     "time": 198.3,
+     "time_note": "three-seed mean",
+     "file": "media/outputs/spark1x-36l-image-voice-480p.mp4",
+     "poster": "media/posters/spark1x-36l-image-voice-480p.jpg"
+    },
+    {
+     "key": "spark8",
+     "label": "DGX Spark \u00b7 8L decoder",
+     "time": 191.1,
+     "time_note": "three-seed mean",
+     "file": "media/outputs/spark1x-8l-image-voice-480p.mp4",
+     "poster": "media/posters/spark1x-8l-image-voice-480p.jpg"
+    },
+    {
+     "key": "m5max",
+     "label": "Apple M5 Max \u00b7 36L decoder",
+     "time": 1203.64,
+     "time_note": "single run",
+     "file": "media/outputs/m5max-36l-image-voice-480p.mp4",
+     "poster": "media/posters/m5max-36l-image-voice-480p.jpg"
+    }
+   ]
+  },
+  {
+   "composition": "images3",
+   "label": "3 images",
+   "seed": 0,
+   "frames": 124,
+   "prompt": "subject_definitions:\n<Subject 1> is the young man with dark curly hair wearing a white T-shirt in <Picture 1>.\n<Subject 2> is the pair of silver wraparound sunglasses shown from three angles in <Picture 2>.\n<Subject 3> is the environment in <Picture 3>: a warmly lit traditional Japanese dining room with a family gathered around a low table.\n\nsummary:\n[reference generation] <Subject 1>, wearing <Subject 2>, joins the family dinner in <Subject 3> and shares the meal.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the young man's face, dark curly hair and white T-shirt are retained.\n<Subject 2> (appears in [Shot 1]): fully_preserved - the silver wraparound frame and dark lenses of the sunglasses are retained.\n<Subject 3> (appears in [Shot 1]): fully_preserved - the paper doors, low wooden table, warm lantern light and the family are retained.\n\ndetailed_description:\nThe target video is in a realistic live-action style with warm lantern light.\n[Shot 1] A medium wide shot with a gentle handheld drift. <Subject 1> (S1) slides open the paper door of <Subject 3>, with <Subject 2> pushed up on his forehead. He smiles, lowers the sunglasses, bows slightly and says, <d>[English] Sorry I'm late, the train was packed.</d> The family laughs and makes room for him at the low table while steam rises from the bowls of ramen.\n\noverall_soundscape:\nSoft family chatter, clinking ceramic bowls, the slide of a paper door and the hiss of a simmering pot.\n\nnon_diegetic_music:\nN/A",
+   "conditions": [
+    {
+     "type": "image",
+     "caption": "Picture 1",
+     "file": "/blogs/fastvideo-omniref-update/media/inputs/hf_character_action_reference.png"
+    },
+    {
+     "type": "image",
+     "caption": "Picture 2",
+     "file": "/blogs/fastvideo-omniref-update/media/inputs/hf_fashion_glasses_reference_3.png"
+    },
+    {
+     "type": "image",
+     "caption": "Picture 3",
+     "file": "/blogs/fastvideo-omniref-update/media/inputs/official_fl2va_0_image.png"
+    }
+   ],
+   "gb200_8x_768p_s": 12.42,
+   "spark": {
+    "1x36_480": 640.3,
+    "2x36_480": 390.5,
+    "1x8_480": 635.9,
+    "2x8_480": 418.8,
+    "1x36_768": 957.9,
+    "2x36_768": 594.8,
+    "1x8_768": 958.9,
+    "2x8_768": 551.8
+   },
+   "m5max_36l_480p_s": 3546.86,
+   "outputs": [
+    {
+     "key": "spark36",
+     "label": "DGX Spark \u00b7 36L decoder",
+     "time": 640.3,
+     "time_note": "three-seed mean",
+     "file": "media/outputs/spark1x-36l-images3-480p.mp4",
+     "poster": "media/posters/spark1x-36l-images3-480p.jpg"
+    },
+    {
+     "key": "spark8",
+     "label": "DGX Spark \u00b7 8L decoder",
+     "time": 635.9,
+     "time_note": "three-seed mean",
+     "file": "media/outputs/spark1x-8l-images3-480p.mp4",
+     "poster": "media/posters/spark1x-8l-images3-480p.jpg"
+    },
+    {
+     "key": "m5max",
+     "label": "Apple M5 Max \u00b7 36L decoder",
+     "time": 3546.86,
+     "time_note": "single run",
+     "file": "media/outputs/m5max-36l-images3-480p.mp4",
+     "poster": "media/posters/m5max-36l-images3-480p.jpg"
+    }
+   ]
+  },
+  {
+   "composition": "clip",
+   "label": "1 short clip",
+   "seed": 0,
+   "frames": 124,
+   "prompt": "subject_definitions:\n<Subject 1> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Subject 2> is the environment in <Video 1>: a grassy hill at golden hour with white lambs grazing.\n<Audio 1> is the synchronized audio track of <Video 1>, a soft background music.\n\nsummary:\n[reference generation + audio reference] <Subject 1> spends a quiet moment with the black lamb in <Subject 2>, over music in the manner of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the man's blonde hair, pink suit, white shirt, rings and the black lamb are retained.\n<Subject 2> (appears in [Shot 1]): fully_preserved - the grassy hill, golden light and grazing lambs are retained.\n<Audio 1>: reference - the soft background music is referenced throughout.\n\ndetailed_description:\nThe target video is in a realistic photographic style with golden-hour light.\n[Shot 1] A steady medium shot. <Subject 1> cradles the black lamb in the warm, low sunlight of <Subject 2>. The lamb lifts its head and nuzzles his chin; he laughs softly, tilts his head toward the camera and grins while the white lambs keep grazing on the hill.\n\noverall_soundscape:\nA light breeze over the grass and distant bleating, beneath gentle music in the manner of <Audio 1>.\n\nnon_diegetic_music:\nN/A",
+   "conditions": [
+    {
+     "type": "video",
+     "caption": "Video 1 \u00b7 with original audio",
+     "file": "/blogs/fastvideo-omniref-update/media/inputs/clip_official_ref2va_0_2s.mp4"
+    }
+   ],
+   "gb200_8x_768p_s": 5.17,
+   "spark": {
+    "1x36_480": 194.8,
+    "2x36_480": 116.2,
+    "1x8_480": 199.2,
+    "2x8_480": 113.6,
+    "1x36_768": 332.6,
+    "2x36_768": 200.6,
+    "1x8_768": 324.4,
+    "2x8_768": 180.5
+   },
+   "m5max_36l_480p_s": 861.27,
+   "outputs": [
+    {
+     "key": "spark36",
+     "label": "DGX Spark \u00b7 36L decoder",
+     "time": 194.8,
+     "time_note": "three-seed mean",
+     "file": "media/outputs/spark1x-36l-clip-480p.mp4",
+     "poster": "media/posters/spark1x-36l-clip-480p.jpg"
+    },
+    {
+     "key": "spark8",
+     "label": "DGX Spark \u00b7 8L decoder",
+     "time": 199.2,
+     "time_note": "three-seed mean",
+     "file": "media/outputs/spark1x-8l-clip-480p.mp4",
+     "poster": "media/posters/spark1x-8l-clip-480p.jpg"
+    },
+    {
+     "key": "m5max",
+     "label": "Apple M5 Max \u00b7 36L decoder",
+     "time": 861.27,
+     "time_note": "single run",
+     "file": "media/outputs/m5max-36l-clip-480p.mp4",
+     "poster": "media/posters/m5max-36l-clip-480p.jpg"
+    }
+   ]
+  },
+  {
+   "composition": "video",
+   "label": "1 long clip",
+   "seed": 0,
+   "frames": 124,
+   "prompt": "subject_definitions:\n<Subject 1> is the young man with short wavy blonde hair, wearing a bright pink suit jacket, matching pink trousers, an unbuttoned white shirt and silver rings, holding a small black lamb in his arms in <Video 1>.\n<Subject 2> is the environment in <Video 1>: a grassy hill at golden hour with white lambs grazing.\n<Audio 1> is the synchronized audio track of <Video 1>, a soft background music.\n\nsummary:\n[reference generation + audio reference] <Subject 1> spends a quiet moment with the black lamb in <Subject 2>, over music in the manner of <Audio 1>.\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - the man's blonde hair, pink suit, white shirt, rings and the black lamb are retained.\n<Subject 2> (appears in [Shot 1]): fully_preserved - the grassy hill, golden light and grazing lambs are retained.\n<Audio 1>: reference - the soft background music is referenced throughout.\n\ndetailed_description:\nThe target video is in a realistic photographic style with golden-hour light.\n[Shot 1] A steady medium shot. <Subject 1> cradles the black lamb in the warm, low sunlight of <Subject 2>. The lamb lifts its head and nuzzles his chin; he laughs softly, tilts his head toward the camera and grins while the white lambs keep grazing on the hill.\n\noverall_soundscape:\nA light breeze over the grass and distant bleating, beneath gentle music in the manner of <Audio 1>.\n\nnon_diegetic_music:\nN/A",
+   "conditions": [
+    {
+     "type": "video",
+     "caption": "Video 1 \u00b7 with original audio",
+     "file": "/blogs/fastvideo-omniref-update/media/inputs/official_ref2va_0_video.mp4"
+    }
+   ],
+   "gb200_8x_768p_s": 8.34,
+   "spark": {
+    "1x36_480": 504.6,
+    "2x36_480": 261.4,
+    "1x8_480": 498.6,
+    "2x8_480": 257.9,
+    "1x36_768": 656.9,
+    "2x36_768": 366.5,
+    "1x8_768": 611.5,
+    "2x8_768": 361.1
+   },
+   "m5max_36l_480p_s": 2657.88,
+   "outputs": [
+    {
+     "key": "spark36",
+     "label": "DGX Spark \u00b7 36L decoder",
+     "time": 504.6,
+     "time_note": "three-seed mean",
+     "file": "media/outputs/spark1x-36l-video-480p.mp4",
+     "poster": "media/posters/spark1x-36l-video-480p.jpg"
+    },
+    {
+     "key": "spark8",
+     "label": "DGX Spark \u00b7 8L decoder",
+     "time": 498.6,
+     "time_note": "three-seed mean",
+     "file": "media/outputs/spark1x-8l-video-480p.mp4",
+     "poster": "media/posters/spark1x-8l-video-480p.jpg"
+    },
+    {
+     "key": "m5max",
+     "label": "Apple M5 Max \u00b7 36L decoder",
+     "time": 2657.88,
+     "time_note": "single run",
+     "file": "media/outputs/m5max-36l-video-480p.mp4",
+     "poster": "media/posters/m5max-36l-video-480p.jpg"
+    }
+   ]
+  }
+ ],
+ "devices": [
+  {
+   "key": "spark2",
+   "label": "2\u00d7 DGX Spark",
+   "note": "3-seed mean",
+   "focus": true
+  },
+  {
+   "key": "spark1",
+   "label": "1\u00d7 DGX Spark",
+   "note": "3-seed mean",
+   "focus": true
+  },
+  {
+   "key": "rtx5090",
+   "label": "RTX 5090 (32 GB)",
+   "note": "3-seed mean \u00b7 NVFP4",
+   "focus": false
+  },
+  {
+   "key": "rtx3090",
+   "label": "RTX 3090 (24 GB)",
+   "note": "3-seed mean \u00b7 FP8 \u00b7 excl. model load",
+   "focus": false
+  },
+  {
+   "key": "m5max",
+   "label": "Apple M5 Max (64 GB)",
+   "note": "single run \u00b7 INT6",
+   "focus": false
+  },
+  {
+   "key": "gb200",
+   "label": "8\u00d7 GB200 (UniServe)",
+   "note": "data center \u00b7 from the release post",
+   "focus": false
+  }
+ ],
+ "latency": {
+  "image|480p|36l": {
+   "gb200": null,
+   "spark2": 130.1,
+   "spark1": 192.0,
+   "rtx5090": 61.9,
+   "m5max": 1172.62,
+   "rtx3090": 1012.9
+  },
+  "image|480p|8l": {
+   "gb200": null,
+   "spark2": 124.9,
+   "spark1": 184.1,
+   "rtx5090": null,
+   "m5max": null,
+   "rtx3090": null
+  },
+  "image|768p|36l": {
+   "gb200": 5.67,
+   "spark2": 217.8,
+   "spark1": 361.3,
+   "rtx5090": null,
+   "m5max": 2961.44,
+   "rtx3090": null
+  },
+  "image|768p|8l": {
+   "gb200": null,
+   "spark2": 210.3,
+   "spark1": 346.7,
+   "rtx5090": null,
+   "m5max": null,
+   "rtx3090": null
+  },
+  "image-voice|480p|36l": {
+   "gb200": null,
+   "spark2": 128.6,
+   "spark1": 198.3,
+   "rtx5090": 63.6,
+   "m5max": 1203.64,
+   "rtx3090": 1081.4
+  },
+  "image-voice|480p|8l": {
+   "gb200": null,
+   "spark2": 122.1,
+   "spark1": 191.1,
+   "rtx5090": null,
+   "m5max": null,
+   "rtx3090": null
+  },
+  "image-voice|768p|36l": {
+   "gb200": 5.84,
+   "spark2": 220.9,
+   "spark1": 378.5,
+   "rtx5090": null,
+   "m5max": null,
+   "rtx3090": null
+  },
+  "image-voice|768p|8l": {
+   "gb200": null,
+   "spark2": 211.1,
+   "spark1": 362.3,
+   "rtx5090": null,
+   "m5max": null,
+   "rtx3090": null
+  },
+  "images3|480p|36l": {
+   "gb200": null,
+   "spark2": 390.5,
+   "spark1": 640.3,
+   "rtx5090": null,
+   "m5max": 3546.86,
+   "rtx3090": null
+  },
+  "images3|480p|8l": {
+   "gb200": null,
+   "spark2": 418.8,
+   "spark1": 635.9,
+   "rtx5090": null,
+   "m5max": null,
+   "rtx3090": null
+  },
+  "images3|768p|36l": {
+   "gb200": 12.42,
+   "spark2": 594.8,
+   "spark1": 957.9,
+   "rtx5090": null,
+   "m5max": null,
+   "rtx3090": null
+  },
+  "images3|768p|8l": {
+   "gb200": null,
+   "spark2": 551.8,
+   "spark1": 958.9,
+   "rtx5090": null,
+   "m5max": null,
+   "rtx3090": null
+  },
+  "clip|480p|36l": {
+   "gb200": null,
+   "spark2": 116.2,
+   "spark1": 194.8,
+   "rtx5090": 57.2,
+   "m5max": 861.27,
+   "rtx3090": 872.6
+  },
+  "clip|480p|8l": {
+   "gb200": null,
+   "spark2": 113.6,
+   "spark1": 199.2,
+   "rtx5090": null,
+   "m5max": null,
+   "rtx3090": null
+  },
+  "clip|768p|36l": {
+   "gb200": 5.17,
+   "spark2": 200.6,
+   "spark1": 332.6,
+   "rtx5090": null,
+   "m5max": null,
+   "rtx3090": null
+  },
+  "clip|768p|8l": {
+   "gb200": null,
+   "spark2": 180.5,
+   "spark1": 324.4,
+   "rtx5090": null,
+   "m5max": null,
+   "rtx3090": null
+  },
+  "video|480p|36l": {
+   "gb200": null,
+   "spark2": 261.4,
+   "spark1": 504.6,
+   "rtx5090": null,
+   "m5max": 2657.88,
+   "rtx3090": null
+  },
+  "video|480p|8l": {
+   "gb200": null,
+   "spark2": 257.9,
+   "spark1": 498.6,
+   "rtx5090": null,
+   "m5max": null,
+   "rtx3090": null
+  },
+  "video|768p|36l": {
+   "gb200": 8.34,
+   "spark2": 366.5,
+   "spark1": 656.9,
+   "rtx5090": null,
+   "m5max": null,
+   "rtx3090": null
+  },
+  "video|768p|8l": {
+   "gb200": null,
+   "spark2": 361.1,
+   "spark1": 611.5,
+   "rtx5090": null,
+   "m5max": null,
+   "rtx3090": null
+  }
+ }
+}

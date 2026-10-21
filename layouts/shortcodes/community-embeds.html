@@ -1,0 +1,30 @@
+{{- $posts := slice
+  (dict "gpu" "RTX 3090 · 24 GB" "num" "15 s clip in ~12 min" "user" "AibeginnerR8" "name" "AIひよこ" "id" "2112831271185388002" "lang" "ja" "text" "FastH3-OmniRef（INT8版）をRTX 3090でローカル生成してみました。参照画像5枚から、5人が順番に登場してあいさつする15秒の動画です。")
+  (dict "gpu" "RTX 4070 · 12 GB" "num" "416 s, from 1312 s dense" "user" "sep_is_heim" "name" "Kamimoto" "id" "2112748834464170432" "lang" "ja" "text" "FastH3 OmniRefをComfyUIで実測！（RTX 4070 12GB／縦1024×1792・5秒）")
+  (dict "gpu" "16 GB GPU" "num" "5 s clip in ~3 min" "user" "nookwright" "name" "NookWright" "id" "2112740667956871372" "lang" "ja" "text" "FastH3 OmniRef、試してみました。アニメのダンス動画と曲を渡すと、実写の子がその振り付けのまま曲に合わせて踊ってくれます")
+  (dict "gpu" "RTX 4090 · 24 GB" "num" "15 s clip in 4 min" "user" "Alone1Moon" "name" "Alone1M" "id" "2112930098013946059" "lang" "ja" "text" "FastH3 Omni 8Stepsのテスト。4090で15秒が生成4分。")
+  (dict "gpu" "RTX 4090 · 24 GB" "num" "15 s 480p in 1:24" "user" "OrctonAI" "name" "OrctonAI" "id" "2112955932216791381" "lang" "en" "text" "Been testing FastH3 Omni in @comfyui since the weights were released yesterday on my 4090 RTX.")
+  (dict "gpu" "RTX 5090 · 32 GB" "num" "115 s, from 555 s base" "user" "DeepForest_Inc" "name" "DeepForest" "id" "2112770785970413929" "lang" "ja" "text" "MiniMax-H3の8step蒸留モデル「FastH3-Omni」をComfyUIで検証✨ RTX 5090 / R2V / 768×1344 / 5秒")
+  (dict "gpu" "RTX 5090 · 32 GB" "num" "313 s, from 742 s base" "user" "mapte_fireball" "name" "まぷて" "id" "2112807768633831534" "lang" "ja" "text" "MiniMax-H3の8step蒸留モデル「FastH3-Omni」をComfyUIで比較 RTX 5090 / R2V / 1024×576 / 約15秒")
+  (dict "gpu" "RTX 5090 · 32 GB" "num" "4:39 with NVFP4 QAD" "user" "matze2001" "name" "Mathias_M" "id" "2112878541327028466" "lang" "en" "text" "14,4s Video, same prompt, same references (image, voice), same seed. On a 5090")
+  (dict "gpu" "ComfyUI" "num" "“Insanely fast, accurate”" "user" "realrebelai" "name" "Rebel AI" "id" "2112679911614030179" "lang" "en" "text" "FastH3 Omni is insanely fast, accurate, and overall a very good model! i highly recommend!")
+-}}
+<section class="cwall" aria-label="Community FastH3 Omni posts by GPU">
+  {{- range $posts }}
+  <figure class="cwall-item">
+    <figcaption><strong>{{ .gpu }}</strong><span>{{ .num }}</span></figcaption>
+    <blockquote class="twitter-tweet" data-dnt="true" data-conversation="none" data-width="250"><p lang="{{ .lang }}" dir="ltr">{{ .text }}</p>&mdash; {{ .name }} (@{{ .user }}) <a href="https://x.com/{{ .user }}/status/{{ .id }}">October 21, 2026</a></blockquote>
+  </figure>
+  {{- end }}
+</section>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<style>
+.cwall { display: flex; gap: .75rem; overflow-x: auto; scroll-snap-type: x proximity; padding: .25rem 0 .75rem; margin: .75rem 0 1rem; -webkit-mask-image: linear-gradient(90deg, #000 92%, transparent); mask-image: linear-gradient(90deg, #000 92%, transparent); }
+.cwall-item { flex: 0 0 252px; height: 400px; margin: 0; overflow: hidden; scroll-snap-align: start; position: relative; border-radius: 12px; }
+.cwall-item::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 56px; background: linear-gradient(transparent, var(--theme, #fff)); pointer-events: none; }
+.post-content .cwall-item figcaption, .cwall-item figcaption { display: flex; justify-content: space-between; gap: .5rem; margin: 0 0 .35rem; font-size: .76em; font-weight: 400 !important; text-align: left; line-height: 1.3; }
+.cwall-item figcaption span { color: var(--secondary, #52514e); font-variant-numeric: tabular-nums; text-align: right; }
+.cwall .twitter-tweet { margin: 0 !important; width: 250px !important; min-width: 0 !important; }
+.cwall blockquote.twitter-tweet { font-size: .8em; padding: .6rem .8rem; border-left: 3px solid var(--border, #e4e3df); background: var(--code-bg, #f6f6f4); border-radius: 0 8px 8px 0; }
+.cwall-note { font-size: .8em; color: var(--secondary, #52514e); margin: -.25rem 0 1.25rem; }
+</style>
