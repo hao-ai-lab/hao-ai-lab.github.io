@@ -31,13 +31,13 @@ Yesterday we released [**FastH3 Omni**](/blogs/fastvideo-omniref-update/): give 
 Today it comes to your desk. We ran the **exact same requests**, with identical prompts, references and seeds, end to end on one and two **NVIDIA DGX Sparks**, an **RTX 5090**, an **RTX 3090** and an **Apple M5 Max** (64 GB).
 
 <div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
-  <video controls playsinline preload="metadata" poster="media/posters/spark1x-36l-image-768p.jpg"
-    aria-label="FastH3 Omni 768p output generated on one DGX Spark"
+  <video controls playsinline preload="metadata" poster="media/hero/spark-montage-poster.jpg"
+    aria-label="FastH3 Omni montage generated on one and two DGX Sparks"
     style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
-    <source src="media/outputs/spark1x-36l-image-768p.mp4" type="video/mp4">
+    <source src="media/hero/spark-montage-768p.mp4" type="video/mp4">
     Your browser does not support MP4 video with audio.
   </video>
-  <p style="margin: 0.5rem 0 0; text-align: center; font-size: 0.9em; opacity: 0.75;">One reference photo and a prompt in, 1344×768 video with dialogue and sound out, on a single DGX Spark. Turn the audio on.</p>
+  <p style="margin: 0.5rem 0 0; text-align: center; font-size: 0.9em; opacity: 0.75;">Every clip in this video was generated on DGX Spark, one or two Sparks as labeled, from photos, video clips and voices. Turn the audio on.</p>
 </div>
 
 ## TL;DR
