@@ -43,7 +43,7 @@ Today it comes to your desk. We ran the **exact same requests**, with identical 
 ## TL;DR
 
 - **DGX Spark runs every reference mix.** A 5-second 480p clip from a photo takes **about 3 minutes on one Spark and about 2 minutes on two**, and the 128 GB of unified memory handles everything we tested, from one photo to three images or a long reference video, at 480p and 768p.
-- **Across local hardware.** The same 1-photo request takes **62 s on an RTX 5090**, about **17 minutes on an RTX 3090** (plus model loading), and **19.5 minutes on an Apple M5 Max** (single run), using our MLX runtime, now in review.
+- **Across local hardware.** The same 1-photo request takes **62 s on an RTX 5090**, about **17 minutes on an RTX 3090** (plus model loading), and **19.5 minutes on an Apple M5 Max** (single run) with FastVideo's new MLX runtime.
 - **4.6× faster in seven weeks.** Text-to-video on the Spark went from 243 s at our first local release to 52.6 s today. FastH3 Omni runs on the same stack, so those gains carry over.
 - **References are the real cost.** A reference photo makes a request 3.3–4.4× slower than text-to-video on the same machine. We show why, and how to trade some of it back.
 
@@ -137,7 +137,7 @@ The **RTX 3090** has no FP4 or FP8 hardware, so it runs FP8 weights with BF16 ma
 
 ### Apple Silicon
 
-FastH3 Omni runs on Macs through FastVideo's MLX runtime, now in review as [FastVideo #2000](https://github.com/hao-ai-lab/FastVideo/pull/2000):
+FastH3 Omni runs natively on Macs through FastVideo's [MLX runtime](https://github.com/hao-ai-lab/FastVideo/pull/2000):
 
 - **INT6 transformer (17 GB).** Timestep projections are precomputed, as on the RTX 5090, and INT6 fits the rest in memory; Apple GPUs have no FP4 units.
 - **No base VAE needed.** The [LightVAE](https://huggingface.co/lightx2v/LightVAE) Lite encoder (406 MB) reads the references, and the same NVFP4 decoders as on Blackwell write the frames.
@@ -150,7 +150,7 @@ Peak memory on the M5 Max stays between 27 and 31 GB across all five workloads.
 
 Rounding a distilled eight-step model to 4 bits after training costs quality. **Quantization-aware distillation (QAD)** instead trains the NVFP4 student against the full-precision teacher with FP4 numerics active from the first step, so the weights learn to absorb the rounding. The sparse-attention gates and norms stay frozen, because retraining them changes which tiles are selected.
 
-FastH3 Omni's local weights, [`FastVideo/FastH3-Omni-NVFP4-QAD`](https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD), extend the [FastH3-QAD-v2 recipe](/blogs/fasth3-v21/) to 4-bit attention. The shared training recipe is in review as [FastVideo #1989](https://github.com/hao-ai-lab/FastVideo/pull/1989).
+FastH3 Omni's local weights, [`FastVideo/FastH3-Omni-NVFP4-QAD`](https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD), extend the [FastH3-QAD-v2 recipe](/blogs/fasth3-v21/) to 4-bit attention. The shared training recipe is available in [FastVideo #1989](https://github.com/hao-ai-lab/FastVideo/pull/1989).
 
 ## Try it
 
@@ -160,7 +160,7 @@ FastH3 Omni's local weights, [`FastVideo/FastH3-Omni-NVFP4-QAD`](https://hugging
 | 2× DGX Spark | [NVFP4 QAD weights](https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD) · [`spark-pair` recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_spark_pair.yaml) |
 | RTX 5090 | [NVFP4 QAD weights](https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD) · [`rtx-5090` recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_rtx5090.yaml) |
 | 24 GB RTX GPUs | [FP8 weights](https://huggingface.co/FastVideo/FastH3-Omni-FP8-Comfy) · [`rtx-4090` recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_rtx4090.yaml) |
-| Apple Silicon | [BF16 release](https://huggingface.co/FastVideo/FastVideo-FastH3-Omni-8-Step-V1), converted locally · [Apple Silicon recipe](https://haoailab.com/FastVideo/cookbook/minimax-h3/models/fasth3-omniref-mlx/) (with [FastVideo #2000](https://github.com/hao-ai-lab/FastVideo/pull/2000)) |
+| Apple Silicon | [BF16 release](https://huggingface.co/FastVideo/FastVideo-FastH3-Omni-8-Step-V1), converted locally · [Apple Silicon recipe](https://haoailab.com/FastVideo/cookbook/minimax-h3/models/fasth3-omniref-mlx/) |
 
 Start with the [FastVideo cookbook](https://haoailab.com/FastVideo/cookbook/) and the [FastH3 Omni recipe builder](https://haoailab.com/FastVideo/cookbook/minimax-h3/fasth3-omniref/).
 
