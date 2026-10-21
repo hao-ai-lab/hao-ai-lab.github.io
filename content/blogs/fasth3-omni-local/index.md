@@ -170,7 +170,7 @@ Within a day of release, people were running FastH3 Omni on their own GPUs:
 
 {{< community-embeds >}}
 
-<p class="cwall-note">Community-reported, each on its own setup and settings.</p>
+<p class="cwall-note">Community-reported, each on its own setup and settings. Scroll for more; click a post to open it.</p>
 
 ## What's next
 
