@@ -1,0 +1,50 @@
+{{- $tiers := slice
+  (dict "gpu" "RTX 3090" "mem" "24 GB" "posts" (slice
+    (dict "user" "AibeginnerR8" "id" "2112831271185388002" "ja" true "num" "15 s clip in ~12 min" "detail" "5 references · 4 languages · INT8")))
+  (dict "gpu" "RTX 4070" "mem" "12 GB" "posts" (slice
+    (dict "user" "sep_is_heim" "id" "2112748834464170432" "ja" true "num" "416 s, from 1312 s dense" "detail" "1024×1792 · 5 s · VSA · 11.2 GiB")))
+  (dict "gpu" "16 GB GPU" "mem" "" "posts" (slice
+    (dict "user" "nookwright" "id" "2112740667956871372" "ja" true "num" "5 s clip in ~3 min" "detail" "Dance video + song references")))
+  (dict "gpu" "RTX 4090" "mem" "24 GB" "posts" (slice
+    (dict "user" "OrctonAI" "id" "2112955932216791381" "ja" false "num" "15 s 480p in 1:24" "detail" "ComfyUI · 15 s 768p in 3:48")
+    (dict "user" "Alone1Moon" "id" "2112930098013946059" "ja" true "num" "15 s clip in 4 min" "detail" "832×1248 · clean audio")))
+  (dict "gpu" "RTX 5090" "mem" "32 GB" "posts" (slice
+    (dict "user" "DeepForest_Inc" "id" "2112770785970413929" "ja" true "num" "115 s, from 555 s base" "detail" "768×1344 · 5 s · ComfyUI · 4.8×")
+    (dict "user" "mapte_fireball" "id" "2112807768633831534" "ja" true "num" "313 s, from 742 s base" "detail" "1024×576 · 15 s · INT8 · 2.4×")
+    (dict "user" "matze2001" "id" "2112878541327028466" "ja" false "num" "4:39 with NVFP4 QAD" "detail" "14.4 s · Maestro · 5:50 before")))
+-}}
+<section class="cladder" aria-label="Community FastH3 Omni results by GPU">
+  {{- range $tiers }}
+  <div class="cladder-row">
+    <div class="cladder-gpu"><strong>{{ .gpu }}</strong>{{ with .mem }}<span>{{ . }}</span>{{ end }}</div>
+    <div class="cladder-posts">
+      {{- range .posts }}
+      <a class="cladder-chip" href="https://x.com/{{ .user }}/status/{{ .id }}">
+        <span class="cladder-num">{{ .num }}</span>
+        <span class="cladder-detail">{{ .detail }}</span>
+        <span class="cladder-user">@{{ .user }}{{ if .ja }} · <em>translated</em>{{ end }}</span>
+      </a>
+      {{- end }}
+    </div>
+  </div>
+  {{- end }}
+</section>
+<style>
+.cladder { margin: 1rem 0 1.25rem; border-top: 1px solid var(--border, #e4e3df); }
+.cladder-row { display: grid; grid-template-columns: 7.5rem 1fr; gap: .9rem; align-items: center; padding: .6rem 0; border-bottom: 1px solid var(--border, #e4e3df); }
+.cladder-gpu { font-size: .9em; line-height: 1.25; }
+.cladder-gpu span { display: block; font-size: .82em; color: var(--secondary, #52514e); }
+.cladder-posts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem; }
+.post-content a.cladder-chip, a.cladder-chip { display: flex; flex-direction: column; gap: .12rem; padding: .5rem .65rem; border-radius: 8px; background: var(--code-bg, #f4f4f2); text-decoration: none !important; box-shadow: none !important; color: inherit; transition: background .15s; }
+a.cladder-chip:hover, a.cladder-chip:focus-visible { background: var(--tertiary, #e9e8e4); }
+.cladder-num { font-weight: 700; font-size: .92em; font-variant-numeric: tabular-nums; color: var(--primary, #0b0b0b); }
+.cladder-detail { font-size: .78em; color: var(--secondary, #52514e); }
+.cladder-user { font-size: .76em; color: #2a6fdb; }
+.cladder-user em { color: var(--secondary, #52514e); font-style: normal; }
+.cladder-note { font-size: .8em; color: var(--secondary, #52514e); margin: -.4rem 0 1.25rem; }
+.cembeds { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; align-items: start; margin: 1.25rem 0; }
+.cembeds > .cembed-cell { min-width: 0; }
+.cembeds blockquote.twitter-tweet { margin: 0 !important; }
+.cembeds .twitter-tweet { margin: 0 auto !important; max-width: 100% !important; }
+@media (max-width: 760px) { .cladder-row { grid-template-columns: 1fr; } .cladder-posts { grid-template-columns: 1fr; } .cembeds { grid-template-columns: 1fr; } }
+</style>

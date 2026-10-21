@@ -162,14 +162,17 @@ FastH3 Omni's local weights, [`FastVideo/FastH3-Omni-NVFP4-QAD`](https://hugging
 
 Start with the [FastVideo cookbook](https://haoailab.com/FastVideo/cookbook/) and the [FastH3 Omni recipe builder](https://haoailab.com/FastVideo/cookbook/minimax-h3/fasth3-omniref/).
 
-Prefer a visual workflow? The local community has been making great things with our [ComfyUI release](https://huggingface.co/FastVideo/FastH3-Omni-Comfy), available in [NVFP4 QAD](https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD-Comfy) and [FP8](https://huggingface.co/FastVideo/FastH3-Omni-FP8-Comfy).
+Prefer a visual workflow? The local community has been making [great things](#from-the-community) with our [ComfyUI release](https://huggingface.co/FastVideo/FastH3-Omni-Comfy), available in [NVFP4 QAD](https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD-Comfy) and [FP8](https://huggingface.co/FastVideo/FastH3-Omni-FP8-Comfy).
 
-**From the community.** A day after release, [@OrctonAI](https://x.com/OrctonAI) was generating FastH3 Omni clips in ComfyUI on an **RTX 4090**: a 15-second 480p clip in **1 min 24 s** and a 30-second 768p clip in about 10 minutes, all first generations from a single character reference.
+## From the community
 
-<div class="community-embed" style="display: flex; justify-content: center; margin: 1rem 0 1.5rem;">
-<blockquote class="twitter-tweet" data-dnt="true" data-theme="light"><p lang="en" dir="ltr">Been testing FastH3 Omni in @comfyui since the weights were released yesterday on my 4090 RTX. Heres 4 clips using single image reference for character, different seeds, all first gens.</p>&mdash; Orcton (@OrctonAI) <a href="https://x.com/OrctonAI/status/2112955932216791381">October 21, 2026</a></blockquote>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-</div>
+Within a day of release, people were running FastH3 Omni on their own GPUs:
+
+{{< community-grid >}}
+
+<p class="cladder-note">Community-reported, each on its own setup and settings. Japanese posts translated by us.</p>
+
+{{< community-embeds >}}
 
 ## What's next
 
