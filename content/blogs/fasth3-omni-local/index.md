@@ -158,7 +158,7 @@ FastH3 Omni's local weights, [`FastVideo/FastH3-Omni-NVFP4-QAD`](https://hugging
 | 2× DGX Spark | [NVFP4 QAD weights](https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD) · [`spark-pair` recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_spark_pair.yaml) |
 | RTX 5090 | [NVFP4 QAD weights](https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD) · [`rtx-5090` recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_rtx5090.yaml) |
 | 24 GB RTX GPUs | [FP8 weights](https://huggingface.co/FastVideo/FastH3-Omni-FP8-Comfy) · [`rtx-4090` recipe](https://github.com/hao-ai-lab/FastVideo/blob/main/examples/inference/basic/basic_fasth3_omniref_rtx4090.yaml) |
-| Apple Silicon | [BF16 release](https://huggingface.co/FastVideo/FastVideo-FastH3-Omni-8-Step-V1), converted locally · [Apple Silicon recipe](https://haoailab.com/FastVideo/cookbook/minimax-h3/fasth3-omniref/) |
+| Apple Silicon | [BF16 release](https://huggingface.co/FastVideo/FastVideo-FastH3-Omni-8-Step-V1), converted locally · [Apple Silicon recipe](https://haoailab.com/FastVideo/cookbook/minimax-h3/models/fasth3-omniref-mlx/) |
 
 Start with the [FastVideo cookbook](https://haoailab.com/FastVideo/cookbook/) and the [FastH3 Omni recipe builder](https://haoailab.com/FastVideo/cookbook/minimax-h3/fasth3-omniref/).
 
@@ -168,11 +168,9 @@ Prefer a visual workflow? The local community has been making [great things](#fr
 
 Within a day of release, people were running FastH3 Omni on their own GPUs:
 
-{{< community-grid >}}
-
-<p class="cladder-note">Community-reported, each on its own setup and settings. Japanese posts translated by us.</p>
-
 {{< community-embeds >}}
+
+<p class="cwall-note">Community-reported, each on its own setup and settings.</p>
 
 ## What's next
 
