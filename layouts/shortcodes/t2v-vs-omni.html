@@ -1,0 +1,19 @@
+{{- $rows := slice
+  (dict "label" "2× DGX Spark" "t2v" 33.6 "omni" 130.1 "focus" true)
+  (dict "label" "1× DGX Spark" "t2v" 58.1 "omni" 192.0 "focus" true)
+  (dict "label" "RTX 5090" "t2v" 14.07 "omni" 61.9 "focus" false)
+-}}
+{{- $max := 192.0 -}}
+<figure class="shist" aria-label="Text-to-video versus FastH3 Omni with one image reference, end-to-end seconds per machine">
+  <div class="shist-legend"><span><i class="shist-swatch one"></i>Text-to-video (FastH3-QAD-v2)</span><span><i class="shist-swatch two"></i>FastH3 Omni, 1 image reference</span></div>
+  {{- range $rows }}
+  <div class="shist-row">
+    <div class="shist-label">{{ if .focus }}<strong>{{ .label }}</strong>{{ else }}{{ .label }}{{ end }}<small>{{ printf "%.1f×" (div .omni .t2v) }} more time with a reference</small></div>
+    <div class="shist-bars">
+      <div class="shist-track"><div class="shist-bar one" style="width: {{ mul (div .t2v $max) 80 }}%" title="Text-to-video: {{ .t2v }} s"></div><span class="shist-val" style="left: calc({{ mul (div .t2v $max) 80 }}% + .4rem)">{{ .t2v }} s</span></div>
+      <div class="shist-track"><div class="shist-bar two" style="width: {{ mul (div .omni $max) 80 }}%" title="FastH3 Omni: {{ .omni }} s"></div><span class="shist-val" style="left: calc({{ mul (div .omni $max) 80 }}% + .4rem)">{{ .omni }} s</span></div>
+    </div>
+  </div>
+  {{- end }}
+  <figcaption>End-to-end seconds, 5 s clip at 832×480 with audio, 36-layer decoder. Text-to-video from the <a href="/blogs/fasth3-v21/">FastH3-QAD-v2 post</a> (warm medians); FastH3 Omni from this post (three-seed means).</figcaption>
+</figure>

@@ -1,0 +1,65 @@
+{{- $data := transform.Unmarshal (.Page.Resources.GetMatch "data/local.json").Content -}}
+<section class="omni-gallery" data-omni-gallery aria-label="FastH3 Omni outputs on local hardware">
+  <div class="omni-gallery-filters">
+    <label for="local-composition">References
+      <select id="local-composition" data-omni-composition>
+        {{- range $data.profiles }}<option value="{{ .composition }}">{{ .label }}</option>{{ end }}
+      </select>
+    </label>
+    <select data-omni-duration hidden aria-hidden="true"><option value="5">5 seconds</option></select>
+    <button type="button" data-omni-next>Next example →</button>
+    <span class="omni-gallery-fixed">832×480 · 5 s · seed {{ $data.settings.seed }}</span>
+  </div>
+  <div class="omni-gallery-playback">
+    <button type="button" data-omni-play>Play together</button>
+    <button type="button" data-omni-pause>Pause all</button>
+    <label for="local-audio">Listen to
+      <select id="local-audio" data-omni-audio>
+        {{- range $i, $o := (index $data.profiles 0).outputs }}<option value="{{ $o.key }}"{{ if eq $i 0 }} selected{{ end }}>{{ $o.label }}</option>{{ end }}
+        <option value="none">Mute all</option>
+      </select>
+    </label>
+  </div>
+  <p class="omni-gallery-status" data-omni-status role="status" aria-live="polite">Playback starts when you press play. Choose one soundtrack with Listen to.</p>
+  {{- range $index, $profile := $data.profiles }}
+  <article id="local-example-{{ .composition }}" class="omni-gallery-panel" data-omni-profile="{{ .composition }}:5"{{ if ne $index 0 }} hidden{{ end }}>
+    <h3 tabindex="-1">{{ .label }} · 5 s request</h3>
+    <p class="omni-profile-meta">{{ .frames }} frames · 24 FPS · stereo audio · same prompt, references and seed on every device</p>
+    <div class="omni-output-grid">
+      {{- range .outputs }}
+      <figure class="omni-output">
+        <figcaption><strong>{{ .label }}</strong>
+          <span>{{ if lt .time 600.0 }}{{ printf "%.0f s" .time }}{{ else }}{{ printf "%.1f min" (div .time 60.0) }}{{ end }} end to end · {{ .time_note }}</span></figcaption>
+        <video controls playsinline preload="none" width="832" height="480" poster="{{ .poster }}"
+          data-omni-variant="{{ .key }}" aria-label="{{ .label }}, {{ $profile.label }}, 5 second request, seed {{ $profile.seed }}">
+          <source src="{{ .file }}" type="video/mp4">
+          <a href="{{ .file }}">Download MP4 with audio</a>.
+        </video>
+        <a class="omni-video-download" href="{{ .file }}" download>Download MP4</a>
+      </figure>
+      {{- end }}
+    </div>
+    <details class="omni-input-details" open>
+      <summary><span class="omni-detail-label">Source references ({{ len .conditions }})</span><svg class="omni-disclosure-chevron" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m9 5 7 7-7 7"/></svg></summary>
+      <div class="omni-input-grid">
+        {{- range .conditions }}
+        <figure>
+          {{- if eq .type "image" }}
+          <a href="{{ .file }}"><img src="{{ .file }}" alt="{{ .caption }} supplied on every device" loading="lazy" decoding="async"></a>
+          {{- else if eq .type "audio" }}
+          <audio controls preload="none" src="{{ .file }}" aria-label="{{ .caption }} reference audio"><a href="{{ .file }}">Download audio reference</a></audio>
+          {{- else }}
+          <video controls playsinline preload="none" src="{{ .file }}" aria-label="{{ .caption }} reference video"><a href="{{ .file }}">Download video reference</a></video>
+          {{- end }}
+          <figcaption>{{ .caption }}</figcaption>
+        </figure>
+        {{- end }}
+      </div>
+    </details>
+    <details class="omni-prompt-details"><summary><span class="omni-detail-label">Full prompt</span><svg class="omni-disclosure-chevron" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m9 5 7 7-7 7"/></svg></summary><button type="button" class="omni-copy" data-omni-copy hidden>Copy full prompt</button><pre>{{ .prompt }}</pre></details>
+  </article>
+  {{- end }}
+  <noscript><p>JavaScript is disabled: all examples are displayed.</p><style>.omni-gallery .omni-gallery-panel[hidden]{display:block}.omni-gallery-playback,.omni-gallery-filters{display:none}</style></noscript>
+  <p class="omni-gallery-note">832×480 · 24 FPS · stereo audio · seed 0. Spark times are three-seed means; the Mac time is a single run.</p>
+</section>
+<script src="{{ (.Page.Resources.GetMatch "gallery.js").RelPermalink }}" defer></script>

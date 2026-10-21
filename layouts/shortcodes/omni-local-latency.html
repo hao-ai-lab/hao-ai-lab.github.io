@@ -1,0 +1,89 @@
+{{- $data := transform.Unmarshal (.Page.Resources.GetMatch "data/local.json").Content -}}
+<section class="olat" data-olat aria-label="FastH3 Omni end-to-end latency by device">
+  <div class="olat-filters">
+    <label>References
+      <select data-olat-composition>{{ range $data.profiles }}<option value="{{ .composition }}">{{ .label }}</option>{{ end }}</select>
+    </label>
+    <label>Resolution
+      <select data-olat-res><option value="480p">480p · 832×480</option><option value="768p">768p · 1344×768</option></select>
+    </label>
+    <label>Decoder
+      <select data-olat-dec><option value="36l">36-layer (quality)</option><option value="8l">8-layer (fast)</option></select>
+    </label>
+  </div>
+  <div class="olat-legend"><span><i class="olat-swatch focus"></i>DGX Spark</span><span><i class="olat-swatch other"></i>Other machines</span></div>
+  <p class="olat-title" data-olat-title></p>
+  <div class="olat-chart" data-olat-chart role="img"></div>
+  <p class="olat-note">End-to-end seconds from request to finished MP4 with audio, 5 s clip (124 frames, 24 FPS), seed 0 prompt and references from the <a href="/blogs/fastvideo-omniref-update/">FastH3 Omni release</a>. Shorter is better. <span data-olat-foot></span></p>
+  <script type="application/json" data-olat-data>{{ dict "devices" $data.devices "latency" $data.latency | jsonify | safeJS }}</script>
+</section>
+<style>
+.olat { margin: 1.5rem 0 2rem; --olat-other: #8a8984; --olat-bar: #2a78d6; --olat-surface: #fcfcfb; --olat-ink: #0b0b0b; --olat-ink-2: #52514e; --olat-grid: #e4e3df; }
+@media (prefers-color-scheme: dark) { .olat { --olat-bar: #3987e5; --olat-surface: #1a1a19; --olat-ink: #f0efec; --olat-ink-2: #c3c2b7; --olat-grid: #383835; } }
+.dark .olat { --olat-other: #8f8e88; --olat-bar: #3987e5; --olat-surface: #1a1a19; --olat-ink: #f0efec; --olat-ink-2: #c3c2b7; --olat-grid: #383835; }
+.olat-filters { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; margin-bottom: .75rem; font-size: .9em; }
+.olat-filters label { display: flex; flex-direction: column; gap: .25rem; color: var(--olat-ink-2); }
+.olat-filters select { font: inherit; padding: .3rem .5rem; border-radius: 6px; border: 1px solid var(--olat-grid); background: var(--olat-surface); color: var(--olat-ink); }
+.olat-title { font-weight: 600; margin: .25rem 0 .5rem; color: var(--olat-ink); }
+.olat-chart { position: relative; background: var(--olat-surface); border-radius: 10px; padding: .75rem 1rem; }
+.olat-row { display: grid; grid-template-columns: minmax(10rem, 14rem) 1fr; align-items: center; gap: .9rem; min-height: 42px; }
+.olat-label { font-size: .88em; color: var(--olat-ink); text-align: right; line-height: 1.2; }
+.olat-label small { display: block; color: var(--olat-ink-2); font-size: .82em; }
+.olat-track { position: relative; height: 22px; border-left: 1px solid var(--olat-grid); }
+.olat-bar { position: absolute; left: 0; top: 0; height: 22px; background: var(--olat-bar); border-radius: 0 4px 4px 0; min-width: 2px; cursor: default; }
+.olat-bar.other { background: var(--olat-other); }
+.olat-legend { display: flex; gap: 1.25rem; font-size: .85em; color: var(--olat-ink); margin: .25rem 0 .35rem; }
+.olat-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: .4rem; vertical-align: -1px; background: var(--olat-bar); }
+.olat-swatch.other { background: var(--olat-other); }
+.olat-bar:hover, .olat-bar:focus-visible { filter: brightness(1.12); outline: none; }
+.olat-value { position: absolute; top: 50%; transform: translateY(-50%); font-size: .82em; color: var(--olat-ink); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.olat-missing { font-size: .82em; color: var(--olat-ink-2); font-style: italic; line-height: 22px; padding-left: .5rem; }
+.olat-tip { position: absolute; pointer-events: none; background: var(--olat-ink); color: var(--olat-surface); font-size: .8em; padding: .35rem .55rem; border-radius: 6px; white-space: nowrap; z-index: 2; }
+.olat-note { font-size: .82em; color: var(--olat-ink-2); margin-top: .6rem; }
+@media (max-width: 640px) { .olat-row { grid-template-columns: 7.5rem 1fr; } }
+</style>
+<script>
+(() => {
+  const root = document.querySelector("[data-olat]");
+  if (!root) return;
+  const { devices, latency } = JSON.parse(root.querySelector("[data-olat-data]").textContent);
+  const sel = (k) => root.querySelector(`[data-olat-${k}]`);
+  const fmt = (s) => s < 120 ? `${s.toFixed(s < 20 ? 1 : 0)} s` : `${(s / 60).toFixed(1)} min`;
+  const chart = sel("chart"), tip = document.createElement("div");
+  tip.className = "olat-tip"; tip.hidden = true;
+  const render = () => {
+    const comp = sel("composition"), res = sel("res").value, dec = sel("dec").value;
+    const row = latency[`${comp.value}|${res}|${dec}`] || {};
+    const max = Math.max(...devices.map((d) => (typeof row[d.key] === "number" ? row[d.key] : 0)));
+    sel("title").textContent = `${comp.selectedOptions[0].text} · ${res} · ${dec === "36l" ? "36-layer" : "8-layer"} decoder`;
+    chart.replaceChildren(tip);
+    devices.filter((d) => typeof row[d.key] === "number").forEach((d) => {
+      const v = row[d.key];
+      const r = document.createElement("div"); r.className = "olat-row";
+      const lab = document.createElement("div"); lab.className = "olat-label";
+      lab.innerHTML = `${d.label}<small>${d.note}</small>`;
+      const track = document.createElement("div"); track.className = "olat-track";
+      if (v == null || typeof v === "string") {
+        const text = v === "OOM" ? "out of memory at this setting" : (d.key.startsWith("rtx") ? "run in progress" : "not measured for this setting");
+        track.innerHTML = `<span class="olat-missing">${text}</span>`;
+      } else {
+        const pct = Math.max(0.4, (v / max) * 82);
+        const bar = document.createElement("div"); bar.className = d.focus ? "olat-bar" : "olat-bar other"; bar.style.width = `${pct}%`; bar.tabIndex = 0;
+        bar.setAttribute("aria-label", `${d.label}: ${fmt(v)}`);
+        const val = document.createElement("span"); val.className = "olat-value"; val.style.left = `calc(${pct}% + .4rem)`; val.textContent = fmt(v);
+        const show = (e) => { tip.hidden = false; tip.textContent = `${d.label} · ${v.toFixed(1)} s · ${d.note}`;
+          const b = chart.getBoundingClientRect(), t = bar.getBoundingClientRect();
+          tip.style.left = `${t.right - b.left + 8}px`; tip.style.top = `${t.top - b.top - 30}px`; };
+        bar.addEventListener("mouseenter", show); bar.addEventListener("focus", show);
+        bar.addEventListener("mouseleave", () => { tip.hidden = true; }); bar.addEventListener("blur", () => { tip.hidden = true; });
+        track.append(bar, val);
+      }
+      r.append(lab, track); chart.append(r);
+    });
+    chart.setAttribute("aria-label", devices.filter((d) => typeof row[d.key] === "number").map((d) => `${d.label}: ${fmt(row[d.key])}`).join("; "));
+    sel("foot").textContent = "Machines appear where they were measured for this setting; the 8-layer decoder and 768p rows were measured on DGX Spark.";
+  };
+  ["composition", "res", "dec"].forEach((k) => sel(k).addEventListener("change", render));
+  render();
+})();
+</script>

@@ -1,0 +1,39 @@
+{{- $rows := slice
+  (dict "date" "Sep 2" "label" "FastH3 V1 · 4 steps · full VAE" "one" 243.0 "two" 209.0 "href" "/blogs/fasth3-local/")
+  (dict "date" "Oct 6" "label" "FastH3 V2 · 8 steps · NVFP4" "one" 141.4 "two" 87.2 "href" "/blogs/fasth3-rtx/")
+  (dict "date" "Oct 19" "label" "FastH3-QAD-v2 · 36-layer decoder" "one" 58.1 "two" 33.6 "href" "/blogs/fasth3-v21/")
+  (dict "date" "Oct 19" "label" "FastH3-QAD-v2 · 8-layer decoder" "one" 52.6 "two" 30.7 "href" "/blogs/fasth3-v21/")
+-}}
+{{- $max := 243.0 -}}
+<figure class="shist" aria-label="DGX Spark end-to-end time for a 5 second 832 by 480 clip across FastVideo releases">
+  <div class="shist-legend"><span><i class="shist-swatch one"></i>1× DGX Spark</span><span><i class="shist-swatch two"></i>2× DGX Spark</span></div>
+  {{- range $rows }}
+  <div class="shist-row">
+    <div class="shist-label"><a href="{{ .href }}">{{ .date }}</a><small>{{ .label }}</small></div>
+    <div class="shist-bars">
+      <div class="shist-track"><div class="shist-bar one" style="width: {{ mul (div .one $max) 80 }}%" title="1× DGX Spark: {{ .one }} s"></div><span class="shist-val" style="left: calc({{ mul (div .one $max) 80 }}% + .4rem)">{{ .one }} s</span></div>
+      <div class="shist-track"><div class="shist-bar two" style="width: {{ mul (div .two $max) 80 }}%" title="2× DGX Spark: {{ .two }} s"></div><span class="shist-val" style="left: calc({{ mul (div .two $max) 80 }}% + .4rem)">{{ .two }} s</span></div>
+    </div>
+  </div>
+  {{- end }}
+  <figcaption>Text-to-video on DGX Spark, end-to-end seconds for a 5 s, 832×480 clip with audio, as published in each post (Sep 2: cold starts; Oct 6 and Oct 19: warm medians).</figcaption>
+</figure>
+<style>
+.shist { margin: 1.5rem 0 2rem; padding: 1rem 1.1rem; border-radius: 10px; background: #fcfcfb; --one: #2a78d6; --two: #eb6834; --ink: #0b0b0b; --ink2: #52514e; --grid: #e4e3df; }
+.dark .shist { background: #1a1a19; --one: #3987e5; --two: #d95926; --ink: #f0efec; --ink2: #c3c2b7; --grid: #383835; }
+.shist-legend { display: flex; gap: 1.25rem; font-size: .85em; color: var(--ink); margin-bottom: .6rem; }
+.shist-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: .4rem; vertical-align: -1px; }
+.shist-swatch.one { background: var(--one); } .shist-swatch.two { background: var(--two); }
+.shist-row { display: grid; grid-template-columns: minmax(10rem, 15rem) 1fr; gap: .9rem; align-items: center; margin: .55rem 0; }
+.shist-label { text-align: right; font-size: .88em; color: var(--ink); line-height: 1.25; }
+.shist-label small { display: block; color: var(--ink2); font-size: .82em; }
+.shist-bars { display: flex; flex-direction: column; gap: 2px; border-left: 1px solid var(--grid); }
+.shist-track { position: relative; height: 16px; }
+.shist-bar { position: absolute; left: 0; top: 0; height: 16px; border-radius: 0 4px 4px 0; }
+.shist-bar.one { background: var(--one); } .shist-bar.two { background: var(--two); }
+.shist-val { position: absolute; top: 50%; transform: translateY(-50%); font-size: .78em; color: var(--ink); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.shist-divider { border-top: 1px dashed var(--grid); margin: .9rem 0 .4rem; text-align: center; }
+.shist-divider span { position: relative; top: -.7em; padding: 0 .6rem; background: inherit; font-size: .78em; color: var(--ink2); }
+.post-content .shist figcaption, .shist figcaption { font-size: .82em; font-weight: 400 !important; color: var(--ink2); margin-top: .8rem; }
+@media (max-width: 640px) { .shist-row { grid-template-columns: 7.5rem 1fr; } }
+</style>
