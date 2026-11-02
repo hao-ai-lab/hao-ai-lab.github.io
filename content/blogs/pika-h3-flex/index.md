@@ -119,12 +119,12 @@ Distillation then closes most of the remaining gap: FL2VA lands at 0.237 against
 
 ## 2K
 
-FastVideo now runs NVIDIA's [Open-H3-Regenerate-2K](https://huggingface.co/Efficient-Large-Model/Open-H3-Regenerate-2K), which regenerates a 768p H3 video at 2560x1440. Any H3-family draft works, from FastH3 or Flex. We pair it with a fast 8-step draft and our NVFP4 decoder, which takes the 2K decode from 23.3 s to 5.0 s:
+FastVideo now runs NVIDIA's [Open-H3-Regenerate-2K](https://huggingface.co/Efficient-Large-Model/Open-H3-Regenerate-2K), which regenerates a 768p H3 video at 2560x1440. Any H3-family draft works, from FastH3 or Flex. With the NVFP4 QAD Flex model as the draft and our NVFP4 decoder, which takes the 2K decode from 23.3 s to 5.0 s, text to 2K drops from about 7 minutes to under 2:
 
 | Text to 2K, one GB200 | Draft | Total |
 |---|---:|---:|
 | Base H3 draft (50 steps), as released | 316 s | 412 s |
-| FastH3 draft + NVFP4 decoder | 36 s | **115 s** |
+| Pika H3 Flex NVFP4 QAD draft + NVFP4 decoder | 16.8 s | **106 s** |
 
 {{< flex-2k >}}
 
