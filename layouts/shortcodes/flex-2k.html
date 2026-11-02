@@ -1,0 +1,69 @@
+{{- $data := transform.Unmarshal (.Page.Resources.GetMatch "data/compare.json").Content -}}
+{{- $base := .Page.RelPermalink -}}
+{{- $c := index $data.twok 0 -}}
+<section class="f2k" data-f2k aria-label="768p draft versus 2560x1440 regeneration">
+  <div class="f2k-stage" data-f2k-stage>
+    {{- if and $c.draft $c.regen }}
+    <video class="f2k-under" muted playsinline loop preload="none" data-src="{{ $base }}{{ $c.regen }}"></video>
+    <div class="f2k-over" data-f2k-over><video muted playsinline loop preload="none" data-src="{{ $base }}{{ $c.draft }}"></video></div>
+    <div class="f2k-divider" data-f2k-divider><span class="f2k-handle" aria-hidden="true">◀ ▶</span></div>
+    <input class="f2k-range" data-f2k-range type="range" min="0" max="100" value="50" step="0.1" aria-label="Drag to compare the 768p draft and the 2K regeneration">
+    {{- else }}
+    <div class="f2k-ph">2K comparison coming soon</div>
+    {{- end }}
+    <span class="f2k-tag left" data-f2k-left>768p draft</span><span class="f2k-tag right" data-f2k-right>2560×1440</span><span class="f2k-scene" data-f2k-scene></span>
+    <script type="application/json" data-f2k-segments>{{ $c.segments | default (slice) | jsonify | safeJS }}</script>
+  </div>
+  <p class="f2k-note">{{ $c.caption | default "Drag the handle to compare. Drafts from the NVFP4 QAD model, regenerated at 2560×1440 with Open-H3-Regenerate-2K and the NVFP4 VAE decoder on one GB200." }}</p>
+</section>
+<style>
+.f2k { margin: 1.5rem 0 2rem; --f2k-a: #2a78d6; --f2k-ink-2: #52514e; }
+.dark .f2k { --f2k-a: #3987e5; --f2k-ink-2: #c3c2b7; }
+.f2k-stage { position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: #000; user-select: none; }
+.f2k-stage video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.f2k-over { position: absolute; inset: 0; clip-path: inset(0 50% 0 0); }
+.f2k-divider { position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; margin-left: -1.5px; background: #fff; box-shadow: 0 0 8px rgba(0,0,0,.6); pointer-events: none; }
+.f2k-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 52px; height: 52px; border-radius: 50%; background: #fff; color: #111; font-size: 13px; letter-spacing: -1px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 12px rgba(0,0,0,.45); font-weight: 700; }
+.f2k-range { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+.f2k-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #8a8984; font-size: .9em; background: repeating-linear-gradient(45deg, #1d1d1c, #1d1d1c 10px, #222221 10px, #222221 20px); }
+.f2k .f2k-tag { color: #fff !important; }
+.f2k-tag { position: absolute; top: .7rem; font-size: .85em; font-weight: 700; background: rgba(0,0,0,.6); padding: .2rem .6rem; border-radius: 6px; pointer-events: none; }
+.f2k-tag.left { left: .7rem; } .f2k-tag.right { right: .7rem; }
+.f2k .f2k-scene { color: #fff !important; }
+.f2k-scene { position: absolute; bottom: .7rem; left: 50%; transform: translateX(-50%); font-size: .85em; font-weight: 700; background: rgba(0,0,0,.6); padding: .2rem .7rem; border-radius: 6px; pointer-events: none; white-space: nowrap; }
+.f2k-scene:empty { display: none; }
+.f2k-note { font-size: .8em; color: var(--f2k-ink-2); margin-top: .5rem; }
+</style>
+<script>
+(() => {
+  document.querySelectorAll("[data-f2k]").forEach((root) => {
+    const stage = root.querySelector("[data-f2k-stage]"), range = root.querySelector("[data-f2k-range]");
+    if (!range) return;
+    const over = root.querySelector("[data-f2k-over]"), divider = root.querySelector("[data-f2k-divider]");
+    const vids = [...stage.querySelectorAll("video")];
+    const set = (pct) => { over.style.clipPath = `inset(0 ${100 - pct}% 0 0)`; divider.style.left = `${pct}%`; range.value = pct; };
+    range.addEventListener("input", () => set(+range.value));
+    const segs = JSON.parse(root.querySelector("[data-f2k-segments]").textContent || "[]");
+    const left = root.querySelector("[data-f2k-left]"), right = root.querySelector("[data-f2k-right]"), scene = root.querySelector("[data-f2k-scene]");
+    let shown = -1;
+    const label = () => {
+      const t = vids[0].currentTime, i = segs.findIndex((g) => t >= g.start && t < g.end);
+      if (i < 0 || i === shown) return;
+      shown = i; const g = segs[i];
+      left.textContent = `768p draft · ${g.draft_s} s`; right.textContent = `2560×1440 · +${g.regen_s} s`; scene.textContent = g.label;
+    };
+    if (segs.length) vids[0].addEventListener("timeupdate", label);
+    const start = () => {
+      vids.forEach((v) => { if (!v.src) v.src = v.dataset.src; v.currentTime = 0; v.play().catch(() => {}); });
+      // keep the two reels in step
+      setInterval(() => { const [a, b] = vids; if (a && b && Math.abs(a.currentTime - b.currentTime) > 0.08) b.currentTime = a.currentTime; }, 500);
+      // a short sweep shows that the divider can be dragged
+      const t0 = performance.now();
+      const sweep = (t) => { const k = Math.min(1, (t - t0) / 1600); set(50 + 22 * Math.sin(k * Math.PI * 2) * (1 - k)); if (k < 1) requestAnimationFrame(sweep); };
+      requestAnimationFrame(sweep);
+    };
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { start(); io.disconnect(); } }), { threshold: 0.3 });
+    io.observe(root);
+  });
+})();
+</script>

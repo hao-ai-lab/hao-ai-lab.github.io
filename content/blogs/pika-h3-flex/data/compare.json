@@ -1,0 +1,205 @@
+{
+  "arms": [
+    {
+      "key": "official",
+      "label": "Pika official",
+      "sub": "BF16"
+    },
+    {
+      "key": "fv_bf16",
+      "label": "FastVideo",
+      "sub": "BF16"
+    },
+    {
+      "key": "nvfp4_bf16attn",
+      "label": "NVFP4 QAD",
+      "sub": "BF16 attention"
+    },
+    {
+      "key": "nvfp4_fp4attn",
+      "label": "NVFP4 QAD",
+      "sub": "FP4 attention"
+    }
+  ],
+  "clips": [
+    {
+      "key": "v1_faster",
+      "label": "Faster!",
+      "task": "Text to video",
+      "videos": {
+        "official": {
+          "src": "media/compare/official__v1_faster.mp4",
+          "poster": "media/compare/official__v1_faster.jpg",
+          "seconds": "59.7"
+        },
+        "fv_bf16": {
+          "src": "media/compare/fv_bf16__v1_faster.mp4",
+          "poster": "media/compare/fv_bf16__v1_faster.jpg",
+          "seconds": "26.6"
+        },
+        "nvfp4_bf16attn": {
+          "src": "media/compare/nvfp4_bf16attn__v1_faster.mp4",
+          "poster": "media/compare/nvfp4_bf16attn__v1_faster.jpg",
+          "seconds": "16.8"
+        },
+        "nvfp4_fp4attn": {
+          "src": "media/compare/nvfp4_fp4attn__v1_faster.mp4",
+          "poster": "media/compare/nvfp4_fp4attn__v1_faster.jpg",
+          "seconds": "15.2"
+        }
+      }
+    },
+    {
+      "key": "v2_bluehour",
+      "label": "Blue hour",
+      "task": "Text to video",
+      "videos": {
+        "official": {
+          "src": "media/compare/official__v2_bluehour.mp4",
+          "poster": "media/compare/official__v2_bluehour.jpg",
+          "seconds": "59.7"
+        },
+        "fv_bf16": {
+          "src": "media/compare/fv_bf16__v2_bluehour.mp4",
+          "poster": "media/compare/fv_bf16__v2_bluehour.jpg",
+          "seconds": "26.9"
+        },
+        "nvfp4_bf16attn": {
+          "src": "media/compare/nvfp4_bf16attn__v2_bluehour.mp4",
+          "poster": "media/compare/nvfp4_bf16attn__v2_bluehour.jpg",
+          "seconds": "16.9"
+        },
+        "nvfp4_fp4attn": {
+          "src": "media/compare/nvfp4_fp4attn__v2_bluehour.mp4",
+          "poster": "media/compare/nvfp4_fp4attn__v2_bluehour.jpg",
+          "seconds": "15.1"
+        }
+      }
+    },
+    {
+      "key": "v3_cannonball",
+      "label": "Cannonball",
+      "task": "Text to video",
+      "videos": {
+        "official": {
+          "src": "media/compare/official__v3_cannonball.mp4",
+          "poster": "media/compare/official__v3_cannonball.jpg",
+          "seconds": "59.7"
+        },
+        "fv_bf16": {
+          "src": "media/compare/fv_bf16__v3_cannonball.mp4",
+          "poster": "media/compare/fv_bf16__v3_cannonball.jpg",
+          "seconds": "27.1"
+        },
+        "nvfp4_bf16attn": {
+          "src": "media/compare/nvfp4_bf16attn__v3_cannonball.mp4",
+          "poster": "media/compare/nvfp4_bf16attn__v3_cannonball.jpg",
+          "seconds": "16.8"
+        },
+        "nvfp4_fp4attn": {
+          "src": "media/compare/nvfp4_fp4attn__v3_cannonball.mp4",
+          "poster": "media/compare/nvfp4_fp4attn__v3_cannonball.jpg",
+          "seconds": "15.2"
+        }
+      }
+    },
+    {
+      "key": "v4_fireworks",
+      "label": "Fireworks",
+      "task": "First frame to video",
+      "videos": {
+        "official": {
+          "src": "media/compare/official__v4_fireworks.mp4",
+          "poster": "media/compare/official__v4_fireworks.jpg"
+        },
+        "fv_bf16": {
+          "src": "media/compare/fv_bf16__v4_fireworks.mp4",
+          "poster": "media/compare/fv_bf16__v4_fireworks.jpg",
+          "seconds": "29.2"
+        },
+        "nvfp4_bf16attn": {
+          "src": "media/compare/nvfp4_bf16attn__v4_fireworks.mp4",
+          "poster": "media/compare/nvfp4_bf16attn__v4_fireworks.jpg",
+          "seconds": "18.2"
+        },
+        "nvfp4_fp4attn": {
+          "src": "media/compare/nvfp4_fp4attn__v4_fireworks.mp4",
+          "poster": "media/compare/nvfp4_fp4attn__v4_fireworks.jpg",
+          "seconds": "16.5"
+        }
+      }
+    },
+    {
+      "key": "v5_campfire",
+      "label": "Campfire",
+      "task": "References to video",
+      "videos": {
+        "official": {
+          "src": "media/compare/official__v5_campfire.mp4",
+          "poster": "media/compare/official__v5_campfire.jpg"
+        },
+        "fv_bf16": {
+          "src": "media/compare/fv_bf16__v5_campfire.mp4",
+          "poster": "media/compare/fv_bf16__v5_campfire.jpg",
+          "seconds": "75.4"
+        },
+        "nvfp4_bf16attn": {
+          "src": "media/compare/nvfp4_bf16attn__v5_campfire.mp4",
+          "poster": "media/compare/nvfp4_bf16attn__v5_campfire.jpg",
+          "seconds": "61.7"
+        },
+        "nvfp4_fp4attn": {
+          "src": "media/compare/nvfp4_fp4attn__v5_campfire.mp4",
+          "poster": "media/compare/nvfp4_fp4attn__v5_campfire.jpg",
+          "seconds": "51.4"
+        }
+      }
+    }
+  ],
+  "twok": [
+    {
+      "key": "reel",
+      "label": "2K",
+      "draft": "media/twok/reel_draft.mp4",
+      "regen": "media/twok/reel_2k.mp4",
+      "segments": [
+        {
+          "label": "Faster!",
+          "start": 0.0,
+          "end": 5.022,
+          "draft_s": 16.8,
+          "regen_s": 90
+        },
+        {
+          "label": "Blue hour",
+          "start": 5.022,
+          "end": 10.043,
+          "draft_s": 16.9,
+          "regen_s": 88
+        },
+        {
+          "label": "Cannonball",
+          "start": 10.043,
+          "end": 15.065,
+          "draft_s": 16.8,
+          "regen_s": 90
+        },
+        {
+          "label": "Fireworks",
+          "start": 15.065,
+          "end": 20.087,
+          "draft_s": 18.2,
+          "regen_s": 88
+        },
+        {
+          "label": "Campfire",
+          "start": 20.087,
+          "end": 25.108,
+          "draft_s": 61.7,
+          "regen_s": 88
+        }
+      ],
+      "caption": "Drag the handle to compare. Five 768p drafts from the NVFP4 QAD model, each regenerated at 2560\u00d71440 with Open-H3-Regenerate-2K and the NVFP4 VAE decoder on one GB200. Times shown are end to end per clip."
+    }
+  ]
+}
