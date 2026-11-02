@@ -1,5 +1,5 @@
 +++
-title = "Pika H3 Flex in FastVideo: Up to 7x Faster, and a 4-bit Version Trained to Match"
+title = "Pika H3 Flex in FastVideo: 7x Faster, and Near Real Time in 4-bit"
 date = 2026-11-02T00:00:00Z
 authors = ["Aryan Kumar", "Will Lin", "Hao Zhang"]
 author = "Aryan Kumar, Will Lin, Hao Zhang"
@@ -33,6 +33,7 @@ Flex builds on MiniMax H3, the same model behind our [FastH3](/blogs/fasth3-loca
 - **Near real time.** A 5-second 480p clip in **5.8 s** on one GB200 with the NVFP4 model.
 - **Faster at BF16.** **2.4x** faster than the official code on one GPU, and **7x** for 15-second clips on four GPUs.
 - **NVFP4, trained to match.** QAD brings both adapters 14-17% closer to the BF16 model than plain quantization, and FP4 attention makes long clips **16%** faster.
+- **Runs locally.** The NVFP4 models target Blackwell hardware down to DGX Spark and RTX 5090: a 5-second 480p FL2VA clip takes **59.5 s on one DGX Spark**.
 - **2K.** Regenerate any H3-family video at 2560x1440.
 - **Open source.** [NVFP4 QAD weights](https://huggingface.co/FastVideo/Pika-H3-Flex-NVFP4-QAD) ([FP4 attention](https://huggingface.co/FastVideo/Pika-H3-Flex-NVFP4-FP4Attn-QAD)), inference and the full training recipe.
 
@@ -48,7 +49,7 @@ Flex is MiniMax H3 post-trained by Pika, with two adapters: one for text and key
 
 ## Same prompt, four ways
 
-Each scene is generated four ways from the same prompt and seed on one GB200: Pika's official code, FastVideo at BF16, and the two NVFP4 QAD models. Press play to run all four in sync; each tile shows its end-to-end time.
+Each scene is generated four ways from the same prompt and seed on one GB200: Pika's official code, FastVideo at BF16, and the two NVFP4 QAD models. The four clips play in sync, and each tile shows its end-to-end time.
 
 {{< flex-compare >}}
 
@@ -63,6 +64,8 @@ On one GB200, the official code spends 20 s on six DiT forwards for a 5-second 7
 {{< flex-buildup >}}
 
 At 15 seconds the picture changes: a clip has 109k tokens, dense attention grows with their square, and attention becomes about 75% of each forward. That is the case FP4 attention targets below.
+
+The NVFP4 models also run on local Blackwell hardware such as DGX Spark and RTX 5090. On one DGX Spark, the NVFP4 QAD model (BF16 attention) generates a 5-second 480p first-and-last-frame (FL2VA) clip in **59.5 seconds**.
 
 ## NVFP4 QAD
 
@@ -167,6 +170,8 @@ We thank the upstream serving, kernel and open-source communities whose implemen
 <a href="https://x.com/haozhangml" aria-label="Hao Zhang X"><i class="fab fa-x-twitter"></i></a>
 
 <style>
+.post-single .entry-cover { max-width: 760px; margin: 0 auto 1.6rem; }
+.post-single .entry-cover img { border-radius: 12px; display: block; margin: 0 auto; }
 ul.checks { list-style: none; padding-left: 0; }
 ul.checks li { margin: .45rem 0; }
 </style>
