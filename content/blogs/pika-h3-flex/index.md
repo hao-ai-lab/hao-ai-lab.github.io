@@ -24,7 +24,7 @@ url = "/blogs/pika-h3-flex/"
 
 {{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" huggingface="https://huggingface.co/FastVideo/Pika-H3-Flex-NVFP4-QAD" >}}
 
-[**Pika H3 Flex**](https://huggingface.co/Pika-Labs/Pika-H3-Flex) turns a prompt, first and last frames, or image, video and audio references into video with synchronized sound. It now runs in **FastVideo**, up to **7x faster** than the official code. We are also releasing **NVFP4 versions** trained with quantization-aware distillation: a 5-second 480p clip takes **5.8 seconds** on one GB200.
+[**Pika H3 Flex**](https://huggingface.co/Pika-Labs/Pika-H3-Flex) turns a prompt, first and last frames, or image, video and audio references into video with synchronized sound. It now runs in **FastVideo**, up to **7x faster** than the official code. We are also releasing **NVFP4 versions** trained with quantization-aware distillation, [with BF16 attention](https://huggingface.co/FastVideo/Pika-H3-Flex-NVFP4-QAD) and [with FP4 attention](https://huggingface.co/FastVideo/Pika-H3-Flex-NVFP4-FP4Attn-QAD): a 5-second 480p clip takes **5.8 seconds** on one GB200.
 
 Flex builds on MiniMax H3, the same model behind our [FastH3](/blogs/fasth3-local/) releases, so our kernels, NVFP4 decoder and quantization recipe carried straight over. We are grateful to Pika for open-sourcing it.
 
@@ -34,7 +34,7 @@ Flex builds on MiniMax H3, the same model behind our [FastH3](/blogs/fasth3-loca
 - **Faster at BF16.** **2.4x** faster than the official code on one GPU, and **7x** for 15-second clips on four GPUs.
 - **NVFP4, trained to match.** QAD brings both adapters 14-17% closer to the BF16 model than plain quantization, and FP4 attention makes long clips **16%** faster.
 - **2K.** Regenerate any H3-family video at 2560x1440.
-- **Open source.** Weights, inference and the full training recipe.
+- **Open source.** [NVFP4 QAD weights](https://huggingface.co/FastVideo/Pika-H3-Flex-NVFP4-QAD) ([FP4 attention](https://huggingface.co/FastVideo/Pika-H3-Flex-NVFP4-FP4Attn-QAD)), inference and the full training recipe.
 
 ## What Pika H3 Flex does
 
@@ -127,15 +127,21 @@ FastVideo now runs NVIDIA's [Open-H3-Regenerate-2K](https://huggingface.co/Effic
 
 ## Try it
 
+The easiest way to run Flex is the [FastVideo cookbook](https://haoailab.com/FastVideo/cookbook/minimax-h3/models/pika-h3-flex-t2va/): pick a task, resolution, duration and weights (BF16, NVFP4 QAD or NVFP4 QAD with FP4 attention), and copy a ready-to-run command. Or run it directly:
+
 ```bash
 FASTVIDEO_ATTENTION_BACKEND=FLASH_ATTN FASTVIDEO_FA4=1 \
-python examples/inference/basic/basic_pika_h3_flex.py \
-  --model-path FastVideo/Pika-H3-Flex-NVFP4-QAD --nvfp4-dit h3_dit \
-  --task ref2va --reference image:character.png --reference video:motion.mp4 \
-  --prompt "..." --resolution 480p --duration 5
+python examples/inference/basic/basic_pika_h3_flex.py --weights nvfp4-qad \
+  --task t2va --prompt "..." --resolution 768p --duration 5
 ```
 
-The full training recipe, from adapter merge and calibration through QAD and export, is in the [training guide](https://github.com/hao-ai-lab/FastVideo/blob/main/docs/training/pika_h3_flex_qad.md).
+| Weights | Hugging Face |
+|---|---|
+| BF16 (Pika's release) | [Pika-Labs/Pika-H3-Flex](https://huggingface.co/Pika-Labs/Pika-H3-Flex) |
+| NVFP4 QAD, BF16 attention | [FastVideo/Pika-H3-Flex-NVFP4-QAD](https://huggingface.co/FastVideo/Pika-H3-Flex-NVFP4-QAD) |
+| NVFP4 QAD, FP4 attention | [FastVideo/Pika-H3-Flex-NVFP4-FP4Attn-QAD](https://huggingface.co/FastVideo/Pika-H3-Flex-NVFP4-FP4Attn-QAD) |
+
+The NVFP4 models need a Blackwell GPU. The full training recipe, from adapter merge and calibration through QAD and export, is in the [training guide](https://github.com/hao-ai-lab/FastVideo/blob/main/docs/training/pika_h3_flex_qad.md).
 
 ## Acknowledgements
 
@@ -143,7 +149,7 @@ Pika H3 Flex is built by [Pika](https://pika.art/). We thank the Pika team for o
 
 We thank NVIDIA's [Efficient-Large-Model](https://huggingface.co/Efficient-Large-Model) team for releasing Open-H3-Regenerate-2K, and the NVIDIA Enterprise Products team (Pengcheng Li and Cliff Woolley) for the Video Sparse Attention kernel used by FastH3. We thank the FlashAttention, FlashInfer and NVIDIA Model Optimizer teams for the attention and FP4 kernels and calibration tools this work relies on, and the [NVIDIA FastGen](https://github.com/NVlabs/FastGen) team (Julius Berner, Chao Liu and Arash Vahdat) for the DMD2 framework and H3 reference work.
 
-We thank [Nuva Lab](https://nuvalab.ai/) for bringing production-grounded creative video workflows to FastH3, and the upstream serving, kernel and open-source communities whose implementations make these experiments possible. We also acknowledge [Reactor](https://www.reactor.inc/) for supporting FastH3, and the [vLLM project](https://vllm.ai/), [NVIDIA](https://www.nvidia.com/en-us/) and [MBZUAI](https://mbzuai.ac.ae/) for their support of FastVideo.
+We thank the upstream serving, kernel and open-source communities whose implementations make these experiments possible, and the [vLLM project](https://vllm.ai/), [NVIDIA](https://www.nvidia.com/en-us/) and [MBZUAI](https://mbzuai.ac.ae/) for their support of FastVideo.
 
 ## FastVideo team
 
