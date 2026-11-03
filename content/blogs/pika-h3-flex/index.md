@@ -1,6 +1,6 @@
 +++
 title = "Pika H3 Flex in FastVideo: 7x Faster, and Near Real Time in 4-bit"
-date = 2026-11-02T00:00:00Z
+date = 2026-11-03T00:00:00Z
 authors = ["Aryan Kumar", "Will Lin", "Hao Zhang"]
 author = "Aryan Kumar, Will Lin, Hao Zhang"
 ShowReadingTime = true
