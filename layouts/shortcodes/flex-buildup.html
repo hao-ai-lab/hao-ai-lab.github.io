@@ -1,0 +1,55 @@
+{{- $data := transform.Unmarshal (.Page.Resources.GetMatch "data/speedup.json").Content -}}
+<section class="fbu" aria-label="End-to-end time per configuration">
+  <div class="fbu-legend">
+    <span><i class="fbu-sw denoise"></i>DiT denoise (6 forwards)</span>
+    <span><i class="fbu-sw decode"></i>VAE decode</span>
+    <span><i class="fbu-sw other"></i>Other</span>
+  </div>
+  {{- range $data.scenarios }}
+  {{- $max := 0.0 }}{{ range .rows }}{{ if gt .total $max }}{{ $max = .total }}{{ end }}{{ end }}
+  {{- $base := 0.0 }}{{ range .rows }}{{ if and .official (eq .key "official") }}{{ $base = .total }}{{ end }}{{ end }}
+  {{- $alt := 0.0 }}{{ $altKey := .alt_base | default "" }}{{ range .rows }}{{ if and $altKey (eq .key $altKey) }}{{ $alt = .total }}{{ end }}{{ end }}
+  {{- $baseLabel := .base_label | default "" }}{{ $altLabel := .alt_label | default "" }}
+  <figure class="fbu-panel">
+    <figcaption><strong>{{ .label }}</strong><span>{{ .detail }}</span></figcaption>
+    {{- range .rows }}
+    {{- $other := math.Max 0 (sub .total (add .denoise .decode)) }}
+    <div class="fbu-row{{ if not .official }} ours{{ end }}">
+      <div class="fbu-label">{{ .label }}<small>{{ .sub }}</small></div>
+      <div class="fbu-track">
+        <div class="fbu-seg denoise" style="width: {{ mul 80 (div .denoise $max) }}%"></div>
+        <div class="fbu-seg decode" style="width: {{ mul 80 (div .decode $max) }}%"></div>
+        <div class="fbu-seg other" style="width: {{ mul 80 (div $other $max) }}%"></div>
+        <span class="fbu-val"><b>{{ if lt .total 100.0 }}{{ lang.FormatNumber 1 .total }}{{ else }}{{ lang.FormatNumber 0 .total }}{{ end }} s</b>{{ if not .official }}<em>{{ lang.FormatNumber 2 (div $base .total) }}×</em>{{ with $baseLabel }}<small> {{ . }}</small>{{ end }}{{ if gt $alt 0.0 }}<em class="alt">{{ lang.FormatNumber 2 (div $alt .total) }}×</em><small> {{ $altLabel }}</small>{{ end }}{{ end }}</span>
+      </div>
+    </div>
+    {{- end }}
+  </figure>
+  {{- end }}
+  <p class="fbu-note">End-to-end seconds from prompt to MP4 with audio, one or four GB200 GPUs, models resident, warm medians. Speedups are against the official code on the same number of GPUs; the 4-GPU panel also shows the speedup over official on one GPU. Each panel has its own scale.</p>
+</section>
+<style>
+.fbu { margin: 1.5rem 0 2rem; --fbu-den: #2a78d6; --fbu-dec: #e8833a; --fbu-oth: #b9b8b2; --fbu-surface: #fcfcfb; --fbu-ink: #0b0b0b; --fbu-ink-2: #52514e; --fbu-grid: #e4e3df; }
+.dark .fbu { --fbu-den: #3987e5; --fbu-dec: #f0975a; --fbu-oth: #6e6d68; --fbu-surface: #1a1a19; --fbu-ink: #f0efec; --fbu-ink-2: #c3c2b7; --fbu-grid: #383835; }
+.fbu-legend { display: flex; flex-wrap: wrap; gap: 1rem; font-size: .82em; color: var(--fbu-ink); margin-bottom: .6rem; }
+.fbu-sw { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: .35rem; vertical-align: -1px; }
+.fbu-sw.denoise, .fbu-seg.denoise { background: var(--fbu-den); }
+.fbu-sw.decode, .fbu-seg.decode { background: var(--fbu-dec); }
+.fbu-sw.other, .fbu-seg.other { background: var(--fbu-oth); }
+.fbu-panel { margin: 0 0 .9rem; background: var(--fbu-surface); border-radius: 10px; padding: .75rem 1rem .5rem; }
+.fbu-panel figcaption { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .7rem; margin-bottom: .45rem; font-size: .9em; color: var(--fbu-ink); }
+.fbu-panel figcaption span { font-size: .85em; color: var(--fbu-ink-2); }
+.fbu-row { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: .9rem; align-items: center; padding: .3rem 0; }
+.fbu-label { text-align: right; font-size: .86em; color: var(--fbu-ink-2); line-height: 1.2; }
+.fbu-row.ours .fbu-label { color: var(--fbu-ink); font-weight: 600; }
+.fbu-label small { display: block; font-size: .82em; font-weight: 400; color: var(--fbu-ink-2); }
+.fbu-track { display: flex; align-items: center; height: 22px; border-left: 1px solid var(--fbu-grid); }
+.fbu-seg { height: 22px; flex: none; }
+.fbu-seg.other { border-radius: 0 4px 4px 0; }
+.fbu-val { margin-left: .5rem; font-size: .82em; white-space: nowrap; color: var(--fbu-ink); font-variant-numeric: tabular-nums; }
+.fbu-val em { font-style: normal; color: var(--fbu-den); font-weight: 700; margin-left: .4rem; }
+.fbu-val em.alt { margin-left: .7rem; }
+.fbu-val small { color: var(--fbu-ink-2); font-size: .9em; }
+.fbu-note { font-size: .8em; color: var(--fbu-ink-2); margin-top: .2rem; }
+@media (max-width: 640px) { .fbu-row { grid-template-columns: 7.5rem minmax(0, 1fr); gap: .6rem; } .fbu-label small { display: none; } }
+</style>

@@ -1,0 +1,112 @@
+{
+  "scenarios": [
+    {
+      "key": "5s-1gpu",
+      "label": "5 s \u00b7 768p \u00b7 1 GPU",
+      "detail": "T2VA, 1344\u00d7768, 124 frames (37,718 tokens), one GB200, warm median",
+      "rows": [
+        {
+          "key": "official",
+          "label": "Official pika-h3-pro",
+          "sub": "diffusers, cuDNN SDPA, fp32 VAE",
+          "denoise": 20.0,
+          "decode": 38.2,
+          "total": 59.7,
+          "official": true
+        },
+        {
+          "key": "fv",
+          "label": "FastVideo BF16",
+          "sub": "FA4 + fused H3 ops + bf16 VAE",
+          "denoise": 16.57,
+          "decode": 8.1,
+          "total": 25.06
+        },
+        {
+          "key": "nvdec",
+          "label": "+ kernels + NVFP4 decoder",
+          "sub": "fused kernels, NVFP4 VAE decoder",
+          "denoise": 15.73,
+          "decode": 1.52,
+          "total": 17.65
+        }
+      ]
+    },
+    {
+      "key": "15s-1gpu",
+      "label": "15 s \u00b7 768p \u00b7 1 GPU",
+      "detail": "T2VA, 1344\u00d7768, 362 frames (109,070 tokens), one GB200, warm median",
+      "rows": [
+        {
+          "key": "official",
+          "label": "Official pika-h3-pro",
+          "sub": "fp32 VAE",
+          "denoise": 106.4,
+          "decode": 114.0,
+          "total": 224.5,
+          "official": true
+        },
+        {
+          "key": "fv",
+          "label": "FastVideo BF16",
+          "sub": "FA4 + fused H3 ops + bf16 VAE",
+          "denoise": 91.1,
+          "decode": 11.8,
+          "total": 104.3
+        },
+        {
+          "key": "nvdec",
+          "label": "+ kernels + NVFP4 decoder",
+          "sub": "fused kernels, NVFP4 VAE decoder",
+          "denoise": 90.1,
+          "decode": 3.2,
+          "total": 94.7
+        }
+      ]
+    },
+    {
+      "key": "15s-4gpu",
+      "label": "15 s \u00b7 768p \u00b7 4 GPUs",
+      "detail": "T2VA, 1344\u00d7768, 362 frames, four GB200 (sequence parallel), warm median",
+      "rows": [
+        {
+          "key": "official1",
+          "label": "Official, 1 GPU",
+          "sub": "reference point",
+          "denoise": 106.4,
+          "decode": 114.1,
+          "total": 224.9,
+          "official": true
+        },
+        {
+          "key": "official",
+          "label": "Official, 4 GPUs",
+          "sub": "diffusers Ulysses CP",
+          "denoise": 28.0,
+          "decode": 113.8,
+          "total": 145.6,
+          "official": true
+        },
+        {
+          "key": "fv",
+          "label": "FastVideo BF16, 4 GPUs",
+          "sub": "sequence parallel DiT + VAE",
+          "denoise": 25.9,
+          "decode": 25.8,
+          "total": 53.3
+        },
+        {
+          "key": "nvdec",
+          "label": "+ kernels + NVFP4 decoder",
+          "sub": "4 GPUs",
+          "denoise": 25.3,
+          "decode": 4.9,
+          "total": 31.8
+        }
+      ],
+      "alt_base": "official1",
+      "alt_label": "vs official 1 GPU",
+      "base_label": "vs official 4 GPUs"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{{- $data := transform.Unmarshal (.Page.Resources.GetMatch "data/compare.json").Content -}}
+{{- $base := .Page.RelPermalink -}}
+<section class="fcp" data-fcp aria-label="Same prompt and seed across four inference stacks">
+  {{- if gt (len $data.clips) 1 }}
+  <div class="fcp-tabs" role="tablist">
+    {{- range $i, $c := $data.clips }}
+    <button type="button" role="tab" data-fcp-tab="{{ $i }}" aria-selected="{{ if eq $i 0 }}true{{ else }}false{{ end }}">{{ $c.label }}<small>{{ $c.task }}</small></button>
+    {{- end }}
+  </div>
+  {{- end }}
+  {{- range $i, $c := $data.clips }}
+  <div class="fcp-grid" data-fcp-panel="{{ $i }}"{{ if ne $i 0 }} hidden{{ end }}>
+    {{- range $data.arms }}
+    {{- $v := index $c.videos .key }}
+    <figure class="fcp-tile">
+      {{- if $v }}
+      <video muted playsinline loop preload="none" {{ with $v.poster }}poster="{{ $base }}{{ . }}"{{ end }} data-src="{{ $base }}{{ $v.src }}"></video>
+      {{- else }}
+      <div class="fcp-ph">Clip coming soon</div>
+      {{- end }}
+      <figcaption><b>{{ .label }}</b> <span>{{ .sub }}</span>{{ with $v }}{{ with .seconds }}<em>{{ . }} s</em>{{ end }}{{ end }}</figcaption>
+    </figure>
+    {{- end }}
+  </div>
+  {{- end }}
+  <div class="fcp-controls"><span>Same prompt, seed and resolution (768p, 5 s) on one GB200; times are end to end.</span></div>
+</section>
+<style>
+.fcp { margin: 1.5rem 0 2rem; --fcp-a: #2a78d6; --fcp-surface: #fcfcfb; --fcp-ink: #0b0b0b; --fcp-ink-2: #52514e; --fcp-grid: #e4e3df; }
+.dark .fcp { --fcp-a: #3987e5; --fcp-surface: #1a1a19; --fcp-ink: #f0efec; --fcp-ink-2: #c3c2b7; --fcp-grid: #383835; }
+.fcp-tabs { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .7rem; }
+.fcp-tabs button { font: inherit; font-size: .86em; padding: .35rem .8rem; border-radius: 10px; border: 1px solid var(--fcp-grid); background: var(--fcp-surface); color: var(--fcp-ink); cursor: pointer; text-align: left; line-height: 1.2; }
+.fcp-tabs button small { display: block; font-size: .78em; color: var(--fcp-ink-2); }
+.fcp-tabs button[aria-selected="true"] { border-color: var(--fcp-a); box-shadow: inset 0 0 0 1px var(--fcp-a); }
+.fcp-grid[hidden] { display: none !important; }
+.fcp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.fcp .fcp-tile { margin: 0 !important; position: relative; border-radius: 8px; overflow: hidden; background: #000; aspect-ratio: 16 / 9; }
+.fcp-tile video { width: 100%; height: 100%; display: block; object-fit: cover; }
+.fcp-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #8a8984; font-size: .85em; background: repeating-linear-gradient(45deg, #1d1d1c, #1d1d1c 10px, #222221 10px, #222221 20px); }
+.fcp-tile figcaption { position: absolute; left: .45rem; bottom: .4rem; right: .45rem; display: flex; gap: .35rem; align-items: baseline; font-size: .78em; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.8); }
+.fcp .fcp-tile figcaption, .fcp .fcp-tile figcaption b, .fcp .fcp-tile figcaption span { color: #fff !important; margin: 0; }
+.fcp-tile figcaption span { opacity: .8; }
+.fcp-tile figcaption em { margin-left: auto; font-style: normal; font-weight: 700; background: rgba(0,0,0,.55); padding: .05rem .4rem; border-radius: 4px; }
+.fcp-controls { display: flex; gap: .8rem; align-items: center; margin-top: .6rem; font-size: .82em; color: var(--fcp-ink-2); }
+.fcp-controls button { font: inherit; padding: .3rem .8rem; border-radius: 999px; border: 1px solid var(--fcp-grid); background: var(--fcp-surface); color: var(--fcp-ink); cursor: pointer; }
+@media (max-width: 640px) { .fcp-grid { grid-template-columns: 1fr; } }
+</style>
+<script>
+(() => {
+  document.querySelectorAll("[data-fcp]").forEach((root) => {
+    const tabs = [...root.querySelectorAll("[data-fcp-tab]")], panels = [...root.querySelectorAll("[data-fcp-panel]")];
+    const vids = (p) => [...p.querySelectorAll("video")];
+    const load = (p) => vids(p).forEach((v) => { if (!v.src && v.dataset.src) { v.src = v.dataset.src; v.preload = "auto"; } });
+    const show = (i) => {
+      panels.forEach((p, j) => { p.hidden = i !== j; if (i !== j) vids(p).forEach((v) => v.pause()); });
+      tabs.forEach((t, j) => t.setAttribute("aria-selected", i === j));
+      load(panels[i]);
+    };
+    const playPanel = (p) => { load(p); vids(p).forEach((v) => { v.currentTime = 0; v.play().catch(() => {}); }); };
+    tabs.forEach((t, i) => t.addEventListener("click", () => { show(i); playPanel(panels[i]); }));
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { playPanel(panels.find((x) => !x.hidden)); io.disconnect(); } }), { threshold: 0.25 });
+    io.observe(root);
+  });
+})();
+</script>

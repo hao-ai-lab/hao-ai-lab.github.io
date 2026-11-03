@@ -1,0 +1,125 @@
+<section class="nvx" data-nvx aria-label="Interactive NVFP4 attention quantization explorer">
+  <div class="nvx-controls">
+    <label>Shared key bias <output data-nvx-out="bias"></output>
+      <input type="range" min="0" max="4" step="0.25" value="3" data-nvx-in="bias"></label>
+    <label>Outlier channel strength <output data-nvx-out="outlier"></output>
+      <input type="range" min="1" max="16" step="1" value="6" data-nvx-in="outlier"></label>
+  </div>
+  <div class="nvx-toggles">
+    <label class="nvx-check"><input type="checkbox" data-nvx-in="smooth"><span>Smooth-K</span><small>subtract the mean key</small></label>
+    <label class="nvx-check"><input type="checkbox" data-nvx-in="had"><span>Hadamard</span><small>rotate Q and K</small></label>
+  </div>
+  <div class="nvx-grid">
+    <figure class="nvx-panel">
+      <figcaption>One NVFP4 block of a key: 16 values, one shared scale</figcaption>
+      <svg data-nvx-block viewBox="0 0 320 170" role="img"></svg>
+      <p class="nvx-small" data-nvx-blocknote></p>
+    </figure>
+    <figure class="nvx-panel">
+      <figcaption>Attention weights of one query over 12 keys</figcaption>
+      <svg data-nvx-attn viewBox="0 0 320 170" role="img"></svg>
+      <p class="nvx-small"><i class="nvx-sw exact"></i>exact BF16 <i class="nvx-sw fp4"></i>Q/K in NVFP4</p>
+    </figure>
+  </div>
+  <div class="nvx-stats">
+    <div><span data-nvx-err></span><small>FP4 attention error, mean of 100 random heads</small></div>
+    <div><span data-nvx-inv></span><small>softmax(QKᵀ) before quantization, transformed vs original</small></div>
+  </div>
+  <p class="nvx-note">Toy heads: 64 channels (four 16-value blocks), 32 keys, Gaussian values, keys share a per-channel bias and two channels are scaled up. Quantization follows FlashAttention-4's NVFP4 path: E2M1 values, one E4M3 scale per 16 channels, unit global scale; P and V stay in BF16. Everything is computed in your browser.</p>
+</section>
+<style>
+.nvx { margin: 1.5rem 0 2rem; --nvx-true: #cfcec8; --nvx-a: #2a78d6; --nvx-b: #e8833a; --nvx-surface: #fcfcfb; --nvx-ink: #0b0b0b; --nvx-ink-2: #52514e; --nvx-grid: #e4e3df; }
+.dark .nvx { --nvx-true: #4d4c48; --nvx-a: #3987e5; --nvx-b: #f0975a; --nvx-surface: #1a1a19; --nvx-ink: #f0efec; --nvx-ink-2: #c3c2b7; --nvx-grid: #383835; }
+.nvx-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: .6rem 2rem; font-size: .88em; color: var(--nvx-ink); margin-bottom: .8rem; }
+.nvx-controls label { display: flex; flex-direction: column; gap: .2rem; }
+.nvx-controls output { font-weight: 700; font-variant-numeric: tabular-nums; }
+.nvx-toggles { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: .9rem; }
+.nvx-check { display: inline-flex; align-items: center; gap: .45rem; padding: .35rem .75rem; border: 1px solid var(--nvx-grid); border-radius: 999px; background: var(--nvx-surface); font-size: .88em; color: var(--nvx-ink); cursor: pointer; user-select: none; }
+.nvx-check:has(input:checked) { border-color: var(--nvx-a); box-shadow: inset 0 0 0 1px var(--nvx-a); }
+.nvx-check input { margin: 0; accent-color: var(--nvx-a); }
+.nvx-check span { font-weight: 600; }
+.nvx-check small { color: var(--nvx-ink-2); }
+.nvx-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.nvx-panel { margin: 0; background: var(--nvx-surface); border-radius: 10px; padding: .6rem .7rem; }
+.nvx-panel figcaption { font-size: .84em; font-weight: 600; color: var(--nvx-ink); margin-bottom: .3rem; }
+.nvx-panel svg { width: 100%; height: auto; display: block; }
+.nvx-small { font-size: .78em; color: var(--nvx-ink-2); margin: .3rem 0 0; }
+.nvx-sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin: 0 .3rem 0 .6rem; vertical-align: -1px; }
+.nvx-sw.exact { background: var(--nvx-grid); outline: 1px solid var(--nvx-ink-2); } .nvx-sw.fp4 { background: var(--nvx-a); }
+.nvx-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: .8rem; }
+.nvx-stats div { background: var(--nvx-surface); border-radius: 10px; padding: .6rem .8rem; }
+.nvx-stats span { display: block; font-size: 1.6em; font-weight: 700; color: var(--nvx-ink); font-variant-numeric: tabular-nums; }
+.nvx-stats small { color: var(--nvx-ink-2); font-size: .8em; }
+.nvx-note { font-size: .8em; color: var(--nvx-ink-2); margin-top: .6rem; }
+.nvx text { font: 9px system-ui, sans-serif; fill: var(--nvx-ink-2); }
+@media (max-width: 680px) { .nvx-grid, .nvx-stats { grid-template-columns: 1fr; } }
+</style>
+<script>
+(() => {
+  const GRID = [0, 0.5, 1, 1.5, 2, 3, 4, 6], D = 64, N = 32, SHOW = 12, TRIALS = 100;
+  const e4m3 = (x) => { if (x <= 0) return 0; if (x >= 448) return 448; let e = Math.floor(Math.log2(x)); if (e < -6) e = -6; const st = 2 ** (e - 3); return Math.min(448, Math.round(x / st) * st); };
+  const qblock = (v) => { const s = e4m3(Math.max(...v.map(Math.abs)) / 6); if (!s) return { q: v.map(() => 0), s: 0 };
+    return { s, q: v.map((x) => { const t = Math.min(6, Math.abs(x) / s); let b = 0; for (const g of GRID) if (Math.abs(g - t) < Math.abs(b - t)) b = g; return Math.sign(x) * b * s; }) }; };
+  const quant = (v) => { const o = []; for (let i = 0; i < v.length; i += 16) o.push(...qblock(v.slice(i, i + 16)).q); return o; };
+  const rng = (seed) => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const gauss = (r) => Math.sqrt(-2 * Math.log(1 - r())) * Math.cos(2 * Math.PI * r());
+  const H = (() => { let h = [[1]]; while (h.length < D) h = h.map((r) => [...r, ...r]).concat(h.map((r) => [...r, ...r.map((x) => -x)])); const c = 1 / Math.sqrt(D); return h.map((r) => r.map((x) => x * c)); })();
+  const dot = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
+  const rot = (v) => v.map((_, j) => v.reduce((s, x, i) => s + x * H[i][j], 0));
+  const softmax = (z) => { const m = Math.max(...z); const e = z.map((x) => Math.exp(x - m)); const s = e.reduce((a, b) => a + b); return e.map((x) => x / s); };
+  const att = (q, K) => softmax(K.map((k) => dot(q, k) / Math.sqrt(D)));
+  const head = (seed, outlier, bias) => { const r = rng(seed); const q = Array.from({ length: D }, () => gauss(r)); const b = Array.from({ length: D }, () => gauss(r));
+    const K = Array.from({ length: N }, () => Array.from({ length: D }, (_, c) => gauss(r) * (c === 3 || c === 37 ? outlier : 1) + bias * b[c])); return { q, K }; };
+  const transform = (q, K, smooth, had) => { let K2 = K; if (smooth) { const m = Array.from({ length: D }, (_, c) => K.reduce((s, k) => s + k[c], 0) / K.length); K2 = K.map((k) => k.map((x, c) => x - m[c])); }
+    return had ? { q: rot(q), K: K2.map(rot) } : { q, K: K2 }; };
+  const relErr = (p, ph) => Math.sqrt(p.reduce((s, x, i) => s + (x - ph[i]) ** 2, 0) / p.reduce((s, x) => s + x * x, 0));
+
+  document.querySelectorAll("[data-nvx]").forEach((root) => {
+    const inp = (k) => root.querySelector(`[data-nvx-in="${k}"]`), out = (k) => root.querySelector(`[data-nvx-out="${k}"]`);
+    const svgBlock = root.querySelector("[data-nvx-block]"), svgAttn = root.querySelector("[data-nvx-attn]");
+    const ns = "http://www.w3.org/2000/svg";
+    const el = (tag, attrs, parent) => { const e = document.createElementNS(ns, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; };
+    const css = getComputedStyle(root), A = () => css.getPropertyValue("--nvx-a"), G = () => css.getPropertyValue("--nvx-grid"), I = () => css.getPropertyValue("--nvx-ink-2");
+    const render = () => {
+      const bias = +inp("bias").value, outlier = +inp("outlier").value, smooth = inp("smooth").checked, had = inp("had").checked;
+      out("bias").textContent = bias.toFixed(2); out("outlier").textContent = `${outlier}×`;
+      // sample head for the pictures
+      const h = head(7, outlier, bias), t = transform(h.q, h.K, smooth, had);
+      const key = t.K[0].slice(0, 16), { q: kq, s } = qblock(key);
+      svgBlock.replaceChildren();
+      const amax = Math.max(...key.map(Math.abs), 1e-9), y0 = 85, sc = 70 / amax, bw = 300 / 16;
+      if (s) for (const g of GRID) for (const sg of g ? [1, -1] : [1]) { const y = y0 - sg * g * s * sc; if (y > 8 && y < 162) el("line", { x1: 10, x2: 310, y1: y, y2: y, stroke: G(), "stroke-width": g ? .6 : 1 }, svgBlock); }
+      key.forEach((v, i) => {
+        const x = 10 + i * bw;
+        el("rect", { x: x + 2, width: bw - 4, y: Math.min(y0, y0 - v * sc), height: Math.max(1, Math.abs(v * sc)), fill: css.getPropertyValue("--nvx-true"), rx: 1.5 }, svgBlock);
+        if (kq[i] === 0 && v !== 0) el("circle", { cx: x + bw / 2, cy: y0, r: 3.2, fill: css.getPropertyValue("--nvx-b") }, svgBlock);
+        else el("rect", { x: x + 6, width: bw - 12, y: Math.min(y0, y0 - kq[i] * sc), height: Math.max(1, Math.abs(kq[i] * sc)), fill: A(), rx: 1 }, svgBlock);
+      });
+      const zeros = key.filter((v, i) => kq[i] === 0 && v !== 0).length;
+      root.querySelector("[data-nvx-blocknote]").textContent = `Light bars: true values. Dark bars: their 4-bit values, snapped to the grid lines. ${zeros ? `${zeros} of 16 values rounded to zero (orange dots).` : "No values rounded to zero."}`;
+      // attention picture
+      const p = att(h.q, h.K).slice(0, SHOW), ph = att(quant(t.q), t.K.map(quant)).slice(0, SHOW);
+      svgAttn.replaceChildren();
+      const pm = Math.max(...p, ...ph, 1e-9), aw = 300 / SHOW;
+      p.forEach((v, i) => {
+        const x = 10 + i * aw;
+        el("rect", { x: x + 2, width: aw / 2 - 2, y: 155 - 140 * v / pm, height: 140 * v / pm, fill: G(), stroke: I(), "stroke-width": .6 }, svgAttn);
+        el("rect", { x: x + aw / 2, width: aw / 2 - 2, y: 155 - 140 * ph[i] / pm, height: 140 * ph[i] / pm, fill: A() }, svgAttn);
+      });
+      el("line", { x1: 10, x2: 310, y1: 155, y2: 155, stroke: I(), "stroke-width": .6 }, svgAttn);
+      // statistics
+      let tot = 0, inv = 0;
+      for (let k = 0; k < TRIALS; k++) {
+        const hh = head(1000 + k, outlier, bias), tt = transform(hh.q, hh.K, smooth, had);
+        const pe = att(hh.q, hh.K);
+        tot += relErr(pe, att(quant(tt.q), tt.K.map(quant)));
+        if (k < 10) { const pt = att(tt.q, tt.K); inv = Math.max(inv, ...pe.map((x, i) => Math.abs(x - pt[i]))); }
+      }
+      root.querySelector("[data-nvx-err]").textContent = `${(100 * tot / TRIALS).toFixed(1)}%`;
+      root.querySelector("[data-nvx-inv]").textContent = inv < 1e-9 ? "✓ identical" : `max diff ${inv.toExponential(1)}`;
+    };
+    root.querySelectorAll("[data-nvx-in]").forEach((x) => x.addEventListener("input", render));
+    render();
+  });
+})();
+</script>
