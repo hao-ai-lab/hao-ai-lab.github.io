@@ -20,6 +20,8 @@ summary = "FastAFD is an open-source serving prototype for large-scale Attention
      url = "https://twitter.com/haoailab"
 +++
 
+{{< socialBadges arxiv-index="2611.07149" >}}
+
 **TL;DR**
 
 One major challenge to serve the MoE model today lies in the heterogeneity of attention and MoE layer. Attention is constrained by KV-cache capacity: as context length grows, fewer active requests fit in a decode batch. The MoE layer, however, needs a sufficiently large batch to keep expert GEMMs efficient. As context length grows, the active decode batch shrinks, leaving attention largely dominated by KV-cache reads while MoE loses the token volume needed for efficient expert execution.
