@@ -38,6 +38,8 @@ summary: people
 
 {{< lab_member name="Yuxuan Zhang" role="PhD Student" image="yuxuan_zhang.jpg" academic="https://yuxuandexter.github.io/" twitter="https://x.com/Yuxuan_Zhang13">}}
 
+{{< lab_member name="Yuanbo Yang" role="PhD Student" image="yuanbo_yang.jpg" academic="https://freemty.github.io/" twitter="https://x.com/yuanboyang60742">}}
+
 {{< lab_member name="Yu-Yang Qian" role="Visiting PhD Student" image="yu_yang_qian.jpg" academic="https://www.lamda.nju.edu.cn/qianyy/" twitter="https://x.com/YuYangQian_ai">}}
 
 {{< lab_member name="Yixin Huang" role="Master Intern" image="yixin_huang.jpg" academic="https://yixinhuang48.github.io" twitter="https://x.com/Yixinhuang48">}}
