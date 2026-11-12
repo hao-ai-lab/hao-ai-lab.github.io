@@ -48,7 +48,7 @@ Each row is one machine. The left clip is FastH3 V2 and the right clip is FastH3
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="rtx5090/v2-nvfp4-corgi-weather.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 V2 on RTX 5090">
-        <source src="img/videos/rtx5090/v2-nvfp4-corgi-weather.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--rtx5090--v2-nvfp4-corgi-weather.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption><b>V2 · NVFP4</b><span>14.8 s</span></figcaption>
@@ -56,7 +56,7 @@ Each row is one machine. The left clip is FastH3 V2 and the right clip is FastH3
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="rtx5090/trim-nvfp4-corgi-weather.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 Trim on RTX 5090">
-        <source src="img/videos/rtx5090/trim-nvfp4-corgi-weather.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--rtx5090--trim-nvfp4-corgi-weather.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption><b>Trim · NVFP4</b><span>13.4 s</span></figcaption>
@@ -65,7 +65,7 @@ Each row is one machine. The left clip is FastH3 V2 and the right clip is FastH3
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="rtx-pro-6000/v2-nvfp4-corgi-weather.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 V2 on RTX PRO 6000">
-        <source src="img/videos/rtx-pro-6000/v2-nvfp4-corgi-weather.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--rtx-pro-6000--v2-nvfp4-corgi-weather.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption><b>V2 · NVFP4</b><span>13.5 s</span></figcaption>
@@ -73,7 +73,7 @@ Each row is one machine. The left clip is FastH3 V2 and the right clip is FastH3
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="rtx-pro-6000/trim-nvfp4-corgi-weather.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 Trim on RTX PRO 6000">
-        <source src="img/videos/rtx-pro-6000/trim-nvfp4-corgi-weather.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--rtx-pro-6000--trim-nvfp4-corgi-weather.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption><b>Trim · NVFP4</b><span>12.0 s</span></figcaption>
@@ -82,7 +82,7 @@ Each row is one machine. The left clip is FastH3 V2 and the right clip is FastH3
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="rtx4090-24gb/v2-fp8-corgi-weather.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 V2 on RTX 4090">
-        <source src="img/videos/rtx4090-24gb/v2-fp8-corgi-weather.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--rtx4090-24gb--v2-fp8-corgi-weather.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption><b>V2 · FP8</b><span>54.6 s</span></figcaption>
@@ -90,7 +90,7 @@ Each row is one machine. The left clip is FastH3 V2 and the right clip is FastH3
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="rtx4090-24gb/trim-fp8-corgi-weather.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 Trim on RTX 4090">
-        <source src="img/videos/rtx4090-24gb/trim-fp8-corgi-weather.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--rtx4090-24gb--trim-fp8-corgi-weather.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption><b>Trim · FP8</b><span>43.9 s</span></figcaption>
@@ -99,7 +99,7 @@ Each row is one machine. The left clip is FastH3 V2 and the right clip is FastH3
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="spark-1x/v2-nvfp4-corgi-weather.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 V2 on DGX Spark">
-        <source src="img/videos/spark-1x/v2-nvfp4-corgi-weather.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--spark-1x--v2-nvfp4-corgi-weather.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption><b>V2 · NVFP4</b><span>141.4 s</span></figcaption>
@@ -107,7 +107,7 @@ Each row is one machine. The left clip is FastH3 V2 and the right clip is FastH3
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="spark-1x/trim-nvfp4-corgi-weather.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 Trim on DGX Spark">
-        <source src="img/videos/spark-1x/trim-nvfp4-corgi-weather.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--spark-1x--trim-nvfp4-corgi-weather.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption><b>Trim · NVFP4</b><span>125.8 s</span></figcaption>
@@ -116,7 +116,7 @@ Each row is one machine. The left clip is FastH3 V2 and the right clip is FastH3
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="m4max/v2-int6-corgi-weather.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 V2 on Mac (M4 Max)">
-        <source src="img/videos/m4max/v2-int6-corgi-weather.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--m4max--v2-int6-corgi-weather.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption><b>V2 · INT6</b><span></span></figcaption>
@@ -124,7 +124,7 @@ Each row is one machine. The left clip is FastH3 V2 and the right clip is FastH3
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="m4max/trim-int6-corgi-weather.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 Trim on Mac (M4 Max)">
-        <source src="img/videos/m4max/trim-int6-corgi-weather.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--m4max--trim-int6-corgi-weather.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption><b>Trim · INT6</b><span>925.2 s</span></figcaption>
@@ -302,7 +302,7 @@ FastH3 V2 (top) and FastH3 Trim (bottom) on one RTX 5090, 832×480, 5 s with aud
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="rtx5090/v2-nvfp4-street-food-jingle.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 V2 on RTX 5090: Street-food jingle">
-        <source src="img/videos/rtx5090/v2-nvfp4-street-food-jingle.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--rtx5090--v2-nvfp4-street-food-jingle.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption>V2 · Street-food jingle</figcaption>
@@ -310,7 +310,7 @@ FastH3 V2 (top) and FastH3 Trim (bottom) on one RTX 5090, 832×480, 5 s with aud
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="rtx5090/v2-nvfp4-parrot-pirate.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 V2 on RTX 5090: Pirate and parrot">
-        <source src="img/videos/rtx5090/v2-nvfp4-parrot-pirate.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--rtx5090--v2-nvfp4-parrot-pirate.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption>V2 · Pirate and parrot</figcaption>
@@ -318,7 +318,7 @@ FastH3 V2 (top) and FastH3 Trim (bottom) on one RTX 5090, 832×480, 5 s with aud
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="rtx5090/v2-nvfp4-grandma-dj.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 V2 on RTX 5090: Grandma DJ">
-        <source src="img/videos/rtx5090/v2-nvfp4-grandma-dj.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--rtx5090--v2-nvfp4-grandma-dj.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption>V2 · Grandma DJ</figcaption>
@@ -326,7 +326,7 @@ FastH3 V2 (top) and FastH3 Trim (bottom) on one RTX 5090, 832×480, 5 s with aud
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="rtx5090/trim-nvfp4-street-food-jingle.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 Trim on RTX 5090: Street-food jingle">
-        <source src="img/videos/rtx5090/trim-nvfp4-street-food-jingle.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--rtx5090--trim-nvfp4-street-food-jingle.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption>Trim · Street-food jingle</figcaption>
@@ -334,7 +334,7 @@ FastH3 V2 (top) and FastH3 Trim (bottom) on one RTX 5090, 832×480, 5 s with aud
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="rtx5090/trim-nvfp4-parrot-pirate.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 Trim on RTX 5090: Pirate and parrot">
-        <source src="img/videos/rtx5090/trim-nvfp4-parrot-pirate.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--rtx5090--trim-nvfp4-parrot-pirate.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption>Trim · Pirate and parrot</figcaption>
@@ -342,7 +342,7 @@ FastH3 V2 (top) and FastH3 Trim (bottom) on one RTX 5090, 832×480, 5 s with aud
   <figure class="fasth3-rtx-clip">
     <div class="fasth3-rtx-frame" data-file="rtx5090/trim-nvfp4-grandma-dj.mp4">
       <video controls playsinline preload="metadata" aria-label="FastH3 Trim on RTX 5090: Grandma DJ">
-        <source src="img/videos/rtx5090/trim-nvfp4-grandma-dj.mp4#t=0.1" type="video/mp4">
+        <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-rtx--img--videos--rtx5090--trim-nvfp4-grandma-dj.mp4#t=0.1" type="video/mp4">
       </video>
     </div>
     <figcaption>Trim · Grandma DJ</figcaption>

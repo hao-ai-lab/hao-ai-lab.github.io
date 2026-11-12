@@ -230,7 +230,7 @@ Some records from the first 32 hours: the fastest anyone killed Jev in Block UHC
 {{< /justify >}}
 
 <video controls preload="metadata" poster="img/trailer_poster.jpg" style="width: 100%; border-radius: 6px;">
-  <source src="img/trailer.mp4" type="video/mp4">
+  <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/mcjev--img--trailer.mp4" type="video/mp4">
 </video>
 <p style="text-align:center; color:#808080; font-size:16px;">Figure 14. 41 seconds of real rounds: a lava trap, a dash across lava at half a heart, a comeback at 4 HP.</p>
 
@@ -240,8 +240,8 @@ Some records from the first 32 hours: the fastest anyone killed Jev in Block UHC
 @media (max-width: 700px) { .mcjev-grid { grid-template-columns: 1fr; } }
 </style>
 <div class="mcjev-grid">
-  <video autoplay muted loop playsinline preload="metadata" poster="img/loop_counter_poster.jpg" src="img/loop_counter.mp4" aria-label="Jev fights from behind cover and wins"></video>
-  <video autoplay muted loop playsinline preload="metadata" poster="img/loop_neon_poster.jpg" src="img/loop_neon.mp4" aria-label="Jev comes through the player's lava and wins"></video>
+  <video autoplay muted loop playsinline preload="metadata" poster="img/loop_counter_poster.jpg" aria-label="Jev fights from behind cover and wins"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/mcjev--img--loop_counter.mp4" type="video/mp4"></video>
+  <video autoplay muted loop playsinline preload="metadata" poster="img/loop_neon_poster.jpg" aria-label="Jev comes through the player's lava and wins"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/mcjev--img--loop_neon.mp4" type="video/mp4"></video>
 </div>
 <p style="text-align:center; color:#808080; font-size:16px;">Figure 15. Two real Block UHC rounds, players' view (looping clips). Left: Jev fights from behind its cover, trades hits and wins. Right: the player pours lava around a pillar; Jev comes through it, sword first, and wins in 19.4 seconds.</p>
 

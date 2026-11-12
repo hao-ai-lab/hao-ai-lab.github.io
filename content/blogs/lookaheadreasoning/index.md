@@ -36,7 +36,7 @@ But in reality, token-level SD quickly hits limits. It only works well if a whol
 
 {{< /justify >}}
 
-{{< image src="img/sd_two_dim_product.gif" alt="background" width="100%" title="Figure 1: Theoretical speedup under joint allocation. Pure Speculative Decoding (SD) dedicates the entire budget to token-level drafting, while combining Step-level Lookahead with SD splits the budget across orthogonal dimensions. This joint allocation yields multiplicative gains, higher peak speedups, and delays saturation—allowing more effective use of high-throughput GPUs such as H200, B200, and Rubin.">}}
+{{< image src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/lookaheadreasoning--img--sd_two_dim_product.gif" alt="background" width="100%" title="Figure 1: Theoretical speedup under joint allocation. Pure Speculative Decoding (SD) dedicates the entire budget to token-level drafting, while combining Step-level Lookahead with SD splits the budget across orthogonal dimensions. This joint allocation yields multiplicative gains, higher peak speedups, and delays saturation—allowing more effective use of high-throughput GPUs such as H200, B200, and Rubin.">}}
 
 {{< justify >}}
 

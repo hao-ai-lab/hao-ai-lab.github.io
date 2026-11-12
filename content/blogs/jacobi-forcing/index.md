@@ -28,8 +28,8 @@ draft = false
 
 
 {{< two_images
-    src1="img/ar_example_demo.gif"
-    src2="img/jacobi_forcing_example_demo.gif"
+    src1="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/jacobi-forcing--img--ar_example_demo.gif"
+    src2="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/jacobi-forcing--img--jacobi_forcing_example_demo.gif"
     alt1="ar_demo"
     alt2="jacobi_forcing_demo"
     width1="50%"

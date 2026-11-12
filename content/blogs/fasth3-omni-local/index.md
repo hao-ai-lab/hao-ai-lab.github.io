@@ -34,7 +34,7 @@ Today it comes to your desk. We ran the **exact same requests**, with identical 
   <video controls playsinline preload="metadata" poster="media/hero/spark-montage-poster.jpg"
     aria-label="FastH3 Omni montage generated on one and two DGX Sparks"
     style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
-    <source src="media/hero/spark-montage-768p.mp4" type="video/mp4">
+    <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-omni-local--media--hero--spark-montage-768p.mp4" type="video/mp4">
     Your browser does not support MP4 video with audio.
   </video>
   <p style="margin: 0.5rem 0 0; text-align: center; font-size: 0.9em; opacity: 0.75;">Every clip in this video was generated on DGX Spark, one or two Sparks as labeled, from photos, video clips and voices. Turn the audio on.</p>
@@ -112,9 +112,9 @@ The reference canvas is therefore the biggest lever you control. `--reference-ma
 
 <div class="omni-output-grid" style="grid-template-columns: repeat(2, minmax(0,1fr));">
   <figure class="omni-output"><figcaption><strong>Trained reference canvas</strong><span>M5 Max · 19.5 min</span></figcaption>
-    <video controls playsinline preload="none" poster="media/posters/m5max-36l-image-480p.jpg" aria-label="M5 Max output with the trained reference canvas"><source src="media/outputs/m5max-36l-image-480p.mp4" type="video/mp4"></video></figure>
+    <video controls playsinline preload="none" poster="media/posters/m5max-36l-image-480p.jpg" aria-label="M5 Max output with the trained reference canvas"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-omni-local--media--outputs--m5max-36l-image-480p.mp4" type="video/mp4"></video></figure>
   <figure class="omni-output"><figcaption><strong><code>--reference-max-pixels match</code></strong><span>M5 Max · 4.7 min</span></figcaption>
-    <video controls playsinline preload="none" poster="media/posters/m5max-36l-image-480p-match.jpg" aria-label="M5 Max output with the reference canvas matched to the clip"><source src="media/outputs/m5max-36l-image-480p-match.mp4" type="video/mp4"></video></figure>
+    <video controls playsinline preload="none" poster="media/posters/m5max-36l-image-480p-match.jpg" aria-label="M5 Max output with the reference canvas matched to the clip"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-omni-local--media--outputs--m5max-36l-image-480p-match.mp4" type="video/mp4"></video></figure>
 </div>
 
 ## How it runs on each machine

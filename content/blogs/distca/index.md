@@ -105,7 +105,7 @@ At first glance, disaggregation seems to introduce some additional overheads: (1
 **2. CA communication cost can be much lower than context parallel.** Sending attention to/from the attention server seems to introduce more overhead compared to context parallelism. But we observe the opposite: unlike an all-gather, which sends all the KVs to each device, rebalancing CA only requires sending the necessary QKV tensors to other devices to effectively balance the computation. As shown in the animation, CAD can shard a long document and only move the shard large enough to achieve compute balance across different batches. This makes CAD’s network communication much lower compared to context parallel.
 
 <!-- cad-network-less.gif -->
-{{< image src="img/cad-network-less.gif" alt="cad-network-less" width="100%" title="Figure 8. CAD can shard the long document and only move the shard large enough to achieve compute balance across different batches, making network communication much lower compared to context parallel.">}}
+{{< image src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/distca--img--cad-network-less.gif" alt="cad-network-less" width="100%" title="Figure 8. CAD can shard the long document and only move the shard large enough to achieve compute balance across different batches, making network communication much lower compared to context parallel.">}}
 
 **3. Ping-pong pipelining can hide communication (almost entirely).**
 
@@ -133,7 +133,7 @@ We design the system DistCA that puts CAD as the first-class primitive in the LL
 Since CA only depends on QKV tensors, an attention server does not need to hold any model weights for the computation, and is also stateless because neither the forward nor the backward pass needs to store any state in it. At each iteration (Figure 11), the DistCA scheduler designs the optimal plan to shard and distribute CA tasks to attention servers. Each worker first runs the pre core attention (Pre-CA) modules, and then dispatches the QKV tensors according to the scheduler plan to the attention server via all-to-all communication. After the attention tasks are all done, the attention server sends the CA outputs back to the original layout and continues to run the post core attention parts. The DistCA runtime manages the model forward logic, network dispatch for CA tasks, and uses ping-pong parallel to overlap network communication with computation.
 
 
-{{< image src="img/distca.gif" alt="distca" width="100%" title="Figure 11. DistCA architecture and how it works.">}}
+{{< image src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/distca--img--distca.gif" alt="distca" width="100%" title="Figure 11. DistCA architecture and how it works.">}}
 
 One challenge is that assigning the attention servers into a dedicated pool of GPUs wastes a lot of memory and also underutilizes GPUs. To solve this, DistCA makes each GPU time-share between the CA and non-CA phases: each GPU alternates between the role of an attention server and a normal worker. This maintains high memory and compute utilization and balanced computation across devices.
 

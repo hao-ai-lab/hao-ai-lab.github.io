@@ -199,7 +199,7 @@ Once we scored existing methods using AUP, the landscape became clearer (see Tab
 
 
 {{< justify >}}
-{{< image src="img/example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Figure 2. Demo of our d3LLM, which achieves up to 5× speedup over the AR (Qwen-2.5-7B-it) on H100 GPU and 3.6× speedup on A100 GPU. You can try 🕹️ [our demo](https://d3llm-team.github.io/).">}}
+{{< image src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/text-diffusion--img--example.gif" alt="d3LLM: Ultra-fast diffusion language model" width="100%" title="Figure 2. Demo of our d3LLM, which achieves up to 5× speedup over the AR (Qwen-2.5-7B-it) on H100 GPU and 3.6× speedup on A100 GPU. You can try 🕹️ [our demo](https://d3llm-team.github.io/).">}}
 
 {{< /justify >}}
 

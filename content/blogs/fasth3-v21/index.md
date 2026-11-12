@@ -34,7 +34,7 @@ Together they form the foundation for tomorrow's release of **FastH3 Omni**, whi
 
 <figure class="v21-hero-video">
   <video controls playsinline preload="metadata" poster="img/cover.png" width="1344" height="768" aria-label="FastH3-QAD-v2 world tour generated on two DGX Sparks">
-    <source src="img/videos/world-tour.mp4#t=0.1" type="video/mp4">
+    <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-v21--img--videos--world-tour.mp4#t=0.1" type="video/mp4">
   </video>
   <figcaption>Six 10 s clips generated on two DGX Sparks with FastH3-QAD-v2 and both NVFP4 decoders. Turn the audio on.</figcaption>
 </figure>

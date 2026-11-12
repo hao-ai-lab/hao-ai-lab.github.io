@@ -70,7 +70,7 @@ Before we dive deeper, let’s revisit the lifecycle of a request in LLM serving
 
 LLM serving systems usually batch prefill and decoding all together using a technique called [**iteration-level scheduling**](https://www.usenix.org/conference/osdi22/presentation/yu) or [**continuous batching**](https://www.anyscale.com/blog/continuous-batching-llm-inference#continuous-batching), so that the GPUs process a batch size as large as possible, run one iteration, and generate one token for all of these requests. This technique effectively enhances the overall throughput (tokens per second) and is widely adopted in popular serving systems such as vLLM and TensorRT-LLM. 
 
-{{< image src="img/distserve-anime-colocate-crop.gif" alt="prefill_decode_process" width="100%" title="Figure 2. How requests get processed in traditional LLM serving systems.">}}
+{{< image src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/distserve--img--distserve-anime-colocate-crop.gif" alt="prefill_decode_process" width="100%" title="Figure 2. How requests get processed in traditional LLM serving systems.">}}
 
 
 However, **the two phases have very distinct characteristics in computation.** Prefill is very compute-bound, meaning a small batch of prefills or even a single long enough prefill will easily saturate GPU computation. On the other hand, decoding needs a much bigger batch size to hit the compute bound, and is more easily subject to the memory bandwidth limit of the GPU. 
@@ -109,7 +109,7 @@ The intuition is simple: disaggregating prefill and decode into different GPUs a
 
 Figure 5 illustrates how a request is processed in such a disaggregated system. When a request arrives in the system, it first goes to a prefill worker and completes its prefill phase. Then the system migrates its intermediate states (mainly [KV Cache](https://medium.com/@joaolages/kv-caching-explained-276520203249)) to a **decode worker,** and multiple decode steps are taken to generate subsequent tokens. The request leaves the system once it finishes generation. 
 
-{{< image src="img/distserve_anime-crop.gif" alt="disaggregation" width="100%" title="Figure 5. How requests get processed when prefill/decode is disaggregated.">}}
+{{< image src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/distserve--img--distserve_anime-crop.gif" alt="disaggregation" width="100%" title="Figure 5. How requests get processed when prefill/decode is disaggregated.">}}
 
 Let’s go through a simple experiment to see why disaggregation is beneficial. We serve a 13B LLM on a single A100-80GB GPU with a synthetic workload of inputs of length 512 and output length 64 following [Poisson arrival](https://en.wikipedia.org/wiki/Poisson_point_process). We gradually increase the request rates (x-axis) and measure how the two latencies (P90 TTFT and P90 TPOT, y-axis) change in Figure 6.
 
