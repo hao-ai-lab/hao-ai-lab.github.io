@@ -199,22 +199,22 @@ On a 10 s/1K request, DiT time on GPU 0 falls from 10.2 s with BF16 to 8.5 s, an
 The clips compare UniServe's BF16 (left) and NVFP4 (right) outputs for the same benchmark requests, 10 seconds with 1K-token prompts, from the eight-RTX PRO 6000 latency runs.
 
 <figure>
-<video style="width: 100%; height: auto;" controls muted loop playsinline preload="metadata" poster="img/videos/market-poster.jpg" src="img/videos/market-side-by-side.mp4"></video>
+<video style="width: 100%; height: auto;" controls muted loop playsinline preload="metadata" poster="img/videos/market-poster.jpg"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/uniserve-fasth3--img--videos--market-side-by-side.mp4" type="video/mp4"></video>
 <figcaption style="font-size: 16px; font-weight: normal; color: #808080; text-align: center;">Market: BF16 (left) and NVFP4 (right).</figcaption>
 </figure>
 
 <figure>
-<video style="width: 100%; height: auto;" controls muted loop playsinline preload="metadata" poster="img/videos/percussion-poster.jpg" src="img/videos/percussion-side-by-side.mp4"></video>
+<video style="width: 100%; height: auto;" controls muted loop playsinline preload="metadata" poster="img/videos/percussion-poster.jpg"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/uniserve-fasth3--img--videos--percussion-side-by-side.mp4" type="video/mp4"></video>
 <figcaption style="font-size: 16px; font-weight: normal; color: #808080; text-align: center;">Percussion performance: BF16 (left) and NVFP4 (right).</figcaption>
 </figure>
 
 <figure>
-<video style="width: 100%; height: auto;" controls muted loop playsinline preload="metadata" poster="img/videos/river-poster.jpg" src="img/videos/river-side-by-side.mp4"></video>
+<video style="width: 100%; height: auto;" controls muted loop playsinline preload="metadata" poster="img/videos/river-poster.jpg"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/uniserve-fasth3--img--videos--river-side-by-side.mp4" type="video/mp4"></video>
 <figcaption style="font-size: 16px; font-weight: normal; color: #808080; text-align: center;">River: BF16 (left) and NVFP4 (right).</figcaption>
 </figure>
 
 <figure>
-<video style="width: 100%; height: auto;" controls muted loop playsinline preload="metadata" poster="img/videos/ceramics-poster.jpg" src="img/videos/ceramics-side-by-side.mp4"></video>
+<video style="width: 100%; height: auto;" controls muted loop playsinline preload="metadata" poster="img/videos/ceramics-poster.jpg"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/uniserve-fasth3--img--videos--ceramics-side-by-side.mp4" type="video/mp4"></video>
 <figcaption style="font-size: 16px; font-weight: normal; color: #808080; text-align: center;">Ceramics studio: BF16 (left) and NVFP4 (right).</figcaption>
 </figure>
 

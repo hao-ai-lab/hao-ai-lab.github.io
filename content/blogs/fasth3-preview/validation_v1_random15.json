@@ -10,7 +10,7 @@
     {
       "index": 5,
       "sample_id": "t2va-2026082050-013096",
-      "video": "img/validation_v1_random15/005_t2va-2026082050-013096.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--005_t2va-2026082050-013096.mp4",
       "width": 1344,
       "height": 768,
       "frames": 208,
@@ -24,7 +24,7 @@
     {
       "index": 12,
       "sample_id": "t2va-0020260818-000687",
-      "video": "img/validation_v1_random15/012_t2va-0020260818-000687.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--012_t2va-0020260818-000687.mp4",
       "width": 1344,
       "height": 768,
       "frames": 294,
@@ -38,7 +38,7 @@
     {
       "index": 13,
       "sample_id": "t2va-0020260818-003059",
-      "video": "img/validation_v1_random15/013_t2va-0020260818-003059.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--013_t2va-0020260818-003059.mp4",
       "width": 1344,
       "height": 768,
       "frames": 259,
@@ -52,7 +52,7 @@
     {
       "index": 32,
       "sample_id": "0006111-941cf1ad",
-      "video": "img/validation_v1_random15/032_0006111-941cf1ad.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--032_0006111-941cf1ad.mp4",
       "width": 1344,
       "height": 768,
       "frames": 124,
@@ -66,7 +66,7 @@
     {
       "index": 33,
       "sample_id": "0007961-d110daef",
-      "video": "img/validation_v1_random15/033_0007961-d110daef.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--033_0007961-d110daef.mp4",
       "width": 1344,
       "height": 768,
       "frames": 124,
@@ -80,7 +80,7 @@
     {
       "index": 36,
       "sample_id": "0009870-bc7e18a0",
-      "video": "img/validation_v1_random15/036_0009870-bc7e18a0.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--036_0009870-bc7e18a0.mp4",
       "width": 1344,
       "height": 768,
       "frames": 124,
@@ -94,7 +94,7 @@
     {
       "index": 39,
       "sample_id": "0012393-a6436546",
-      "video": "img/validation_v1_random15/039_0012393-a6436546.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--039_0012393-a6436546.mp4",
       "width": 1344,
       "height": 768,
       "frames": 124,
@@ -108,7 +108,7 @@
     {
       "index": 40,
       "sample_id": "0014109-895e5280",
-      "video": "img/validation_v1_random15/040_0014109-895e5280.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--040_0014109-895e5280.mp4",
       "width": 1344,
       "height": 768,
       "frames": 124,
@@ -122,7 +122,7 @@
     {
       "index": 42,
       "sample_id": "0016127-d5aeea65",
-      "video": "img/validation_v1_random15/042_0016127-d5aeea65.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--042_0016127-d5aeea65.mp4",
       "width": 1344,
       "height": 768,
       "frames": 124,
@@ -136,7 +136,7 @@
     {
       "index": 49,
       "sample_id": "vidprom-000214-000225",
-      "video": "img/validation_v1_random15/049_vidprom-000214-000225.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--049_vidprom-000214-000225.mp4",
       "width": 1344,
       "height": 768,
       "frames": 345,
@@ -150,7 +150,7 @@
     {
       "index": 59,
       "sample_id": "vidprom-000215-000236",
-      "video": "img/validation_v1_random15/059_vidprom-000215-000236.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--059_vidprom-000215-000236.mp4",
       "width": 1344,
       "height": 768,
       "frames": 345,
@@ -164,7 +164,7 @@
     {
       "index": 0,
       "sample_id": "t2va-2026082050-002847",
-      "video": "img/validation_v1_random15/000_t2va-2026082050-002847.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--000_t2va-2026082050-002847.mp4",
       "width": 768,
       "height": 1344,
       "frames": 294,
@@ -178,7 +178,7 @@
     {
       "index": 2,
       "sample_id": "t2va-2026082050-007339",
-      "video": "img/validation_v1_random15/002_t2va-2026082050-007339.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--002_t2va-2026082050-007339.mp4",
       "width": 768,
       "height": 768,
       "frames": 141,
@@ -192,7 +192,7 @@
     {
       "index": 9,
       "sample_id": "t2va-2026082050-019376",
-      "video": "img/validation_v1_random15/009_t2va-2026082050-019376.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--009_t2va-2026082050-019376.mp4",
       "width": 768,
       "height": 1024,
       "frames": 328,
@@ -206,7 +206,7 @@
     {
       "index": 15,
       "sample_id": "t2va-0020260818-004321",
-      "video": "img/validation_v1_random15/015_t2va-0020260818-004321.mp4",
+      "video": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--validation_v1_random15--015_t2va-0020260818-004321.mp4",
       "width": 1024,
       "height": 768,
       "frames": 141,

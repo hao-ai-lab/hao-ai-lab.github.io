@@ -20,7 +20,7 @@ If Moore’s law says compute doubles every ~18 months, then November 2025 is a 
 
 Behind the scenes, much of this architectural shift can be traced back to a simple but powerful idea we explored in [**DistServe**](https://hao-ai-lab.github.io/blogs/distserve/). This blog post is our field report as the original designers of disaggregated serving: how prefill-decode disaggregation evolved from research to production, what actually shipped (and what didn’t), and where the design space is heading as LLM workloads continue to scale. We’ll revisit the origin story, trace how disaggregation became the default playbook for large-scale LLM serving infrastructure, and sketch the next frontiers of disaggregation.
 
-{{< image src="img/00-distserve_anime-crop.gif" alt="scaling" width="100%" title="Figure 1. How prefill-decode disaggregation work in a nutshell.">}}
+{{< image src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/distserve-retro--img--00-distserve_anime-crop.gif" alt="scaling" width="100%" title="Figure 1. How prefill-decode disaggregation work in a nutshell.">}}
 
 
 ## From Colocation to Prefill-Decode Disaggregation

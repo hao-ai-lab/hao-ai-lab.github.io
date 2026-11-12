@@ -42,7 +42,7 @@ Publication checklist (remove before publishing):
   <video controls playsinline preload="metadata"
     aria-label="Garfield announces the open-source FastH3 four-step release"
     style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
-    <source src="img/hero/000_garfield_fasth3_open_source.mp4" type="video/mp4">
+    <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-preview--img--hero--000_garfield_fasth3_open_source.mp4" type="video/mp4">
     Your browser does not support MP4 video with audio.
   </video>
 </div>

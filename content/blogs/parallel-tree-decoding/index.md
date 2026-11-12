@@ -116,7 +116,7 @@ We train with a causal mask over selected anchor positions, with each anchor exp
 Both JetSpec and diffusion-style draft heads can spend the same draft budget; the difference is the quality of the tree that budget buys. A block-diffusion head produces all positions from one shared hidden state with no causal mask between depths, so a depth-2 distribution may never condition on the token chosen at depth 1. When two independently likely tokens cannot follow each other, the surrogate can still promote their composition to the top of the tree. JetSpec’s causal mask anchors each position to its branch prefix, so the verifier sees branches the target is more likely to accept.
 {{< /justify >}}
 
-{{< image src="img/tree_construction_dark.gif" alt="jetspec-treewalk" width="100%" title="Figure 4: One JetSpec drafting round. The draft head keeps multiple continuations in one pass; the frozen target verifies the whole tree and accepts the longest matching prefix.">}}
+{{< image src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/parallel-tree-decoding--img--tree_construction_dark.gif" alt="jetspec-treewalk" width="100%" title="Figure 4: One JetSpec drafting round. The draft head keeps multiple continuations in one pass; the frozen target verifies the whole tree and accepts the longest matching prefix.">}}
 
 
 
@@ -214,7 +214,7 @@ We further implement paged FlashAttention kernels in both [Triton](https://githu
 {{< /justify >}}
 
 
-{{< image src="img/engine_demo_dark.gif" alt="jetspec_engine_demo" width="100%" title="Figure 5: JetSpec deployed on vLLM using a single B200 with Qwen3-8B, MATH-500, batch 1, budget 127, providing a throughput at around 1000 TPS on MATH-500.">}}
+{{< image src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/parallel-tree-decoding--img--engine_demo_dark.gif" alt="jetspec_engine_demo" width="100%" title="Figure 5: JetSpec deployed on vLLM using a single B200 with Qwen3-8B, MATH-500, batch 1, budget 127, providing a throughput at around 1000 TPS on MATH-500.">}}
 
 
 

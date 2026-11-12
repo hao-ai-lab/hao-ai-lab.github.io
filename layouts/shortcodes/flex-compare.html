@@ -14,7 +14,7 @@
     {{- $v := index $c.videos .key }}
     <figure class="fcp-tile">
       {{- if $v }}
-      <video muted playsinline loop preload="none" {{ with $v.poster }}poster="{{ $base }}{{ . }}"{{ end }} data-src="{{ $base }}{{ $v.src }}"></video>
+      <video muted playsinline loop preload="none" {{ with $v.poster }}poster="{{ $base }}{{ . }}"{{ end }}><source data-src="{{ cond (urls.Parse $v.src).IsAbs $v.src (print $base $v.src) }}" type="video/mp4"></video>
       {{- else }}
       <div class="fcp-ph">Clip coming soon</div>
       {{- end }}
@@ -50,7 +50,14 @@
   document.querySelectorAll("[data-fcp]").forEach((root) => {
     const tabs = [...root.querySelectorAll("[data-fcp-tab]")], panels = [...root.querySelectorAll("[data-fcp-panel]")];
     const vids = (p) => [...p.querySelectorAll("video")];
-    const load = (p) => vids(p).forEach((v) => { if (!v.src && v.dataset.src) { v.src = v.dataset.src; v.preload = "auto"; } });
+    const load = (p) => vids(p).forEach((video) => {
+      const source = video.querySelector("source");
+      if (!source.hasAttribute("src")) {
+        video.preload = "auto";
+        source.src = source.dataset.src;
+        video.load();
+      }
+    });
     const show = (i) => {
       panels.forEach((p, j) => { p.hidden = i !== j; if (i !== j) vids(p).forEach((v) => v.pause()); });
       tabs.forEach((t, j) => t.setAttribute("aria-selected", i === j));

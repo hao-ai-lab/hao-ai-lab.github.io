@@ -6,6 +6,9 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - README.md
+      - instructions/**
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -62,6 +65,19 @@ jobs:
         uses: actions/configure-pages@v6.0.0
       - name: Install Node.js dependencies
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
+      - name: Fingerprint Hugo image sources
+        id: image-key
+        run: |
+          digest=$(git ls-tree -r HEAD -- content static assets themes hugo.yaml |
+            awk '/\.(avif|bmp|gif|jpe?g|png|svg|tiff?|webp)$|[[:space:]]hugo\.yaml$/ { print }' |
+            sha256sum | cut -d' ' -f1)
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
+      - name: Cache Hugo image transforms
+        uses: actions/cache@v6.1.0
+        with:
+          path: resources/_gen/images
+          key: hugo-images-${{ runner.os }}-${{ runner.arch }}-${{ env.HUGO_VERSION }}-${{ steps.image-key.outputs.digest }}
+          restore-keys: hugo-images-${{ runner.os }}-${{ runner.arch }}-${{ env.HUGO_VERSION }}-
       - name: Build with Hugo
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
@@ -98,3 +114,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5.0.1
+        with:
+          reporting_interval: 2000

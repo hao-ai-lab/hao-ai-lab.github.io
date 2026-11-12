@@ -4,8 +4,8 @@
 <section class="f2k" data-f2k aria-label="768p draft versus 2560x1440 regeneration">
   <div class="f2k-stage" data-f2k-stage>
     {{- if and $c.draft $c.regen }}
-    <video class="f2k-under" muted playsinline loop preload="none" data-src="{{ $base }}{{ $c.regen }}"></video>
-    <div class="f2k-over" data-f2k-over><video muted playsinline loop preload="none" data-src="{{ $base }}{{ $c.draft }}"></video></div>
+    <video class="f2k-under" muted playsinline loop preload="none"><source data-src="{{ cond (urls.Parse $c.regen).IsAbs $c.regen (print $base $c.regen) }}" type="video/mp4"></video>
+    <div class="f2k-over" data-f2k-over><video muted playsinline loop preload="none"><source data-src="{{ cond (urls.Parse $c.draft).IsAbs $c.draft (print $base $c.draft) }}" type="video/mp4"></video></div>
     <div class="f2k-divider" data-f2k-divider><span class="f2k-handle" aria-hidden="true">◀ ▶</span></div>
     <input class="f2k-range" data-f2k-range type="range" min="0" max="100" value="50" step="0.1" aria-label="Drag to compare the 768p draft and the 2K regeneration">
     {{- else }}
@@ -54,7 +54,13 @@
     };
     if (segs.length) vids[0].addEventListener("timeupdate", label);
     const start = () => {
-      vids.forEach((v) => { if (!v.src) v.src = v.dataset.src; v.currentTime = 0; v.play().catch(() => {}); });
+      vids.forEach((video) => {
+        const source = video.querySelector("source");
+        source.src = source.dataset.src;
+        video.load();
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      });
       // keep the two reels in step
       setInterval(() => { const [a, b] = vids; if (a && b && Math.abs(a.currentTime - b.currentTime) > 0.08) b.currentTime = a.currentTime; }, 500);
       // a short sweep shows that the divider can be dragged

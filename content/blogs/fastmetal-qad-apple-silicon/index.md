@@ -54,19 +54,19 @@ Every model is a three-step student trained with DMD2 and quantization-aware tra
 <th align="center" style="border: 2px solid #000; padding: 10px;">FastMetal-14B-QAD</th>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/model_grid/fox/1p3b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/model_grid/fox/5b.mp4" width="249" height="137" autoplay loop muted playsinline controls></video></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/model_grid/fox/14b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--model_grid--fox--1p3b.mp4" type="video/mp4"></video></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="137" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--model_grid--fox--5b.mp4" type="video/mp4"></video></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--model_grid--fox--14b.mp4" type="video/mp4"></video></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/model_grid/horse_rider/1p3b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/model_grid/horse_rider/5b.mp4" width="249" height="137" autoplay loop muted playsinline controls></video></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/model_grid/horse_rider/14b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--model_grid--horse_rider--1p3b.mp4" type="video/mp4"></video></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="137" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--model_grid--horse_rider--5b.mp4" type="video/mp4"></video></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--model_grid--horse_rider--14b.mp4" type="video/mp4"></video></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/model_grid/raccoon/1p3b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/model_grid/raccoon/5b.mp4" width="249" height="137" autoplay loop muted playsinline controls></video></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/model_grid/raccoon/14b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--model_grid--raccoon--1p3b.mp4" type="video/mp4"></video></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="137" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--model_grid--raccoon--5b.mp4" type="video/mp4"></video></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--model_grid--raccoon--14b.mp4" type="video/mp4"></video></td>
 </tr>
 </table>
 </div>
@@ -132,41 +132,41 @@ Every clip below is the same prompt per model across all five modes, on the same
 <td colspan="3" align="center" style="border: 2px solid #000; padding: 8px;"><strong>Baseline</strong></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/baseline/1p3b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video><br><small>110.14s · 3.87 GiB peak</small></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/baseline/5b.mp4" width="249" height="137" autoplay loop muted playsinline controls></video><br><small>151.42s · 9.34 GiB peak</small></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/baseline/14b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video><br><small>601.82s · 21.68 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--baseline--1p3b.mp4" type="video/mp4"></video><br><small>110.14s · 3.87 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="137" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--baseline--5b.mp4" type="video/mp4"></video><br><small>151.42s · 9.34 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--baseline--14b.mp4" type="video/mp4"></video><br><small>601.82s · 21.68 GiB peak</small></td>
 </tr>
 <tr>
 <td colspan="3" align="center" style="border: 2px solid #000; padding: 8px;"><strong>Fast mode</strong></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/fast/1p3b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video><br><small>45.19s · 3.20 GiB peak</small></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/fast/5b.mp4" width="249" height="137" autoplay loop muted playsinline controls></video><br><small>47.24s · 7.97 GiB peak</small></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/fast/14b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video><br><small>211.14s · 18.10 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--fast--1p3b.mp4" type="video/mp4"></video><br><small>45.19s · 3.20 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="137" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--fast--5b.mp4" type="video/mp4"></video><br><small>47.24s · 7.97 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--fast--14b.mp4" type="video/mp4"></video><br><small>211.14s · 18.10 GiB peak</small></td>
 </tr>
 <tr>
 <td colspan="3" align="center" style="border: 2px solid #000; padding: 8px;"><strong>Refine mode</strong></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/refine/1p3b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video><br><small>100.59s · 3.90 GiB peak</small></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/refine/5b.mp4" width="249" height="137" autoplay loop muted playsinline controls></video><br><small>107.64s · 10.80 GiB peak</small></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/refine/14b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video><br><small>618.06s · 21.71 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--refine--1p3b.mp4" type="video/mp4"></video><br><small>100.59s · 3.90 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="137" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--refine--5b.mp4" type="video/mp4"></video><br><small>107.64s · 10.80 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--refine--14b.mp4" type="video/mp4"></video><br><small>618.06s · 21.71 GiB peak</small></td>
 </tr>
 <tr>
 <td colspan="3" align="center" style="border: 2px solid #000; padding: 8px;"><strong>Fast + refine</strong></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/fast_refine/1p3b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video><br><small>39.43s · 3.22 GiB peak</small></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/fast_refine/5b.mp4" width="249" height="137" autoplay loop muted playsinline controls></video><br><small>51.58s · 8.13 GiB peak</small></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/fast_refine/14b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video><br><small>237.35s · 18.11 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--fast_refine--1p3b.mp4" type="video/mp4"></video><br><small>39.43s · 3.22 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="137" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--fast_refine--5b.mp4" type="video/mp4"></video><br><small>51.58s · 8.13 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--fast_refine--14b.mp4" type="video/mp4"></video><br><small>237.35s · 18.11 GiB peak</small></td>
 </tr>
 <tr>
 <td colspan="3" align="center" style="border: 2px solid #000; padding: 8px;"><strong>Prompt enhancement</strong></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/prompt_enhance/1p3b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video><br><small>112.43s · 3.87 GiB peak</small></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/prompt_enhance/5b.mp4" width="249" height="137" autoplay loop muted playsinline controls></video><br><small>151.27s · 9.34 GiB peak</small></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><video src="img/videos/mode_grid/prompt_enhance/14b.mp4" width="249" height="144" autoplay loop muted playsinline controls></video><br><small>578.96s · 21.68 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--prompt_enhance--1p3b.mp4" type="video/mp4"></video><br><small>112.43s · 3.87 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="137" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--prompt_enhance--5b.mp4" type="video/mp4"></video><br><small>151.27s · 9.34 GiB peak</small></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><video width="249" height="144" autoplay loop muted playsinline controls><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastmetal-qad-apple-silicon--img--videos--mode_grid--prompt_enhance--14b.mp4" type="video/mp4"></video><br><small>578.96s · 21.68 GiB peak</small></td>
 </tr>
 </table>
 </div>

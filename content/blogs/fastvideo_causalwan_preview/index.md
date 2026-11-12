@@ -106,12 +106,12 @@ We have conducted initial experiments on Wan2.2-A14B with Self-Forcing distillat
   <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
     <div style="flex: 1 1 300px; min-width: 0;">
       <p><strong>Good #1</strong></p>
-      <video src="img/good_videos/1.mp4" controls muted playsinline style="max-width: 100%; border-radius: 8px;"></video>
+      <video controls muted playsinline style="max-width: 100%; border-radius: 8px;"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastvideo_causalwan_preview--img--good_videos--1.mp4" type="video/mp4"></video>
       <p><em>Prompt:</em> Some friends dancing and having fun together in circles, at a party surrounded by colored lights at a party, in a fancy old place, in a view from below them.</p>
     </div>
     <div style="flex: 1 1 300px; min-width: 0;">
       <p><strong>Bad #1</strong></p>
-      <video src="img/bad_videos/1.mp4" controls muted playsinline style="max-width: 100%; border-radius: 8px;"></video>
+      <video controls muted playsinline style="max-width: 100%; border-radius: 8px;"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastvideo_causalwan_preview--img--bad_videos--1.mp4" type="video/mp4"></video>
       <p><em>Prompt:</em> A determined climber is scaling a massive rock face, showcasing exceptional strength and skill. The person, clad in a teal shirt and dark pants, climbs with precision, their movements measured and deliberate. They are secured by climbing gear, which includes ropes and a harness, emphasizing their commitment to safety. The rugged texture of the sandy-colored rock provides an imposing backdrop, adding drama and scale to the climb. In the distance, other large rock formations and sparse vegetation can be seen under a bright, overcast sky, contributing to the natural and adventurous atmosphere. The scene captures a moment of focus and challenge, highlighting the climber's tenacity and the breathtaking environment.</p>
     </div>
   </div>
@@ -119,12 +119,12 @@ We have conducted initial experiments on Wan2.2-A14B with Self-Forcing distillat
   <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
     <div style="flex: 1 1 300px; min-width: 0;">
       <p><strong>Good #2</strong></p>
-      <video src="img/good_videos/2.mp4" controls muted playsinline style="max-width: 100%; border-radius: 8px;"></video>
+      <video controls muted playsinline style="max-width: 100%; border-radius: 8px;"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastvideo_causalwan_preview--img--good_videos--2.mp4" type="video/mp4"></video>
       <p><em>Prompt:</em> A man wearing grey shorts jumps rope in a gym, weights and gym equipment in the background.</p>
     </div>
     <div style="flex: 1 1 300px; min-width: 0;">
       <p><strong>Bad #2</strong></p>
-      <video src="img/bad_videos/2.mp4" controls muted playsinline style="max-width: 100%; border-radius: 8px;"></video>
+      <video controls muted playsinline style="max-width: 100%; border-radius: 8px;"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastvideo_causalwan_preview--img--bad_videos--2.mp4" type="video/mp4"></video>
       <p><em>Prompt:</em> A little girl wearing a pink security helmet and denim overall discovers the art of cycling amidst the serene park, as the camera captures her graceful progress.</p>
     </div>
   </div>
@@ -132,12 +132,12 @@ We have conducted initial experiments on Wan2.2-A14B with Self-Forcing distillat
   <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
     <div style="flex: 1 1 300px; min-width: 0;">
       <p><strong>Good #3</strong></p>
-      <video src="img/good_videos/3.mp4" controls muted playsinline style="max-width: 100%; border-radius: 8px;"></video>
+      <video controls muted playsinline style="max-width: 100%; border-radius: 8px;"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastvideo_causalwan_preview--img--good_videos--3.mp4" type="video/mp4"></video>
       <p><em>Prompt:</em> Flying over a peninsula covered in bushy trees, while discovering the sea around it, painted a beautiful turquoise blue, on a sunny day.</p>
     </div>
     <div style="flex: 1 1 300px; min-width: 0;">
       <p><strong>Bad #3</strong></p>
-      <video src="img/bad_videos/3.mp4" controls muted playsinline style="max-width: 100%; border-radius: 8px;"></video>
+      <video controls muted playsinline style="max-width: 100%; border-radius: 8px;"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastvideo_causalwan_preview--img--bad_videos--3.mp4" type="video/mp4"></video>
       <p><em>Prompt:</em> Little baby with a pacifier, playing with a teddy bear, accompanied by his mom, both sitting on a bed, in a close view.</p>
     </div>
   </div>
@@ -145,12 +145,12 @@ We have conducted initial experiments on Wan2.2-A14B with Self-Forcing distillat
   <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
     <div style="flex: 1 1 300px; min-width: 0;">
       <p><strong>Good #4</strong></p>
-      <video src="img/good_videos/4.mp4" controls muted playsinline style="max-width: 100%; border-radius: 8px;"></video>
+      <video controls muted playsinline style="max-width: 100%; border-radius: 8px;"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastvideo_causalwan_preview--img--good_videos--4.mp4" type="video/mp4"></video>
       <p><em>Prompt:</em> Skillful cyclist doing a wheelie on a bike while riding through a forest, on a dirt road, surrounded by many trees, in the morning.</p>
     </div>
     <div style="flex: 1 1 300px; min-width: 0;">
       <p><strong>Bad #4</strong></p>
-      <video src="img/bad_videos/4.mp4" controls muted playsinline style="max-width: 100%; border-radius: 8px;"></video>
+      <video controls muted playsinline style="max-width: 100%; border-radius: 8px;"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastvideo_causalwan_preview--img--bad_videos--4.mp4" type="video/mp4"></video>
       <p><em>Prompt:</em> Young man skating with a skateboard on the ramps with graffiti of a park with trees, on a sunny day.</p>
     </div>
   </div>
@@ -158,12 +158,12 @@ We have conducted initial experiments on Wan2.2-A14B with Self-Forcing distillat
   <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
     <div style="flex: 1 1 300px; min-width: 0;">
       <p><strong>Good #5</strong></p>
-      <video src="img/good_videos/5.mp4" controls muted playsinline style="max-width: 100%; border-radius: 8px;"></video>
+      <video controls muted playsinline style="max-width: 100%; border-radius: 8px;"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastvideo_causalwan_preview--img--good_videos--5.mp4" type="video/mp4"></video>
       <p><em>Prompt:</em> In the video, a lone rider guides a majestic horse across an expansive, open field as the sun sets in the background. The rider, dressed in a classic blue shirt and wide-brimmed hat, sits confidently in the saddle, silhouetted against the warm glow of the evening sky. The horse moves gracefully, its mane and tail flowing with each step, creating a sense of harmony between horse and rider. Surrounding the pair, towering trees form a natural border, their leaves gently rustling in the breeze. The shadows lengthen on the ground, accentuating the serene and timeless feel of the scene. The distant hills and wooden fences frame the horizon, adding depth to the tranquil landscape. A few horses graze peacefully in the background, blending into the pastoral setting. The overall ambiance evokes a sense of calmness and quietude, capturing a perfect moment in the golden light of dusk.</p>
     </div>
     <div style="flex: 1 1 300px; min-width: 0;">
       <p><strong>Bad #5</strong></p>
-      <video src="img/bad_videos/5.mp4" controls muted playsinline style="max-width: 100%; border-radius: 8px;"></video>
+      <video controls muted playsinline style="max-width: 100%; border-radius: 8px;"><source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fastvideo_causalwan_preview--img--bad_videos--5.mp4" type="video/mp4"></video>
       <p><em>Prompt:</em> Flying over a forest of abundant trees and vegetation, with a river and a dam, with houses and hills in the surroundings.</p>
     </div>
   </div>

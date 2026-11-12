@@ -37,7 +37,7 @@ summary = "Suppose an AI agent is strong enough to build a fast inference engine
 
 <figure style="margin: 14px 0 28px;">
   <video controls preload="metadata" poster="img/poster.png" style="width: 100%; border-radius: 8px; border: 1px solid #e5e7eb; display: block;">
-    <source src="img/overview.mp4" type="video/mp4">
+    <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/verifiable-llm-infra--img--overview.mp4" type="video/mp4">
   </video>
 </figure>
 
@@ -63,7 +63,7 @@ Turning agent-driven formal verification into a reliable workflow requires solvi
 
 Second, even with a clear specification, simply asking a coding agent to write a formal model and prove it rarely works out of the box. When a model checker reports a race condition, **a naive coding agent will often reward-hack the verifier**: instead of surfacing the real bug, it weakens the invariant, deletes the timeout branch from the model, or adds an unrealistic `ASSUME` statement so the checker returns `0 errors`.
 
-{{< image src="img/fig1.gif" alt="The vstack 5-stage verification workflow" width="100%" title="Figure 1. The 5-stage vstack verification workflow. Common agent reward-hacks such as weakening the rule, deleting the timeout branch, or assuming the race away are blocked by pinned specifications, fidelity checks, and proof gates until a real fix passes." >}}
+{{< image src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/verifiable-llm-infra--img--fig1.gif" alt="The vstack 5-stage verification workflow" width="100%" title="Figure 1. The 5-stage vstack verification workflow. Common agent reward-hacks such as weakening the rule, deleting the timeout branch, or assuming the race away are blocked by pinned specifications, fidelity checks, and proof gates until a real fix passes." >}}
 
 To prevent reward hacking and make agent-driven verification reliable, we built [**`vstack`**](https://github.com/hao-ai-lab/vstack), an open-source plugin for Claude Code and Cursor that enforces a **5-stage verification workflow**:
 
@@ -79,7 +79,7 @@ To prevent reward hacking and make agent-driven verification reliable, we built 
 
 As a prototype, we applied `vstack` to **Prefill-Decode Disaggregated Serving**, where a Prefill node computes the prompt's KV cache and transfers it over one-sided RDMA to a Decode node that shares cached prefixes and runs the Decode attention kernel, as shown in **Figure 2**. For this core KV page subsystem, we define **four specifications**:
 
-{{< image src="img/fig2.gif" alt="Silent KV corruption under disaggregated Prefill-Decode RDMA" width="100%" title="Figure 2. Silent KV corruption under disaggregated Prefill-Decode RDMA. If Decode reclaims request A's GPU page on a local timeout and assigns it to request B while Prefill's one-sided RDMA write is still in flight, A's late payload overwrites B's KV page and the server still returns HTTP 200." >}}
+{{< image src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/verifiable-llm-infra--img--fig2.gif" alt="Silent KV corruption under disaggregated Prefill-Decode RDMA" width="100%" title="Figure 2. Silent KV corruption under disaggregated Prefill-Decode RDMA. If Decode reclaims request A's GPU page on a local timeout and assigns it to request B while Prefill's one-sided RDMA write is still in flight, A's late payload overwrites B's KV page and the server still returns HTTP 200." >}}
 
 1. **`Isolation`:** In-flight RDMA transfers or late control messages from an old request must never read or overwrite a new request's memory or state.
 2. **`Integrity`:** Every KV page read by the Decode kernel or published into the global prefix cache must contain complete, uncorrupted data from the intended request generation.
@@ -100,7 +100,7 @@ Checking the production Prefill-Decode implementations of [SGLang](https://githu
 
 Because no local-only timeout policy can escape this trade-off, current engines like SGLang and vLLM remain vulnerable when their RDMA connector, prefix cache, and decode scheduler maintain separate local counters over raw `page_id` integers and guess when hardware RDMA is done. To fix this by design, we built [**`veriserve`**](https://github.com/hao-ai-lab/veriserve), a verifiable LLM serving engine with PD disaggregation on [`mini-sglang`](https://github.com/sgl-project/mini-sglang) and [Mooncake](https://github.com/kvcache-ai/Mooncake) GPUDirect RDMA centered on a single capability state machine, **`PdLedger`**, which tracks every physical page via a versioned ticket `(page, gen)` across six explicit implementation states: **`FREE`**, **`PRIVATE`**, **`SHARED`**, **`DRAINING`**, **`QUARANTINED`**, and **`DUP`**, with **Figure 3** illustrating the four states on the RDMA timeout and cancellation paths.
 
-{{< image src="img/fig3.gif" alt="PdLedger page lifecycle resolving the local-timeout dilemma" width="100%" title="Figure 3. How PdLedger resolves the local-timeout dilemma on the RDMA transfer path. Without stop evidence, a timed-out page is isolated in Quarantined so late RDMA writes never touch new requests; with stop evidence, a canceled page waits in Draining and returns to Free only after the remote transfer stops. Prefix-cache states Shared and Dup are omitted for clarity." >}}
+{{< image src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/verifiable-llm-infra--img--fig3.gif" alt="PdLedger page lifecycle resolving the local-timeout dilemma" width="100%" title="Figure 3. How PdLedger resolves the local-timeout dilemma on the RDMA transfer path. Without stop evidence, a timed-out page is isolated in Quarantined so late RDMA writes never touch new requests; with stop evidence, a canceled page waits in Draining and returns to Free only after the remote transfer stops. Prefix-cache states Shared and Dup are omitted for clarity." >}}
 
 Our key design delta is using **`DRAINING`** and **`QUARANTINED`** to decouple *request cancellation* from *hardware DMA completion*, resolving the request-hang-versus-corruption trade-off:
 

@@ -52,37 +52,37 @@ Turn the audio on.
 <div class="fasth3-local-grid fasth3-local-grid--platforms">
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="M4 Max, space gate">
-      <source src="img/videos/platforms/mac-space-gate.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--platforms--mac-space-gate.mp4" type="video/mp4">
     </video>
     <figcaption><b>M4 Max</b><span>504 s · cold</span></figcaption>
   </figure>
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="DGX Spark, space gate">
-      <source src="img/videos/platforms/spark-astronaut-gateway.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--platforms--spark-astronaut-gateway.mp4" type="video/mp4">
     </video>
     <figcaption><b>DGX Spark</b><span>264 s · cold</span></figcaption>
   </figure>
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="Four GB200s, space gate">
-      <source src="img/videos/platforms/gb200-space-gate.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--platforms--gb200-space-gate.mp4" type="video/mp4">
     </video>
     <figcaption><b>4 GB200s</b><span>10.2 s · first request</span></figcaption>
   </figure>
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="M4 Max, desert fashion">
-      <source src="img/videos/platforms/mac-desert-fashion.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--platforms--mac-desert-fashion.mp4" type="video/mp4">
     </video>
     <figcaption><b>M4 Max</b><span>465 s · cold</span></figcaption>
   </figure>
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="DGX Spark, desert fashion">
-      <source src="img/videos/platforms/spark-fashion-highway.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--platforms--spark-fashion-highway.mp4" type="video/mp4">
     </video>
     <figcaption><b>DGX Spark</b><span>243 s · cold</span></figcaption>
   </figure>
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="Four GB200s, desert fashion">
-      <source src="img/videos/platforms/gb200-desert-fashion.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--platforms--gb200-desert-fashion.mp4" type="video/mp4">
     </video>
     <figcaption><b>4 GB200s</b><span>5.1 s · warm</span></figcaption>
   </figure>
@@ -206,19 +206,19 @@ the three. Peak memory does. Same prompt, same seed.
 <div class="fasth3-local-grid">
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="INT8 meadow dialogue">
-      <source src="img/videos/quant/int8.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--quant--int8.mp4" type="video/mp4">
     </video>
     <figcaption><b>INT8</b><span>481 s · 24.2 GiB peak</span></figcaption>
   </figure>
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="INT6 meadow dialogue">
-      <source src="img/videos/quant/int6.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--quant--int6.mp4" type="video/mp4">
     </video>
     <figcaption><b>INT6</b><span>456 s · 19.5 GiB peak</span></figcaption>
   </figure>
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="INT4 meadow dialogue">
-      <source src="img/videos/quant/int4.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--quant--int4.mp4" type="video/mp4">
     </video>
     <figcaption><b>INT4</b><span>467 s · 14.8 GiB peak</span></figcaption>
   </figure>
@@ -246,37 +246,37 @@ Columns are an M4 Max, one Spark, and two Sparks.
 <div class="fasth3-local-grid">
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="M4 Max, full VAE">
-      <source src="img/videos/taeh3/mac-full-vae.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--taeh3--mac-full-vae.mp4" type="video/mp4">
     </video>
     <figcaption><b>M4 Max</b><span>Full VAE · 451 s</span></figcaption>
   </figure>
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="One Spark, full VAE">
-      <source src="img/videos/taeh3/1spark-full-vae.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--taeh3--1spark-full-vae.mp4" type="video/mp4">
     </video>
     <figcaption><b>1 Spark</b><span>Full VAE · 243 s</span></figcaption>
   </figure>
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="Two Sparks, full VAE">
-      <source src="img/videos/taeh3/2spark-full-vae.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--taeh3--2spark-full-vae.mp4" type="video/mp4">
     </video>
     <figcaption><b>2 Sparks</b><span>Full VAE · 209 s</span></figcaption>
   </figure>
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="M4 Max, TAEH3">
-      <source src="img/videos/taeh3/mac-taeh3.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--taeh3--mac-taeh3.mp4" type="video/mp4">
     </video>
     <figcaption><b>M4 Max</b><span>TAEH3 · 350 s</span></figcaption>
   </figure>
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="One Spark, TAEH3">
-      <source src="img/videos/taeh3/1spark-taeh3.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--taeh3--1spark-taeh3.mp4" type="video/mp4">
     </video>
     <figcaption><b>1 Spark</b><span>TAEH3 · 134 s</span></figcaption>
   </figure>
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="Two Sparks, TAEH3">
-      <source src="img/videos/taeh3/2spark-taeh3.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--taeh3--2spark-taeh3.mp4" type="video/mp4">
     </video>
     <figcaption><b>2 Sparks</b><span>TAEH3 · 119 s</span></figcaption>
   </figure>
@@ -300,19 +300,19 @@ Same prompt and seed on the M4 Max. INT6, cached prompt, full VAE.
 <div class="fasth3-local-grid fasth3-local-grid--modes">
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="Baseline forest clip">
-      <source src="img/videos/drafts/baseline.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--drafts--baseline.mp4" type="video/mp4">
     </video>
     <figcaption><b>Baseline</b><span>457 s · 19.5 GiB</span></figcaption>
   </figure>
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="Temporal fast forest clip">
-      <source src="img/videos/drafts/temporal-fast.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--drafts--temporal-fast.mp4" type="video/mp4">
     </video>
     <figcaption><b>Temporal fast</b><span>248 s · 1.84×</span></figcaption>
   </figure>
   <figure class="fasth3-local-clip">
     <video controls playsinline preload="metadata" aria-label="Spatial fast forest clip">
-      <source src="img/videos/drafts/spatial-fast.mp4" type="video/mp4">
+      <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v2/fasth3-local--img--videos--drafts--spatial-fast.mp4" type="video/mp4">
     </video>
     <figcaption><b>Spatial fast</b><span>272 s · 1.68×</span></figcaption>
   </figure>
