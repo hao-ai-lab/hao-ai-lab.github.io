@@ -33,11 +33,11 @@ tags = ["FastVideo", "Dreamverse", "Video Generation"]
 
 Dreamverse is a real-time video generation workspace for vibe directing. It is to video what vibe coding is to software: start from a simple idea, watch the result, and keep steering with natural language. Keep the subject, change the camera, continue the scene, or try another direction, all within a quick iteration loop.
 
-{{< figure src="gif/timeline.gif" alt="Dreamverse timeline" width="90%" align="center" caption="Edit Video Background" >}}
+{{< figure src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-dreamverse-release--gif--timeline.gif" alt="Dreamverse timeline" width="90%" align="center" caption="Edit Video Background" >}}
 
-{{< figure src="gif/edit.gif" alt="Dreamverse edit" width="90%" align="center" caption="Edit Video Character" >}}
+{{< figure src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-dreamverse-release--gif--edit.gif" alt="Dreamverse edit" width="90%" align="center" caption="Edit Video Character" >}}
 
-{{< figure src="gif/history.gif" alt="Dreamverse history" width="90%" align="center" caption="View history generations from Gallery" >}}
+{{< figure src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-dreamverse-release--gif--history.gif" alt="Dreamverse history" width="90%" align="center" caption="View history generations from Gallery" >}}
 
 With this release, Dreamverse becomes not only a runnable product prototype, but also a sample architecture for the FastVideo community building real-time video generation and editing applications.
 

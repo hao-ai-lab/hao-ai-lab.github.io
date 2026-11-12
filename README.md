@@ -14,6 +14,16 @@ hugo server
 ```
 
 
+## Blog demo media
+
+The original large GIFs and MP4s used by FastH3 Omni, VideoScience, FastVideo
+Dreamverse, and FastWan-QAD are hosted in the
+[website demo media release](https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/tag/website-demo-media-v1).
+Keep that release available while the posts link to its files. For new large
+demos, upload the original files to a versioned release and use the asset
+download URLs in the post. Check playback and downloads in a browser before
+deploying. The Pages workflow checks the generated site against the 1 GB limit.
+
 ## How to generate publication list
 
 1. Copy the latest publication json to the root folder.

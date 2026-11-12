@@ -36,7 +36,7 @@ ComfyUI support is available. Our local AI blog post and release are planned for
   <video controls playsinline preload="metadata"
     aria-label="FastH3 Omni trilingual sample with background music"
     style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
-    <source src="media/hero/trilingual-bgm-1080p.mp4" type="video/mp4">
+    <source src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--hero--trilingual-bgm-1080p.mp4" type="video/mp4">
     Your browser does not support MP4 video with audio.
   </video>
   <p style="margin: 0.5rem 0 0; text-align: center; font-size: 0.9em; opacity: 0.75;">This entire video was generated with FastH3 Omni on FastVideo.</p>

@@ -49,7 +49,10 @@
           {{- else if eq .type "audio" }}
           <audio controls preload="none" src="{{ .file }}" aria-label="{{ .caption }} reference audio"><a href="{{ .file }}">Download audio reference</a></audio>
           {{- else }}
-          <video controls playsinline preload="none" src="{{ .file }}" aria-label="{{ .caption }} reference video"><a href="{{ .file }}">Download video reference</a></video>
+          <video controls playsinline preload="none" aria-label="{{ .caption }} reference video">
+            <source src="{{ .file }}"{{ if strings.HasSuffix .file ".mp4" }} type="video/mp4"{{ end }}>
+            <a href="{{ .file }}">Download video reference</a>
+          </video>
           {{- end }}
           <figcaption>{{ .caption }}</figcaption>
         </figure>
