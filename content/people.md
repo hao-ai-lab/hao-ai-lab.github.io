@@ -36,11 +36,11 @@ summary: people
 
 {{< lab_member name="Jiaqi Leng" role="PhD Student" image="jiaqi_leng.webp" academic="https://jacky-leng.github.io/" twitter="https://x.com/JiaqiLeng171839" >}}
 
+{{< lab_member name="Yuxuan Zhang" role="PhD Student" image="yuxuan_zhang.jpg" academic="https://yuxuandexter.github.io/" twitter="https://x.com/Yuxuan_Zhang13">}}
+
 {{< lab_member name="Yu-Yang Qian" role="Visiting PhD Student" image="yu_yang_qian.jpg" academic="https://www.lamda.nju.edu.cn/qianyy/" twitter="https://x.com/YuYangQian_ai">}}
 
 {{< lab_member name="Yixin Huang" role="Master Intern" image="yixin_huang.jpg" academic="https://yixinhuang48.github.io" twitter="https://x.com/Yixinhuang48">}}
-
-{{< lab_member name="Yuxuan Zhang" role="Master Intern" image="yuxuan_zhang.jpg" academic="https://yuxuandexter.github.io/" twitter="https://x.com/Yuxuan_Zhang13">}}
 
 {{< lab_member name="Yiming Zhao" role="Master's" image="yiming_zhao.png" academic="https://www.linkedin.com/in/yiming-zhao-zym2002/" twitter="https://x.com/YimingBob">}}
 
