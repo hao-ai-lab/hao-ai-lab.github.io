@@ -35,17 +35,13 @@ defaults:
   run:
     shell: bash
 
-env:
-  HUGO_VERSION: 0.123.0
-
 jobs:
-  deploy:
-    if: ${{ !inputs.build_only }}
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  # Build job
+  build:
     runs-on: ubuntu-26.04
-    steps: &pages-steps
+    env:
+      HUGO_VERSION: 0.123.0
+    steps:
       - name: Install Hugo CLI
         run: |
           mkdir -p "$RUNNER_TEMP/hugo"
@@ -109,14 +105,18 @@ jobs:
         with:
           path: ./public
           include-hidden-files: true
+
+  # Deployment job
+  deploy:
+    if: ${{ !inputs.build_only }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-26.04
+    needs: build
+    steps:
       - name: Deploy to GitHub Pages
-        if: ${{ !inputs.build_only }}
         id: deployment
         uses: actions/deploy-pages@v5.0.1
         with:
           reporting_interval: 2000
-
-  build:
-    if: ${{ inputs.build_only }}
-    runs-on: ubuntu-26.04
-    steps: *pages-steps
