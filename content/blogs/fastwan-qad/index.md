@@ -85,46 +85,46 @@ A 4-way qualitative comparison across TurboDiffusion, LightX2V, our FP4 attentio
 <th align="center" style="border: 2px solid #000; padding: 10px;">FastWan-QAD-SA2</th>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/turbodiffusion/0.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/lightx2v/0.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/fastwan_qad_fp4/0.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/fastwan_qad_fp8/0.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--turbodiffusion--0.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--lightx2v--0.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--fastwan_qad_fp4--0.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--fastwan_qad_fp8--0.gif" width="249"/></div></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/turbodiffusion/1.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/lightx2v/1.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/fastwan_qad_fp4/1.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/fastwan_qad_fp8/1.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--turbodiffusion--1.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--lightx2v--1.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--fastwan_qad_fp4--1.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--fastwan_qad_fp8--1.gif" width="249"/></div></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/turbodiffusion/2.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/lightx2v/2.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/fastwan_qad_fp4/2.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/fastwan_qad_fp8/2.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--turbodiffusion--2.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--lightx2v--2.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--fastwan_qad_fp4--2.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--fastwan_qad_fp8--2.gif" width="249"/></div></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/turbodiffusion/3.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/lightx2v/3.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/fastwan_qad_fp4/3.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/fastwan_qad_fp8/3.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--turbodiffusion--3.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--lightx2v--3.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--fastwan_qad_fp4--3.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--fastwan_qad_fp8--3.gif" width="249"/></div></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/turbodiffusion/4.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/lightx2v/4.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/fastwan_qad_fp4/4.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/fastwan_qad_fp8/4.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--turbodiffusion--4.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--lightx2v--4.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--fastwan_qad_fp4--4.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--fastwan_qad_fp8--4.gif" width="249"/></div></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/turbodiffusion/5.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/lightx2v/5.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/fastwan_qad_fp4/5.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/fastwan_qad_fp8/5.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--turbodiffusion--5.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--lightx2v--5.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--fastwan_qad_fp4--5.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--fastwan_qad_fp8--5.gif" width="249"/></div></td>
 </tr>
 <tr>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/turbodiffusion/6.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/lightx2v/6.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/fastwan_qad_fp4/6.gif" width="249"/></div></td>
-<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="img/videos/fastwan_qad_fp8/6.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--turbodiffusion--6.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--lightx2v--6.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--fastwan_qad_fp4--6.gif" width="249"/></div></td>
+<td align="center" style="border: 2px solid #000; padding: 10px;"><div><img src="https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastwan-qad--img--videos--fastwan_qad_fp8--6.gif" width="249"/></div></td>
 </tr>
 </table>
 </div>

@@ -72,6 +72,14 @@ jobs:
             --gc \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
+      - name: Check Pages bundle size
+        run: |
+          bytes=$(du -sb public | cut -f1)
+          echo "Pages bundle size: $bytes bytes" >> "$GITHUB_STEP_SUMMARY"
+          if (( bytes > 1000000000 )); then
+            echo "::error::Pages bundle is $bytes bytes and exceeds the 1 GB limit. Host large demo media outside the Pages bundle."
+            exit 1
+          fi
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5.0.0
         with:

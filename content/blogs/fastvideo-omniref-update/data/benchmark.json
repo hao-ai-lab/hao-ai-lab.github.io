@@ -58,17 +58,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-image-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-image-5s-seed0.mp4",
           "poster": "media/posters/base-image-5s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-image-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-image-5s-seed0.mp4",
           "poster": "media/posters/fast-image-5s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-image-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-image-5s-seed0.mp4",
           "poster": "media/posters/decoder36-image-5s-seed0.jpg"
         }
       },
@@ -127,17 +127,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-image-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-image-10s-seed0.mp4",
           "poster": "media/posters/base-image-10s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-image-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-image-10s-seed0.mp4",
           "poster": "media/posters/fast-image-10s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-image-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-image-10s-seed0.mp4",
           "poster": "media/posters/decoder36-image-10s-seed0.jpg"
         }
       },
@@ -196,17 +196,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-image-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-image-15s-seed0.mp4",
           "poster": "media/posters/base-image-15s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-image-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-image-15s-seed0.mp4",
           "poster": "media/posters/fast-image-15s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-image-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-image-15s-seed0.mp4",
           "poster": "media/posters/decoder36-image-15s-seed0.jpg"
         }
       },
@@ -270,17 +270,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-image-voice-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-image-voice-5s-seed0.mp4",
           "poster": "media/posters/base-image-voice-5s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-image-voice-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-image-voice-5s-seed0.mp4",
           "poster": "media/posters/fast-image-voice-5s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-image-voice-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-image-voice-5s-seed0.mp4",
           "poster": "media/posters/decoder36-image-voice-5s-seed0.jpg"
         }
       },
@@ -344,17 +344,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-image-voice-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-image-voice-10s-seed0.mp4",
           "poster": "media/posters/base-image-voice-10s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-image-voice-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-image-voice-10s-seed0.mp4",
           "poster": "media/posters/fast-image-voice-10s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-image-voice-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-image-voice-10s-seed0.mp4",
           "poster": "media/posters/decoder36-image-voice-10s-seed0.jpg"
         }
       },
@@ -418,17 +418,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-image-voice-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-image-voice-15s-seed0.mp4",
           "poster": "media/posters/base-image-voice-15s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-image-voice-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-image-voice-15s-seed0.mp4",
           "poster": "media/posters/fast-image-voice-15s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-image-voice-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-image-voice-15s-seed0.mp4",
           "poster": "media/posters/decoder36-image-voice-15s-seed0.jpg"
         }
       },
@@ -497,17 +497,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-images3-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-images3-5s-seed0.mp4",
           "poster": "media/posters/base-images3-5s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-images3-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-images3-5s-seed0.mp4",
           "poster": "media/posters/fast-images3-5s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-images3-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-images3-5s-seed0.mp4",
           "poster": "media/posters/decoder36-images3-5s-seed0.jpg"
         }
       },
@@ -576,17 +576,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-images3-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-images3-10s-seed0.mp4",
           "poster": "media/posters/base-images3-10s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-images3-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-images3-10s-seed0.mp4",
           "poster": "media/posters/fast-images3-10s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-images3-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-images3-10s-seed0.mp4",
           "poster": "media/posters/decoder36-images3-10s-seed0.jpg"
         }
       },
@@ -655,17 +655,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-images3-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-images3-15s-seed0.mp4",
           "poster": "media/posters/base-images3-15s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-images3-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-images3-15s-seed0.mp4",
           "poster": "media/posters/fast-images3-15s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-images3-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-images3-15s-seed0.mp4",
           "poster": "media/posters/decoder36-images3-15s-seed0.jpg"
         }
       },
@@ -764,17 +764,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-images9-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-images9-5s-seed0.mp4",
           "poster": "media/posters/base-images9-5s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-images9-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-images9-5s-seed0.mp4",
           "poster": "media/posters/fast-images9-5s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-images9-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-images9-5s-seed0.mp4",
           "poster": "media/posters/decoder36-images9-5s-seed0.jpg"
         }
       },
@@ -873,17 +873,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-images9-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-images9-10s-seed0.mp4",
           "poster": "media/posters/base-images9-10s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-images9-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-images9-10s-seed0.mp4",
           "poster": "media/posters/fast-images9-10s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-images9-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-images9-10s-seed0.mp4",
           "poster": "media/posters/decoder36-images9-10s-seed0.jpg"
         }
       },
@@ -982,17 +982,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-images9-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-images9-15s-seed0.mp4",
           "poster": "media/posters/base-images9-15s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-images9-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-images9-15s-seed0.mp4",
           "poster": "media/posters/fast-images9-15s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-images9-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-images9-15s-seed0.mp4",
           "poster": "media/posters/decoder36-images9-15s-seed0.jpg"
         }
       },
@@ -1045,23 +1045,23 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/clip_official_ref2va_0_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_official_ref2va_0_2s.mp4"
         }
       ],
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-clip-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-clip-5s-seed0.mp4",
           "poster": "media/posters/base-clip-5s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-clip-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-clip-5s-seed0.mp4",
           "poster": "media/posters/fast-clip-5s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-clip-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-clip-5s-seed0.mp4",
           "poster": "media/posters/decoder36-clip-5s-seed0.jpg"
         }
       },
@@ -1114,23 +1114,23 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/clip_official_ref2va_0_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_official_ref2va_0_2s.mp4"
         }
       ],
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-clip-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-clip-10s-seed0.mp4",
           "poster": "media/posters/base-clip-10s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-clip-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-clip-10s-seed0.mp4",
           "poster": "media/posters/fast-clip-10s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-clip-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-clip-10s-seed0.mp4",
           "poster": "media/posters/decoder36-clip-10s-seed0.jpg"
         }
       },
@@ -1183,23 +1183,23 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/clip_official_ref2va_0_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_official_ref2va_0_2s.mp4"
         }
       ],
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-clip-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-clip-15s-seed0.mp4",
           "poster": "media/posters/base-clip-15s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-clip-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-clip-15s-seed0.mp4",
           "poster": "media/posters/fast-clip-15s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-clip-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-clip-15s-seed0.mp4",
           "poster": "media/posters/decoder36-clip-15s-seed0.jpg"
         }
       },
@@ -1252,23 +1252,23 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/official_ref2va_0_video.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--official_ref2va_0_video.mp4"
         }
       ],
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-video-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-video-5s-seed0.mp4",
           "poster": "media/posters/base-video-5s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-video-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-video-5s-seed0.mp4",
           "poster": "media/posters/fast-video-5s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-video-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-video-5s-seed0.mp4",
           "poster": "media/posters/decoder36-video-5s-seed0.jpg"
         }
       },
@@ -1321,23 +1321,23 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/official_ref2va_0_video.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--official_ref2va_0_video.mp4"
         }
       ],
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-video-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-video-10s-seed0.mp4",
           "poster": "media/posters/base-video-10s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-video-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-video-10s-seed0.mp4",
           "poster": "media/posters/fast-video-10s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-video-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-video-10s-seed0.mp4",
           "poster": "media/posters/decoder36-video-10s-seed0.jpg"
         }
       },
@@ -1390,23 +1390,23 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/official_ref2va_0_video.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--official_ref2va_0_video.mp4"
         }
       ],
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-video-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-video-15s-seed0.mp4",
           "poster": "media/posters/base-video-15s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-video-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-video-15s-seed0.mp4",
           "poster": "media/posters/fast-video-15s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-video-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-video-15s-seed0.mp4",
           "poster": "media/posters/decoder36-video-15s-seed0.jpg"
         }
       },
@@ -1459,33 +1459,33 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/clip_official_ref2va_0_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_official_ref2va_0_2s.mp4"
         },
         {
           "type": "video",
           "caption": "Video 2 · with original audio",
-          "file": "media/inputs/clip_robot_arm_red_cube_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_robot_arm_red_cube_2s.mp4"
         },
         {
           "type": "video",
           "caption": "Video 3 · with original audio",
-          "file": "media/inputs/clip_h3_cinematic_shot_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_h3_cinematic_shot_2s.mp4"
         }
       ],
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-clips3-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-clips3-5s-seed0.mp4",
           "poster": "media/posters/base-clips3-5s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-clips3-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-clips3-5s-seed0.mp4",
           "poster": "media/posters/fast-clips3-5s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-clips3-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-clips3-5s-seed0.mp4",
           "poster": "media/posters/decoder36-clips3-5s-seed0.jpg"
         }
       },
@@ -1538,33 +1538,33 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/clip_official_ref2va_0_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_official_ref2va_0_2s.mp4"
         },
         {
           "type": "video",
           "caption": "Video 2 · with original audio",
-          "file": "media/inputs/clip_robot_arm_red_cube_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_robot_arm_red_cube_2s.mp4"
         },
         {
           "type": "video",
           "caption": "Video 3 · with original audio",
-          "file": "media/inputs/clip_h3_cinematic_shot_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_h3_cinematic_shot_2s.mp4"
         }
       ],
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-clips3-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-clips3-10s-seed0.mp4",
           "poster": "media/posters/base-clips3-10s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-clips3-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-clips3-10s-seed0.mp4",
           "poster": "media/posters/fast-clips3-10s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-clips3-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-clips3-10s-seed0.mp4",
           "poster": "media/posters/decoder36-clips3-10s-seed0.jpg"
         }
       },
@@ -1617,33 +1617,33 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/clip_official_ref2va_0_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_official_ref2va_0_2s.mp4"
         },
         {
           "type": "video",
           "caption": "Video 2 · with original audio",
-          "file": "media/inputs/clip_robot_arm_red_cube_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_robot_arm_red_cube_2s.mp4"
         },
         {
           "type": "video",
           "caption": "Video 3 · with original audio",
-          "file": "media/inputs/clip_h3_cinematic_shot_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_h3_cinematic_shot_2s.mp4"
         }
       ],
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-clips3-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-clips3-15s-seed0.mp4",
           "poster": "media/posters/base-clips3-15s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-clips3-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-clips3-15s-seed0.mp4",
           "poster": "media/posters/fast-clips3-15s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-clips3-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-clips3-15s-seed0.mp4",
           "poster": "media/posters/decoder36-clips3-15s-seed0.jpg"
         }
       },
@@ -1701,7 +1701,7 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/official_ref2va_0_video.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--official_ref2va_0_video.mp4"
         },
         {
           "type": "audio",
@@ -1712,17 +1712,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-mixed-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-mixed-5s-seed0.mp4",
           "poster": "media/posters/base-mixed-5s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-mixed-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-mixed-5s-seed0.mp4",
           "poster": "media/posters/fast-mixed-5s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-mixed-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-mixed-5s-seed0.mp4",
           "poster": "media/posters/decoder36-mixed-5s-seed0.jpg"
         }
       },
@@ -1780,7 +1780,7 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/official_ref2va_0_video.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--official_ref2va_0_video.mp4"
         },
         {
           "type": "audio",
@@ -1791,17 +1791,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-mixed-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-mixed-10s-seed0.mp4",
           "poster": "media/posters/base-mixed-10s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-mixed-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-mixed-10s-seed0.mp4",
           "poster": "media/posters/fast-mixed-10s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-mixed-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-mixed-10s-seed0.mp4",
           "poster": "media/posters/decoder36-mixed-10s-seed0.jpg"
         }
       },
@@ -1859,7 +1859,7 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/official_ref2va_0_video.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--official_ref2va_0_video.mp4"
         },
         {
           "type": "audio",
@@ -1870,17 +1870,17 @@
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-mixed-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-mixed-15s-seed0.mp4",
           "poster": "media/posters/base-mixed-15s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-mixed-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-mixed-15s-seed0.mp4",
           "poster": "media/posters/fast-mixed-15s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-mixed-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-mixed-15s-seed0.mp4",
           "poster": "media/posters/decoder36-mixed-15s-seed0.jpg"
         }
       },
@@ -1978,33 +1978,33 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/clip_official_ref2va_0_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_official_ref2va_0_2s.mp4"
         },
         {
           "type": "video",
           "caption": "Video 2 · with original audio",
-          "file": "media/inputs/clip_robot_arm_red_cube_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_robot_arm_red_cube_2s.mp4"
         },
         {
           "type": "video",
           "caption": "Video 3 · with original audio",
-          "file": "media/inputs/clip_h3_cinematic_shot_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_h3_cinematic_shot_2s.mp4"
         }
       ],
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-full-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-full-5s-seed0.mp4",
           "poster": "media/posters/base-full-5s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-full-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-full-5s-seed0.mp4",
           "poster": "media/posters/fast-full-5s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-full-5s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-full-5s-seed0.mp4",
           "poster": "media/posters/decoder36-full-5s-seed0.jpg"
         }
       },
@@ -2102,33 +2102,33 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/clip_official_ref2va_0_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_official_ref2va_0_2s.mp4"
         },
         {
           "type": "video",
           "caption": "Video 2 · with original audio",
-          "file": "media/inputs/clip_robot_arm_red_cube_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_robot_arm_red_cube_2s.mp4"
         },
         {
           "type": "video",
           "caption": "Video 3 · with original audio",
-          "file": "media/inputs/clip_h3_cinematic_shot_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_h3_cinematic_shot_2s.mp4"
         }
       ],
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-full-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-full-10s-seed0.mp4",
           "poster": "media/posters/base-full-10s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-full-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-full-10s-seed0.mp4",
           "poster": "media/posters/fast-full-10s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-full-10s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-full-10s-seed0.mp4",
           "poster": "media/posters/decoder36-full-10s-seed0.jpg"
         }
       },
@@ -2226,33 +2226,33 @@
         {
           "type": "video",
           "caption": "Video 1 · with original audio",
-          "file": "media/inputs/clip_official_ref2va_0_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_official_ref2va_0_2s.mp4"
         },
         {
           "type": "video",
           "caption": "Video 2 · with original audio",
-          "file": "media/inputs/clip_robot_arm_red_cube_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_robot_arm_red_cube_2s.mp4"
         },
         {
           "type": "video",
           "caption": "Video 3 · with original audio",
-          "file": "media/inputs/clip_h3_cinematic_shot_2s.mp4"
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_h3_cinematic_shot_2s.mp4"
         }
       ],
       "outputs": {
         "base": {
           "label": "Base",
-          "file": "media/outputs/base-full-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--base-full-15s-seed0.mp4",
           "poster": "media/posters/base-full-15s-seed0.jpg"
         },
         "fast": {
           "label": "FastH3 Omni",
-          "file": "media/outputs/fast-full-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--fast-full-15s-seed0.mp4",
           "poster": "media/posters/fast-full-15s-seed0.jpg"
         },
         "decoder36": {
           "label": "FastH3 Omni · 36L VAE",
-          "file": "media/outputs/decoder36-full-15s-seed0.mp4",
+          "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--outputs--decoder36-full-15s-seed0.mp4",
           "poster": "media/posters/decoder36-full-15s-seed0.jpg"
         }
       },

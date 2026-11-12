@@ -189,7 +189,7 @@
     {
      "type": "video",
      "caption": "Video 1 \u00b7 with original audio",
-     "file": "/blogs/fastvideo-omniref-update/media/inputs/clip_official_ref2va_0_2s.mp4"
+     "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--clip_official_ref2va_0_2s.mp4"
     }
    ],
    "gb200_8x_768p_s": 5.17,
@@ -241,7 +241,7 @@
     {
      "type": "video",
      "caption": "Video 1 \u00b7 with original audio",
-     "file": "/blogs/fastvideo-omniref-update/media/inputs/official_ref2va_0_video.mp4"
+     "file": "https://github.com/hao-ai-lab/hao-ai-lab.github.io/releases/download/website-demo-media-v1/fastvideo-omniref-update--media--inputs--official_ref2va_0_video.mp4"
     }
    ],
    "gb200_8x_768p_s": 8.34,
