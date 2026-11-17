@@ -78,16 +78,21 @@ RecSA counts candidates instead of tokens. At each level, every candidate, inclu
 
 We compare candidate-local RoPE with a variant trained the same way but with standard RoPE at the original token positions (Figure 4). At 32K, the two score within one point of each other. Beyond 32K, standard RoPE fails right away. With YaRN, the failure comes later, but by 524K the score has collapsed as well. Candidate-local RoPE keeps most of its score at 1M.
 
-{{< figure src="img/fig4_rope_ablation.png" alt="RULER score of candidate-local RoPE, standard RoPE and standard RoPE with YaRN" width="73%" align="center" caption="**Figure 4.** RULER score of RecSA and of a variant trained the same way with standard RoPE, evaluated with and without YaRN beyond 32K. Standard RoPE drops to 1.0 at 131K; YaRN delays the drop, but the score is 1.9 at 524K and 1M. Candidate-local RoPE keeps 60.5 at 1M." >}}
+{{< figure src="img/fig4_rope_ablation.png" alt="RULER score of candidate-local RoPE, standard RoPE and standard RoPE with YaRN" width="65%" align="center" caption="**Figure 4.** RULER score of RecSA and of a variant trained the same way with standard RoPE, evaluated with and without YaRN beyond 32K. Standard RoPE drops to 1.0 at 131K; YaRN delays the drop, but the score is 1.9 at 524K and 1M. Candidate-local RoPE keeps 60.5 at 1M." >}}
 
 ### 2.3 Distilling the Pooler from Dense Attention
 
-A node's key does two jobs for every query: it decides whether the node is selected, and if not, it is the key of the node's summary in the softmax. Mean pooling, a common choice, waters down a subtree that has one strong match among many weak ones. RecSA's pooler starts from the mean of the child keys and adds two learned terms:
+A node's key does two jobs for every query: it decides whether the node is selected, and if not, it is the key of the node's summary in the softmax. Mean pooling, a common choice, waters down a subtree that has one strong match among many weak ones (Figure 5). RecSA's pooler starts from the mean of the child keys and adds two learned terms:
 
 - one pulls the key toward the children that score highest along a learned direction, by an amount set by a learned gate;
 - a small MLP adds a correction computed from the mean and this pull.
 
 With both terms off, the pooler is plain mean pooling. Each attention layer has one pooler of about 25K parameters, shared by all its KV heads and all levels of their trees.
+
+<figure>
+<video src="img/fig5_pooler.mp4" autoplay muted loop playsinline style="width: 80%; display: block; margin: 0 auto;" aria-label="One node and one query under mean pooling and under the RecSA pooler: the mean-pooled node is not selected, the RecSA node is selected and the search reaches the matching child"></video>
+<figcaption><p><b>Figure 5.</b> One node and one query whose match is one of the node's 16 children. Mean pooling waters the match down, and the node is not selected; RecSA's pooler keeps it, so the node is selected and the search goes on into its children. Scores are illustrative.</p></figcaption>
+</figure>
 
 **Distillation.** Selection is a hard top-k, so the language modeling loss would reach the pooler only through the summaries, never through which nodes get selected. We therefore distill the pooler from the frozen Qwen3-4B:
 
@@ -132,9 +137,9 @@ RecSA scores highest on [RULER](https://arxiv.org/abs/2404.06654) at every lengt
 </figure>
 
 
-On nine [PG-19](https://arxiv.org/abs/1911.05507) books, the perplexity of RecSA stays nearly flat from 131K to 1M, while that of every baseline rises with length (Figure 5).
+On nine [PG-19](https://arxiv.org/abs/1911.05507) books, the perplexity of RecSA stays nearly flat from 131K to 1M, while that of every baseline rises with length (Figure 6).
 
-{{< figure src="img/fig5_ppl.png" alt="Perplexity on PG-19 books from 32K to 1M" width="73%" align="center" caption="**Figure 5.** Perplexity on nine PG-19 books. From 131K to 1M, RecSA stays between 10.9 and 11.1, while at 1M the DCA baselines reach 14.6–19.2 and Dense + YaRN 211." >}}
+{{< figure src="img/fig6_ppl.png" alt="Perplexity on PG-19 books from 32K to 1M" width="65%" align="center" caption="**Figure 6.** Perplexity on nine PG-19 books. From 131K to 1M, RecSA stays between 10.9 and 11.1, while at 1M the DCA baselines reach 14.6–19.2 and Dense + YaRN 211." >}}
 
 On six short-context benchmarks (MMLU, ARC-C, GSM8K, IFEval, HumanEval and MBPP), RecSA stays within 2 points of the original Qwen3-4B. Most of these inputs are shorter than 4K tokens, where RecSA reduces to dense attention, so the differences there come from Stage 2 training.
 
@@ -142,9 +147,9 @@ On six short-context benchmarks (MMLU, ARC-C, GSM8K, IFEval, HumanEval and MBPP)
 
 Section 2.1 showed that each query's selection cost grows as $O(\log L)$. Here we check what this means for wall-clock time, on one H200 with batch size 1, against dense FlashAttention in the same framework.
 
-Prefill with RecSA is slightly slower at 32K (1.6 s vs. 1.5 s) and faster from 64K on. At 524K, it takes 80 s, against 257 s for dense attention (Figure 6). At 1M and 2M, where RecSA keeps the exact tokens in host memory (Section 5), the gap widens further.
+Prefill with RecSA is slightly slower at 32K (1.6 s vs. 1.5 s) and faster from 64K on. At 524K, it takes 80 s, against 257 s for dense attention (Figure 7). At 1M and 2M, where RecSA keeps the exact tokens in host memory (Section 5), the gap widens further.
 
-{{< figure src="img/fig6_prefill.png" alt="Prefill time per token of RecSA and dense attention" width="73%" align="center" caption="**Figure 6.** Prefill time per token on one H200 with batch size 1. At 524K, RecSA is 3.2× faster than dense FlashAttention in the same framework. Hollow markers: RecSA with KV offloading; arrows: Dense values above the axis range." >}}
+{{< figure src="img/fig7_prefill.png" alt="Prefill time per token of RecSA and dense attention" width="65%" align="center" caption="**Figure 7.** Prefill time per token on one H200 with batch size 1. At 524K, RecSA is 3.2× faster than dense FlashAttention in the same framework. Hollow markers: RecSA with KV offloading; arrows: Dense values above the axis range." >}}
 
 Decoding with RecSA is faster than dense attention at every length, including 32K (Figure 1b). From 131K to 524K, RecSA stays at about 6 ms per token, while dense decoding grows from about 9 ms to 23 ms, so at 524K RecSA is 3.8× faster. At 1M and 2M, RecSA takes about 8 and 11 ms. The dense KV cache no longer fits in GPU memory there, and dense decoding is more than 20× slower. Section 5 shows where the time of a decoding step goes.
 
@@ -156,9 +161,9 @@ We implement RecSA in Triton and CUDA. This section covers the parts that differ
 
 Some block-sparse kernels let a group of adjacent queries walk through the union of their selected blocks and load each block only once, with its keys already rotated by RoPE. Under candidate-local RoPE, this breaks: a key has a different position in each query's candidate list, so there is no single rotation to apply in advance.
 
-We split the rotation between keys and queries. Call the $m$-th node that a query selects at a level its slot $m$. Child $c$ of slot $m$ then has index $16m + c$ in the next candidate list. Because the RoPE score depends only on the difference of the two positions, we can rotate the key by $c$ alone (0 to 15), which is the same for every query. The query takes the $16m$ part: it starts at the last index and rotates back 16 positions after each node it selected. The 16 adjacent queries of a thread block then share every KV block and load it once (Figure 7). On PG-19, each block loaded at the bottom level serves 4 to 8 of the 16 queries on average, depending on the context length.
+We split the rotation between keys and queries. Call the $m$-th node that a query selects at a level its slot $m$. Child $c$ of slot $m$ then has index $16m + c$ in the next candidate list. Because the RoPE score depends only on the difference of the two positions, we can rotate the key by $c$ alone (0 to 15), which is the same for every query. The query takes the $16m$ part: it starts at the last index and rotates back 16 positions after each node it selected. The 16 adjacent queries of a thread block then share every KV block and load it once (Figure 8). On PG-19, each block loaded at the bottom level serves 4 to 8 of the 16 queries on average, depending on the context length.
 
-{{< figure src="img/fig7_prefill_kernel.png" alt="Prefill kernel: 16 queries of one thread block share each KV block" width="45%" align="center" caption="**Figure 7.** Prefill. Rows are the 16 adjacent queries of one thread block and columns the union of the parent nodes they selected; numbers give the slot of each parent for each query. The key-side rotation does not depend on the slot, so the framed block of 16 children is loaded once and shared by every query that selected its parent." >}}
+{{< figure src="img/fig8_prefill_kernel.png" alt="Prefill kernel: 16 queries of one thread block share each KV block" width="40%" align="center" caption="**Figure 8.** Prefill. Rows are the 16 adjacent queries of one thread block and columns the union of the parent nodes they selected; numbers give the slot of each parent for each query. The key-side rotation does not depend on the slot, so the framed block of 16 children is loaded once and shared by every query that selected its parent." >}}
 
 ### Decoding
 
@@ -167,11 +172,11 @@ We split the rotation between keys and queries. Call the $m$-th node that a quer
 - **One CUDA graph.** Each level has at most 4K candidates, so every kernel has a fixed launch grid, and the decoding step of all 36 attention layers is captured as one CUDA graph.
 - **KV offloading.** At 1M and 2M, the KV cache does not fit in GPU memory (Section 1). RecSA keeps the exact tokens in pinned host memory and only the levels above them on the GPU, which take less than 7% of the cache. Selection runs entirely on the GPU. A gather kernel then copies only the exact tokens under the 256 selected level-1 nodes over PCIe, under 600 MiB per step at any context length. Spare GPU memory caches a suffix of the input, and the gather reads those blocks without crossing PCIe.
 
-{{< figure src="img/fig8_decode_kernel.png" alt="One decoding step with KV offloading" width="100%" align="center" caption="**Figure 8.** One decoding step with KV offloading: (1) append the new token, (2) update the last node of each level with the pooler, (3) score each level in segments and take the top 256, (4) gather the selected exact tokens from the GPU cache or from host memory, and (5) compute one softmax over summaries and exact tokens. Blue: selected; orange: unselected candidates, which enter as summaries." >}}
+{{< figure src="img/fig9_decode_kernel.png" alt="One decoding step with KV offloading" width="80%" align="center" caption="**Figure 9.** One decoding step with KV offloading: (1) append the new token, (2) update the last node of each level with the pooler, (3) score each level in segments and take the top 256, (4) gather the selected exact tokens from the GPU cache or from host memory, and (5) compute one softmax over summaries and exact tokens. Blue: selected; orange: unselected candidates, which enter as summaries." >}}
 
-From 131K to 524K, a decoding step stays near 6 ms, and more than half of it is spent outside attention. At 1M and 2M, most of the added time is the gather (Figure 9).
+From 131K to 524K, a decoding step stays near 6 ms, and more than half of it is spent outside attention. At 1M and 2M, most of the added time is the gather (Figure 10).
 
-{{< figure src="img/fig9_decode_breakdown.png" alt="Decoding latency breakdown by component from 32K to 2M" width="65%" align="center" caption="**Figure 9.** Time breakdown of one decoding step. From 131K to 524K the step stays near 6 ms; at 1M and 2M, most of the added time is the gather of the selected exact tokens." >}}
+{{< figure src="img/fig10_decode_breakdown.png" alt="Decoding latency breakdown by component from 32K to 2M" width="50%" align="center" caption="**Figure 10.** Time breakdown of one decoding step. From 131K to 524K the step stays near 6 ms; at 1M and 2M, most of the added time is the gather of the selected exact tokens." >}}
 
 ## Conclusion
 
