@@ -270,7 +270,49 @@ Join us on [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-4heayzk81
 
 **More Example Videos Built with Dreamverse Harness**
 
-**[TODO: add example videos]**
+A product ad for NVIDIA DGX Spark, by Kun Lin. It shows the desktop box, its specs, and Sparks stacked to scale together.
+
+<div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
+  <video controls playsinline preload="metadata" poster="media/example-spark-ad-poster.jpg"
+    aria-label="A product ad for NVIDIA DGX Spark"
+    style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
+    <source src="media/example-spark-ad.mp4" type="video/mp4">
+    Your browser does not support MP4 video with audio.
+  </video>
+</div>
+
+A Chinese ink-wash animation of a Chinese myth, by Kyle Hu. The bird Jingwei carries twigs and pebbles to fill the sea.
+
+<div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
+  <video controls playsinline preload="metadata" poster="media/example-jingwei-poster.jpg"
+    aria-label="A Chinese ink-wash animation of the Jingwei myth"
+    style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
+    <source src="media/example-jingwei.mp4" type="video/mp4">
+    Your browser does not support MP4 video with audio.
+  </video>
+</div>
+
+A documentary of fungi, by Kyle Hu, from mushrooms on the forest floor to the threads that run under the soil.
+
+<div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
+  <video controls playsinline preload="metadata" poster="media/example-fungi-poster.jpg"
+    aria-label="A nature documentary about fungi"
+    style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
+    <source src="media/example-fungi.mp4" type="video/mp4">
+    Your browser does not support MP4 video with audio.
+  </video>
+</div>
+
+The final cut of a sci-fi scene by Loay Rashid, set aboard a starship.
+
+<div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
+  <video controls playsinline preload="metadata" poster="media/example-scifi-poster.jpg"
+    aria-label="A sci-fi scene aboard a starship"
+    style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
+    <source src="media/example-scifi.mp4" type="video/mp4">
+    Your browser does not support MP4 video with audio.
+  </video>
+</div>
 
 ## **References**
 
