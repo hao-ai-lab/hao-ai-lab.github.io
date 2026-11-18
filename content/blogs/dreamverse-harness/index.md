@@ -1,6 +1,6 @@
 +++
 title = "Dreamverse Harness: Local-First AI Filmmaking on Your Own GPUs"
-date = 2026-11-03T00:00:00Z
+date = 2026-11-19T00:00:00Z
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
 ShowReadingTime = true
@@ -8,6 +8,11 @@ ShowToc = false
 draft = true
 contentClass = "post-content-justified"
 url = "/blogs/dreamverse-harness/"
+[cover]
+    image = "img/cover.jpg"
+    alt = "Dreamverse Harness"
+    relative = true
+    hiddenInSingle = true
 [socialIcons]
     [[socialIcons.icon]]
       name = "twitter"
@@ -19,7 +24,7 @@ url = "/blogs/dreamverse-harness/"
 
 Today we are open-sourcing **Dreamverse Harness**, an agent harness built upon [FastVideo](https://github.com/hao-ai-lab/FastVideo) that takes local video generation from single clips to complete films.
 
-**Try it:** **[TODO: GitHub link]** · **[TODO: Docs link]** · **[TODO: Slack link]**
+**Try it:** [GitHub](https://github.com/fastvideo-project/dreamverse-harness) · [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-4heayzk81-lOkgpvJRoceuZjNP7pXxJA) · [Discord](https://discord.gg/dqc2J2yNQ)
 
 [dreamverse-harness-intro-v21.mp4](https://drive.google.com/file/d/1igsDQP_LjM5-AVsYBX0UYuU0yf-egU5t/view?usp=drive_link) **[TODO: embed the intro video]**
 
@@ -131,10 +136,10 @@ Dreamverse Harness needs two servers: a FastVideo server that renders the video,
      --server.host 127.0.0.1   # port 8000
    ```
 
-2. Get Dreamverse Harness and create its profile (**[TODO: public repo URL]**):
+2. Get Dreamverse Harness and create its profile:
 
    ```bash
-   git clone [public repo URL] dreamverse && cd dreamverse
+   git clone https://github.com/fastvideo-project/dreamverse-harness.git dreamverse && cd dreamverse
    pnpm install && pnpm run build
    export DSH_HOME="$HOME/.local/state/dsh-video-harness"
    scripts/video-harness/setup-profile.sh
@@ -254,7 +259,7 @@ Build the settings pages with `pnpm --filter @dv/ui-runtime-settings bundle` and
 
 2K across two DGX Sparks. Serve Open-H3-Regenerate-2K across two cabled Sparks with FastVideo's two-Spark 2K recipe (`sp_size: 2` over Ray). The agent then sends kept takes to it while the other Sparks keep drafting.
 
-Join us on **[TODO: Slack link]**, or open an issue on **[TODO: GitHub link]**.
+Join us on [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-4heayzk81-lOkgpvJRoceuZjNP7pXxJA) or [Discord](https://discord.gg/dqc2J2yNQ), or open an issue on [GitHub](https://github.com/fastvideo-project/dreamverse-harness).
 
 **More Example Videos Built with Dreamverse Harness**
 
