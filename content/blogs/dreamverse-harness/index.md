@@ -330,5 +330,3 @@ We thank NVIDIA for their compute support and collaboration.
 **Contributors:** [Junda Su](https://davids048.github.io/), [Aryan Kumar](https://github.com/aryan5v), Kun Lin, [Kyle Hu](https://github.com/KyleNeverGivesUp), [Kevin Lin](https://github.com/kevin314), [Loay Rashid](https://github.com/loaydatrain)  
 **Tech lead:** [Will Lin](https://solitarythinker.github.io/)  
 **Advisor:** [Hao Zhang](https://haozhang.ai/) (corresponding)
-
-**[TODO: confirm the roles, the order, and a profile link for Kun Lin]**
