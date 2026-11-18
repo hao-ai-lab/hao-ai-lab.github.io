@@ -266,8 +266,6 @@ Build the settings pages with `pnpm --filter @dv/ui-runtime-settings bundle` and
 
 2K across two DGX Sparks. Serve Open-H3-Regenerate-2K across two cabled Sparks with FastVideo's two-Spark 2K recipe (`sp_size: 2` over Ray). The agent then sends kept takes to it while the other Sparks keep drafting.
 
-Join us on [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-4heayzk81-lOkgpvJRoceuZjNP7pXxJA) or [Discord](https://discord.gg/dqc2J2yNQ), or open an issue on [GitHub](https://github.com/fastvideo-project/dreamverse-harness).
-
 **More Example Videos Built with Dreamverse Harness**
 
 A product ad for NVIDIA DGX Spark, by Kun Lin. It shows the desktop box, its specs, and Sparks stacked to scale together.
@@ -314,9 +312,23 @@ The final cut of a sci-fi scene by Loay Rashid, set aboard a starship.
   </video>
 </div>
 
+Join us on [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-4heayzk81-lOkgpvJRoceuZjNP7pXxJA) or [Discord](https://discord.gg/dqc2J2yNQ), or open an issue on [GitHub](https://github.com/fastvideo-project/dreamverse-harness).
+
 ## **References**
 
 1. WanGP. [github.com/deepbeepmeep/WanGP](https://github.com/deepbeepmeep/WanGP)
 2. LTX Desktop. [github.com/Lightricks/LTX-Desktop](https://github.com/Lightricks/LTX-Desktop)
 3. OpenMontage. [github.com/calesthio/OpenMontage](https://github.com/calesthio/OpenMontage)
 4. ViMax. [github.com/HKUDS/ViMax](https://github.com/HKUDS/ViMax)
+
+## **Acknowledgement**
+
+We thank NVIDIA for their compute support and collaboration.
+
+## **FastVideo Team**
+
+**Contributors:** [Junda Su](https://davids048.github.io/), [Aryan Kumar](https://github.com/aryan5v), Kun Lin, [Kyle Hu](https://github.com/KyleNeverGivesUp), [Kevin Lin](https://github.com/kevin314), [Loay Rashid](https://github.com/loaydatrain)  
+**Tech lead:** [Will Lin](https://solitarythinker.github.io/)  
+**Advisor:** [Hao Zhang](https://haozhang.ai/) (corresponding)
+
+**[TODO: confirm the roles, the order, and a profile link for Kun Lin]**
