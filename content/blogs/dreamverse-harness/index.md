@@ -27,13 +27,35 @@ Today we are open-sourcing **Dreamverse Harness**, an agent harness built upon [
 **Try it:** [GitHub](https://github.com/fastvideo-project/dreamverse-harness) · [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-4heayzk81-lOkgpvJRoceuZjNP7pXxJA) · [Discord](https://discord.gg/dqc2J2yNQ)
 
 <div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
-  <video controls autoplay muted playsinline preload="metadata" poster="media/intro-poster.jpg"
+  <video id="intro-video" controls playsinline preload="metadata" poster="media/intro-poster.jpg"
     aria-label="Dreamverse Harness introduction video"
     style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
     <source src="media/intro.mp4" type="video/mp4">
     Your browser does not support MP4 video with audio.
   </video>
 </div>
+
+<script>
+  // Start the intro with sound. Browsers block sound before the visitor interacts with the page,
+  // so play muted in that case and turn the sound on at the visitor's first click, tap or key press.
+  (function () {
+    var video = document.getElementById('intro-video');
+    var events = ['pointerdown', 'keydown'];
+    function unmute() {
+      events.forEach(function (e) { document.removeEventListener(e, unmute, true); });
+      video.muted = false;
+      if (video.paused && !video.ended && !video.dataset.userPaused) video.play();
+    }
+    video.addEventListener('pause', function () { if (!video.ended) video.dataset.userPaused = '1'; });
+    video.addEventListener('play', function () { delete video.dataset.userPaused; });
+    video.play().catch(function (e) {
+      if (e.name !== 'NotAllowedError') return;
+      video.muted = true;
+      video.play();
+      events.forEach(function (ev) { document.addEventListener(ev, unmute, true); });
+    });
+  })();
+</script>
 
 ## **From Single-Clip Generation to Film Production**
 
