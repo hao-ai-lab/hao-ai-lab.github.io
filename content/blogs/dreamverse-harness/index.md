@@ -299,10 +299,10 @@ The [DGX Spark guide](https://github.com/fastvideo-project/dreamverse-harness/bl
 A product ad for NVIDIA DGX Spark.
 
 <div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
-  <video controls playsinline preload="metadata" poster="media/example-spark-ad-poster.jpg"
+  <video controls playsinline preload="metadata" poster="media/example-spark-ad-poster-v2.jpg"
     aria-label="A product ad for NVIDIA DGX Spark"
     style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
-    <source src="media/example-spark-ad.mp4" type="video/mp4">
+    <source src="media/example-spark-ad-v2.mp4" type="video/mp4">
     Your browser does not support MP4 video with audio.
   </video>
 </div>
