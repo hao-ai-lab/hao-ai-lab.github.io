@@ -338,6 +338,17 @@ The final cut of a sci-fi scene by Loay Rashid, set aboard a starship.
   </video>
 </div>
 
+Rough 3D scenes blocked out in Blender, by David (Junda Su), sent to Dreamverse Harness and turned into rendered shots: a soldier running across a battlefield, a warehouse fight, and a chase down a brick alley.
+
+<div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
+  <video controls playsinline preload="metadata" poster="media/example-david-poster.jpg"
+    aria-label="Rough 3D Blender scenes turned into rendered action shots"
+    style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
+    <source src="media/example-david.mp4" type="video/mp4">
+    Your browser does not support MP4 video with audio.
+  </video>
+</div>
+
 Join us on [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-4heayzk81-lOkgpvJRoceuZjNP7pXxJA) or [Discord](https://discord.gg/dqc2J2yNQ), or open an issue on [GitHub](https://github.com/fastvideo-project/dreamverse-harness).
 
 ## **References**
