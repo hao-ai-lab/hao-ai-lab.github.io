@@ -332,10 +332,10 @@ A nature documentary about fungi.
 A sci-fi scene aboard a starship.
 
 <div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
-  <video controls playsinline preload="metadata" poster="media/example-scifi-poster.jpg"
+  <video controls playsinline preload="metadata" poster="media/example-scifi-poster-v2.jpg"
     aria-label="A sci-fi scene aboard a starship"
     style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
-    <source src="media/example-scifi.mp4" type="video/mp4">
+    <source src="media/example-scifi-v2.mp4" type="video/mp4">
     Your browser does not support MP4 video with audio.
   </video>
 </div>
