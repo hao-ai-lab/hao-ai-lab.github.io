@@ -61,7 +61,7 @@ Dreamverse Harness is a workspace where you and an agent build a film together. 
 
 {{< image src="img/timeline.png" alt="The timeline paused on shot 3 of the six shots" width="100%" >}}
 
-**Everything is a plugin.** Built on [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), Dreamverse Harness treats every part of the stack as a modular plugin. You can strip out features you do not need, directly tune the skills and context fed to the agent, or build and distribute your own custom canvas nodes and UI visualizations.
+**Everything is a plugin.** Built on [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)⁵, Dreamverse Harness treats every part of the stack as a modular plugin. You can strip out features you do not need, directly tune the skills and context fed to the agent, or build and distribute your own custom canvas nodes and UI visualizations.
 
 **Runs on DGX Spark, locally or with the cloud.** Dreamverse Harness runs on NVIDIA DGX Spark, the GB10 Grace Blackwell desktop with 128 GB of unified memory. On a single DGX Spark the whole stack runs locally: Qwen 3.8 27B in NVFP4 serves as the agent’s LLM, FastH3 renders the video, and scripts, references and takes never leave the machine. Local is the default, not a requirement. A cloud LLM or a remote FastVideo server is one more entry in the same catalog, so you can direct with a larger cloud model while video stays on your Spark, add remote render servers next to local ones, or grow from one DGX Spark to two, three or four. Up to four connect directly over QSFP cables without a switch, and the harness treats every combination the same way.
 
@@ -147,7 +147,7 @@ Dreamverse Harness is a workspace where you and an agent build a film together. 
   })();
 </script>
 
-**FastVideo built in, tuned for DGX Spark.** Dreamverse Harness ships FastVideo as its native video backend, and FastVideo is tuned for the GB10 down to the kernels. Every FastH3 model (V1, V2, Trim and Omni), along with Pika H3 Flex, ships as an NVFP4 build for Blackwell and runs on GB10 kernels: fused NVFP4 matrix multiplies, sparse video attention and an NVFP4 video decoder. The gains add up. When FastH3 first ran on a DGX Spark, a five-second clip took 243 seconds; today five seconds of 480p video with audio renders in about 33 seconds on one Spark and 19 seconds on two. As a result, one DGX Spark can hold the agent’s LLM and a FastH3 model together, or two FastH3 models side by side, and the agent switches between them as the film needs them.
+**FastVideo built in, tuned for DGX Spark.** Dreamverse Harness ships FastVideo as its native video backend, and FastVideo is tuned for the GB10 down to the kernels. Every FastH3 model (V1, V2, Trim and Omni), along with Pika H3 Flex⁶, ships as an NVFP4 build for Blackwell and runs on GB10 kernels: fused NVFP4 matrix multiplies, sparse video attention and an NVFP4 video decoder. The gains add up. When FastH3 first ran on a DGX Spark, a five-second clip took 243 seconds; today five seconds of 480p video with audio renders in about 33 seconds on one Spark and 19 seconds on two. As a result, one DGX Spark can hold the agent’s LLM and a FastH3 model together, or two FastH3 models side by side, and the agent switches between them as the film needs them.
 
 **Hardware-aware control through your agent.** Add each Spark on the new Hardware settings page, and the agent sees every device: whether it is reachable, whether it is busy, and which models it holds. It places each clip on an idle Spark with that model installed, prefers one where the model is already loaded, and renders independent clips in parallel. It loads and unloads models on each device on its own, and you keep the same control from the Generation models page.
 
@@ -161,7 +161,7 @@ Dreamverse Harness is a workspace where you and an agent build a film together. 
   <figcaption class="spark-caption">4 DGX Sparks on a 200G switch: the agent renders four shots in parallel, then all four Sparks split each 2K upscale</figcaption>
 </figure>
 
-**Upscale videos to 2K.** We adapted NVlabs’ Open-H3-Regenerate-2K, which regenerates a draft at 2560×1440, to DGX Spark. It runs with sparse attention, MXFP8 matrix multiplies and a lighter 24-layer decoder on the GB10, and it splits each clip across two cabled Sparks. Together these take a 2K regeneration on two DGX Sparks from 454 to 158 seconds. The agent sends the takes you keep to the upscaler as a V2V task; with three or more Sparks, drafting with FastH3 continues on the others while a pair regenerates the keeper at 2K.
+**Upscale videos to 2K.** We adapted NVlabs’ Open-H3-Regenerate-2K⁷, which regenerates a draft at 2560×1440, to DGX Spark. It runs with sparse attention, MXFP8 matrix multiplies and a lighter 24-layer decoder on the GB10, and it splits each clip across two cabled Sparks. Together these take a 2K regeneration on two DGX Sparks from 454 to 158 seconds. The agent sends the takes you keep to the upscaler as a V2V task; with three or more Sparks, drafting with FastH3 continues on the others while a pair regenerates the keeper at 2K.
 
 ## **How the Harness Works**
 
@@ -359,6 +359,10 @@ Join us on [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-4heayzk81
 2. LTX Desktop. [github.com/Lightricks/LTX-Desktop](https://github.com/Lightricks/LTX-Desktop)
 3. OpenMontage. [github.com/calesthio/OpenMontage](https://github.com/calesthio/OpenMontage)
 4. ViMax. [github.com/HKUDS/ViMax](https://github.com/HKUDS/ViMax)
+5. DeepSeek Harness. [github.com/deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness)
+6. Pika H3 Flex. [huggingface.co/Pika-Labs/Pika-H3-Flex](https://huggingface.co/Pika-Labs/Pika-H3-Flex)
+7. Open-H3-Regenerate-2K. [huggingface.co/Efficient-Large-Model/Open-H3-Regenerate-2K](https://huggingface.co/Efficient-Large-Model/Open-H3-Regenerate-2K)
+8. vLLM-Omni. [github.com/vllm-project/vllm-omni](https://github.com/vllm-project/vllm-omni)
 
 ## **Acknowledgement**
 
@@ -366,6 +370,6 @@ We thank NVIDIA for their compute support and collaboration.
 
 ## **FastVideo Team**
 
-**Contributors:** [Junda Su](https://davids048.github.io/), [Aryan Kumar](https://github.com/aryan5v), [Kun Lin](https://github.com/klhhhhh), [Kyle Hu](https://github.com/KyleNeverGivesUp), [Kevin Lin](https://github.com/kevin314), [Loay Rashid](https://github.com/loaydatrain), [Junda Chen](https://github.com/GindaChen)  
+**Contributors:** [Junda Su](https://davids048.github.io/), [Aryan Kumar](https://github.com/aryan5v), [Kun Lin](https://github.com/klhhhhh), [Kyle Hu](https://github.com/KyleNeverGivesUp), [Kevin Lin](https://github.com/kevin314), [Loay Rashid](https://github.com/loaydatrain), [Junda Chen](https://github.com/GindaChen), [Ishan Vaish](https://github.com/ivaish)  
 **Tech lead:** [Will Lin](https://solitarythinker.github.io/)  
 **Advisor:** [Hao Zhang](https://haozhang.ai/) (corresponding)
