@@ -65,18 +65,97 @@ Dreamverse Harness is a workspace where you and an agent build a film together. 
 
 **Runs on DGX Spark, locally or with the cloud.** Dreamverse Harness runs on NVIDIA DGX Spark, the GB10 Grace Blackwell desktop with 128 GB of unified memory. On a single DGX Spark the whole stack runs locally: Qwen 3.8 27B in NVFP4 serves as the agent’s LLM, FastH3 renders the video, and scripts, references and takes never leave the machine. Local is the default, not a requirement. A cloud LLM or a remote FastVideo server is one more entry in the same catalog, so you can direct with a larger cloud model while video stays on your Spark, add remote render servers next to local ones, or grow from one DGX Spark to two, three or four. Up to four connect directly over QSFP cables without a switch, and the harness treats every combination the same way.
 
+<!-- DGX Spark player: one video, four tabs that switch the clip. -->
+<figure class="spark-tabs video-embed" style="margin: 1.5rem 0;">
+  <div class="spark-tablist" role="tablist" aria-label="Number of DGX Sparks">
+    <button type="button" role="tab" id="spark-tab-1" aria-selected="true" aria-controls="spark-panel" tabindex="0"
+      data-src="media/spark-1-spark.mp4" data-poster="media/spark-1-spark-poster.jpg"
+      data-caption="1 DGX Spark, fully local: Qwen 3.8 27B and FastH3 share one box">1 Spark</button>
+    <button type="button" role="tab" id="spark-tab-2" aria-selected="false" aria-controls="spark-panel" tabindex="-1"
+      data-src="media/spark-2-sparks.mp4" data-poster="media/spark-2-sparks-poster.jpg"
+      data-caption="2 DGX Sparks: three FastH3 models across two boxes, then a 2K upscale">2 Sparks</button>
+    <button type="button" role="tab" id="spark-tab-3" aria-selected="false" aria-controls="spark-panel" tabindex="-1"
+      data-src="media/spark-3-sparks.mp4" data-poster="media/spark-3-sparks-poster.jpg"
+      data-caption="3 DGX Sparks: local Qwen on one box, and a pair joins up for 2K">3 Sparks</button>
+    <button type="button" role="tab" id="spark-tab-4" aria-selected="false" aria-controls="spark-panel" tabindex="-1"
+      data-src="media/spark-4-sparks.mp4" data-poster="media/spark-4-sparks-poster.jpg"
+      data-caption="4 DGX Sparks: four FastH3 models at once, then three 2K upscales at once">4 Sparks</button>
+  </div>
+  <div id="spark-panel" role="tabpanel" aria-labelledby="spark-tab-1">
+    <video controls playsinline preload="metadata" src="media/spark-1-spark.mp4" poster="media/spark-1-spark-poster.jpg"
+      aria-label="Dreamverse Harness on 1 DGX Spark"
+      style="display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 10px; background: #000;">
+      Your browser does not support MP4 video.
+    </video>
+  </div>
+  <figcaption class="spark-caption" aria-live="polite">1 DGX Spark, fully local: Qwen 3.8 27B and FastH3 share one box</figcaption>
+</figure>
+
+<style>
+  .spark-tablist { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .spark-tablist [role="tab"] {
+    padding: 0.4rem 0.9rem; border: 1px solid var(--tertiary); border-radius: 999px;
+    background: var(--entry); color: var(--primary); font: inherit; font-size: 0.95rem; cursor: pointer;
+  }
+  .spark-tablist [role="tab"][aria-selected="true"] { background: var(--primary); color: var(--theme); border-color: var(--primary); }
+  .spark-tablist [role="tab"]:focus-visible { outline: 2px solid #3b6cf6; outline-offset: 2px; }
+  .post-content figure > figcaption.spark-caption { margin: 0.5rem 0 0; font-size: 16px; font-weight: 400; color: #808080; text-align: center; }
+  @media (max-width: 600px) {
+    .spark-tablist { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.35rem; }
+    .spark-tablist [role="tab"] { padding: 0.4rem 0.2rem; font-size: 0.9rem; white-space: nowrap; }
+  }
+</style>
+
+<script>
+  // Switch the DGX Spark clip when a tab is clicked; arrow keys, Home and End move between tabs.
+  (function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.spark-tablist [role="tab"]'));
+    var panel = document.getElementById('spark-panel');
+    var video = panel.querySelector('video');
+    var caption = document.querySelector('.spark-tabs .spark-caption');
+    function select(tab) {
+      if (tab.getAttribute('aria-selected') === 'true') return;
+      var wasPlaying = !video.paused;
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+      });
+      panel.setAttribute('aria-labelledby', tab.id);
+      video.poster = tab.dataset.poster;
+      video.src = tab.dataset.src;
+      video.setAttribute('aria-label', 'Dreamverse Harness on ' + tab.dataset.caption.split(':')[0].replace(',', ''));
+      caption.textContent = tab.dataset.caption;
+      video.load();
+      if (wasPlaying) video.play();
+    }
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () { select(tab); });
+      tab.addEventListener('keydown', function (e) {
+        var next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+        if (next === undefined) return;
+        e.preventDefault();
+        var target = tabs[(next + tabs.length) % tabs.length];
+        target.focus();
+        select(target);
+      });
+    });
+  })();
+</script>
+
 **FastVideo built in, tuned for DGX Spark.** Dreamverse Harness ships FastVideo as its native video backend, and FastVideo is tuned for the GB10 down to the kernels. Every FastH3 model (V1, V2, Trim and Omni), along with Pika H3 Flex, ships as an NVFP4 build for Blackwell and runs on GB10 kernels: fused NVFP4 matrix multiplies, sparse video attention and an NVFP4 video decoder. The gains add up. When FastH3 first ran on a DGX Spark, a five-second clip took 243 seconds; today five seconds of 480p video with audio renders in about 33 seconds on one Spark and 19 seconds on two. As a result, one DGX Spark can hold the agent’s LLM and a FastH3 model together, or two FastH3 models side by side, and the agent switches between them as the film needs them.
 
-<div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
-  <video controls playsinline preload="metadata" poster="media/spark-map-build-up-poster.jpg"
-    aria-label="Dreamverse Harness on one to four DGX Sparks"
+**Hardware-aware control through your agent.** Add each Spark on the new Hardware settings page, and the agent sees every device: whether it is reachable, whether it is busy, and which models it holds. It places each clip on an idle Spark with that model installed, prefers one where the model is already loaded, and renders independent clips in parallel. It loads and unloads models on each device on its own, and you keep the same control from the Generation models page.
+
+<figure class="video-embed" style="width: 100%; margin: 1.5rem 0;">
+  <video controls playsinline preload="metadata" poster="media/spark-4-sparks-switch-poster.jpg"
+    aria-label="Dreamverse Harness on 4 DGX Sparks with a 200G switch"
     style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
-    <source src="media/spark-map-build-up.mp4" type="video/mp4">
+    <source src="media/spark-4-sparks-switch.mp4" type="video/mp4">
     Your browser does not support MP4 video.
   </video>
-</div>
-
-**Hardware-aware control through your agent.** Add each Spark on the new Hardware settings page, and the agent sees every device: whether it is reachable, whether it is busy, and which models it holds. It places each clip on an idle Spark with that model installed, prefers one where the model is already loaded, and renders independent clips in parallel. It loads and unloads models on each device on its own, and you keep the same control from the Generation models page.
+  <figcaption class="spark-caption">4 DGX Sparks on a 200G switch: the agent renders four shots in parallel, then all four Sparks split each 2K upscale</figcaption>
+</figure>
 
 **Upscale videos to 2K.** We adapted NVlabs’ Open-H3-Regenerate-2K, which regenerates a draft at 2560×1440, to DGX Spark. It runs with sparse attention, MXFP8 matrix multiplies and a lighter 24-layer decoder on the GB10, and it splits each clip across two cabled Sparks. Together these take a 2K regeneration on two DGX Sparks from 454 to 158 seconds. The agent sends the takes you keep to the upscaler as a V2V task; with three or more Sparks, drafting with FastH3 continues on the others while a pair regenerates the keeper at 2K.
 
