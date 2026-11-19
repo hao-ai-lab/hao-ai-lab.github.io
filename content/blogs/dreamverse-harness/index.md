@@ -27,7 +27,7 @@ Today we are open-sourcing **Dreamverse Harness**, an agent harness built upon [
 **Try it:** [GitHub](https://github.com/fastvideo-project/dreamverse-harness) · [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-4heayzk81-lOkgpvJRoceuZjNP7pXxJA) · [Discord](https://discord.gg/dqc2J2yNQ)
 
 <div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
-  <video controls playsinline preload="metadata" poster="media/intro-poster.jpg"
+  <video controls autoplay muted playsinline preload="metadata" poster="media/intro-poster.jpg"
     aria-label="Dreamverse Harness introduction video"
     style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
     <source src="media/intro.mp4" type="video/mp4">
