@@ -205,9 +205,9 @@ References have versions as well. A character such as c1 starts at version c1@1 
 
 ### **2. Composable by design**
 
-A harness for filmmaking has to grow. New models arrive every few weeks, and new kinds of films bring new things to track. In the first version of Dreamverse Harness, growth was expensive, because shared packages named the plugins that used them. For example, adding one reference noun edited the project kernel and four UI packages, and adding image generation touched 35 files.
+A harness for filmmaking has to grow. New models arrive every few weeks, and new kinds of films bring new things to track.
 
-We therefore rebuilt Dreamverse Harness around registries. The core provides the registries and names no plugin; a plugin adds itself by registering into them. On the host, the project kernel takes components and their operations, and the model registry takes model entries. In the browser, the canvas takes node types, while the history panel and the chat composer take their own rows and mention kinds. Every registration is tied to the lifetime of the plugin that made it, so unloading a plugin removes everything it added.
+We therefore built Dreamverse Harness around registries. The core provides the registries and names no plugin; a plugin adds itself by registering into them. On the host, the project kernel takes components and their operations, and the model registry takes model entries. In the browser, the canvas takes node types, while the history panel and the chat composer take their own rows and mention kinds. Every registration is tied to the lifetime of the plugin that made it, so unloading a plugin removes everything it added.
 
 The canvas is the clearest example in the browser (Figure 3). ui-canvas provides a registry of node types and draws whatever is registered in it. A UI plugin such as ui-character or ui-shot-plan registers its own node type and editor. A new kind of node is therefore one new plugin, and removing that plugin removes its nodes from the canvas.
 
@@ -395,6 +395,6 @@ We thank NVIDIA for their compute support and collaboration.
 
 ## **FastVideo Team**
 
-**Contributors:** [Junda Su](https://davids048.github.io/), [Aryan Kumar](https://github.com/aryan5v), [Kun Lin](https://github.com/klhhhhh), [Kyle Hu](https://github.com/KyleNeverGivesUp), [Kevin Lin](https://github.com/kevin314), [Loay Rashid](https://github.com/loaydatrain), [Junda Chen](https://github.com/GindaChen), [Ishan Vaish](https://github.com/ivaish)  
-**Tech lead:** [Will Lin](https://solitarythinker.github.io/)  
+**Contributors:** [Aryan Kumar](https://github.com/aryan5v), [Kun Lin](https://github.com/klhhhhh), [Kyle Hu](https://github.com/KyleNeverGivesUp), [Kevin Lin](https://github.com/kevin314), [Loay Rashid](https://github.com/loaydatrain), [Junda Chen](https://github.com/GindaChen), [Ishan Vaish](https://github.com/ivaish)  
+**Tech lead:** [Junda Su](https://davids048.github.io/), [Will Lin](https://solitarythinker.github.io/)  
 **Advisor:** [Hao Zhang](https://haozhang.ai/)
