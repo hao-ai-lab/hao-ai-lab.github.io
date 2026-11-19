@@ -169,7 +169,7 @@ Dreamverse Harness is built on [DeepSeek Harness](https://github.com/deepseek-ai
 
 The agent is not one more layer: it works across all of them, from workflows down to features and models. It follows the video-directing skill to plan a film, and it acts through the tools that the plugins provide. For example, when a shot needs a render, the agent picks a model from the catalog and follows the prompting skill of that model. Before it changes anything, it reads the project history to know what has already been done.
 
-{{< image src="img/fig1-plugin-layers.png" alt="Figure 1 · The Dreamverse plugin layers; dashed boxes on the right are example skills that the plugins ship" width="100%" title="Figure 1 · The Dreamverse plugin layers; dashed boxes on the right are example skills that the plugins ship" >}}
+{{< image src="img/fig1-plugin-layers-v2.png" alt="Figure 1 · The Dreamverse plugin layers; dashed boxes on the right are example skills that the plugins ship" width="100%" title="Figure 1 · The Dreamverse plugin layers; dashed boxes on the right are example skills that the plugins ship" >}}
 
 ### **1. The project layer: version control for a film**
 
@@ -193,7 +193,7 @@ The canvas is the clearest example in the browser (Figure 3). ui-canvas provides
 
 The model catalog works the same way on the host (Figure 4). Each provider plugin registers one entry per model and task, and the shot render plugin finds the entry by the key that the agent names. As a result, neither the catalog nor the render code names any provider, and adding a model takes one new provider plugin.
 
-{{< image src="img/fig4-model-catalog.png" alt="Figure 4 · The model catalog: providers register model entries, and shot render finds one by key" width="100%" title="Figure 4 · The model catalog: providers register model entries, and shot render finds one by key" >}}
+{{< image src="img/fig4-model-catalog-v2.png" alt="Figure 4 · The model catalog: providers register model entries, and shot render finds one by key" width="100%" title="Figure 4 · The model catalog: providers register model entries, and shot render finds one by key" >}}
 
 ### **3. Workflows compose components**
 
