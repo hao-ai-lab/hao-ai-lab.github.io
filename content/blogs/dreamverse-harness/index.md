@@ -271,7 +271,7 @@ npx skills add fastvideo-project/dreamverse-harness --skill dreamverse-dgx-spark
 
 The agent inspects each box, chooses a model layout for the hardware you have, installs FastVideo, the LLM and Dreamverse Harness, and checks every box with a test render. Prefer to do it yourself? The DGX Spark guide in the repository has every step, with a check after each one. The recipes below are the setups we run; mix and extend them freely.
 
-One DGX Spark, fully local. Qwen 3.8 27B (about 39 GB under vLLM) and FastH3 Trim (about 45 GB while rendering) share one box:
+**One DGX Spark, fully local.** Qwen 3.8 27B (about 39 GB under vLLM) and FastH3 Trim (about 45 GB while rendering) share one box:
 
 1. Prepare the box: DGX OS with CUDA 13, at least 120 GB of free disk, a Hugging Face login, and a memory watchdog, because an out-of-memory condition can freeze a GB10.
 
@@ -288,21 +288,21 @@ One DGX Spark, fully local. Qwen 3.8 27B (about 39 GB under vLLM) and FastH3 Tri
 
 5. Build Dreamverse Harness, create its profile, and write a profile patch that points the agent at Qwen and `dv-fastvideo` at FastH3 Trim. Then launch the web UI with `scripts/video-harness/launch.sh web` and open the printed URL in the DGX Spark's browser.
 
-Several DGX Sparks. Every DGX Spark runs its own FastVideo server, bound to its cable or LAN address, with a model catalog (`server.model_catalog`) so the agent can load and unload models on it. In the profile patch, give each model its server's `baseUrl` and set `managed: true`. One FastH3 NVFP4 model takes 40 to 55 GB, so two fit in a DGX Spark, or one beside Qwen.
+**Several DGX Sparks.** Every DGX Spark runs its own FastVideo server, bound to its cable or LAN address, with a model catalog (`server.model_catalog`) so the agent can load and unload models on it. In the profile patch, give each model its server's `baseUrl` and set `managed: true`. One FastH3 NVFP4 model takes 40 to 55 GB, so two fit in a DGX Spark, or one beside Qwen.
 
-2K across two DGX Sparks. Two cabled DGX Sparks run one Open-H3-Regenerate-2K server with sequence parallel over Ray (`sp_size: 2`), so each box refines half of each clip.
+**2K across two DGX Sparks.** Two cabled DGX Sparks run one Open-H3-Regenerate-2K server with sequence parallel over Ray (`sp_size: 2`), so each box refines half of each clip.
 
 The [DGX Spark guide](https://github.com/fastvideo-project/dreamverse-harness/blob/main/scripts/video-harness/dgx-spark.md) in the Dreamverse Harness repository has the full commands, with a check after each step.
 
 ## **More Example Videos Built with Dreamverse Harness**
 
-A product ad for NVIDIA DGX Spark.
+A sci-fi scene aboard a starship.
 
 <div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
-  <video controls playsinline preload="metadata" poster="media/example-spark-ad-poster-v2.jpg"
-    aria-label="A product ad for NVIDIA DGX Spark"
+  <video controls playsinline preload="metadata" poster="media/example-scifi-poster-v2.jpg"
+    aria-label="A sci-fi scene aboard a starship"
     style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
-    <source src="media/example-spark-ad-v2.mp4" type="video/mp4">
+    <source src="media/example-scifi-v2.mp4" type="video/mp4">
     Your browser does not support MP4 video with audio.
   </video>
 </div>
@@ -318,6 +318,17 @@ A Chinese ink-wash animation of the Jingwei myth.
   </video>
 </div>
 
+A product ad for NVIDIA DGX Spark.
+
+<div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
+  <video controls playsinline preload="metadata" poster="media/example-spark-ad-poster-v2.jpg"
+    aria-label="A product ad for NVIDIA DGX Spark"
+    style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
+    <source src="media/example-spark-ad-v2.mp4" type="video/mp4">
+    Your browser does not support MP4 video with audio.
+  </video>
+</div>
+
 A nature documentary about fungi.
 
 <div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
@@ -325,17 +336,6 @@ A nature documentary about fungi.
     aria-label="A nature documentary about fungi"
     style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
     <source src="media/example-fungi.mp4" type="video/mp4">
-    Your browser does not support MP4 video with audio.
-  </video>
-</div>
-
-A sci-fi scene aboard a starship.
-
-<div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
-  <video controls playsinline preload="metadata" poster="media/example-scifi-poster-v2.jpg"
-    aria-label="A sci-fi scene aboard a starship"
-    style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
-    <source src="media/example-scifi-v2.mp4" type="video/mp4">
     Your browser does not support MP4 video with audio.
   </video>
 </div>
