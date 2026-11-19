@@ -5,7 +5,7 @@ authors = ["FastVideo Team"]
 author = "FastVideo Team"
 ShowReadingTime = true
 ShowToc = false
-draft = true
+draft = false
 contentClass = "post-content-justified"
 url = "/blogs/dreamverse-harness/"
 [cover]
