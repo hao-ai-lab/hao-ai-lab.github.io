@@ -1,5 +1,5 @@
 +++
-title = "Dreamverse Harness: Local-First AI Filmmaking on Your Own GPUs"
+title = "FastVideo Dreamverse Harness: Local-First AI Filmmaking on Your Own GPUs"
 date = 2026-11-19T00:00:00Z
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
@@ -37,13 +37,13 @@ Today we are open-sourcing **Dreamverse Harness**, an agent harness built upon [
 
 ## **From Single-Clip Generation to Film Production**
 
-With FastVideo and [FastH3](https://github.com/hao-ai-lab/FastVideo), generating a single video clip on your own GPU is now faster than ever. However, a film is more than one clip. It takes a script, consistent characters across shots, and a final cut—things a video model cannot do on its own.
+With [FastVideo](https://github.com/hao-ai-lab/FastVideo) and [FastH3](https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD), generating a single video clip on your own GPU is now faster than ever. However, a film is more than one clip. It takes a script, consistent characters across shots, and a final cut—things a video model cannot do on its own.
 
 Today, cloud AIGC studios like Higgsfield, Runway, and TapNow can produce a full film, but they host the entire stack, so you pay credit markups on every generation instead of running on your own hardware. Customization stops at the UI as well: you can adjust presets and pick from their hosted models, but you cannot edit the agent's logic or plug in a model of your own.
 
-Open-source projects have started on this problem, but each one covers only half of it. Some run only on your own GPU, with a fixed set of local models.¹˒² Others direct a whole film, but only through paid cloud APIs.³˒⁴ We built Dreamverse Harness to close that gap: a fully open-source harness built upon FastVideo, and open to any model you connect.
+Open-source projects have started on this problem, but each one covers only half of it. Some run only on your own GPU, with a fixed set of local models.¹˒² Others direct a whole film, but only through paid cloud APIs.³˒⁴ We built FastVideo Dreamverse Harness to close that gap: a fully open-source harness built upon FastVideo, and open to any model you connect.
 
-## **What Dreamverse Harness Does**
+## **What FastVideo Dreamverse Harness Does**
 
 Dreamverse Harness is a workspace where you and an agent build a film together. Instead of hiding generation behind a single chat box, it connects an agent to a visual canvas for your assets and a timeline for your final cut—so you can see and edit every piece of the film as it comes together.
 
@@ -107,15 +107,14 @@ Dreamverse Harness is a workspace where you and an agent build a film together. 
 </style>
 
 <script>
-  // Switch the DGX Spark clip when a tab is clicked; arrow keys, Home and End move between tabs.
+  // Switch the DGX Spark clip and play it when a tab is selected; arrow keys, Home and End move between tabs.
   (function () {
     var tabs = Array.prototype.slice.call(document.querySelectorAll('.spark-tablist [role="tab"]'));
     var panel = document.getElementById('spark-panel');
     var video = panel.querySelector('video');
     var caption = document.querySelector('.spark-tabs .spark-caption');
     function select(tab) {
-      if (tab.getAttribute('aria-selected') === 'true') return;
-      var wasPlaying = !video.paused;
+      if (tab.getAttribute('aria-selected') === 'true') { play(); return; }
       tabs.forEach(function (t) {
         var on = t === tab;
         t.setAttribute('aria-selected', on ? 'true' : 'false');
@@ -127,7 +126,12 @@ Dreamverse Harness is a workspace where you and an agent build a film together. 
       video.setAttribute('aria-label', 'Dreamverse Harness on ' + tab.dataset.caption.split(':')[0].replace(',', ''));
       caption.textContent = tab.dataset.caption;
       video.load();
-      if (wasPlaying) video.play();
+      play();
+    }
+    // Play with sound when the browser allows it, otherwise muted.
+    function play() {
+      var p = video.play();
+      if (p) p.catch(function (e) { if (e.name === 'NotAllowedError') { video.muted = true; video.play(); } });
     }
     tabs.forEach(function (tab, i) {
       tab.addEventListener('click', function () { select(tab); });
@@ -267,7 +271,7 @@ npx skills add fastvideo-project/dreamverse-harness --skill dreamverse-dgx-spark
 
 The agent inspects each box, chooses a model layout for the hardware you have, installs FastVideo, the LLM and Dreamverse Harness, and checks every box with a test render. Prefer to do it yourself? The DGX Spark guide in the repository has every step, with a check after each one. The recipes below are the setups we run; mix and extend them freely.
 
-**[TODO: review this DGX Spark text, a short version of the DGX Spark guide]**
+<strong style="color: #d32f2f;">[TODO: review this DGX Spark text, a short version of the DGX Spark guide]</strong>
 
 One DGX Spark, fully local. Qwen 3.8 27B (about 39 GB under vLLM) and FastH3 Trim (about 45 GB while rendering) share one box:
 
@@ -292,9 +296,9 @@ Several DGX Sparks. Every DGX Spark runs its own FastVideo server, bound to its 
 
 The [DGX Spark guide](https://github.com/fastvideo-project/dreamverse-harness/blob/main/scripts/video-harness/dgx-spark.md) in the Dreamverse Harness repository has the full commands, with a check after each step.
 
-**More Example Videos Built with Dreamverse Harness**
+## **More Example Videos Built with Dreamverse Harness**
 
-A product ad for NVIDIA DGX Spark, by Kun Lin. It shows the desktop box, its specs, and Sparks stacked to scale together.
+A product ad for NVIDIA DGX Spark.
 
 <div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
   <video controls playsinline preload="metadata" poster="media/example-spark-ad-poster.jpg"
@@ -305,7 +309,7 @@ A product ad for NVIDIA DGX Spark, by Kun Lin. It shows the desktop box, its spe
   </video>
 </div>
 
-A Chinese ink-wash animation of a Chinese myth, by Kyle Hu. The bird Jingwei carries twigs and pebbles to fill the sea.
+A Chinese ink-wash animation of the Jingwei myth.
 
 <div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
   <video controls playsinline preload="metadata" poster="media/example-jingwei-poster.jpg"
@@ -316,7 +320,7 @@ A Chinese ink-wash animation of a Chinese myth, by Kyle Hu. The bird Jingwei car
   </video>
 </div>
 
-A documentary of fungi, by Kyle Hu, from mushrooms on the forest floor to the threads that run under the soil.
+A nature documentary about fungi.
 
 <div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
   <video controls playsinline preload="metadata" poster="media/example-fungi-poster.jpg"
@@ -327,7 +331,7 @@ A documentary of fungi, by Kyle Hu, from mushrooms on the forest floor to the th
   </video>
 </div>
 
-The final cut of a sci-fi scene by Loay Rashid, set aboard a starship.
+A sci-fi scene aboard a starship.
 
 <div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
   <video controls playsinline preload="metadata" poster="media/example-scifi-poster.jpg"
@@ -338,11 +342,11 @@ The final cut of a sci-fi scene by Loay Rashid, set aboard a starship.
   </video>
 </div>
 
-Rough 3D scenes blocked out in Blender, by David (Junda Su), sent to Dreamverse Harness and turned into rendered shots: a soldier running across a battlefield, a warehouse fight, and a chase down a brick alley.
+Rough Blender scenes rendered into action shots.
 
 <div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
   <video controls playsinline preload="metadata" poster="media/example-david-poster.jpg"
-    aria-label="Rough 3D Blender scenes turned into rendered action shots"
+    aria-label="Rough Blender scenes rendered into action shots"
     style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
     <source src="media/example-david.mp4" type="video/mp4">
     Your browser does not support MP4 video with audio.
