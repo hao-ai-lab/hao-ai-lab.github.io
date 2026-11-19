@@ -39,7 +39,7 @@ Today we are open-sourcing **Dreamverse Harness**, an agent harness built upon [
 
 With [FastVideo](https://github.com/hao-ai-lab/FastVideo) and [FastH3](https://huggingface.co/FastVideo/FastH3-Omni-NVFP4-QAD), generating a single video clip on your own GPU is now faster than ever. However, a film is more than one clip. It takes a script, consistent characters across shots, and a final cut—things a video model cannot do on its own.
 
-Today, cloud AIGC studios like Higgsfield, Runway, and TapNow can produce a full film, but they host the entire stack, so you pay credit markups on every generation instead of running on your own hardware. Customization stops at the UI as well: you can adjust presets and pick from their hosted models, but you cannot edit the agent's logic or plug in a model of your own.
+Today, cloud AIGC studios like Higgsfield⁹, Runway¹⁰, and TapNow¹¹ can produce a full film, but they host the entire stack, so you pay credit markups on every generation instead of running on your own hardware. Customization stops at the UI as well: you can adjust presets and pick from their hosted models, but you cannot edit the agent's logic or plug in a model of your own.
 
 Open-source projects have started on this problem, but each one covers only half of it. Some run only on your own GPU, with a fixed set of local models.¹˒² Others direct a whole film, but only through paid cloud APIs.³˒⁴ We built FastVideo Dreamverse Harness to close that gap: a fully open-source harness built upon FastVideo, and open to any model you connect.
 
@@ -363,6 +363,9 @@ Join us on [Slack](https://join.slack.com/t/fastvideo/shared_invite/zt-4heayzk81
 6. Pika H3 Flex. [huggingface.co/Pika-Labs/Pika-H3-Flex](https://huggingface.co/Pika-Labs/Pika-H3-Flex)
 7. Open-H3-Regenerate-2K. [huggingface.co/Efficient-Large-Model/Open-H3-Regenerate-2K](https://huggingface.co/Efficient-Large-Model/Open-H3-Regenerate-2K)
 8. vLLM-Omni. [github.com/vllm-project/vllm-omni](https://github.com/vllm-project/vllm-omni)
+9. Higgsfield. [higgsfield.ai](https://higgsfield.ai)
+10. Runway. [runwayml.com](https://runwayml.com)
+11. TapNow. [tapnow.ai](https://tapnow.ai)
 
 ## **Acknowledgement**
 
