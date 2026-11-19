@@ -271,8 +271,6 @@ npx skills add fastvideo-project/dreamverse-harness --skill dreamverse-dgx-spark
 
 The agent inspects each box, chooses a model layout for the hardware you have, installs FastVideo, the LLM and Dreamverse Harness, and checks every box with a test render. Prefer to do it yourself? The DGX Spark guide in the repository has every step, with a check after each one. The recipes below are the setups we run; mix and extend them freely.
 
-<strong style="color: #d32f2f;">[TODO: review this DGX Spark text, a short version of the DGX Spark guide]</strong>
-
 One DGX Spark, fully local. Qwen 3.8 27B (about 39 GB under vLLM) and FastH3 Trim (about 45 GB while rendering) share one box:
 
 1. Prepare the box: DGX OS with CUDA 13, at least 120 GB of free disk, a Hugging Face login, and a memory watchdog, because an out-of-memory condition can freeze a GB10.
@@ -368,6 +366,6 @@ We thank NVIDIA for their compute support and collaboration.
 
 ## **FastVideo Team**
 
-**Contributors:** [Junda Su](https://davids048.github.io/), [Aryan Kumar](https://github.com/aryan5v), Kun Lin, [Kyle Hu](https://github.com/KyleNeverGivesUp), [Kevin Lin](https://github.com/kevin314), [Loay Rashid](https://github.com/loaydatrain), [Junda Chen](https://github.com/GindaChen)  
+**Contributors:** [Junda Su](https://davids048.github.io/), [Aryan Kumar](https://github.com/aryan5v), [Kun Lin](https://github.com/klhhhhh), [Kyle Hu](https://github.com/KyleNeverGivesUp), [Kevin Lin](https://github.com/kevin314), [Loay Rashid](https://github.com/loaydatrain), [Junda Chen](https://github.com/GindaChen)  
 **Tech lead:** [Will Lin](https://solitarythinker.github.io/)  
 **Advisor:** [Hao Zhang](https://haozhang.ai/) (corresponding)
