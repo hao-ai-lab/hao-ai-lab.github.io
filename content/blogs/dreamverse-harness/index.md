@@ -219,11 +219,11 @@ The model catalog works the same way on the host (Figure 4). Each provider plugi
 
 ### **3. Workflows compose components**
 
-Each noun of a film, such as a character, a location, a style, a shot plan or a timeline, is one component with its own state slice and operations, and no component imports another. The order of production lives elsewhere, in a workflow. The story workflow that ships with Dreamverse Harness owns two operations (Figure 5). story.preview is read-only: it reports which shots would render, the GPU estimate, and every reason a render would be refused. story.approve always asks for your confirmation and then writes the whole chain: one render for each new or changed shot, then one timeline layout. Every record in that chain carries started_by, which points back to the approval, so the canvas can group the takes of one approval, and a later retake stays in the same chain.
+Each element of a film, such as a character, a location, a style, a shot plan or a timeline, is one component with its own state slice and operations, and no component imports another. The order of production lives elsewhere, in a workflow. The story workflow that ships with Dreamverse Harness owns two operations (Figure 5). story.preview is read-only: it reports which shots would render, the GPU estimate, and every reason a render would be refused. story.approve always asks for your confirmation and then writes the whole chain: one render for each new or changed shot, then one timeline layout. Every record in that chain carries started_by, which points back to the approval, so the canvas can group the takes of one approval, and a later retake stays in the same chain.
 
 {{< image src="img/fig5-story-workflow.png" alt="Figure 5 · The story workflow: preview, approve, then one chain of records" width="100%" title="Figure 5 · The story workflow: preview, approve, then one chain of records" >}}
 
-We keep the flow out of the components because flows differ while nouns stay the same. For example, an ad cut that renders one plan in two aspect ratios needs a different approval, but the same shot plan and the same render operation. A second workflow is then one new package, and no component changes.
+We keep the flow out of the components because flows differ while elements stay the same. For example, an ad cut that renders one plan in two aspect ratios needs a different approval, but the same shot plan and the same render operation. A second workflow is then one new package, and no component changes.
 
 ## **Getting Started**
 
