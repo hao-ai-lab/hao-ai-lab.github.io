@@ -283,6 +283,8 @@ Dreamverse Harness needs two servers: a FastVideo server that renders the video,
 
 5. Open the URL that the launcher prints, for example http://127.0.0.1:8092, and describe your first video in the chat.
 
+6. Optional: to add hosted image and speech models from OpenRouter, open Settings → Video, image & audio APIs in the web UI, save your OpenRouter API key, load the catalogs, and choose Add to chat on the models you want. They then appear in the chat model pickers.
+
 ### Set up on DGX Spark
 
 The quickest path is to let your coding agent do it. Install our setup skill in Codex or Claude Code and ask it to set up Dreamverse on your DGX Sparks:
