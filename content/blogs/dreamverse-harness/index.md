@@ -51,15 +51,15 @@ Dreamverse Harness is a workspace where you and an agent build a film together. 
 
 **An agent equipped to direct.** Dreamverse Harness pairs the agent with structured directing skills, domain-specific prompts, and a dedicated toolset that gives it control over the film—from breaking down a script and locking character references to scheduling shots across models.
 
-{{< image src="img/shot-plan-approval.png" alt="The shot plan panel, awaiting approval, with the Red fox and Snowy golden-hour field references" width="100%" >}}
+{{< image src="img/plan-storyboard.png" alt="The Storyboard note open on the canvas, next to the agent's first shot plan in the chat" width="100%" >}}
 
 **Interactive directing.** Typing one sentence and hoping a finished movie comes out never works for real projects, yet slow and expensive video models used to make back-and-forth iteration impractical. Dreamverse Harness fixes both sides of that loop. First, FastH3 renders in seconds at low cost, so you can watch a shot immediately and steer the next one without losing momentum. Second, every character, scene asset, and take lives on a shared canvas and timeline—so you and the agent can adjust a camera angle, re-roll a single shot, or recut the sequence together instead of regenerating from scratch.
 
-{{< image src="img/chat-fox-photo.png" alt="The chat with the fox photo and the prompt; the photo is already a node on the canvas" width="100%" >}}
+{{< image src="img/chat-request.png" alt="The request in the chat, with the two Nailong pictures as the only references" width="100%" >}}
 
-{{< image src="img/canvas-nodes.png" alt="The canvas: character and location nodes, the plan node and the three rendered shots" width="100%" >}}
+{{< image src="img/canvas-nodes.png" alt="The canvas, left to right: the notes, the two pictures, the Nailong character and the six rendered shots" width="100%" >}}
 
-{{< image src="img/timeline.png" alt="The timeline playing the three shots" width="100%" >}}
+{{< image src="img/timeline.png" alt="The timeline paused on shot 3 of the six shots" width="100%" >}}
 
 **Everything is a plugin.** Built on [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), Dreamverse Harness treats every part of the stack as a modular plugin. You can strip out features you do not need, directly tune the skills and context fed to the agent, or build and distribute your own custom canvas nodes and UI visualizations.
 
