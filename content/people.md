@@ -44,8 +44,6 @@ summary: people
 
 {{< lab_member name="Yixin Huang" role="Master Intern" image="yixin_huang.jpg" academic="https://yixinhuang48.github.io" twitter="https://x.com/Yixinhuang48">}}
 
-{{< lab_member name="Yiming Zhao" role="Master's" image="yiming_zhao.png" academic="https://www.linkedin.com/in/yiming-zhao-zym2002/" twitter="https://x.com/YimingBob">}}
-
 {{< lab_member name="Yuyuan Wu" role="Master's" image="yuyuan_wu.jpg" linkedin="https://www.linkedin.com/in/yuyuan-wu-421566337/">}}
 
 {{< lab_member name="Loay Rashid" role="Master Intern" image="loay_rashid.jpg" academic="https://www.linkedin.com/in/loayrashid/" twitter="https://x.com/l0ayrashid">}}
@@ -74,6 +72,7 @@ summary: people
 
 ### Alumni
 {{< alumni >}}
+{{< alumni_entry name="Yiming Zhao" description="Master's, now at NVIDIA" homepage="https://www.linkedin.com/in/yiming-zhao-zym2002/">}}
 {{< alumni_entry name="Wei Zhou" description="Master's, now at Luma AI" homepage="https://www.linkedin.com/in/wei-zhou3/">}}
 {{< alumni_entry name="Matthew Noto" description="Undergrad Intern, now at xAI" homepage="https://www.linkedin.com/in/notomatthew/">}}
 {{< alumni_entry name="Wenxuan Tan" description="Undergrad Intern, now at Bytedance" homepage="https://github.com/Edenzzzz">}}
