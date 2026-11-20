@@ -2,8 +2,8 @@
 title = "vstack"
 description = "Formal Verification Toolkit and Skill Stack for Coding Agents in AI Infrastructure"
 date = 2026-11-11T12:00:00-08:00
-authors = ["Yuxuan Zhang", "Minshen Zhang", "Junda Su", "Yi Sun", "Junda Chen", "Hao Zhang"]
-author = "Yuxuan Zhang, Minshen Zhang, Junda Su, Yi Sun, Junda Chen, Hao Zhang"
+authors = ["Yuxuan Zhang", "Yichao Fu", "Minshen Zhang", "Junda Su", "Yi Sun", "Junda Chen", "Hao Zhang"]
+author = "Yuxuan Zhang, Yichao Fu, Minshen Zhang, Junda Su, Yi Sun, Junda Chen, Hao Zhang"
 ShowReadingTime = true
 draft = false
 urlblog = "verifiable-llm-infra"
