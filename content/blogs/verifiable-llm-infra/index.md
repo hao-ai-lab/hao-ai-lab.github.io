@@ -1,8 +1,8 @@
 +++
 title = "Towards Verifiable LLM Infra"
 date = 2026-11-10T00:00:00-08:00
-authors = ["Yuxuan Zhang", "Minshen Zhang", "Junda Su", "Yi Sun", "Junda Chen", "Hao Zhang"]
-author = "Yuxuan Zhang, Minshen Zhang, Junda Su, Yi Sun, Junda Chen, Hao Zhang"
+authors = ["Yuxuan Zhang", "Yichao Fu", "Minshen Zhang", "Junda Su", "Yi Sun", "Junda Chen", "Hao Zhang"]
+author = "Yuxuan Zhang, Yichao Fu, Minshen Zhang, Junda Su, Yi Sun, Junda Chen, Hao Zhang"
 ShowReadingTime = true
 authorOnNewLine = true
 draft = false
@@ -140,14 +140,14 @@ We thank NVIDIA for supporting our development and GPUDirect RDMA evaluation on 
 
 ## Contributors
 
-[Yuxuan Zhang](https://yuxuandexter.github.io/), [Minshen Zhang](https://alexzms.github.io/), [Junda Su](https://davids048.github.io/), [Yi Sun](https://www.linkedin.com/in/yi-sun-mlsys), [Junda Chen](https://github.com/GindaChen), [Hao Zhang](https://haozhang.ai)
+[Yuxuan Zhang](https://yuxuandexter.github.io/), [Yichao Fu](https://github.com/Viol2000), [Minshen Zhang](https://alexzms.github.io/), [Junda Su](https://davids048.github.io/), [Yi Sun](https://www.linkedin.com/in/yi-sun-mlsys), [Junda Chen](https://github.com/GindaChen), [Hao Zhang](https://haozhang.ai)
 
 ## Citation
 
 ```bibtex
 @misc{vstack2026,
   title        = {Towards Verifiable {LLM} Infra},
-  author       = {Zhang, Yuxuan and Zhang, Minshen and Su, Junda and Sun, Yi and Chen, Junda and Zhang, Hao},
+  author       = {Zhang, Yuxuan and Fu, Yichao and Zhang, Minshen and Su, Junda and Sun, Yi and Chen, Junda and Zhang, Hao},
   year         = {2026},
   month        = nov,
   howpublished = {Hao AI Lab Blog},
