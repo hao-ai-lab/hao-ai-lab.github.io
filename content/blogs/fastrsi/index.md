@@ -8,13 +8,13 @@ authorOnNewLine = true
 draft = false
 math = true
 contentClass = "post-content-justified"
-summary = "In recursive self-improvement (RSI), coding agents spend 83% to 90% of wall-clock time waiting on cold restarts and full benchmarks. We introduce FastRSI, a live-editable framework for GPU engines that cuts vLLM edit testing from 228 s to 2.4 s (95x), generalizes across six engines (vLLM, SGLang, Megatron-LM, FastVideo, veRL, and Miles) with 11/11 conformance, and delivers up to 1.52x bit-exact speedups on FastVideo and +7.1% throughput on Megatron-LM with zero cold restarts."
+summary = "Improving AI systems through recursive self-improvement (RSI) is bottlenecked by evaluation: agents spend 60% to 95% of their wall-clock time waiting for GPU tests to finish. Today, testing even a one-line code change in a GPU engine like vLLM requires killing the process and booting the entire system from scratch, waiting several minutes to reload model weights and re-initialize the GPUs before a single test prompt can run. We introduce RSIBox, a live-editable GPU sandbox environment that keeps heavy GPU state alive in memory and hot-reloads only the small piece of the system that an edit actually changed, while isolating and rolling back faulty mutations in milliseconds. Paired with rapid targeted testing, RSIBox shrinks the time to test an edit in vLLM from 228 s to 2.4 s (95x faster), lets an agent reach a 6-hour vLLM optimization target 2.3x sooner, and generalizes across six major AI engines (vLLM, SGLang, Megatron-LM, FastVideo, veRL, and Miles) to deliver up to 1.52x end-to-end workload speedups with near-zero cold restarts."
 
 [cover]
-  image = "img/cover.png"
-  relative = true
-  alt = "Towards Live-Editable LLM Infra for RSI"
-  caption = "One edit, two test loops: 228 s cold restart vs. 2.4 s FastRSI live test."
+  image = "/img/fastrsi/cover.gif"
+  relative = false
+  alt = "Cold restart every check vs. RSIBox live hot reload"
+  caption = "Testing a one-line vLLM edit: cold restart vs. RSIBox live hot reload."
   hidden = true
 
 [socialIcons]
@@ -24,311 +24,373 @@ summary = "In recursive self-improvement (RSI), coding agents spend 83% to 90% o
 +++
 
 <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 4px 0 18px;">
-  <a href="https://github.com/hao-ai-lab/fastrsi" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
-    <img src="https://img.shields.io/badge/GitHub-FastRSI-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub: FastRSI" style="height: 28px; margin: 0;">
+  <a href="https://github.com/hao-ai-lab/rsibox" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+    <img src="https://img.shields.io/badge/GitHub-RSIBox-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub: RSIBox" style="height: 28px; margin: 0;">
   </a>
   <a href="https://x.com/haoailab" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
     <img src="https://img.shields.io/badge/Follow-@haoailab-000000?style=for-the-badge&logo=x&logoColor=white" alt="X: @haoailab" style="height: 28px; margin: 0;">
   </a>
 </div>
 
-{{< image src="img/cover.png" alt="One edit, two test loops: cold restart vs. FastRSI live test" width="100%" title="Cover Figure. One edit, two test loops. Top (baseline): edit → cold restart → full benchmark (228 s). Bottom (FastRSI): edit → hot reload → targeted probe (2.4 s, 95x faster)." >}}
+{{< image src="/img/fastrsi/cover.gif" alt="Cold restart every check vs. RSIBox live hot reload" width="100%" title="Cover Figure. Testing a one-line vLLM scheduler edit. Top right: a cold restart rebuilds tuned kernels, model weights, CUDA graphs, and the engine process before every test, 228 s in total. Bottom right: RSIBox keeps that GPU state warm inside a live-editable sandbox and swaps the one function, finishing a targeted test in 2.4 s (95x). Bottom left: with the faster test, the agent reaches the same speedup 2.3x sooner in a 6-hour vLLM optimization run." >}}
 
-**TL;DR:** In a recursive self-improvement (RSI) loop for AI systems, coding agents optimize the underlying infrastructure itself by iteratively editing an engine and testing each change against correctness and performance benchmarks. While an agent can write an edit in seconds, testing that edit on the engine takes minutes, leaving **83% to 90%** of every optimization run spent waiting on evaluation.
 
-Why does testing an edit take so long? **Because testing a code change today requires restarting the engine from scratch, and cold-starting a stateful GPU engine carries massive startup overhead.** Even when an agent makes a one-line edit, the engine must tear down and rebuild its entire runtime state before running a full benchmark. As a result, **testing an edit pays the engine's full cold-start overhead, rather than the cost of what the edit actually touches.**
+**TL;DR.** Improving AI systems through recursive self-improvement (RSI) is bottlenecked by evaluation: agents spend 60% to 95% of their wall-clock time waiting for GPU tests to finish. Today, testing even a one-line code change in a GPU engine like vLLM requires killing the process and booting the entire system from scratch, waiting several minutes to reload model weights and re-initialize the GPUs before a single test prompt can run.
 
-We introduce **FastRSI**, a framework that makes GPU engines live-editable. Instead of restarting the process, FastRSI keeps untouched GPU state warm, hot-reloads only what the edit affects, screens the change with a fast targeted probe, and resets the engine to a clean state for the next test. We show that FastRSI can cut the time to test a vLLM edit from **228 s to 2.4 s (95x)** and reach the same optimization target **1.4–2.3x sooner** in end-to-end RSI loops. We generalize this approach across six GPU systems spanning inference, training, video generation, and RL: vLLM, SGLang, Megatron-LM, FastVideo, veRL, and Miles.
+We introduce **RSIBox**, a runtime sandbox and execution environment that makes GPU systems **live-editable**. Instead of restarting the engine on every edit, RSIBox keeps the heavy GPU state alive inside a fault-isolated sandbox, hot-reloads only the small piece of the system that the edit actually changed, and rolls back or recovers from broken edits without losing warm GPU state. Paired with rapid targeted testing, RSIBox shrinks the time to test an edit in **vLLM** from `228 s` to `2.4 s` (**up tp 95x faster**), lets an agent reach a 6-hour vLLM optimization target **2.3x sooner**, and generalizes across six major AI engines (**vLLM**, **SGLang**, **Megatron-LM**, **FastVideo**, **veRL**, and **Miles**) to deliver up to **1.52x** end-to-end workload speedups with near-zero cold restarts.
 
 ---
 
 ## Evaluation Is the Bottleneck of RSI
 
-Recursive self-improvement (RSI) for AI systems uses coding agents to optimize the GPU infrastructure that runs them, from request schedulers to custom GPU kernels. During an optimization run, the loop repeats two very different phases over and over for hours. In the first phase, a coding agent inspects the codebase and writes an edit. In the second phase, the system tests that edit on the target engine: it loads the modified code, runs a benchmark, and measures whether the change is correct and whether it runs faster. Based on those results, the agent keeps or discards the edit and moves on to its next idea.
+Imagine you are a developer sitting at your keyboard fixing a bug or tuning a kernel in an AI engine. You tweak a few lines of code, run a quick check to see whether it helps, and either keep the change or revert and try something else. As a project grows larger, however, evaluating even a single line of code against the full system can take several minutes to warm up. As a result, you can wait for several minutes (or even longer!) to test your one line of change actually runs and perform as expected in the real system. 
 
-These two phases are improving at very different speeds. Coding models generate tokens faster with every new release, steadily shrinking the time needed to write an edit. Testing that edit, however, depends on the system under test. Starting up and benchmarking a distributed GPU engine like vLLM takes just as long today as it did before coding agents existed.
+Recursive self-improvement (RSI) for AI systems follows that exact loop. Each iteration has two steps: (1) the model **generates candidate edits** (token generation), and (2) the runtime **evaluates each edit on physical GPUs** for correctness and speed.
 
-As a result, self-improving agents spend almost all of their time waiting. Across our agent optimization runs, **83% to 90% of total wall-clock time is spent waiting on evaluation**.
+As frontier coding models generate tokens faster and faster, GPU evaluation becomes the dominant wall-clock bottleneck. Booting a distributed engine, loading weights from storage, and compiling kernels still take just as long today as they did before coding agents existed.
 
-{{< image src="img/fig1-eval-bottleneck.png" alt="Wall-clock breakdown of an agent optimization run" width="100%" title="Figure 1. Wall-clock breakdown of an agent optimization run: time the agent spends writing edits vs. time spent waiting on evaluation (83% to 90%). In a trace replay of a 5.9-hour vLLM optimization run, speeding up model token generation 30x to 1,500 tok/s trims total runtime by only 6% (to 5.53 hours) because evaluation dominates." >}}
+As a concrete example, we ran a **6-hour** experiment to optimize vLLM on a particular metric, and replayed it while speeding up model's token generation. As shown in the figure, even as we scale the token generation to 1500 tps, the total runtime only shrink by **6%** because the evaluation dominated the clock. In other words, faster code generation will quickly hit an Amdahl's Law wall unless we make evaluation itself faster.
 
-This imbalance creates a tight Amdahl's Law bottleneck. In a trace replay of a recorded 5.9-hour vLLM optimization run with a fixed sequence of agent edits, accelerating coding-model token generation 30x to `1,500 tok/s` trims total wall-clock time by only 6% (from 5.9 hours to 5.53 hours), because 83% of the run is spent waiting on engine restarts and benchmarks. When 83% to 90% of wall-clock time goes to testing edits on the engine and only 10% to 17% goes to the agent writing code, making the coding model faster barely shrinks total run time. Even if a future model could generate every edit instantly, the end-to-end loop would speed up by only a small fraction because nearly the entire run is still spent restarting the engine and running benchmarks. To make RSI meaningfully faster, we have to make testing an edit faster.
-
----
-
-## Why Is Testing an Edit So Slow?
-
-### What happens when an agent changes one line
-
-Take vLLM as an example, running `Nemotron 3.5 Super NVFP4` on 1× NVIDIA GB200 with warm on-disk caches, and suppose the agent changes one line in the request scheduler. To test this edit today, the testing setup performs a **cold restart** (killing the engine process and starting it again from scratch), forcing the engine through five startup stages before the first request can run:
-
-1. **Load weights** from disk into GPU memory.
-2. **Initialize NCCL** groups for communication across GPUs.
-3. **Autotune kernels** for the model and the hardware.
-4. **Allocate the KV cache.**
-5. **Capture CUDA graphs**, one for each shape the engine will run.
-
-Only after all five stages finish does the benchmark start. Testing that single edit takes **228 s**.
-
-{{< image src="img/fig2-vllm-ladder.png" alt="Timeline and cost ladder of one cold test in vLLM vs. FastRSI" width="100%" title="Figure 2. Cost ladder of testing a one-line vLLM scheduler edit on 1× GB200 (warm on-disk caches). Of the 228 s baseline check, 204.4 s (nearly 90%) is cold-start setup that the scheduler edit does not invalidate." >}}
-
-### Paying for the engine, not for the edit
-
-None of the five stages above depends on the changed line in the scheduler. The weights are the same, the NCCL groups are the same, the tuned kernels are the same, the KV cache is the same, and the CUDA graphs are the same. Yet a cold restart tears down and rebuilds all of this state simply because the engine has no way to load modified code in place.
-
-This is the core mismatch. Most edits in an iterative RSI loop are short and local: a scheduler rule, a few lines of one kernel, or a helper function. Yet because every test pays the engine's full cold-start overhead rather than the cost of what the edit touches, a one-line edit and a full rewrite of the engine both cost the same 228 s.
-
-Testing an edit carries a second unnecessary cost. After the restart finishes, every edit runs the full benchmark, even though most edits have bugs or hurt performance and could be screened out in seconds by a **targeted probe** (a short test that exercises the edited code before the full benchmark runs).
-
-Removing these two costs in turn changes the time required to test our one-line scheduler edit:
-
-| How the edit is tested | Time per test | Speedup |
-| --- | --- | --- |
-| Cold restart, then the full benchmark | 228 s | 1.0x |
-| Hot reload into a warm engine, then the full benchmark | 23.6 s | 9.6x |
-| Hot reload into a warm engine, then a targeted probe | 2.4 s (4.8 s with logprob check kept) | 95x (48x with logprob check kept) |
-
-The first jump shows where most of the time goes: **204.4 s of the original 228 s (nearly 90%) is pure cold-start overhead** before the benchmark even begins. Using **hot reload** to load the edit in place inside a **warm engine** (a running engine whose weights, NCCL groups, tuned kernels, KV cache, and CUDA graphs are already in GPU memory) drops the test time on the exact same full check to **23.6 s (9.6x)**. Skipping the redundant logprob check reduces that to **14.1 s**, and screening the edit first with a small-batch **targeted probe** cuts the test time down to **2.4 s (95x)**, or **4.8 s (48x)** when the logprob check is kept.
+{{< image src="img/fig1-eval-bottleneck.png" alt="Wall-clock breakdown of an agent optimization run" width="100%" title="Figure 1. Replay of a 6-hour vLLM optimization trace at 1x, 5x, 15x, and 30x token generation speed. A 30x faster coding model shortens the run by only 6%: the time saved on generation turns into waiting on evaluation." >}}
 
 ---
 
-## Live Editing: Pay for the Edit, Not for the Engine
+## Reloading the System can Dominate Evaluation Time
 
-The idea is simple. Web developers have been live-editing their code for over a decade: they save a file, and the running page updates in place while the application keeps its state. We want the same for GPU engines. **Testing an edit should cost only what the edit affects, and everything else should stay warm.**
+In a standard agentic workflow, each code change is evaluated by running a pre-defined test script from a clean process, which forces the system to reload from scratch on every trial. To see how much overhead this adds, consider optimizing vLLM to serve Nemotron 3.5 Super on an NVIDIA GB200 GPU. Even when an agent modifies just a single line in the request scheduler, testing that change triggers a full **cold restart** through four heavy startup stages before a single test prompt can run:
 
-At first glance, this looks like a matter of keeping the process alive or calling Python's `importlib.reload()` (or notebook `%autoreload`). In a distributed GPU engine like vLLM, naive module reloading silently fails: existing worker instances keep stale function and method references, compiled Triton cubin binaries ignore edits to their Python source text, and C++ CUDA graphs continue replaying the old kernel addresses captured at startup. Making a GPU engine truly live-editable is hard for three reasons:
+1. **Kernel autotuning (`~73 s`):** Resolving and warming up GPU kernel launch configurations.
+2. **Model weight loading (`~57 s`):** Streaming multi-gigabyte checkpoints into GPU memory.
+3. **CUDA graph capture (`~40 s`):** Recording decode kernel launch graphs across batch sizes.
+4. **Process, library, and device initialization (`~30 s`):** Importing the Python/C++ software stack (`torch`, `triton`, `vllm`) and initializing device contexts, communication groups, and KV cache pools.
 
-1. **State is expensive and spread across the engine.** The state worth keeping is built by different stages of startup and lives in different places across the runtime, distributed worker processes, and GPU memory.
-2. **Code is baked into state.** A CUDA graph is a recording of the kernels that ran when it was captured, and a `@triton.jit` kernel is compiled and cached as a binary. If a kernel changes, the captured graph and cached binary still run the old code.
-3. **Most edits are bad.** An edit that crashes or hangs a GPU kernel can take the warm engine down with it, forcing the loop back into a cold restart.
+Repeating this initialization sequence before running the `~28 s` test suite means evaluating a single one-line scheduler edit takes **228 s**, nearly **90%** of which is pure system reload overhead.
 
-FastRSI addresses these three problems in turn.
+{{< image src="img/fig2-vllm-ladder.png" alt="Breakdown of testing a one-line edit in vLLM: cold restart vs. RSIBox" width="100%" title="Figure 2. Where time goes when testing a one-line vLLM scheduler edit on 1x NVIDIA GB200. Roughly 200 s (nearly 90%) is reload overhead that the scheduler edit never invalidates." >}}
 
-{{< image src="img/fig3-architecture.png" alt="FastRSI architecture: warm GPU state, boundary-tiered hot reload, execution witnesses, and recovery" width="100%" title="Figure 3. FastRSI architecture: untouched state stays warm in GPU memory while edits commit at the step gap, route to the cheapest reload tier that covers their state boundary, prove execution via witnesses, and recover via millisecond code rollback or second-scale warm worker respawn." >}}
+Notice that none of those four startup stages depends on the modified line in the scheduler. In general, most exploratory edits are localized tweaks (to a scheduling rule, a kernel loop bound, or a communication call) that only invalidate a tiny fraction of the running system. As the upper steps of Figure 2 show, keeping the engine process and GPU state warm in memory while **hot-reloading** only the modified code eliminates the `~200 s` reload tax completely, cutting a full evaluation from **228 s down to 23.6 s (9.6x faster)**.
 
-### 3.1 Keep the untouched state warm
+Once that `~200 s` reload wall is out of the way, the remaining `23.6 s` is spent on the test suite itself: a full test batch to measure throughput (`14.1 s`) followed by a log-probability check (`9.5 s`, a separate reference-prompt pass that compares output token log-probability distributions against a golden baseline to verify numerical accuracy without adding logprob copy overhead to the throughput run). Because most exploratory edits fail correctness checks or regress latency right away, we no longer need to run the full test batch on every trial: screening first with a small-batch **targeted test** on the warm engine (the bottom steps of Figure 2) compresses the evaluation loop all the way down to **2.4 s (95x faster)**, or 4.8 s when including the log-probability check pass. This motivates making GPU engines **live-editable** rather than restarting them from scratch for every experiment.
 
-We start by sampling a few evaluation runs and tracing where startup time goes. The trace points to the five stages listed earlier: weight loading, NCCL initialization, kernel autotuning, KV cache allocation, and CUDA graph capture. We factor these out of the restart path one by one, so that each stays warm in GPU memory while the code around it changes.
+---
 
-Keeping this state warm accounts for the first jump in our table (from 228 s to 23.6 s): by avoiding the 204.4 s cold-start rebuild, a scheduler edit is tested on a warm engine in 23.6 s even when running the full benchmark.
+## How to Make vLLM Live-Editable
 
-### 3.2 Hot-reload what the edit affects
+So how do we make a complex system like vLLM live-editable? Our guiding principle is simple: **reload only the minimal subset of the system that an edit actually invalidates, and keep all untouched GPU state warm in memory.**
 
-Keeping startup state warm is not enough on its own. If the warm components are frozen, the agent can edit only Python glue code that does not touch them, and that rules out Triton kernels, CUDA graphs, and stateful constructors, where much of the performance lies.
+Think about how you work inside a **Jupyter Notebook**. Once you have imported PyTorch and loaded a multi-gigabyte model into GPU memory in cell 1, you never restart the kernel just to tweak a helper function in cell 5. You simply re-run the cell that defines that one function, and your next forward pass immediately uses the new code while the model weights, CUDA context, and allocated buffers stay right where they are. That notebook workflow makes live editing look effortless.
 
-Rather than relying on fragile monkeypatches that silently leave long-lived state out of sync, FastRSI routes each edit along a **boundary-tiered reload ladder**. While the engine is running, FastRSI parses the diff and maps it to the smallest state boundary that the edit invalidates. In the quiet gap between two inference or training steps (taking only `0.5–1.2 ms` inside the vLLM engine loop), a two-phase coordinator commits the change across all GPU ranks at once:
+In a production system like vLLM, however, changing a function in place immediately hits four system-level caveats:
 
-| Reload Boundary | Mechanism | What Edits It Handles | Measured Reload Cost |
+1. **Compiled and captured execution layers:** What if the function is a JIT-compiled GPU kernel (such as Triton or C++/CUDA) or is already baked into a captured CUDA graph? Updating a host-level function pointer does nothing if the GPU keeps replaying stale compiled binaries or recorded driver graphs.
+2. **Stateful mutations and native extensions:** What if the edit changes class attributes, reshapes pre-allocated KV or activation buffers, or modifies a compiled C++/CUDA extension rather than a pure stateless function?
+3. **Multi-process and multi-node distributed workers:** What if the system runs across multiple processes or distributed worker nodes over a network (across tensor-, pipeline-, or expert-parallel ranks, or remote Ray actors)? If rank 0 updates a collective call mid-step while rank 1 runs the old version, the cluster deadlocks.
+4. **System-breaking faults and state contamination:** What if a submitted edit crashes the process, triggers an illegal GPU memory access that corrupts the CUDA context, or silently mutates model weights, KV caches, or random seeds so that every subsequent test runs on contaminated state (or never even executes the edited path)? How do we recover from fault states?
+
+Existing container sandboxes and process checkpointing tools (`CRIU`, `cuda-checkpoint`, serverless snapshots) only partially address these four caveats: they treat the worker as an opaque black box and work best when application code is read-only, while still requiring heavy engineering to coordinate across multi-GPU runtimes. Driving hot-reload evaluation latency down to the sub-second and few-second regime requires an application-layer runtime that separates **persistent GPU state** (loaded weights, communication groups, KV pools, and unaffected CUDA graphs) from **mutable execution layers**, updating only what an edit touches and isolating faults before they can corrupt the warm session.
+
+{{< image src="img/fig3-architecture.png" alt="Two-plane live-editable runtime architecture: mutable worker plane vs. persistent out-of-process GPU and host state" width="100%" title="Figure 3a. Live-editable runtime architecture. Top: staging, AST/call-graph routing, and atomic two-phase commit between steps. Middle: the mutable worker plane, separating the in-process live swap zone (89% of PRs) and verification/rollback guards from the 5 to 12 s process respawn zone. Bottom: the persistent out-of-process warm foundation (CUDA IPC weight sentinel, pre-CUDA Zygote fork server, and baseline snapshots) that survives across edits and worker crashes." >}}
+
+### Reloading Only What Changed
+
+To turn the minimal-reload principle into a concrete system rather than a collection of ad-hoc patches, we first asked an empirical question: **what do real code changes in a production system like vLLM actually modify?**
+
+We surveyed the vLLM repository's pull-request history, scanning roughly **5,000 PRs** related to logic and performance changes and selecting **487 representative candidates** (with deep execution-path and state-boundary audits across **80 performance PRs**). Across these real-world changes, we found that only **~5% of deep engineering changes** (mostly large multi-file refactorings, file movements, and distributed topology changes) truly require a full cold restart. The remaining **90% to 95% of practical optimization and bugfix edits** fall cleanly into four modification patterns, reaching progressively deeper into the runtime stack (Figure 3b). We designed our live-reload mechanisms directly around these four cases:
+
+**Case 1: Editing a pure host function (`~20%` of audited PRs; reload in `~0.05 to 0.15 s`).**
+Roughly a fifth of performance and logic PRs modify pure host-level orchestration code, such as tweaking a batch-ordering heuristic in vLLM's request scheduler (`Scheduler.schedule`) or a logit-filtering rule in the token sampler. Standard module reloaders (`importlib.reload`) fail here because they only rebind the top-level module attribute, while the running `LLMEngine`, worker loops, bound methods, and closures keep pointing to the old function object in memory. Instead, we locate the live function object via its active referrers (`gc.get_referrers`) and swap its compiled bytecode (`__code__`), default arguments, and closure cells in place, so the very next step runs the new logic in about `0.1 s`.
+
+**Case 2: Editing a JIT-compiled GPU kernel (`~0.1 to 0.3 s`).**
+What if we edit a custom `@triton.jit` GPU kernel, such as fixing duplicate boundary probability accumulation in vLLM's split top-p sampling kernel or tuning tile sizes in a fused MoE helper? Here, swapping the Python function object alone has zero effect on the GPU. Triton compiles each kernel into a native GPU binary (`cubin`) on first launch and caches it by specialization signature; worse, when an outer Triton kernel calls an inner `@triton.jit` helper, the compiler inlines that helper directly into the caller's binary. To make a kernel edit take effect, we trace the cross-module Triton call graph, clear the compiled binary and autotuner caches on both the edited kernel and all of its transitive callers, and recompile only those affected kernels in `~0.1 to 0.3 s`.
+
+**Case 3: Editing code or kernels inside captured CUDA graphs (`~0.4 to 1.0 s`; together with Case 2 covering `~51%` of audited PRs).**
+Over half of vLLM performance PRs touch GPU kernels or operators that execute inside vLLM's decode loop, which records sequences of kernel launches into **captured CUDA graphs** across dozens of padded batch sizes at startup. During decode, replaying a CUDA graph dispatches the recorded GPU kernel pointers directly from C++ inside the CUDA driver without re-entering Python or Triton caches at all, meaning even a freshly recompiled Triton kernel would be completely bypassed. After updating the host function or recompiling the Triton kernel, we trace which captured graphs invoke that operator and selectively recapture only the affected batch-size or piecewise layer CUDA graphs in `~0.4 to 1.0 s`, leaving all other graphs untouched.
+
+<!-- <details>
+<summary><b>View implementation: In-place hot reload across Cases 1-3 (host functions, Triton kernels, and CUDA graphs)</b></summary>
+
+```python
+def hot_reload_target(old_fn, new_fn, triton_call_graph, cuda_graphs, journal):
+    # Case 1: Swap bytecode & defaults in place across all live references
+    journal.record_fn(old_fn, old_fn.__code__, old_fn.__defaults__)
+    old_fn.__code__, old_fn.__defaults__ = new_fn.__code__, new_fn.__defaults__
+
+    # Case 2: If editing a @triton.jit kernel/helper, invalidate all transitive callers
+    if isinstance(old_fn, triton.runtime.JITFunction):
+        for caller in triton_call_graph.transitive_callers_of(old_fn):
+            journal.record_triton_cache(caller, caller.cache.copy())
+            caller.cache.clear()          # Drop cached cubin / PTX binaries
+            caller.autotuner_cache.clear()
+
+    # Case 3: Selectively recapture only the CUDA graphs that invoke old_fn
+    for graph_key in cuda_graphs.graphs_touching(old_fn):
+        journal.record_graph(graph_key, cuda_graphs[graph_key])
+        cuda_graphs[graph_key] = cuda_graphs.recapture_single(graph_key)
+```
+</details> -->
+
+
+
+<!-- {{< image src="img/fig3b-execution-layers.png" alt="Three execution layers of a GPU system: host bindings, compiled GPU kernel caches, and captured CUDA graphs" width="100%" title="Figure 3b. Why naive module reloading fails across host code, compiled GPU kernel caches, and captured CUDA graphs, and how our runtime updates each level in place." >}} -->
+
+**Case 4: Editing stateful objects, native C++/CUDA kernels, or worker startup flags (`~18%` in-process state/C++ + `~5%` warm respawn; reload in `0.2 to 12 s`).**
+Not every optimization is a stateless function or Triton kernel tweak. About `8%` of audited PRs add a new state attribute or scratch tensor inside a component's `__init__` (for example, pre-allocating a reusable position-metadata buffer on the attention runner so it is not rebuilt on every layer); for these, we re-initialize only that modified sub-module or restore its saved component snapshot in `~0.2 to 1.8 s` while keeping GPU model weights and KV caches intact. Another `10%` modify a native C++/CUDA `.cu` kernel (such as vectorizing vLLM's fused RMSNorm or rotary embedding C++ kernel); we incrementally compile the `.cu` source into a versioned shared library loaded via `ctypes.CDLL(..., RTLD_LOCAL)` and rebind the operator on the PyTorch C++ dispatcher (`torch.library.Library`) in `~7 to 12 s`, followed by selective CUDA graph recapture.
+
+
+<!-- <details>
+<summary><b>View implementation: Native C++/CUDA side-library reload and zero-copy CUDA IPC weight attach</b></summary>
+
+```python
+# Native C++/CUDA side-library reload via PyTorch dispatcher override:
+def hot_reload_cuda_op(so_path: str, op_ns: str, op_name: str, sym: str, journal):
+    cdll = ctypes.CDLL(so_path, mode=ctypes.RTLD_LOCAL)
+    lib = torch.library.Library(op_ns, "IMPL", "CUDA")
+    lib.impl(op_name, getattr(cdll, sym))
+    journal.on_rollback(lambda: lib._destroy())  # 2 ms rollback restores previous C++ kernel
+
+# Zero-copy CUDA IPC weight attach in a fresh Zygote-forked worker:
+# (Sentinel exports: ipc_handles = {k: v.untyped_storage()._share_cuda_() for k, v in params.items()})
+def attach_shared_weights(ipc_handles, model_params):
+    torch.cuda.init()  # Initialize a clean CUDA context after fork()
+    for name, (device, handle, size, offset, meta) in ipc_handles.items():
+        storage = torch.UntypedStorage._new_shared_cuda(device, handle, size, offset)
+        model_params[name].set_(storage, *meta)  # Reattaches in ~2 s with 0 B disk read
+```
+</details> -->
+
+Even when an edit changes a process-level startup flag or global registry that requires a clean worker process, we can still avoid re-reading checkpoints from disk or re-importing the Python stack. We hold model weights in an out-of-process **CUDA IPC weight sentinel** and fork fresh workers from a pre-CUDA **Zygote fork server** that has already imported `torch`, `triton`, and `vllm` upfront. The forked worker initializes a clean CUDA context and reattaches multi-gigabyte model weights over zero-copy CUDA IPC in **`5 to 12 s`** with zero disk reads.
+
+
+
+Finally, in a multi-GPU run (such as tensor-parallel decoding across 4x GB200 GPUs), all workers must switch to the new code at the exact same step boundary or not at all, lest rank 0 and rank 1 diverge on a collective call. While the system runs, the runtime classifies the edit and finishes any compilation in the background. During the brief (`~1 ms`) pause between two steps, a **two-phase coordinator** (`PREPARE` -> `COMMIT` / `ABORT`) applies the update atomically across all GPU ranks. The table below summarizes the full hierarchy of reload boundaries:
+
+| Reload Boundary | How the Runtime Applies the Edit | What Edits It Handles | Reload Time |
 | --- | --- | --- | --- |
-| **In-place Python swap** | Atomic code-object and method rebinding across all ranks with journaled undo | Pure Python functions, schedulers, and method bodies | **0.05–0.06 s** (undo **0.3–1.6 ms**) |
-| **In-place Triton rebuild** | Invalidates `@triton.jit` caches and dependent callers; recompiles in place | Triton GPU kernel bodies | **0.07–0.3 s** (undo **< 1 ms**, zero recompile) |
-| **Selective CUDA graph recapture** | Rebinds the op and recaptures only the affected batch or layer graphs in the live worker | Edits inside CUDA-graph-captured regions | **0.41–5.6 s** |
-| **In-process module / constructor re-init** | Re-imports the module or re-runs `__init__` for newly added fields while keeping GPU allocations | Constructor field additions, module constants, and local objects | **0.19–1.41 s** (undo **1.58 ms**) |
-| **Warm Zygote fork + CUDA IPC weights** | Forks from a pre-imported Zygote server and maps weights over CUDA IPC without disk reads | Launch flags, startup-only code, or edits refused by in-place tiers | **4.78–16.5 s** (`7.37 s` on vLLM Qwen3-8B) |
-| **Full cold restart** | New process from scratch with warm on-disk caches | Parallelism topology changes or native C++ builds | **228 s** (vLLM baseline) |
+| **In-place function swap** | Updates the function's code object and closure cells in place across all live references (`gc.get_referrers`) and distributed workers | Pure host functions, schedulers, samplers, and method bodies | **~0.05 to 0.15 s** |
+| **Compiled GPU kernel rebuild** | Extracts updated kernel source, walks the cross-module `@triton.jit` call graph to clear binary and autotuner caches on all transitive callers, and recompiles | Triton GPU kernels and inlined `@triton.jit` helper functions | **~0.1 to 0.3 s** |
+| **Selective CUDA graph recapture** | Applies the code or kernel update and selectively recaptures only the affected batch-size or piecewise layer CUDA graphs | Functions and GPU kernels executed inside captured CUDA graphs | **~0.4 to 1.0 s** |
+| **In-process object re-initialization** | Re-initializes modified sub-modules or restores saved component snapshots while keeping GPU model weights and KV caches intact | Edits to `__init__`, adding new state attributes, or resizing local scratch buffers | **~0.2 to 1.8 s** |
+| **Native C++/CUDA extension hot-reload** | Incrementally compiles edited `.cu`/C++ sources into a versioned shared library loaded via `ctypes.CDLL(..., RTLD_LOCAL)`, rebinds the PyTorch dispatcher (`_Cv<key>` `torch.library.Library`) with selective CUDA graph recapture, and rolls back in 2 to 3 ms via journaled `lib._destroy()` | Native C++ and raw CUDA `.cu` kernel extensions (e.g., fused RMSNorm, RoPE, custom attention/activation kernels) | **~7 to 12 s** |
+| **Warm fork server respawn** | Forks a clean worker from the pre-warmed Zygote fork server and reattaches GPU weights over zero-copy CUDA IPC | Startup CLI flags, global registries, or clean recovery after a GPU kernel crash | **~5 to 12 s** |
+| **Full cold restart** | Launches a fresh worker group from scratch with warm on-disk compiler caches | Cross-node or world-size topology changes and unrecoverable driver faults | **~1 to 4 min** |
 
-Take a GPU kernel edit. Without FastRSI, an agent that edits a Triton kernel has to cold-restart vLLM. With FastRSI, the kernel service instead does three things in place:
+### Recovering from Bad Edits
 
-1. **Recompile** only the edited `@triton.jit` kernel and invalidate its callers' autotuner caches.
-2. **Rebind** the operator in place so that the running engine calls the newly compiled binary.
-3. **Recapture** only the CUDA graphs that the edited kernel affects, leaving all other graphs and GPU state intact.
+In an exploratory search, most candidate edits fail correctness checks, regress latency, or crash a GPU kernel. Keeping a warm session alive across hundreds of experiments requires handling four distinct failure situations without letting any failed trial pollute the next one:
 
-When an edit touches unsupported startup state or native C++ extensions that cannot be safely patched in place, FastRSI refuses the in-place swap in `0.07–0.60 s` with an explicit reason code and names the cheapest warm restart boundary that can run it. In our manual audit of 80 real vLLM performance pull requests sampled from 487 candidates, **`63/80 (79%)` avoid a full cold restart** (20% via in-place Python swap, 51% via Triton or CUDA graph reload, and 8% via buffer or component rebuild). Static AST coverage scans across all six engines show that **49.3% to 84.3%** of Python functions qualify for live in-process reloading under our checked rules.
+**Case 1: The edit touches unswappable startup state (safe refusal and fallback in `< 0.2 s`).**
+Suppose an edit alters the tensor-parallel world size or breaks a compiled kernel wrapper signature. Before mutating any live state, our static analyzer catches the violation in under `0.2 s`, refuses the in-place swap with an explicit diagnostic reason, and automatically routes the change to a warm fork respawn or a cold restart.
 
-### 3.3 Prove the edit ran and recover when it fails
+**Case 2: The edit fails correctness or regresses latency on a healthy worker (`1 to 3 ms` journaled rollback + state reset).**
+Suppose a tweaked scheduler rule or Triton tile config runs without crashing, but shifts output log-probabilities or runs 5% slower. Because every transaction records its exact inverse in an append-only in-memory journal (saving prior bytecode references, compiled Triton GPU binary pointers, autotuner winners, `torch.library` handles, and CUDA graph objects), the runtime unwinds the edit in **`1 to 3 ms` with zero recompilation** and verifies by SHA-256 hash that every symbol is back at baseline. After every trial, it also drains in-flight requests and restores pre-test snapshots of volatile KV caches, scratch buffers, random seeds, data iterators, and model parameters so state never leaks across tests.
 
-Even when an edit installs cleanly, a subtle danger remains: **what if the modified code never actually executed?** Suppose an agent edits a file, runs a probe, and sees that the output matches the baseline with zero errors. Did the optimization preserve equivalence, or did the workload never reach that branch? To eliminate silent false positives, FastRSI attaches an **execution witness** to every modified function, counting invocations across both eager execution and CUDA graph captures on every GPU rank. If any rank records zero calls after the probe finishes, FastRSI marks the test as `zero_witness` (`proven: false`) rather than reporting a false pass.
+**Case 3: The edited code never actually ran during the test (per-rank live call-counter gate).**
+Large systems like vLLM often retain legacy or conditional execution paths alongside the active GPU pipeline (such as an older token-sampling branch that active GPU workers no longer call). If an edit modifies an inactive path, the test finishes with unchanged outputs and zero warnings, which a standard harness mistakes for a valid pass. We catch this in **`~1 s`** by tracking **per-rank call counters** on every modified function and kernel, explicitly counting **live evaluation replays** separately from **CUDA graph-capture passes** so an edit is accepted only if the live workload executes it on every GPU rank.
 
-Conversely, in an RSI loop, most candidate edits have bugs, hurt performance, or crash a GPU kernel. FastRSI recovers at two levels and uses the cheaper one whenever it can:
+**Case 4: A buggy GPU kernel crashes or deadlocks the worker (`5 to 12 s` warm respawn via Zygote + CUDA IPC).**
+Suppose an out-of-bounds indexing bug in a custom Triton or CUDA `.cu` kernel triggers an illegal memory access (`CUDA_ERROR_ILLEGAL_ADDRESS`), a device-side assert, or an NCCL collective timeout that poisons the CUDA context. Once a CUDA context is corrupted, in-memory rollback is unsafe: the runtime immediately marks the worker session **tainted**, kills the poisoned worker group, and forks a clean replacement from the pre-warmed **Zygote fork server**, reattaching model weights over **CUDA IPC** in **`5 to 12 s`** without touching disk.
 
-- **Journaled code rollback, in milliseconds.** Every install records its exact inverse in an append-only rollback journal. If an edit raises an exception, fails a witness check, or regresses performance while leaving the GPU workers healthy, `uninstall()` restores the original `__code__` pointers, compiled Triton binaries, and CUDA graph handles in **0.3–1.6 ms** without recompiling, and verifies that every function's fingerprint matches the base state.
-- **Partial warm restart, in seconds.** If a bad kernel crashes, hangs, or desynchronizes a GPU worker, FastRSI marks the session as `poisoned` and refuses further in-place installs until it respawns the affected worker group from a pre-imported **Zygote** process and reattaches weights held in GPU memory via **CUDA IPC** (taking **4.78–7.37 s** on FastVideo and vLLM instead of minutes for a cold disk reload).
+<!-- <details>
+<summary><b>View implementation: Step-boundary atomic evaluation, live call-counter verification, and 1-3 ms journaled rollback</b></summary>
 
-### 3.4 Putting it together: testing one edit with FastRSI
+```python
+def evaluate_edit_at_step_boundary(patch, dist_group, engine_state):
+    with step_boundary_barrier(dist_group), Journal() as journal:
+        hot_reload_target(*patch, journal=journal)
+        call_witness.reset(mode="LIVE_REPLAY")  # Ignore calls made during CUDA graph capture
 
-With these pieces in place, one iteration of the FastRSI loop runs through five steps:
+        metrics, ok = run_targeted_probe(engine_state)
+        ran_on_all_ranks = dist_group.all_reduce_min(call_witness.count) > 0
 
-1. **Write:** The agent writes an edit.
-2. **Hot-reload (`install`):** FastRSI stages the diff while the engine runs and commits it at the next step gap, updating only what the edit affects.
-3. **Probe (`check`):** A targeted probe exercises the edited path in seconds and verifies that the execution witness fired on every GPU rank.
-4. **Recover or promote (`uninstall`):** If the edit fails the probe, FastRSI rolls it back in milliseconds or warm-restarts the worker in seconds. If the edit passes the targeted probe, it is promoted to a full benchmark and verified in a fresh cold process before being kept.
-5. **Clean state (`reset`):** FastRSI drains in-flight work and restores volatile caches, KV/activation buffers, RNG states, and data iterators (plus coupled model/optimizer `S0` snapshots in training and RL), so the next test starts from a clean, reproducible baseline.
+        if not (ok and ran_on_all_ranks):
+            journal.unwind()                    # 1-3 ms pointer restore, zero recompilation
+            engine_state.restore_snapshot()     # Reset KV cache, RNG seeds, and buffers
+            return RejectResult(ran_on_all_ranks=ran_on_all_ranks)
+        return PassResult(metrics=metrics)
+```
+</details> -->
+
+### Evaluating on vLLM
+
+We evaluated this live-reload runtime on **vLLM** across per-category micro-benchmarks, continuous zero-restart stress tests, and a 6-hour end-to-end autonomous optimization race.
+
+**1. Per-edit evaluation latency across vLLM edit categories.**
+The table below compares a standard cold restart against live evaluation across representative vLLM edits on NVIDIA GB200 and B200 GPUs (hover over each edit category for model and hardware details):
+
+| vLLM Edit Category | Cold Restart | Live Eval | Speedup & Breakdown |
+| --- | --- | --- | --- |
+| <span title="4-bit Nemotron 3.5 Super, 1x NVIDIA GB200" style="border-bottom: 1px dotted currentColor; cursor: help;">**In-place scheduler edit + full evaluation**</span> | 228 s | **23.6 s** | **9.6x** (`~0.1 s` swap, `~204 s` reload overhead removed) |
+| <span title="4-bit Nemotron 3.5 Super, 1x NVIDIA GB200" style="border-bottom: 1px dotted currentColor; cursor: help;">**In-place scheduler edit + targeted test**</span> | 228 s | **2.4 s** (`4.8 s` with logprobs) | **95x** (`48x` with full log-probability distribution check) |
+| <span title="Qwen3-8B, 1x NVIDIA GB200" style="border-bottom: 1px dotted currentColor; cursor: help;">**Active vs. dead-code sampler edit**</span> | ~63 s | **~1.1 s** | **~57x** (`~0.14 s` install, `< 1 ms` undo; flags 0-call dead code in `1.1 s`) |
+| <span title="Split top-p sampling bugfix, Qwen3.6-27B, 1x NVIDIA GB200" style="border-bottom: 1px dotted currentColor; cursor: help;">**Compiled Triton kernel edit**</span> | ~105 s | **~2.7 s** | **~39x** (`0.3 s` transitive Triton kernel recompile, `< 1 ms` binary pointer undo) |
+| <span title="Upstream PR #49750 fused RMSNorm, Qwen3-8B, 2x NVIDIA B200 (TP=2)" style="border-bottom: 1px dotted currentColor; cursor: help;">**Native CUDA `.cu` kernel edit + selective graph recapture**</span> | ~47 to 55 s | **~13.6 s** | **Up to 3.9x** (`11.8 s` parallel `.so` build, `0.7 s` graph recapture, `9 ms` cascade undo) |
+| <span title="Zygote fork + CUDA IPC weights, Qwen3-8B, 1x NVIDIA GB200" style="border-bottom: 1px dotted currentColor; cursor: help;">**Worker respawn / CLI flag reconfigure**</span> | 51.9 s | **7.4 s** | **7.0x** (`2.2 s` CUDA IPC weight attach, `0 B` read from disk) |
+
+**2. Continuous zero-restart replay and fault-injection stress tests.**
+Can a single long-lived vLLM session survive dozens of back-to-back mutations, rollbacks, and deliberately broken edits without drifting or needing a cold restart? We replayed **19 real upstream vLLM optimization pull requests** sequentially and ran **43 end-to-end step and fault-injection scenarios** (including syntax errors, bad tensor shapes, NaN injection, zero-call dead paths, and multi-function transaction rollbacks) inside a single warm vLLM session. The engine completed the entire suite with **zero cold restarts**, maintaining bit-exact greedily decoded tokens and matching top-5 log-probabilities within `1.2e-4` against a fresh cold process on every accepted edit.
+
+**3. End-to-end 6-hour vLLM optimization race.**
+Finally, we measured how eliminating system reload overhead changes an end-to-end autonomous optimization run on **vLLM** serving **DeepSeek-V4.1 Flash** decode on **4x NVIDIA GB200 GPUs** (`8` concurrent requests per GPU at `32K` context length) over a fixed **6-hour wall-clock budget**, comparing a standard **Cold-Restart Baseline** against our **Live-Editable Runtime** using the same coding model and prompt harness:
+
+| Metric (<span title="vLLM serving DeepSeek-V4.1 Flash decode on 4x NVIDIA GB200, 8 reqs/GPU at 32K context, 6-hour wall-clock budget" style="border-bottom: 1px dotted currentColor; cursor: help;">6-Hour vLLM Optimization Race</span>) | Cold-Restart Baseline | Live-Editable Runtime (Hot Reload + Targeted Test) | Advantage |
+| --- | --- | --- | --- |
+| **Time per GPU check** | **227.5 s** (`~199.5 s` reload + `28.0 s` test) | **2.4 s** targeted probe / **23.6 s** full eval | **95x faster** screening / **9.6x faster** full check |
+| **Fastest check-to-check turnaround in race** | **183.6 s** (>3 min wait between checks) | **13.7 s** (including agent reasoning between probes) | **13.4x faster** minimum iteration turnaround |
+| **GPU evaluation throughput capacity** | **~16 checks / hour** of GPU eval time | **~150 full checks** or **~1,500 targeted checks / hour** of GPU eval time | **9.6x to 95x more checks** per hour of GPU evaluation |
+| **Speedup at 1.0 hour** | `1.050x` (+5.0% at `1.06 h`) | **`1.080x` (+8.0% at `1.02 h`)** | Reaches +7.8% in `0.98 h` vs. `4.1 h` (**>4.1x sooner**) |
+| **Time to match Baseline's final 6-hour speedup (`+9.8%`)** | **5.49 hours** (`1.098x`) | **2.44 hours** (`1.101x`) | **2.3x sooner** (saves >3 hours of wall-clock time) |
+| **Final 6-hour decode throughput speedup** | `1.098x` (+9.8%, repeat: `+10.6%`) | **`1.112x` (+11.2%, repeat: `+11.3%`)** | Higher final speedup across deeper multi-kernel optimizations |
+
+Because live reload and targeted testing drop per-check GPU evaluation from nearly four minutes (`227.5 s`) to `2.4 s` for a targeted probe and `23.6 s` for a full confirmation, the agent no longer spends its 6-hour budget waiting for vLLM to reload weights, autotune kernels, and recapture CUDA graphs. Instead, it screens and discards faulty kernel variants in seconds (`13.7 s` minimum check-to-check turnaround vs. `183.6 s`), crosses the baseline's 6-hour finish line (`+9.8%`) in just **2.44 hours (2.3x sooner)**, and uses the remaining three and a half hours to stack five verified custom Triton and CUDA kernel optimizations (parallel hidden-tile mHC post kernels, reused mega-attention position/sparse metadata across layers, single-warp MegaMoE staging tiles for `block_m == 1`, fused valid-row mHC normalization, and rounded-division Triton statistics) to reach **1.112x to 1.113x** decode throughput.
+
+{{< image src="img/fig3c-vllm-eval.png" alt="Evaluating live reload on vLLM: per-edit evaluation time across six categories and 6-hour autonomous optimization race" width="100%" title="Figure 3c. Evaluating live reload on vLLM. Left: single-edit evaluation latency across six representative vLLM edit categories (3.9x to 95x faster). Right: 6-hour autonomous optimization race on 4x NVIDIA GB200 GPUs serving DeepSeek-V4.1 Flash decode, where live reload reaches the cold-restart baseline's final 6-hour speedup 2.3x sooner (2.44 h vs. 5.49 h) and climbs to 1.112x (+11.2%)." >}}
 
 ---
 
-## Generalizing Beyond vLLM
+## RSIBox: Turning AI Systems into Live-Editable Sandboxes
 
-Nothing in this approach is specific to vLLM. However, distributed GPU systems differ widely in their process trees, step boundaries, and state holders: vLLM and SGLang run asynchronous inference schedulers with CUDA graphs, Megatron-LM runs synchronous tensor- and sequence-parallel training steps, FastVideo drives multi-step diffusion denoising workers, and veRL and Miles orchestrate multi-actor Ray reinforcement learning loops across colocated trainers and rollout servers.
+So far, we built live editability specifically for vLLM. Next, we show how we design **RSIBox** to generalize live editability to other AI systems, including **SGLang**, **FastVideo**, **Megatron-LM**, **veRL**, and **Miles**. We observe that generalizing across codebases mostly requires answering two questions: **what uniform interface should a live-editable sandbox expose**, and **how do we wire those application-level hooks into a new repository automatically?**
 
-### The three-stage workflow from vLLM to five other engines
+### Design
 
-To generalize FastRSI across all six systems without building a bloated abstraction layer, we followed a disciplined three-stage workflow:
+To support live editing of AI applications rather than forcing a cold restart on every shell command, **RSIBox** wraps a warm GPU process behind a minimal four-operation protocol (Figure 4a, right) that abstracts the reload, verification, and rollback mechanisms from Section 3:
 
-1. **Start engine-local (Offline Toolsmith).** For each new engine, we first profile its startup cost ladder, map its process tree and state holders, and mine past performance PRs for edit hot spots. We then bootstrap `repos/<engine>/livelab/` from our starter scaffold (`template/livelab/`) and implement the five-call `livelab` interface (`install`, `check`, `reset`, `uninstall`, `status`) specialized to that engine's step boundary, with zero cross-engine imports.
-2. **Distill shared primitives between waves (Rule of Two).** We never invent generic base classes upfront. Only after at least two engines independently solve the same concrete problem on real upstream PRs do we extract the pure mechanism into the zero-dependency, standard-library-only `core/livelab/` runtime (`12,673` lines across `39` files, including the `10,183`-line transaction kernel). This distillation produced our shared two-phase step-gap coordinator, execution witnesses, rollback journal, pre-fork CUDA guards (`forksafe.py`), and `ray_participants.py` (`182` lines), which solves a classic Ray pitfall where `@ray.remote` workers deserialize separate copies of module globals.
-3. **Certify on real GPUs with 11 conformance cases (`c0`–`c10`).** Every engine integration must pass the same 11-case fault-injection conformance suite (`core/livelab/conformance/`) on real GPUs before running agent loops: workload repeatability (`c0`), no-op edit (`c1`), visible edit with rank witnesses (`c2`), bit-exact equivalence against a fresh cold process (`c3`), exact undo (`c4`), mid-install fault rollback across ranks (`c5`), refusal of unsupported edits (`c6`), chained edits (`c7`), crash/hang/tamper poisoning and recovery (`c8`), a 20-cycle install/undo soak test (`c9`), and `zero_witness` detection on unreached code (`c10`).
+- **`install(patch)`:** Applies a candidate diff at the narrowest valid reload boundary without restarting the engine.
+- **`check(probe)`:** Runs a targeted probe on the warm process and returns live execution counts, numerical parity, and latency.
+- **`reset()`:** Restores volatile application state after a test so the next trial starts from an identical baseline.
+- **`uninstall()`:** Reverts a rejected edit cleanly (or triggers a warm worker respawn if the edit faulted the GPU context).
 
-### Brief Engine-by-Engine Summary
+At run time (`①` to `⑥` in Figure 4a), any standard coding agent (such as Codex or Claude Code) plans an edit (`① Think`), writes a patch (`② Edit`), and calls `③ install` and `④ check` for hardware feedback in seconds. Based on the verdict (`⑤ Decide`), it either keeps the change (`reset`) or reverts it (`uninstall`), while promising wins are asynchronously re-measured in **fresh, alternating cold processes** (`⑥`) to confirm that the speedup holds from a clean boot.
 
-Because the transaction kernel, witnesses, rollback journal, pre-fork guards, and Ray actor helpers are shared in `core/livelab/`, onboarding later engines required only a few hundred lines of adapter code and zero patches to upstream engine source files:
+{{< image src="img/fig4a-rsibox-agent-loop.png" alt="RSIBox architecture: offline Toolsmith builds the live-editable sandbox, and a coding agent optimizes inside it" width="100%" title="Figure 4a. The RSIBox architecture. (a) Offline: a Toolsmith agent scans a target repository, wires shared reload primitives into a warm RSIBox sandbox exposing install, check, reset, and uninstall, and verifies parity against a fresh cold run. (b) At run time: a standard coding agent (e.g., Codex or Claude) runs its edit-and-test loop against the sandbox API, while the Toolsmith stays on call if an edit hits an unhooked path." >}}
 
-| Engine | Workload Domain | Adapter Non-Test LOC | Upstream Engine Patches | GPU Conformance | Key Live Reload & Reset Measurements |
-| --- | --- | --- | --- | --- | --- |
-| **vLLM** | LLM serving | 7,848 (adapter + boundary services) | 0 | **11/11** (1× B200) | `110 ms` install / `74 ms` undo; `0.3 s` Triton rebuild; `0.41 s` single-bucket graph recapture; `7.37 s` Zygote+IPC warm restart |
-| **FastVideo** | Video diffusion | 2,206 (adapter + rebuild/zygote) | 0 | **11/11** (2× GB200) | `60 ms` install (`0.72 s` edit-to-run); `0.19–1.27 s` in-process module rebuild; `4.78–5.62 s` Zygote+IPC respawn (vs. `~72 s` warm / `~507 s` cold) |
-| **Megatron-LM** | Distributed pretraining | 2,465 (adapter + `S0` restore/zygote) | 0 | **11/11** (2× GB200 TP=2) | `50 ms` install; `0.21–0.27 s` model/optimizer `S0` restore (vs. `13.69 s` rebuild and `57.5 s` full restart) |
-| **SGLang** | LLM serving | 784 (`534` adapter + `250` zygote) | 0 | **11/11** (2× GB200 TP=2) | `91 ms` install / `8 ms` undo; `0.84 s` decode CUDA graph recapture vs. `24.97 s` cold load (**29.8x**) |
-| **veRL** | Multi-actor RL (GRPO) | 827 (`595` adapter + `232` probe CLI) | 0 | **11/11** (4× GB200, 13 procs) | `9.22 s` live advantage swap (**24.3x** vs. `224.05 s` boot; `1,022 s` on NFS); `2.46 s` coupled 4-GPU trainer+rollout `S0` restore |
-| **Miles** | Multi-actor RL | 337 (reusing `ray_participants.py`) | 0 | **11/11** (2× GB200) | `69 ms` multi-actor live swap; `EpochDataBuffer` `code_epoch` rollout queue drain; coupled `S0` weight sync |
+Implementing the API `install`, `check`, and `reset` inside each codebase then becomes an engine-specific task because every AI system has its own step loop and mutable state. To bring live editability across diverse codebases without hand-coding every adapter, RSIBox pairs the sandbox with an automated **Toolsmith agent** (Figure 4a, left). First, as a one-time offline effort, the Toolsmith scans the target repository and past PRs (`Mine`), hooks our shared primitives from Section 3 into `install / check / reset / uninstall` (`Build`), and verifies on physical GPUs that hot-reloaded edits match a fresh cold-process ground truth (`Verify`). Then, during an active RSI loop, if the coding agent edits an unhooked path that triggers a slow restart (`⑦`), the Toolsmith wakes up on call (`⑧`) to add and verify a new reload hook on the fly.
 
-- **vLLM:** Hooks into unmodified vLLM at runtime via a worker extension class and an engine-core step-gap hook. After distilling our 45k-line initial prototype down to `7,848` lines of boundary-tiered services atop `core/livelab/`, the vLLM lab passes `11/11` conformance on 1× B200 (`110 ms` install, `74 ms` undo) and replays 19 real upstream PRs with zero full restarts (8 live in place and 11 via forked warm restarts).
-- **FastVideo:** Intercepts `Executor.get_class` at runtime so diffusion workers attach to the transaction coordinator without modifying FastVideo source. Passes `11/11` conformance on 2× GB200 with `60 ms` live swaps, `0.19–1.27 s` in-process module rebuilds for constructor edits, and `4.78–5.62 s` Zygote+IPC respawns.
-- **Megatron-LM:** Wraps `pretrain()` around the training step gap without modifying `megatron-core`. Passes `11/11` conformance on 2× GB200 (TP=2) with `50 ms` code swaps and `0.21–0.27 s` `S0` state restoration of weights, optimizer states, and RNG across ranks, compared to `57.5 s` for a full restart.
-- **SGLang:** Required only `784` non-test Python lines (`534` adapter + `250` zygote) with zero upstream patches, hooking into `Scheduler` event-loop batch gaps and `CudaGraphRunner`. Passes `11/11` conformance on 2× GB200 (TP=2), cutting decode CUDA graph recapture to `0.84 s` versus `24.97 s` for a cold load (**29.8x**).
-- **veRL:** Required `827` non-test lines reusing `core/livelab/ray_participants.py` with zero upstream patches. On 4× GB200 across **13 warm Ray processes** (trainer, 4× vLLM rollout engines, and 8× reward workers), it cuts live advantage function testing from `224.05 s` (`1,022 s` on shared NFS) to `9.22 s` (**24.3x**), live reward swaps to `24.91 s` (**9.0x**), and synchronizes coupled trainer and vLLM rollout weights to a shared `S0` checkpoint in `2.46 s`.
-- **Miles:** Onboarded in just **`337` non-test lines** by reusing `ray_participants.py` with zero upstream patches. Passes `11/11` conformance on 2× GB200 with `69 ms` multi-actor swaps and uses an `EpochDataBuffer` `code_epoch` drain so stale asynchronous rollout samples generated by old code are automatically discarded after a live edit.
+**Take FastVideo as an example.** When pointed at the FastVideo repository, the Toolsmith scans the codebase and commit history (`Mine`), identifying the 3D diffusion denoising loop and its Triton sparse-attention kernels as the primary hotspots while noting that loading the multi-stage checkpoints from disk takes ~8.5 minutes. It then wires our shared primitives into the four sandbox hooks (`Build`): keeping the foundation weights in an out-of-process CUDA IPC sentinel, attaching `install` and `uninstall` at the denoising step boundary, configuring `check` to run a short video probe with frame and audio parity checks, and configuring `reset` to clear latent buffers and restore the noise seed (`Verify`). Later during the optimization run, when the coding agent introduces per-layer CUDA graph caching inside the transformer blocks (a new stateful path that initially falls back to a slow reload, `⑦`), the on-call Toolsmith wakes up (`⑧`), adds a selective graph-recapture and cache-reset hook, verifies it against a fresh cold run, and hands the updated sandbox back to the coding agent.
+
+### Generalization to different systems
+
+To see why case-by-case adaptation matters, we applied RSIBox across six production systems spanning four distinct workload domains (**requiring zero upstream source changes** across vLLM, SGLang, veRL, and Miles):
+
+| System | Workload Domain | Case-by-Case Live-Edit Challenge Solved in RSIBox |
+| --- | --- | --- |
+| **vLLM** | LLM inference serving | Coordinating in-place Python and Triton kernel rebuilds across transitive inlined callers alongside selective piecewise CUDA graph recapture. |
+| **SGLang** | LLM inference serving | Selectively recapturing decode CUDA graphs in `0.84 s` inside an asynchronous scheduler event loop across tensor-parallel workers. |
+| **FastVideo** | Video-audio diffusion | Sharing multi-stage diffusion weights over CUDA IPC for 5-second crash respawns and hot-swapping kernels inside the denoising loop. |
+| **Megatron-LM** | Distributed pretraining | Wrapping synchronous training steps to pair `50 ms` code swaps with `< 0.3 s` in-VRAM restoration of coupled weights and optimizer states. |
+| **veRL** | RL | Rebinding live remote Ray actor instances in place across a distributed RL cluster and resetting coupled trainer and rollout weights in `~2.5 s`. |
+| **Miles** | RL | Synchronizing `< 0.1 s` code swaps across decoupled Ray rollout actors while tagging rollout trajectories by code version to drain stale samples. |
+
+Below, we walk through how RSIBox handles the unique state, process, and execution-loop challenges in **FastVideo**, **Megatron-LM**, and **veRL / Miles**.
+
+#### 1. FastVideo: Multi-stage diffusion pipelines and per-layer CUDA graphs
+
+In **FastVideo (MiniMax H3)**, cold-starting the multi-stage video and audio pipeline takes **~8.5 minutes** (and **~68 to 72 s** even for a warm restart), while each generation request steps through dozens of synchronous denoising iterations across sequence-parallel GPUs. With all model stages anchored in the CUDA IPC sentinel for **~5 s** crash recovery, RSIBox's `reset` hook clears latent buffers, restores the initial noise seed, and enforces a **multi-shape memory gate** (running two distinct video resolutions in the same warm worker) to catch per-layer CUDA graph cache leaks before they can cause out-of-memory errors on variable-length requests.
+
+During our optimization run, the coding agent inspected FastVideo's sparse 3D video attention backend and noticed that an optimized heads-first Blackwell Triton tile-scatter path was already implemented in the repository but disabled by default, forcing every attention layer to fall back to generic indexing and transpose copies. Inside RSIBox, the agent hot-swapped a 4-line condition to enable the heads-first Triton tiling path and evaluated a complete generated video clip on the warm worker in **~6 to 7 s** (versus ~70 s for a warm restart and ~8.5 min cold, an **~11x to ~75x** speedup), verifying bit-identical frames and audio while cutting end-to-end generation latency by **17%**.
+
+#### 2. Megatron-LM: Stateful distributed pretraining with coupled optimizer snapshots
+
+In **Megatron-LM**, every distributed training step mutates model weights, gradients, Adam optimizer states, and data-loader cursors in place. If a kernel edit is hot-swapped on step $t$ and tested over three steps, step $t+3$ leaves the model and optimizer on a modified trajectory for the next candidate edit. Instead of restarting the training job across tensor- and sequence-parallel GPUs (which takes **~44 to 58 s**, or over **4 minutes** with full warmup), RSIBox wraps `train_step` to snapshot those coupled training states directly in GPU memory before each probe and restores them in place across all ranks in **under `0.3 s`**, paired with a **`50 ms` code swap**.
+
+<!-- <details>
+<summary><b>View implementation: Megatron-LM coupled weight, Adam optimizer, and RNG snapshot restore (&lt; 0.3 s)</b></summary>
+
+```python
+class MegatronStateSnapshot:
+    def capture(self, model_chunks, optimizer, rng_tracker, dataloader):
+        self.weights = [p.data.clone() for c in model_chunks for p in c.parameters()]
+        self.adam = {id(p): (st["exp_avg"].clone(), st["exp_avg_sq"].clone())
+                     for st in optimizer.state.values() for p in [st] if "exp_avg" in st}
+        self.rng_states = rng_tracker.get_states()
+        self.data_cursor = dataloader.state_dict()
+
+    def restore_in_place(self, model_chunks, optimizer, rng_tracker, dataloader):
+        with torch.no_grad():
+            for p, saved_w in zip((p for c in model_chunks for p in c.parameters()), self.weights):
+                p.data.copy_(saved_w)                 # In-VRAM tensor copy (< 0.3 s total)
+            for p_id, (m1, m2) in self.adam.items():
+                 optimizer.state_by_id[p_id]["exp_avg"].copy_(m1)
+                 optimizer.state_by_id[p_id]["exp_avg_sq"].copy_(m2)
+            for c in model_chunks:
+                c.zero_grad_buffer()                  # Clear main_grad views cleanly
+        rng_tracker.set_states(self.rng_states)
+        dataloader.load_state_dict(self.data_cursor)
+```
+</details> -->
+
+For example, while optimizing **Qwen3-14B** pretraining across 2x GB200 GPUs, Codex found that the backward pass of the sequence-parallel linear layer synchronously cast a high-precision gradient tensor down to the activation dtype *before* launching the asynchronous `all-gather`, even though only the deferred weight-gradient GEMM needed that cast. Delaying the cast until right after launching the `all-gather` overlapped memory-bound casting with multi-GPU communication. With RSIBox, a 3-step loss-equivalence probe finished in **`0.5 s`** (and a multi-step throughput check in **`~5.4 s`** vs. `~44 to 58 s` for a restart, **~8x to >100x faster**), confirming identical loss and gradient norms within `1e-5`.
+
+#### 3. veRL and Miles: Multi-actor Ray reinforcement learning clusters
+
+Distributed reinforcement learning frameworks like **veRL** and **Miles** couple policy trainers and colocated vLLM rollout servers inside a multi-process **Ray cluster**, taking **~224 s** on local storage (**~17 minutes** on network storage) to restart. Live-editing a Ray RL cluster introduces three consistency traps:
+1. **Detached Ray actor instances:** Ray serializes `@ray.remote` actor classes into isolated worker processes at startup, so standard module reloaders never update the live actor objects already running in memory.
+2. **Coupled trainer and rollout weight drift:** An RL step updates policy weights on the trainer and broadcasts them to the rollout servers. Resetting only the trainer leaves the rollout servers generating trajectories from mutated weights and stale KV caches.
+3. **Pre-queued stale trajectories (in asynchronous RL like Miles):** Decoupled rollout actors populate an experience buffer asynchronously, leaving trajectories generated by older code versions queued in the buffer after an edit.
+
+Instead of restarting the Ray cluster, RSIBox broadcasts each patch to all Ray workers, locates the active Ray actor instances directly in each worker's Python heap (`gc.get_objects()`), and rebinds their methods in place. During `reset`, RSIBox restores the trainer's parameter snapshot and re-syncs weights to the colocated vLLM rollout engines while flushing their KV caches in **`~2.5 s`**, cutting a full advantage-estimation check in **veRL** from **~224 s down to ~9 s (~24x faster locally, >100x on NFS)**. In **Miles**, RSIBox pairs **`< 0.1 s` multi-actor code swaps** with a version-tagged rollout buffer that automatically drains trajectories stamped by older code versions upon commit.
+
+<!-- <details>
+<summary><b>View implementation: In-heap Ray actor method rebinding and version-tagged rollout buffer drain</b></summary>
+
+```python
+def hot_reload_ray_actor_method(actor_cls_name: str, method_name: str, new_fn, journal):
+    # Locate live detached Ray actor instances directly in the worker's Python heap
+    for obj in gc.get_objects():
+        if type(obj).__name__ == actor_cls_name:
+            old_fn = getattr(type(obj), method_name)
+            journal.record_fn(old_fn, old_fn.__code__, old_fn.__defaults__)
+            old_fn.__code__, old_fn.__defaults__ = new_fn.__code__, new_fn.__defaults__
+
+def drain_stale_rollouts_on_commit(rollout_buffer, new_code_version: int):
+    # In asynchronous RL (Miles), discard trajectories generated before the committed edit
+    rollout_buffer.retain_only(lambda sample: sample.code_version == new_code_version)
+```
+</details> -->
+
+### Cross-System Evaluation and End-to-End Optimization Results
+
+Figure 4b and the table below summarize how RSIBox compresses single-edit evaluation latency across all six systems on NVIDIA GB200 and B200 GPUs (hover over each row for model and hardware details):
+
+{{< image src="img/fig4-cross-engine.png" alt="Single-edit testing latency across six GPU systems: baseline restart vs. RSIBox" width="100%" title="Figure 4b. Single-edit evaluation time across six AI systems on NVIDIA GB200 and B200 GPUs, comparing standard cold or warm restarts against RSIBox live hot reload and targeted testing." >}}
+
+| System & Representative Edit | Baseline Restart | RSIBox Live Check | Speedup |
+| --- | --- | --- | --- |
+| <span title="4-bit Nemotron 3.5 Super, 1x NVIDIA GB200 (full breakdown in Section 3.3)" style="border-bottom: 1px dotted currentColor; cursor: help;">**vLLM:** Scheduler / Triton / CUDA kernel edits</span> | 52 to 228 s | **1.1 to 23.6 s** (`2.4 s` probe) | **Up to 95x** |
+| <span title="Selective decode CUDA graph recapture across TP=2 workers, 2x NVIDIA GB200" style="border-bottom: 1px dotted currentColor; cursor: help;">**SGLang:** Decode CUDA graph edit and selective recapture</span> | ~25 s | **0.84 s** | **~30x** |
+| <span title="Live code swap + 3-step training test and GPU state snapshot restore, 2x NVIDIA GB200" style="border-bottom: 1px dotted currentColor; cursor: help;">**Megatron-LM:** Live swap + 3-step training check + state restore</span> | ~58 s | **0.5 s** (`~5.4 s` full pass) | **> 100x** (`~8x` vs. warm restart) |
+| <span title="MiniMax H3 sparse attention edit + full video generation check, 1 to 2x NVIDIA GB200" style="border-bottom: 1px dotted currentColor; cursor: help;">**FastVideo:** Attention / Triton kernel edit + video generation check</span> | ~68 to 72 s warm / ~8.5 min cold | **~6 to 7 s** | **~11x** warm / **~75x** cold |
+| <span title="Distributed Ray RL cluster advantage edit + coupled trainer/rollout weight reset, 4x NVIDIA GB200" style="border-bottom: 1px dotted currentColor; cursor: help;">**veRL:** Distributed Ray RL advantage edit + coupled weight reset</span> | ~224 s local / ~17 min NFS | **~9 s** | **~24x** local / **> 100x** NFS |
+| <span title="Multi-actor Ray RL live code swap (< 0.1 s) + 1-step GRPO rollout/train/weight-sync check, Qwen3-0.6B on 4x NVIDIA GB200" style="border-bottom: 1px dotted currentColor; cursor: help;">**Miles:** Multi-actor Ray RL live swap + 1-step GRPO check</span> | 60 to 95 s (`2 to 3.5 min` on 8B+) | **2.5 to 8.0 s** (`< 0.1 s` actor swap) | **~12x to 24x** |
+
+Finally, Figure 5 compares head-to-head autonomous optimization races across five AI systems (six workloads) under identical coding agents, prompts, and GPU budgets. In every race, every promoted patch must preserve exact output or numerical equivalence, and final winners are re-verified from scratch in fresh cold processes without RSIBox attached:
+
+{{< image src="img/fig5-hillclimb.png" alt="RSIBox End-to-End Evaluation across five AI systems: vLLM, SGLang, Megatron-LM, FastVideo T2VA and Ref2VA, and Miles" width="100%" title="Figure 5. Head-to-head autonomous optimization races across five AI systems (six workloads), plotting verified speedup over starting code (y-axis) against wall-clock hours (x-axis) under RSIBox versus a restart baseline. Arrows show how much sooner RSIBox reaches the best baseline's final speedup; dashed lines show replicate runs." >}}
+
+- **LLM serving (`vLLM` and `SGLang`):** On 6-hour GB200 decode races, both RSIBox runs beat both baseline runs on **vLLM** (`1.112x` to `1.113x` vs. `1.098x` to `1.106x`, reaching the best baseline's final speedup **`1.5x` sooner** and `2.3x` sooner against race 1). On **SGLang**, RSIBox reaches the baseline's final speedup **`3.1x` sooner** and finishes at **`1.76x` vs. `1.37x`** cold-verified.
+- **Distributed training (`Megatron-LM`):** On 6-hour **Qwen3-30B-A3B** (`4x GB200`) pretraining, both RSIBox runs outperform both baseline runs (`+9.8%` and `+11.2%` vs. `+8.4%` and `+8.7%`), passing the best baseline's final throughput gain **`1.9x` sooner**. In standalone zero-restart GB200 campaigns, discovered patches also lifted cold-verified throughput by **`+5.1%`** on **Qwen3-14B** and transferred **`+7.1%`** to **Qwen3-32B**.
+- **Video generation (`FastVideo`):** Across 8-hour **MiniMax H3** races on DGX Spark, RSIBox reaches the baseline's final speedup **`1.4x` sooner** on both **T2VA** (`1.95x` vs. `1.91x`) and **Ref2VA** (`1.38x` vs. `1.26x`). In standalone GB200 campaigns (>230 edits, zero cold restarts), cold-verified clip latency dropped **`1.45x` on 1x GB200** and **`1.52x` on 2x GB200** with bit-identical frames and audio.
+- **Reinforcement learning (`Miles`):** Across 6-hour **Qwen3-0.6B GRPO** races on `2x GB200`, the best RSIBox run reaches the best baseline's final `2.56x` speedup **`1.3x` sooner** and finishes at **`2.73x`** (with replicate runs shown as dashed curves).
 
 ---
 
-## Results and Case Studies
+## Open Source and What's Next
 
-### 5.1 Single-Edit Testing Speedup Across Six Engines
+We are open-sourcing **RSIBox** at [github.com/hao-ai-lab/rsibox](https://github.com/hao-ai-lab/rsibox), including:
 
-We evaluated FastRSI on NVIDIA GB200 and B200 GPUs across all six engines, using `GPT-6 Astra`, `Claude`, and `Codex` as coding agents under 6-to-8-hour run budgets for end-to-end optimization loops. Across every engine, replacing cold restarts with boundary-tiered hot reloading and targeted probes cuts the edit-to-result feedback loop from minutes down to seconds or milliseconds:
+1. **Live-editable sandboxes for six production AI systems:** **vLLM** and **SGLang** (LLM serving), **Megatron-LM** (distributed training), **FastVideo** (video generation), and **veRL** and **Miles** (distributed reinforcement learning).
+2. **Uniform sandbox runtime and safety layer:** The `install`, `check`, `reset`, and `uninstall` interface covering live code swapping, selective CUDA graph recapture, GPU state snapshots, automatic rollback, and warm crash recovery.
+3. **Toolsmith onboarding workflow:** Agent skills and verification harnesses for mining edit boundaries and building new RSIBox adapters on other GPU codebases.
 
-{{< image src="img/fig4-cross-engine.png" alt="Single-edit testing latency across six GPU engines: cold restart baseline vs. FastRSI" width="100%" title="Figure 4. Single-edit testing time across six GPU systems on NVIDIA GB200 and B200 GPUs, comparing standard cold/warm restarts against FastRSI live hot reload and targeted probing." >}}
+Making existing GPU engines live-editable is only the first step. Going forward, we are focusing on three directions:
 
-| Engine & Representative Edit | Baseline Restart Time | FastRSI Live Test Time | Speedup | Hardware & Workload Setup |
-| --- | --- | --- | --- | --- |
-| **vLLM** (1-line scheduler edit + targeted probe) | 228 s | **2.4 s** (`4.8 s` with logprob) | **95x** (`48x`) | 1× GB200, Nemotron 3.5 Super NVFP4 |
-| **vLLM** (Qwen3-8B sampler/scheduler live edit) | 62.98–63.37 s | **1.07–1.18 s** | **54x–59x** | 1× GB200, Qwen3-8B TP=1, CUDA graphs |
-| **vLLM** (Triton kernel bugfix, PR `#62046`) | 104.96 s | **2.72 s** (`0.3 s` install) | **38.6x** | 1× GB200, Qwen3.6-27B, `torch.compile` + graphs |
-| **vLLM** (`Scheduler.__init__` new field, PR `#62872`) | 42.93 s | **1.41 s** (undo `1.58 ms`) | **30.4x** | 1× B200, Qwen3-8B, CUDA graphs |
-| **vLLM** (selective CUDA graph recapture) | 35.8 s | **0.41 s** | **87x** | 1× B200, Qwen3-8B single bucket |
-| **SGLang** (decode CUDA graph recapture) | 24.97 s | **0.84 s** (`91 ms` swap) | **29.8x** | 2× GB200 TP=2, Qwen3-0.6B |
-| **Megatron-LM** (live swap + 3-step probe; `S0` restore) | 57.5 s (`13.69 s` rebuild) | **0.50 s** (`0.05 s` install + `0.45 s` 3-step probe); **0.21–0.27 s** `S0` restore | **115x** (probe vs. `57.5 s`); **50.7x** (`S0` vs. `13.69 s` rebuild) | 2× GB200 TP=2 |
-| **FastVideo** (MiniMax H3 attention edit + 1 video check) | ~72 s warm (~507 s cold) | **6.08–6.7 s** (`0.72 s` edit-to-run) | **11.2x** warm (**75x** cold) | 1–2× GB200, MiniMax H3 |
-| **veRL** (13-process GRPO live advantage swap) | 224.05 s (`1,022 s` NFS) | **9.22 s** (`2.46 s` coupled `S0`) | **24.3x** (**111x** NFS) | 4× GB200, Qwen3-0.6B GSM8K GRPO |
-| **Miles** (multi-actor RL live swap + epoch drain) | 60–95 s | **0.069 s** (`69 ms` install) | **>800x** (install) | 2× GB200, Miles 0.2.0 |
+- **Agent-native live-editable AI infra:** Today RSIBox retrofits hot reload, CUDA graph recapture, and state snapshots onto systems built for human batch workflows. As coding agents become primary contributors to AI infrastructure, future training and serving engines should expose weight pools, communicator handles, and reloadable execution regions as first-class APIs so live editability is native rather than bolted on.
+- **Shared-weight parallel sandboxes:** RSIBox speeds up a single edit-test loop by 10x to 100x. The next multiplier is concurrency: letting multiple isolated sandbox workers share read-only model weights on the same GPU so an agent or swarm of agents can evaluate many candidate patches in parallel without multiplying GPU memory.
+- **Closing the remaining restart gap:** Roughly 90 to 95% of common edits already run without a restart, while cross-file refactors, startup-flag changes, and complex distributed RL boundaries still fall back to fresh restarts. Shrinking those fallback cases and pairing second-level live screening with automated cold verification will let agents sustain multi-day autonomous optimization across entire AI stacks.
 
-### 5.2 End-to-End Autonomous Optimization Results
-
-In end-to-end RSI loops, agents equipped with FastRSI reach the same target system performance **1.4–2.3x sooner** in wall-clock time than baseline runs that cold-restart on every edit, and discover real multi-patch optimizations with **zero cold restarts** during the climb.
-
-This 1.4–2.3x end-to-end speedup directly reflects the Amdahl's Law bottleneck from Section 1. On runs where 83% to 90% of wall-clock time goes to testing edits, a faster coding model hits a tight ceiling because startup and benchmarking still dominate the loop. FastRSI removes that bottleneck directly, reaching the target 1.4–2.3x sooner with the exact same coding model. Why does a 95x speedup per probe test translate to 1.4–2.3x across a full multi-hour run? Once hot-reloading removes the 204.4 s cold-start wait and targeted probing cuts the remaining 23.6 s test down to 2.4 s, the rest of the run goes to the agent thinking and writing code, full benchmarks on promising edits that pass the probe, and occasional partial warm restarts after kernel crashes.
-
-To ensure that performance gains measured inside a long-running live engine are never artifacts of warm caches or state drift, **every final speedup we report is re-measured from scratch in fresh cold processes**, alternating base and patched runs on the exact same GPU placement:
-
-{{< image src="img/fig5-hillclimb.png" alt="End-to-end autonomous optimization trajectories on FastVideo MiniMax H3 and Megatron-LM Qwen3" width="100%" title="Figure 5. End-to-end autonomous optimization trajectories with zero cold restarts during the climb, verified in fresh cold processes: 1.45x (1 GPU) and 1.52x (2 GPUs, SP=2) bit-exact video generation speedup on FastVideo MiniMax H3 across 19 kept patches, and +5.1% (Qwen3-14B TP=2) to +7.1% (Qwen3-32B TP=4) training throughput on Megatron-LM across 82 iterations." >}}
-
-- **FastVideo (MiniMax H3, 1.45x on 1× GB200 and 1.52x on 2× GB200 SP=2, bit-exact):** Across an overnight autonomous climb on 1× GB200 followed by a 2-GPU sequence-parallel climb (`SP=2`), `Claude` and `Codex` tested over 230 candidate edits and kept **19 patches** (fusing Triton QK-norm/RoPE reductions, gated merge and untile kernels, Ulysses sequence-parallel remote-only all-to-all packing, and per-layer NVFP4 CUDA graph replay). Every kept edit required witness verification, at least a 1% latency reduction over the rolling baseline, and bit-identical video frames and audio (`sha256` match). When re-measured in **fresh cold processes** without the live lab (1 cold + 5 warm videos per run, alternating base and patched twice), the 19-patch stack cut per-video generation latency from **`6.10/6.12 s` to `4.20/4.23 s` (1.45x)** on 1× GB200 and from **`4.41/4.42 s` to `2.93/2.88 s` (1.52x)** on 2× GB200 (`SP=2`), with every video and audio stream bit-identical to the unpatched baseline. As an operational caveat uncovered by our multi-shape gate, patches 15–17 cache per-layer CUDA graphs assuming a fixed sequence length; switching from a 124-frame request to a 243-frame request in the same process exhausts GPU memory (`74.9 GiB` held in private graph pools), so mixed-resolution deployment requires an eviction budget flag.
-- **Megatron-LM (Qwen3-14B & Qwen3-32B, +5.1% and +7.1% tokens/s/GPU across 82 zero-restart iterations):** On 2× GB200 (`TP=2`), `Codex` ran **82 consecutive hill-climb iterations** on the Qwen3-14B architecture with **zero restarts between edits**. Each candidate edit was hot-swapped in `50 ms`, restored to the exact `S0` weight/optimizer/RNG state in `0.21–0.27 s`, and gated on keeping training loss within `2.2e-3` and gradient norm within `3.5e-3` of the baseline. Re-measured in fresh processes across 4 paired alternating rounds, the three kept edits delivered **`+5.1%` tokens/s/GPU on Qwen3-14B (`TP=2`, `6,973–7,360` to `7,337–7,872` tok/s/GPU)** and transferred to **`+7.1%` tokens/s/GPU on Qwen3-32B (`TP=4`, `2,306–2,389` to `2,475–2,521` tok/s/GPU)**. Two of the three kept climb edits (iterations 11 and 61) are clean source patches to `megatron-core` (`+1.24%` and `+2.97%` standalone in 4-pair fresh-process medians), while the third (iteration 12, `fuse_wgrad_accumulation`) toggled an attribute on live Transformer Engine modules in a private runner outside the public adapter; a third clean source patch from the same campaign (`residual-plain-add-without-bias-dropout`, packaged alongside iterations 11 and 61 in `repos/megatron/patches/`) delivers `+5.0%` on 14B and `+6.0%` on 32B.
-
-### 5.3 Case Studies: Real Edits Hot-Reloaded and Optimized
-
-To make concrete how FastRSI handles real production code across Python, Triton kernels, diffusion attention, and distributed autograd, we highlight four short diffs from our evaluation.
-
-#### Case 1: Catching a silent wrong-file edit in vLLM (`zero_witness`, `63 s → 1.07 s`)
-
-Anyone who has hacked on vLLM has hit this trap: vLLM contains two similarly named sampler files, `vllm/v1/sample/sampler.py` (an older entry point) and `vllm/v1/worker/gpu/sample/sampler.py` (the path actually executed by the V2 GPU worker). Suppose an agent edits the first file to mask out the top-1 logit and pick the second-best token:
-
-```diff
-# Wrong file (unreached on V2 GPU runner): vllm/v1/sample/sampler.py
--        return logits.argmax(dim=-1).view(-1)
-+        return logits.topk(2, dim=-1).indices[:, 1].view(-1)
-
-# Active file: vllm/v1/worker/gpu/sample/sampler.py
-+        processed_logits = processed_logits.scatter(-1, processed_logits.argmax(-1, keepdim=True), float("-inf"))
-```
-
-With a traditional workflow on 1× GB200 (`Qwen3-8B`, 8 prompts × 32 tokens), editing the wrong file costs **`63.08 s`** for a cold `vllm serve` restart and silently returns the unchanged baseline output hash (`db291a3a797916ec`) with zero warnings, tricking an agent into thinking its edit had no effect or introduced no regression. FastRSI hot-swaps and checks the edit in **`1.07 s`** (`30 ms` install, `0.5 ms` engine-loop pause) and immediately flags `proven: false, findings: ["zero_witness"] (0 calls)`. When the edit is placed in the active worker file, FastRSI completes the test in **`1.07 s`**, records **`768` witness hits** (8 requests × 32 tokens × 3 sampler stages), produces an output hash (`e8aa4a6b469cd55b`) bit-identical to a fresh cold restart, and rolls back to base in **`0.3 ms`**.
-
-#### Case 2: Hot-reloading a 1-line Triton kernel bugfix (`vLLM #62046`, `104.96 s → 2.72 s`, `38.6x`)
-
-Swapping a `@triton.jit` GPU kernel in a running serving engine is notoriously tricky because Triton compiles the kernel from source into a cached binary and callers hold references to the compiled handle. In upstream PR `vllm-project/vllm#62046`, a one-line fix in `_topp_sb_mask_kernel` updates `num_preceding` across multi-block loop iterations so split top-p sampling does not miscount duplicate boundary probabilities:
-
-```diff
-# vllm/v1/sample/ops/topk_topp_triton.py (@triton.jit _topp_sb_mask_kernel)
-             cum = tl.cumsum(dmask.to(tl.int32)).to(tl.float32) + num_preceding
-             keep_dup = dmask & (cum <= numkeep)
-             keep = keep & (~dmask | keep_dup)
-+            num_preceding += tl.sum(dmask.to(tl.float32))
-         tl.store(ROW + i + offs, tl.where(keep, x, MASK_VALUE), mask=mask_n)
-```
-
-On 1× GB200 serving `Qwen3.6-27B` with `torch.compile` and CUDA graphs enabled, testing this single line via a restart takes **`104.96 s`** (`32.2 s` graph capture, `24.7 s` startup imports, `15.1 s` warmup). FastRSI invalidates the `@triton.jit` cache, recompiles the kernel in place in **`0.3 s`**, runs the 14-request verification workload in **`2.72 s` total (38.6x faster)** while recording **`43` kernel witness hits**, and rolls back in **`< 1 ms`** by restoring the snapshot's `CompiledKernel` pointer without invoking the Triton compiler again. Similarly, when an upstream PR adds a new state attribute inside `Scheduler.__init__` (`vLLM #62872`), FastRSI's `constructor_reinit` service updates the live scheduler instance in **`1.41 s`** vs. **`42.93 s` (30.4x)** with a **`1.58 ms`** undo, while live runtime reconfiguration of `--max-num-seqs` takes **`2.2 ms`** vs. **`27.6 s`**.
-
-#### Case 3: FastVideo MiniMax H3: enabling heads-first Triton scatter (`01-vsa-heads-first-tile`, `67.9 s → 6.08 s`, `11.2x`)
-
-During the FastVideo MiniMax H3 optimization run, the very first patch kept by the agent (`01-vsa-heads-first-tile` in `video_sparse_attn_h3.py`, `+4 / -1` lines) noticed that FastVideo's heads-first Triton tile scatter was gated behind an off-by-default environment variable, forcing every attention layer through a slow `index_put` and three tensor transpose copies:
-
-```diff
-# fastvideo/attention/backends/video_sparse_attn_h3.py (MiniMaxH3VSAImpl.tile)
-         if (not compiling and attn_metadata.tile_elems in _PTX_BLACKWELL_TILE_ELEMS
--                and envs.FASTVIDEO_H3_VSA_HEADS_FIRST_TILE.get()
-                 and supports_heads_first_scatter(x, attn_metadata.untile_combined_index)):
-             return self._tile_heads_first(x, attn_metadata, holder, kernel_tiles, needs_ptx_blackwell_pair)
-```
-
-FastRSI hot-swapped this edit into the warm diffusion worker (`0.96 s` edit-to-run) and verified a full generated video in **`6.08 s`** instead of **`67.9 s` (11.2x faster)**. That change alone cut single-video generation latency from **`6.32 s` to `5.27 s` (-16.7%)** with bit-identical `sha256` output, launching the 19-patch climb to **1.52x**.
-
-#### Case 4: Megatron-LM: overlapping sequence-parallel all-gather and gradient cast (`lmhead-sp-allgather-before-cast`, `44.4 s → 5.4 s`, `8.2x`)
-
-During the 82-iteration zero-restart climb on Megatron-LM (`Qwen3-14B`, `TP=2`), `Codex` inspected `LinearWithGradAccumulationAndAsyncCommunication.backward` in `megatron/core/tensor_parallel/layers.py` (`+6 / -3` lines). Previously, the backward pass synchronously cast the large FP32 logit gradient `grad_output.to(ctx.input_dtype)` *before* launching the asynchronous sequence-parallel input `all_gather`. Retaining the cast in the deferred `grad_output_buffer` branch while delaying the main dtype conversion until immediately after the asynchronous `all_gather` launch overlaps communication with memory-bound casting:
-
-```diff
-# megatron/core/tensor_parallel/layers.py (LinearWithGradAccumulationAndAsyncCommunication.backward)
-         input, weight = ctx.saved_tensors
-         main_grad = ctx.main_grad
-         use_bias = ctx.use_bias
--        # TE owns only the forward GEMM here; Megatron retains the backward contract.
--        # Cast dY to the input dtype to match the legacy FP32-logit-cast backward path.
--        grad_output = grad_output.to(ctx.input_dtype)
-         ...
-         wgrad_compute = True
-         if grad_output_buffer is not None:
-+            # Deferred weight gradients must retain the original compute dtype.
-+            grad_output = grad_output.to(ctx.input_dtype)
-             if wgrad_deferral_limit == 0 or len(grad_output_buffer) < wgrad_deferral_limit:
-                 grad_output_buffer.append(grad_output)
-                 wgrad_compute = False
-         ...
-+        # Launch the input all-gather before the potentially large FP32-logit
-+        # gradient conversion, allowing communication to overlap this conversion.
-+        # Preserve the legacy FP32-logit-cast backward compute dtype.
-+        grad_output = grad_output.to(ctx.input_dtype)
-         grad_input = grad_output.matmul(weight)
-```
-
-With FastRSI, testing this autograd edit and restoring `S0` state took **`5.4 s`** instead of **`44.4 s` (8.2x faster)**, contributing a standalone **`+1.24%` tokens/s/GPU** gain (median of 4 paired fresh-process rounds) toward the overall **`+5.1%` (14B) / `+7.1%` (32B)** throughput improvement.
+**More live-editable AI infrastructure for RSI is coming soon, stay tuned.**
 
 ---
-
-## FastRSI Today
-
-We are open-sourcing **FastRSI**, including the zero-dependency `core/livelab/` transaction kernel, the 11-case fault-injection conformance suite (`c0`–`c10`), the onboarding template (`template/`), the toolsmith agent prompts (`core/agents/`), and all six engine integrations (`vLLM`, `SGLang`, `Megatron-LM`, `FastVideo`, `veRL`, and `Miles`):
-
-- **Code & Documentation:** [github.com/hao-ai-lab/fastrsi](https://github.com/hao-ai-lab/fastrsi)
-
-You can try the transaction kernel and run all 11 conformance cases on a laptop in under 3 seconds with Python 3.11+ and zero third-party packages or GPUs required:
-
-```sh
-git clone https://github.com/hao-ai-lab/fastrsi.git && cd fastrsi
-PYTHONPATH=core/livelab python3 -m conformance --lab kernel.toy_lab:ToyLab
-```
-
-### What's next
-
-We are extending FastRSI along two directions:
-
-1. **Live in-memory `TP ↔ EP` parallelism reconfiguration without disk weight reads:** Changing distributed parallelism strategies (for example, switching between tensor parallelism and expert parallelism on MoE models) normally requires killing the server and reloading tens of gigabytes of safetensors weights from disk. Our `reshard.py` service transposes `FusedMoE` shards in memory across a CUDA IPC `WeightHolder` without touching disk; it is verified on CPU against vLLM's MoE weight layouts today, with multi-GPU B200 benchmarks upcoming.
-2. **Shared read-only weight sandboxes for parallel multi-branch testing on one GPU:** In a prototype sandbox on 1× B200 (`Qwen3-8B`), two concurrent `vllm serve` instances map all 291 model parameters onto a single shared `15.27 GiB` read-only GPU memory allocation, allowing an agent to hot-edit, benchmark, or even `SIGKILL` candidate worker A while worker B continues serving unaffected. Integrating shared-weight sandboxes with FastRSI will let coding agents evaluate multiple candidate edits in parallel on a single GPU.
-
----
-
-## Acknowledgement
-
-We thank NVIDIA for supporting our development and evaluation on NVIDIA GB200 and B200 GPUs. We also thank the open-source communities behind vLLM, SGLang, Megatron-LM, FastVideo, veRL, and Miles for building the engines and upstream PR ecosystems that made this work possible.
 
 ## Contributors
 
@@ -337,12 +399,12 @@ We thank NVIDIA for supporting our development and evaluation on NVIDIA GB200 an
 ## Citation
 
 ```bibtex
-@misc{fastrsi2026,
+@misc{rsibox2026,
   title        = {Towards Live-Editable {LLM} Infra for {RSI}},
   author       = {Chen, Junda and Sun, Yi and Zhang, Yuxuan and Yang, Yuanbo and Su, Junda and Lin, Will and Zhang, Hao},
   year         = {2026},
   month        = nov,
   howpublished = {Hao AI Lab Blog},
-  url          = {https://haoailab.com/blogs/fastrsi/}
+  url          = {https://haoailab.com/blogs/rsibox/}
 }
 ```
