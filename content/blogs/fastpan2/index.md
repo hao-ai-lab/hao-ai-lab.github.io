@@ -1,7 +1,7 @@
 +++
 title = "FastPan2: Distilling a 29B World Model to 8 Steps with VSA2"
 description = "How we turned PAN 2's 100-forward sampler into 8 sparse forwards: the DMPDD recipe, VSA2 attention, the data, and what it buys in speed and human preference."
-date = 2026-11-25T00:00:00-08:00
+date = 2026-11-24T00:00:00-08:00
 authors = ["FastVideo Team"]
 author = "FastVideo Team"
 ShowReadingTime = true
