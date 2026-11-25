@@ -7,8 +7,11 @@ author = "FastVideo Team"
 ShowReadingTime = true
 ShowToc = true
 TocOpen = false
-draft = true
+draft = false
 contentClass = "post-content-justified"
+# Unlisted: the page is built and reachable by its link, but kept out of /blogs/ and RSS. Remove [_build] to list it.
+[_build]
+    list = "never"
 [cover]
     image = "img/cover.jpg"
     alt = "A frame from a FastPan2 video: a swimmer diving into a pool, seen half above and half below the water line."
