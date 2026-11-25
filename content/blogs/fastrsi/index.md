@@ -11,7 +11,7 @@ contentClass = "post-content-justified"
 summary = "Improving AI systems through recursive self-improvement (RSI) is bottlenecked by evaluation: agents spend 60% to 95% of their wall-clock time waiting for GPU tests to finish. Today, testing even a one-line code change in a GPU engine like vLLM requires killing the process and booting the entire system from scratch, waiting several minutes to reload model weights and re-initialize the GPUs before a single test prompt can run. We introduce RSIBox, a live-editable GPU sandbox environment that keeps heavy GPU state alive in memory and hot-reloads only the small piece of the system that an edit actually changed, while isolating and rolling back faulty mutations in milliseconds. Paired with rapid targeted testing, RSIBox shrinks the time to test an edit in vLLM from 228 s to 2.4 s (95x faster), lets an agent reach a 6-hour vLLM optimization target 2.3x sooner, and generalizes across six major AI engines (vLLM, SGLang, Megatron-LM, FastVideo, veRL, and Miles) to deliver up to 1.52x end-to-end workload speedups with near-zero cold restarts."
 
 [cover]
-  image = "/img/fastrsi/cover.gif"
+  image = "/img/fastrsi/cover.png"
   relative = false
   alt = "Cold restart every check vs. RSIBox live hot reload"
   caption = "Testing a one-line vLLM edit: cold restart vs. RSIBox live hot reload."
@@ -32,7 +32,7 @@ summary = "Improving AI systems through recursive self-improvement (RSI) is bott
   </a>
 </div>
 
-{{< image src="/img/fastrsi/cover.gif" alt="Cold restart every check vs. RSIBox live hot reload" width="100%" title="Cover Figure. Testing a one-line vLLM scheduler edit. Top right: a cold restart rebuilds tuned kernels, model weights, CUDA graphs, and the engine process before every test, 228 s in total. Bottom right: RSIBox keeps that GPU state warm inside a live-editable sandbox and swaps the one function, finishing a targeted test in 2.4 s (95x). Bottom left: with the faster test, the agent reaches the same speedup 2.3x sooner in a 6-hour vLLM optimization run." >}}
+{{< image src="/img/fastrsi/cover.png" alt="Cold restart every check vs. RSIBox live hot reload" width="100%" title="Cover Figure. Testing a one-line vLLM scheduler edit. Left: a cold restart rebuilds tuned kernels, model weights, CUDA graphs, and the engine process before every test, 228 s in total, while RSIBox keeps that GPU state warm inside a live-editable sandbox and swaps the one function, finishing a targeted test in 2.4 s (95x). Right: with the faster test, the agent reaches the same speedup 2.3x sooner in a 6-hour vLLM optimization run." >}}
 
 
 **TL;DR.** Improving AI systems through recursive self-improvement (RSI) is bottlenecked by evaluation: agents spend 60% to 95% of their wall-clock time waiting for GPU tests to finish. Today, testing even a one-line code change in a GPU engine like vLLM requires killing the process and booting the entire system from scratch, waiting several minutes to reload model weights and re-initialize the GPUs before a single test prompt can run.
@@ -87,7 +87,7 @@ In a production system like vLLM, however, changing a function in place immediat
 3. **Multi-process and multi-node distributed workers:** What if the system runs across multiple processes or distributed worker nodes over a network (across tensor-, pipeline-, or expert-parallel ranks, or remote Ray actors)? If rank 0 updates a collective call mid-step while rank 1 runs the old version, the cluster deadlocks.
 4. **System-breaking faults and state contamination:** What if a submitted edit crashes the process, triggers an illegal GPU memory access that corrupts the CUDA context, or silently mutates model weights, KV caches, or random seeds so that every subsequent test runs on contaminated state (or never even executes the edited path)? How do we recover from fault states?
 
-Existing container sandboxes and process checkpointing tools (`CRIU`, `cuda-checkpoint`, serverless snapshots) only partially address these four caveats: they treat the worker as an opaque black box and work best when application code is read-only, while still requiring heavy engineering to coordinate across multi-GPU runtimes. Driving hot-reload evaluation latency down to the sub-second and few-second regime requires an application-layer runtime that separates **persistent GPU state** (loaded weights, communication groups, KV pools, and unaffected CUDA graphs) from **mutable execution layers**, updating only what an edit touches and isolating faults before they can corrupt the warm session.
+Existing process checkpointing tools (`CRIU`, `cuda-checkpoint`) and inference memory/snapshot systems such as NVIDIA Dynamo already make great strides on accelerating inference startup and unchanged-code recovery. For LLM inference, RSIBox builds directly on top of them—and adds a standalone application-layer runtime for training, diffusion, and RL—separating persistent GPU state (loaded weights, communication groups, KV pools, and unaffected CUDA graphs) from mutable execution layers so code edits take effect in milliseconds without restarting the engine.
 
 {{< image src="img/fig3-architecture.png" alt="Two-plane live-editable runtime architecture: mutable worker plane vs. persistent out-of-process GPU and host state" width="100%" title="Figure 3a. Live-editable runtime architecture. Top: staging, AST/call-graph routing, and atomic two-phase commit between steps. Middle: the mutable worker plane, separating the in-process live swap zone (89% of PRs) and verification/rollback guards from the 5 to 12 s process respawn zone. Bottom: the persistent out-of-process warm foundation (CUDA IPC weight sentinel, pre-CUDA Zygote fork server, and baseline snapshots) that survives across edits and worker crashes." >}}
 
@@ -374,7 +374,7 @@ Finally, Figure 5 compares head-to-head autonomous optimization races across fiv
 
 ---
 
-## Open Source and What's Next
+## RSIBox: Open Source and What's Next
 
 We are open-sourcing **RSIBox** at [github.com/hao-ai-lab/rsibox](https://github.com/hao-ai-lab/rsibox), including:
 
@@ -382,11 +382,22 @@ We are open-sourcing **RSIBox** at [github.com/hao-ai-lab/rsibox](https://github
 2. **Uniform sandbox runtime and safety layer:** The `install`, `check`, `reset`, and `uninstall` interface covering live code swapping, selective CUDA graph recapture, GPU state snapshots, automatic rollback, and warm crash recovery.
 3. **Toolsmith onboarding workflow:** Agent skills and verification harnesses for mining edit boundaries and building new RSIBox adapters on other GPU codebases.
 
-Making existing GPU engines live-editable is only the first step. Going forward, we are focusing on three directions:
+### Supporting NVIDIA Dynamo Snapshot
 
-- **Agent-native live-editable AI infra:** Today RSIBox retrofits hot reload, CUDA graph recapture, and state snapshots onto systems built for human batch workflows. As coding agents become primary contributors to AI infrastructure, future training and serving engines should expose weight pools, communicator handles, and reloadable execution regions as first-class APIs so live editability is native rather than bolted on.
-- **Shared-weight parallel sandboxes:** RSIBox speeds up a single edit-test loop by 10x to 100x. The next multiplier is concurrency: letting multiple isolated sandbox workers share read-only model weights on the same GPU so an agent or swarm of agents can evaluate many candidate patches in parallel without multiplying GPU memory.
-- **Closing the remaining restart gap:** Roughly 90 to 95% of common edits already run without a restart, while cross-file refactors, startup-flag changes, and complex distributed RL boundaries still fall back to fresh restarts. Shrinking those fallback cases and pairing second-level live screening with automated cold verification will let agents sustain multi-day autonomous optimization across entire AI stacks.
+Making GPU infrastructure warm and fault-tolerant is a broader open-source effort, and for LLM inference, **NVIDIA Dynamo** already provides strong foundations that are very close to what live-editable LLM inference systems need: GPU Memory Service (`GMS`) keeps model weights resident in GPU memory across restarts, and Dynamo Snapshot checkpoints and restores multi-GPU inference engines across crashes.
+
+RSIBox natively supports NVIDIA Dynamo and builds directly on top of it. Combining NVIDIA Dynamo (`GMS` + `Snapshot`) with RSIBox's millisecond code hot-swapping, live execution checks, and rollback lets researchers run large-scale, stateful experiments on frontier models—applying live code edits in `~50–200 ms`, while relying on Dynamo to keep weights warm and handle fast process recovery (`~2.5–15 s` when a fault happens). Looking ahead, we are excited to keep working with the NVIDIA Dynamo team and the open-source community to deepen this integration and turn it into a shared infrastructure foundation for large-scale RSI experimentation.
+
+{{< image src="img/fig6-dynamo-snapshot.png" alt="Building RSIBox on top of NVIDIA Dynamo (Snapshot + warm GMS) across four frontier TP4 LLMs on NVIDIA B200" width="100%" title="Figure 6. RSIBox built on top of NVIDIA Dynamo (Snapshot + warm GMS) across four frontier TP4 LLMs on NVIDIA B200 (151.5–491.1 GiB; CUDA Graphs and FlashInfer autotuning enabled). Dynamo cuts multi-GPU recovery from 8–31 min cold start down to 9.3–15.4 s; built on top, RSIBox applies live 1-line code edits in 90–99 ms." >}}
+
+### What's Next
+
+Making existing GPU engines live-editable is only the first step. Going forward, we are focusing on four directions:
+
+- **Service-decomposed, agent-native AI infra:** Today RSIBox retrofits live editability onto engines built around monolithic batch processes. As coding agents become primary contributors to AI infrastructure, future engines should natively separate long-lived GPU state services from hot-swappable execution layers. We already have follow-up work underway on this direction and will share more soon.
+- **Swarm-scale parallel evaluation sandboxes:** RSIBox speeds up a single edit-test loop by 10x–100x, and we have already built an initial shared-weight sandbox that lets multiple isolated workers share read-only weights on the same GPU. Scaling to large agent swarms still brings real fault-tolerance and resource-contention challenges when processes share hardware, though many of them can be mitigated specifically for development workloads. We are actively refining this design and testing it on large-scale swarms to harden it in practice.
+- **Full-stack coverage across distributed boundaries:** Live hot-swapping paired with second-level snapshots already covers in-process edits and fast crash recovery in inference. Bringing the same fast fallback guarantees to multi-node training and distributed RL boundaries will let agents sustain multi-day autonomous optimization across the entire AI stack.
+- **Beyond GPU engines to other fields:** Slow startup and heavy persistent state bottleneck iterative development far outside LLM infrastructure, from robotics simulation to formal verification and database systems. We are actively generalizing RSIBox across these domains while polishing and co-evolving both the framework and the coding agents together to see how far live-editable loops can push autonomous discovery.
 
 **More live-editable AI infrastructure for RSI is coming soon, stay tuned.**
 
