@@ -23,7 +23,7 @@
 <text class="t2" x="119.0" y="100.0" font-size="11.5" text-anchor="middle">text: dense prefix blocks</text>
 <text class="t2" x="119.0" y="116.0" font-size="11.5" text-anchor="middle">video: 4×4×8 tiles</text>
 <text class="t2" x="119.0" y="132.0" font-size="11.5" text-anchor="middle">(128 tokens each);</text>
-<text class="t2" x="119.0" y="148.0" font-size="11.5" text-anchor="middle">first latent frame alone</text>
+<text class="t2" x="119.0" y="148.0" font-size="11.5" text-anchor="middle">short tile first in time</text>
 <rect class="boxo" x="270" y="50" width="230" height="72" rx="9" stroke-width="1.5"/>
 <text class="t1" x="385.0" y="72.0" font-size="13" text-anchor="middle" font-weight="700">Router (no gradient)</text>
 <text class="t2" x="385.0" y="90.0" font-size="11.5" text-anchor="middle">pool Q, K over 2×2×2 windows</text>

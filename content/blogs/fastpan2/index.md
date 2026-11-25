@@ -113,7 +113,7 @@ DMPDD trains the student with two objectives at once. Each student step draws a 
 **The DMD half (distribution matching).** Integrating all of the student's heads from $u_n$ to the end of the grid gives a clean estimate $\hat x_0$, the multi-head analog of DMD2's one-step prediction. $\hat x_0$ is re-noised to a random score time $\tau$, and two networks score it: the frozen **teacher** (PAN 2, dense attention) with guidance 2.5 against the structured negative, and a trainable **critic** (a dense copy of PAN 2) that tracks the distribution of the student's own outputs. The student's gradient is the difference of the two scores, pulled back through $\hat x_0$:
 
 $$
-\nabla_\theta \mathcal{L}_{\text{DMD}} \;\propto\; \mathbb{E}_{\tau,\,\epsilon}\Big[\big(s_{\text{critic}}(\tilde x_\tau, \tau) - s^{\,\text{cfg}=2.5}_{\text{teacher}}(\tilde x_\tau, \tau)\big)\,\frac{\partial \hat x_0}{\partial \theta}\Big], \qquad \tilde x_\tau = (1-\sigma_\tau)\,\hat x_0 + \sigma_\tau\,\epsilon.
+\nabla_\theta \mathcal{L}_{\text{DMD}} \;\propto\; \mathbb{E}_{\tau,\,\epsilon}\Big[\big(s^{\,\text{cfg}=2.5}_{\text{critic}}(\tilde x_\tau, \tau) - s^{\,\text{cfg}=2.5}_{\text{teacher}}(\tilde x_\tau, \tau)\big)\,\frac{\partial \hat x_0}{\partial \theta}\Big], \qquad \tilde x_\tau = (1-\sigma_\tau)\,\hat x_0 + \sigma_\tau\,\epsilon.
 $$
 
 This is what lets 8 calls produce sharp samples: the student is judged on the distribution of what it produces, not on reproducing one teacher trajectory.
@@ -133,8 +133,8 @@ This anchors every head to the teacher's flow, so the student stays on PAN 2's t
 ### 1.3 Distilling guidance and conditioning
 
 - **Guidance is distilled.** The teacher's score, the critic's score and the PDD target all use guidance 2.5 against PAN 2's structured negative caption, PAN 2's own release setting. Using the same scale in all three places matters: mismatched scales pull the student two ways. The student samples with no unconditional pass at all.
-- **Image-to-video.** The first latent frame of an image-to-video clip is conditioning: never noised, never part of the integrated state, and excluded from guidance in every role, as in PAN 2's sampler. Under the causal Wan2.2 VAE, the first latent frame of a pre-encoded clip encodes its first pixel frame alone, so training needs no separate image encoding.
-- **Score times.** Score times are drawn continuously over $[0.001, 0.999]$ on the shifted clock (score-time shift 1.0).
+- **Image-to-video.** As in PAN 2's own training and sampler, the clean first latent frame enters only through the conditioning channels; the state itself is noised and integrated on every frame. In every role, guidance leaves the first frame alone: it takes the conditional prediction only. Under the causal Wan2.2 VAE, the first latent frame of a pre-encoded clip encodes its first pixel frame alone, so training needs no separate image encoding.
+- **Score times.** The base clock $u$ of a score time is drawn uniformly over $[0.001, 0.999]$, with no extra score-time shift, and mapped to a noise level by PAN 2's flow shift 9, so most scoring happens at high noise.
 
 ## Part 2: cheaper passes (VSA2)
 
@@ -142,7 +142,7 @@ After Part 1 every call still attends over up to 104k video tokens. Attention gr
 
 ### 2.1 Blocks and tiles
 
-The sequence is cut into blocks of 128 rows. Text comes first, as dense prefix blocks. The video follows as **4 × 4 × 8 tiles** (time × height × width) over the latent token grid. For image-to-video, the conditioning first latent frame gets a time tile of its own, so the clean frame never shares a tile with noisy ones. At 10 s the 61 × 22 × 39 grid becomes 16 × 6 × 5 = **480 tiles**.
+The sequence is cut into blocks of 128 rows. Text comes first, as dense prefix blocks. The video follows as **4 × 4 × 8 tiles** (time × height × width) over the latent token grid. Partial tiles go first in time and last in height and width, so when the clip has 4*k* + 1 latent frames (every even-second length, such as 10 s), the first latent frame gets a time tile of its own. At 10 s the 61 × 22 × 39 grid becomes 16 × 6 × 5 = **480 tiles**.
 
 ### 2.2 Router, fine branch, coarse branch, gate
 
