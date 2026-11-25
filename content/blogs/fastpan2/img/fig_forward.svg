@@ -19,7 +19,7 @@
 <rect class="bg" width="760" height="300"/>
 <text class="t1" x="24.0" y="28.0" font-size="13.5" text-anchor="start" font-weight="700">Transformer time per sample per forward on one B300 (seconds)</text>
 <rect class="s0" x="24" y="44" width="12" height="12" rx="3"/><text class="t2" x="42.0" y="54.0" font-size="13" text-anchor="start">dense (PAN 2)</text>
-<rect class="s1" x="157.60000000000002" y="44" width="12" height="12" rx="3"/><text class="t2" x="175.6" y="54.0" font-size="13" text-anchor="start">VSA2 at sparsity 0.9 (FastPan2)</text>
+<rect class="s1" x="157.60000000000002" y="44" width="12" height="12" rx="3"/><text class="t2" x="175.6" y="54.0" font-size="13" text-anchor="start">VSA2 at sparsity 0.9 (FastPAN2)</text>
 <line class="grid" x1="120.0" x2="120.0" y1="70" y2="250"/><text class="t2" x="120.0" y="266.0" font-size="10.5" text-anchor="middle">0 s</text>
 <line class="grid" x1="202.4" x2="202.4" y1="70" y2="250"/><text class="t2" x="202.4" y="266.0" font-size="10.5" text-anchor="middle">2 s</text>
 <line class="grid" x1="284.7" x2="284.7" y1="70" y2="250"/><text class="t2" x="284.7" y="266.0" font-size="10.5" text-anchor="middle">4 s</text>
