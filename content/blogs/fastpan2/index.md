@@ -1,5 +1,5 @@
 +++
-title = "FastPan2: Distilling a 29B World Model to 8 Steps with VSA2"
+title = "FastPAN2: Distilling a 29B World Model to 8 Steps with VSA2"
 description = "How we turned PAN 2's 100-forward sampler into 8 sparse forwards: the DMPDD recipe, VSA2 attention, the data, and what it buys in speed and human preference."
 date = 2026-11-24T00:00:00-08:00
 authors = ["FastVideo Team"]
@@ -14,7 +14,7 @@ contentClass = "post-content-justified"
     list = "never"
 [cover]
     image = "img/cover.jpg"
-    alt = "A frame from a FastPan2 video: a swimmer diving into a pool, seen half above and half below the water line."
+    alt = "A frame from a FastPAN2 video: a swimmer diving into a pool, seen half above and half below the water line."
     relative = true
     hidden = false
 [socialIcons]
@@ -28,19 +28,19 @@ contentClass = "post-content-justified"
 
 {{< socialBadges github="hao-ai-lab/FastVideo" slack="https://join.slack.com/t/fastvideo/shared_invite/zt-3f4lao1uq-u~Ipx6Lt4J27AlD2y~IdLQ" >}}
 
-<!-- TODO before publishing: link the FastPan2 weights and the training code, and confirm the author list. -->
+<!-- TODO before publishing: link the FastPAN2 weights and the training code, and confirm the author list. -->
 
 [PAN 2](https://github.com/ifm-ai/PAN2) is a 29B-parameter world model: given a starting image (or none) and a description of what happens next, it simulates up to 20 seconds of video. Its release sampler runs the transformer **100 times per video**: 50 denoising steps, each with a conditional and an unconditional pass for classifier-free guidance. A 10 s clip takes six minutes on one GPU.
 
-**FastPan2** runs the same transformer **8 times**, with guidance distilled in and 90% of its video attention skipped. On eight B300 GPUs it renders a 5 s, 704×1248 clip in **2.2 s**, a 10 s clip in **3.8 s** and a 20 s clip in **7.7 s**. In a blind human-preference arena it is preferred at least as often as the 50-step PAN 2 it was distilled from.
+**FastPAN2** runs the same transformer **8 times**, with guidance distilled in and 90% of its video attention skipped. On eight B300 GPUs it renders a 5 s, 704×1248 clip in **2.2 s**, a 10 s clip in **3.8 s** and a 20 s clip in **7.7 s**. In a blind human-preference arena it is preferred at least as often as the 50-step PAN 2 it was distilled from.
 
 <div class="video-embed" style="width: 100%; margin: 1.5rem 0;">
   <video controls playsinline muted loop preload="metadata" poster="media/hero-swimmer.jpg"
-    aria-label="FastPan2 video of a swimmer diving into a pool, the view moving between above and below the water"
+    aria-label="FastPAN2 video of a swimmer diving into a pool, the view moving between above and below the water"
     style="display: block; width: 100%; height: auto; border-radius: 10px; background: #000;">
     <source src="media/hero-swimmer.mp4" type="video/mp4">
   </video>
-  <p style="margin: 0.5rem 0 0; text-align: center; font-size: 0.9em; opacity: 0.75;">FastPan2, 8 transformer calls, 10 s at 704×1248. "A swimmer in his early 30s dives into the water, the view shifting between above and below as he powers through the race."</p>
+  <p style="margin: 0.5rem 0 0; text-align: center; font-size: 0.9em; opacity: 0.75;">FastPAN2, 8 transformer calls, 10 s at 704×1248. "A swimmer in his early 30s dives into the water, the view shifting between above and below as he powers through the race."</p>
 </div>
 
 ## TL;DR
@@ -48,8 +48,9 @@ contentClass = "post-content-justified"
 - **8 forwards instead of 100.** One distillation stage, **DMPDD**, combines distribution matching (DMD2) with Parallel Decoding Distillation (PDD). The student has 32 output heads on a fine time grid and fuses 4 of them per call. Guidance is distilled into it.
 - **Sparse attention while distilling.** The student attends with **VSA2** at 90% sparsity: a gradient-free router over 2×2×2 windows picks which 4×4×8 video tiles each tile reads, and a gated coarse branch keeps global context. Attention does 13–17% of the dense FLOPs, and a 20 s forward is 1.67× cheaper.
 - **Data and scale.** 1M clips at 704×1248, 5–20 s, 70% text-to-video and 30% image-to-video, trained on 1,024 B300 GPUs at batch 512 for 2,000 steps (about one pass). We release step 1,800.
-- **Speed.** Against PAN 2 running in FastVideo on the same 8 GPUs, FastPan2 is **8.1×, 10.8× and 14.7×** faster at 5, 10 and 20 s. Against PAN 2's release launcher it is **68–127×** faster ([details](#part-4-speed)).
-- **Quality.** In a blind arena of 275 votes, FastPan2 wins **60%** of its games, PAN 2 58%, FastH3 43% and Cosmos3-Super 34% ([details](#part-5-the-arena)).
+- **Speed.** Against PAN 2 running in FastVideo on the same 8 GPUs, FastPAN2 is **8.1×, 10.8× and 14.7×** faster at 5, 10 and 20 s. Against PAN 2's release launcher it is **68–127×** faster ([details](#part-4-speed)).
+- **Quality.** In a blind arena of 275 votes, FastPAN2 wins **60%** of its games, PAN 2 58%, FastH3 43% and Cosmos3-Super 34% ([details](#part-5-the-arena)).
+- **Benchmarks.** On RBench FastPAN2 scores **56.97** against PAN 2's 54.71. On our in-house benchmark it scores **83.95** against 84.48. On Physics-IQ Verified it scores **48.24** against 50.41 ([details](#part-6-benchmarks)).
 
 ## How this post is organized
 
@@ -58,6 +59,7 @@ contentClass = "post-content-justified"
 - **[Part 3](#part-3-data-and-training-at-scale)** is the data, the mixture, and the training run on 128 nodes.
 - **[Part 4](#part-4-speed)** is the latency of the 4-, 8- and 16-call students, and where the remaining time goes.
 - **[Part 5](#part-5-the-arena)** is the human-preference arena.
+- **[Part 6](#part-6-benchmarks)** is the scores on Physics-IQ Verified, RBench and our in-house benchmark.
 - **[Appendix A](#appendix-a-attention-cost)** works through the attention FLOPs.
 
 ## Part 0: what one PAN 2 call costs
@@ -98,7 +100,7 @@ $$
 
 All $b$ heads come from **one** forward at the call's starting point: the student has learned to predict, in parallel, where the trajectory goes over the next $b$ intervals. At inference the heads of a block are mixed inside the linear layer, so a call costs no more than one PAN 2 forward. With $b = 4$, eight calls cover the grid.
 
-{{< image src="img/fig_schedule.svg" alt="Noise level against sampling progress. PAN 2 takes 50 small steps; FastPan2 takes 8 calls, each integrating 4 sub-intervals of a 32-interval grid." width="100%" title="Figure 1. PAN 2's 50 steps against FastPan2's 8 calls. Each call predicts 4 heads and integrates 4 intervals of the 32-interval grid." >}}
+{{< image src="img/fig_schedule.svg" alt="Noise level against sampling progress. PAN 2 takes 50 small steps; FastPAN2 takes 8 calls, each integrating 4 sub-intervals of a 32-interval grid." width="100%" title="Figure 1. PAN 2's 50 steps against FastPAN2's 8 calls. Each call predicts 4 heads and integrates 4 intervals of the 32-interval grid." >}}
 
 The same widened layer supports other budgets: the grid stays at 32 intervals and only the block size changes. We trained 16-, 8- and 4-call students with otherwise identical recipes and data order ([Part 4](#part-4-speed) has their speed).
 
@@ -111,7 +113,7 @@ DMPDD trains the student with two objectives at once. Each student step draws a 
 **The DMD half (distribution matching).** Integrating all of the student's heads from $u_n$ to the end of the grid gives a clean estimate $\hat x_0$, the multi-head analog of DMD2's one-step prediction. $\hat x_0$ is re-noised to a random score time $\tau$, and two networks score it: the frozen **teacher** (PAN 2, dense attention) with guidance 2.5 against the structured negative, and a trainable **critic** (a dense copy of PAN 2) that tracks the distribution of the student's own outputs. The student's gradient is the difference of the two scores, pulled back through $\hat x_0$:
 
 $$
-\nabla_\theta \mathcal{L}_{\text{DMD}} \;\propto\; \mathbb{E}_{\tau,\,\epsilon}\Big[\big(s_{\text{critic}}(\tilde x_\tau, \tau) - s^{\,\text{cfg}=2.5}_{\text{teacher}}(\tilde x_\tau, \tau)\big)\,\frac{\partial \hat x_0}{\partial \theta}\Big], \qquad \tilde x_\tau = (1-\sigma_\tau)\,\hat x_0 + \sigma_\tau\,\epsilon.
+\nabla_\theta \mathcal{L}_{\text{DMD}} \;\propto\; \mathbb{E}_{\tau,\,\epsilon}\Big[\big(s^{\,\text{cfg}=2.5}_{\text{critic}}(\tilde x_\tau, \tau) - s^{\,\text{cfg}=2.5}_{\text{teacher}}(\tilde x_\tau, \tau)\big)\,\frac{\partial \hat x_0}{\partial \theta}\Big], \qquad \tilde x_\tau = (1-\sigma_\tau)\,\hat x_0 + \sigma_\tau\,\epsilon.
 $$
 
 This is what lets 8 calls produce sharp samples: the student is judged on the distribution of what it produces, not on reproducing one teacher trajectory.
@@ -131,16 +133,16 @@ This anchors every head to the teacher's flow, so the student stays on PAN 2's t
 ### 1.3 Distilling guidance and conditioning
 
 - **Guidance is distilled.** The teacher's score, the critic's score and the PDD target all use guidance 2.5 against PAN 2's structured negative caption, PAN 2's own release setting. Using the same scale in all three places matters: mismatched scales pull the student two ways. The student samples with no unconditional pass at all.
-- **Image-to-video.** The first latent frame of an image-to-video clip is conditioning: never noised, never part of the integrated state, and excluded from guidance in every role, as in PAN 2's sampler. Under the causal Wan2.2 VAE, the first latent frame of a pre-encoded clip encodes its first pixel frame alone, so training needs no separate image encoding.
-- **Score times.** Score times are drawn continuously over $[0.001, 0.999]$ on the shifted clock (score-time shift 1.0).
+- **Image-to-video.** As in PAN 2's own training and sampler, the clean first latent frame enters only through the conditioning channels; the state itself is noised and integrated on every frame. In every role, guidance leaves the first frame alone: it takes the conditional prediction only. Under the causal Wan2.2 VAE, the first latent frame of a pre-encoded clip encodes its first pixel frame alone, so training needs no separate image encoding.
+- **Score times.** The base clock $u$ of a score time is drawn uniformly over $[0.001, 0.999]$, with no extra score-time shift, and mapped to a noise level by PAN 2's flow shift 9, so most scoring happens at high noise.
 
 ## Part 2: cheaper passes (VSA2)
 
-After Part 1 every call still attends over up to 104k video tokens. Attention grows with the square of the sequence: at 20 s it is the largest part of a forward. FastPan2 replaces the student's dense attention with **VSA2** ([Zhang et al., ICML 2026](https://arxiv.org/abs/2609.32882)), the successor of our [Video Sparse Attention](https://arxiv.org/abs/2505.13389), while it distills. The teacher and the critic stay dense.
+After Part 1 every call still attends over up to 104k video tokens. Attention grows with the square of the sequence: at 20 s it is the largest part of a forward. FastPAN2 replaces the student's dense attention with **VSA2** ([Zhang et al., ICML 2026](https://arxiv.org/abs/2609.32882)), the successor of our [Video Sparse Attention](https://arxiv.org/abs/2505.13389), while it distills. The teacher and the critic stay dense.
 
 ### 2.1 Blocks and tiles
 
-The sequence is cut into blocks of 128 rows. Text comes first, as dense prefix blocks. The video follows as **4 × 4 × 8 tiles** (time × height × width) over the latent token grid. For image-to-video, the conditioning first latent frame gets a time tile of its own, so the clean frame never shares a tile with noisy ones. At 10 s the 61 × 22 × 39 grid becomes 16 × 6 × 5 = **480 tiles**.
+The sequence is cut into blocks of 128 rows. Text comes first, as dense prefix blocks. The video follows as **4 × 4 × 8 tiles** (time × height × width) over the latent token grid. Partial tiles go first in time and last in height and width, so when the clip has 4*k* + 1 latent frames (every even-second length, such as 10 s), the first latent frame gets a time tile of its own. At 10 s the 61 × 22 × 39 grid becomes 16 × 6 × 5 = **480 tiles**.
 
 ### 2.2 Router, fine branch, coarse branch, gate
 
@@ -185,7 +187,7 @@ Attention does 13–17% of the dense FLOPs, but a forward also runs 29B paramete
 
 ### 3.1 The data
 
-FastPan2 trains on **1M video clips** at 704×1248 and 24 fps, 5 to 20 s long, from PAN 2's supervised fine-tuning distribution. <!-- TODO: confirm how to name the data source publicly. -->
+FastPAN2 trains on **1M video clips** at 704×1248 and 24 fps, 5 to 20 s long, from PAN 2's supervised fine-tuning distribution. <!-- TODO: confirm how to name the data source publicly. -->
 
 - **Pre-encoded once.** Every clip was encoded once with the Wan2.2 VAE and stored as a latent of shape [48, T, 44, 78]. Training reads latents from shared storage and never decodes video.
 - **Full length.** Clips train at their full length in exact-length buckets: at each step every replica trains a clip of the same length, so sequence-parallel groups stay in lockstep without padding.
@@ -221,21 +223,21 @@ By caption, the clips are mostly third-person footage (about 85%), with about 10
 
 All timings below are text-to-video at 704×1248 on B300 GPUs, warm, from the prompt to 8-bit frames in host memory. Image-to-video costs the same to within 0.1–0.3 s. "PAN 2 in FastVideo" is the 50-step, guidance-2.5 sampler running in FastVideo with the same decode and fused kernels as the students. Its 8-GPU numbers are medians of **339 full 50-step renders** from our arena runs. PAN 2's release launcher renders one video per GPU, so its latency does not fall with more GPUs, and its 50 steps are extrapolated from 3 timed steps.
 
-{{< image src="img/fig_latency.svg" alt="Latency on 8 B300 GPUs. 5 s: release 149.7 s, PAN 2 in FastVideo 17.9 s, FastPan2 16/8/4 calls 3.5/2.2/1.5 s. 10 s: 361.5, 41.2, 6.4, 3.8, 2.5 s. 20 s: 975.6, 113, 12.9, 7.7, 4.9 s." width="100%" title="Figure 7. Latency per video on eight B300 GPUs (log scale)." >}}
+{{< image src="img/fig_latency.svg" alt="Latency on 8 B300 GPUs. 5 s: release 149.7 s, PAN 2 in FastVideo 17.9 s, FastPAN2 16/8/4 calls 3.5/2.2/1.5 s. 10 s: 361.5, 41.2, 6.4, 3.8, 2.5 s. 20 s: 975.6, 113, 12.9, 7.7, 4.9 s." width="100%" title="Figure 7. Latency per video on eight B300 GPUs (log scale)." >}}
 
-{{< table title="Table 1. Latency per video on 8 B300 GPUs, and FastPan2-8's speedup." >}}
-| Clip | PAN 2 release | PAN 2 in FastVideo | FastPan2, 16 calls | **FastPan2, 8 calls** | FastPan2, 4 calls | 8-call speedup vs. FastVideo PAN 2 | vs. release |
+{{< table title="Table 1. Latency per video on 8 B300 GPUs, and FastPAN2-8's speedup." >}}
+| Clip | PAN 2 release | PAN 2 in FastVideo | FastPAN2, 16 calls | **FastPAN2, 8 calls** | FastPAN2, 4 calls | 8-call speedup vs. FastVideo PAN 2 | vs. release |
 |---|---|---|---|---|---|---|---|
 | 5 s | 149.7 s | 17.9 s | 3.5 s | **2.2 s** | 1.5 s | **8.1×** | 68× |
 | 10 s | 361.5 s | 41.2 s | 6.4 s | **3.8 s** | 2.5 s | **10.8×** | 94× |
 | 20 s | 975.6 s | 113.0 s | 12.9 s | **7.7 s** | 4.9 s | **14.7×** | 127× |
 {{</ table >}}
 
-On a single B300 the 8-call student takes **9.4 s, 19.5 s and 42.4 s** for 5, 10 and 20 s clips, and the 4-call student 5.3, 10.9 and 23.3 s. FastPan2-8 renders a 10 s clip in 3.8 s and a 20 s clip in 7.7 s on 8 GPUs, both faster than real time.
+On a single B300 the 8-call student takes **9.4 s, 19.5 s and 42.4 s** for 5, 10 and 20 s clips, and the 4-call student 5.3, 10.9 and 23.3 s. FastPAN2-8 renders a 10 s clip in 3.8 s and a 20 s clip in 7.7 s on 8 GPUs, both faster than real time.
 
 The speedup over PAN 2 is less than the 12.5× cut in forwards at 5 s and more than it at 20 s. At 5 s, fixed costs that do not shrink with the number of calls (text encoding, decoding, the copy to host) are about 40% of the 2.2 s. At 20 s, VSA2 also makes each forward 1.67× cheaper (Figure 5).
 
-{{< image src="img/fig_breakdown.svg" alt="FastPan2 8-call latency breakdown on 8 B300s: 5 s 2.21 s (denoise 1.35), 10 s 3.84 s (denoise 2.62), 20 s 7.66 s (denoise 5.43)." width="100%" title="Figure 8. Where FastPan2's time goes on eight B300 GPUs." >}}
+{{< image src="img/fig_breakdown.svg" alt="FastPAN2 8-call latency breakdown on 8 B300s: 5 s 2.21 s (denoise 1.35), 10 s 3.84 s (denoise 2.62), 20 s 7.66 s (denoise 5.43)." width="100%" title="Figure 8. Where FastPAN2's time goes on eight B300 GPUs." >}}
 
 With 8 calls, the parts outside the transformer start to matter. Three changes to FastVideo's PAN 2 pipeline keep them small:
 
@@ -248,54 +250,75 @@ With 8 calls, the parts outside the transformer start to matter. Three changes t
 Benchmarks capture parts of quality. To see whether people actually prefer the videos, we ran a blind pairwise arena. Raters see two videos for the same prompt, from two randomly chosen models, side by side, and pick the better one or call a tie.
 
 - **Prompts.** 141 prompts, 5–20 s, text-to-video and image-to-video: human motion, sports, hand manipulation, physics, camera motion and aesthetics.
-- **PAN 2 models.** FastPan2 and PAN 2 (50 steps, guidance 2.5) render the same prompts with the same seed, rewritten into PAN 2's structured caption.
+- **PAN 2 models.** FastPAN2 and PAN 2 (50 steps, guidance 2.5) render the same prompts with the same seed, rewritten into PAN 2's structured caption.
 - **External baselines.**
   - **[FastH3](/blogs/fasth3-v21/)**, 8 steps, text-to-video only, up to 15 s at 1344×768.
   - **Cosmos3-Super**, 35 steps, guidance 6, 8.2 s at 1280×720, with prompts upsampled by its own templates.
 - **Encoding.** Every video is re-encoded through the same encoder.
-- **Votes.** 275 votes from 8 raters. Two other FastPan2 checkpoints were also in the pool and count as opponents.
+- **Votes.** 275 votes from 8 raters. Two other FastPAN2 checkpoints were also in the pool and count as opponents.
 
-{{< image src="img/fig_arena.svg" alt="Arena win rates with 95% intervals: FastPan2 0.60, PAN 2 0.58, FastH3 0.43, Cosmos3-Super 0.34." width="100%" title="Figure 9. Win rate against the rest of the pool, ties counting half, with 95% bootstrap intervals." >}}
+{{< image src="img/fig_arena.svg" alt="Arena win rates with 95% intervals: FastPAN2 0.60, PAN 2 0.58, FastH3 0.43, Cosmos3-Super 0.34." width="100%" title="Figure 9. Win rate against the rest of the pool, ties counting half, with 95% bootstrap intervals." >}}
 
-{{< table title="Table 2. FastPan2-8 head to head (wins–losses, ties)." >}}
-| FastPan2-8 against | FastPan2 wins | Opponent wins | Ties |
+{{< table title="Table 2. FastPAN2-8 head to head (wins–losses, ties)." >}}
+| FastPAN2-8 against | FastPAN2 wins | Opponent wins | Ties |
 |---|---|---|---|
 | PAN 2, 50 steps + CFG | 10 | 7 | 8 |
 | FastH3, 8 steps | 13 | 8 | 2 |
 | Cosmos3-Super | 17 | 6 | 5 |
 {{</ table >}}
 
-FastPan2 and its teacher are statistically tied: their intervals overlap almost entirely, and the head-to-head is 10–7 with 8 ties. **12.5× fewer forwards and 90% sparse attention cost no measurable preference.** Both are preferred over FastH3 and over Cosmos3-Super. Split by task, FastPan2's win rate is 0.60 on text-to-video and 0.60 on image-to-video.
+FastPAN2 and its teacher are statistically tied: their intervals overlap almost entirely, and the head-to-head is 10–7 with 8 ties. **12.5× fewer forwards and 90% sparse attention cost no measurable preference.** Both are preferred over FastH3 and over Cosmos3-Super. Split by task, FastPAN2's win rate is 0.60 on text-to-video and 0.60 on image-to-video.
 
 ### Side by side
 
 <div style="display: grid; gap: 1rem; margin: 1.2rem 0;">
   <figure style="margin: 0;">
-    <video controls playsinline muted loop preload="metadata" poster="media/compare-judo.jpg" style="display: block; width: 100%; height: auto; border-radius: 8px; background: #000;" aria-label="Judo throw, PAN 2 on the left and FastPan2 on the right">
+    <video controls playsinline muted loop preload="metadata" poster="media/compare-judo.jpg" style="display: block; width: 100%; height: auto; border-radius: 8px; background: #000;" aria-label="Judo throw, PAN 2 on the left and FastPAN2 on the right">
       <source src="media/compare-judo.mp4" type="video/mp4">
     </video>
-    <figcaption style="font-size: 0.85em; text-align: center; opacity: 0.8;">Left: PAN 2, 100 forwards. Right: FastPan2, 8 forwards. "Two martial artists grip-fight on a padded mat; the woman in blue turns in, loads the man in white across her hip, throws him onto his back, and retains sleeve control."</figcaption>
+    <figcaption style="font-size: 0.85em; text-align: center; opacity: 0.8;">Left: PAN 2, 100 forwards. Right: FastPAN2, 8 forwards. "Two martial artists grip-fight on a padded mat; the woman in blue turns in, loads the man in white across her hip, throws him onto his back, and retains sleeve control."</figcaption>
   </figure>
   <figure style="margin: 0;">
-    <video controls playsinline muted loop preload="metadata" poster="media/compare-swimmer.jpg" style="display: block; width: 100%; height: auto; border-radius: 8px; background: #000;" aria-label="Swimmer, PAN 2 on the left and FastPan2 on the right">
+    <video controls playsinline muted loop preload="metadata" poster="media/compare-swimmer.jpg" style="display: block; width: 100%; height: auto; border-radius: 8px; background: #000;" aria-label="Swimmer, PAN 2 on the left and FastPAN2 on the right">
       <source src="media/compare-swimmer.mp4" type="video/mp4">
     </video>
-    <figcaption style="font-size: 0.85em; text-align: center; opacity: 0.8;">Left: PAN 2. Right: FastPan2. Same prompt and seed as the video at the top.</figcaption>
+    <figcaption style="font-size: 0.85em; text-align: center; opacity: 0.8;">Left: PAN 2. Right: FastPAN2. Same prompt and seed as the video at the top.</figcaption>
   </figure>
 </div>
 
-### More FastPan2 samples
+### More FastPAN2 samples
 
-All are 8-call FastPan2 renders from the arena set. The captions give the short prompt, which is rewritten into PAN 2's structured caption before sampling.
+All are 8-call FastPAN2 renders from the arena set. The captions give the short prompt, which is rewritten into PAN 2's structured caption before sampling.
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 1rem; margin: 1.2rem 0;">
   <figure style="margin: 0;"><video controls playsinline muted loop preload="metadata" poster="media/gallery-cat.jpg" style="display:block;width:100%;height:auto;border-radius:8px;background:#000;"><source src="media/gallery-cat.mp4" type="video/mp4"></video><figcaption style="font-size:0.8em;opacity:0.8;">10 s. "A cat jumps onto a kitchen counter, sniffs a glass of water, taps the rim with one paw, and watches the glass wobble in place."</figcaption></figure>
-  <figure style="margin: 0;"><video controls playsinline muted loop preload="metadata" poster="media/gallery-air-hockey.jpg" style="display:block;width:100%;height:auto;border-radius:8px;background:#000;"><source src="media/gallery-air-hockey.mp4" type="video/mp4"></video><figcaption style="font-size:0.8em;opacity:0.8;">12.6 s. "A striped-sweater boy and a dark-haired woman sustain a fast air-hockey rally across a blue arcade table."</figcaption></figure>
+  <figure style="margin: 0;"><video controls playsinline muted loop preload="metadata" poster="media/gallery-agility.jpg" style="display:block;width:100%;height:auto;border-radius:8px;background:#000;"><source src="media/gallery-agility.mp4" type="video/mp4"></video><figcaption style="font-size:0.8em;opacity:0.8;">6.2 s. "A black-and-white border collie races beside a purple-clad handler through an indoor agility course, clearing hurdles, entering and exiting a curved tunnel, and crossing a pivoting seesaw."</figcaption></figure>
   <figure style="margin: 0;"><video controls playsinline muted loop preload="metadata" poster="media/gallery-cable-car.jpg" style="display:block;width:100%;height:auto;border-radius:8px;background:#000;"><source src="media/gallery-cable-car.mp4" type="video/mp4"></video><figcaption style="font-size:0.8em;opacity:0.8;">10 s. "At a high-altitude overlook, rugged terrain tumbles into mist-filled valleys. A cable car glides silently across a chasm."</figcaption></figure>
-  <figure style="margin: 0;"><video controls playsinline muted loop preload="metadata" poster="media/gallery-badminton.jpg" style="display:block;width:100%;height:auto;border-radius:8px;background:#000;"><source src="media/gallery-badminton.mp4" type="video/mp4"></video><figcaption style="font-size:0.8em;opacity:0.8;">20 s. "Four doubles players sustain a long badminton rally on a green indoor court."</figcaption></figure>
+  <figure style="margin: 0;"><video controls playsinline muted loop preload="metadata" poster="media/gallery-tire.jpg" style="display:block;width:100%;height:auto;border-radius:8px;background:#000;"><source src="media/gallery-tire.mp4" type="video/mp4"></video><figcaption style="font-size:0.8em;opacity:0.8;">10 s, image-to-video. "A heavy car tire rolls over a green bottle on concrete, crushing it flat. The trapped liquid bursts from the broken bottle and spreads across the ground in an expanding puddle."</figcaption></figure>
   <figure style="margin: 0;"><video controls playsinline muted loop preload="metadata" poster="media/gallery-downhill.jpg" style="display:block;width:100%;height:auto;border-radius:8px;background:#000;"><source src="media/gallery-downhill.mp4" type="video/mp4"></video><figcaption style="font-size:0.8em;opacity:0.8;">20 s. "A first-person downhill cyclist leaves a crowded elevated start, descends constructed ramps, crosses a lower plaza, and continues down a tight brick-and-stone stair alley."</figcaption></figure>
-  <figure style="margin: 0;"><video controls playsinline muted loop preload="metadata" poster="media/gallery-judo.jpg" style="display:block;width:100%;height:auto;border-radius:8px;background:#000;"><source src="media/gallery-judo.mp4" type="video/mp4"></video><figcaption style="font-size:0.8em;opacity:0.8;">10 s. "Two martial artists grip-fight on a padded mat; the woman in blue throws the man in white onto his back."</figcaption></figure>
+  <figure style="margin: 0;"><video controls playsinline muted loop preload="metadata" poster="media/gallery-pommel-horse.jpg" style="display:block;width:100%;height:auto;border-radius:8px;background:#000;"><source src="media/gallery-pommel-horse.mp4" type="video/mp4"></video><figcaption style="font-size:0.8em;opacity:0.8;">10 s. "A man performs gymnastics on a pommel horse, swinging his legs in smooth circular motions while supporting his body with his arms, before finishing with a clean dismount."</figcaption></figure>
 </div>
+
+## Part 6: benchmarks
+
+The arena asks people which video they prefer. Benchmarks ask narrower questions with automatic scoring: does the physics continue correctly, does the robot do the task, does the video follow the prompt. We scored the released checkpoint on three of them. Each used the same protocol, prompts, first frames and seeds as PAN 2's own evaluation, and only the model changed.
+
+- **[Physics-IQ Verified](https://github.com/google-deepmind/physics-IQ-benchmark).** 198 image-to-video clips of real physical events, each continued from the frame where the event begins and compared with the real footage. Scored at 4 seeds with the upstream evaluator, using the prompts of PAN 2's best entry.
+- **RBench.** 650 robotics image-to-video tasks (single and dual arms, humanoids, quadrupeds, manipulation, long-horizon plans), judged for task completion and motion quality. 8 s clips at 3 seeds, judged with PAN 2's judge and setup. Re-scoring PAN 2's own clips on our stack gives 54.71, against the 54.54 it reports.
+- **In-house.** 500 prompts at 3 seeds, judged by a vision-language model.
+  - **Capability:** 300 text- and image-to-video prompts, 10–20 s.
+  - **TSR:** 200 multi-step plans at 20 s, scored as the fraction of steps completed.
+
+{{< table title="Table 3. FastPAN2-8 (step 1,800) against PAN 2 (50 steps + CFG). Mean ± SD over seeds; paired differences with 95% bootstrap intervals." >}}
+| Benchmark | PAN 2, 100 forwards | **FastPAN2, 8 forwards** | FastPAN2 − PAN 2 |
+|---|---|---|---|
+| Physics-IQ Verified (198 clips × 4 seeds) | 50.41 ± 0.77 | **48.24 ± 0.93** | −2.17 [−3.97, −0.32] |
+| RBench (650 tasks × 3 seeds) | 54.71 ± 0.84 | **56.97 ± 0.86** | +2.25 [+0.72, +3.80] |
+| In-house capability (300 prompts × 3 seeds) | 84.48 ± 0.08 | **83.95 ± 0.10** | −0.53 |
+| In-house TSR step completion (200 plans × 3 seeds) | 75.10 ± 1.51 | **74.17 ± 0.16** | −0.93 |
+{{</ table >}}
+
+On our in-house benchmark FastPAN2 is within a point of its teacher on both measures. On RBench it is ahead by 2.3 points, an interval clear of zero, with the largest gains on single-arm and quadruped tasks. On Physics-IQ it trails by 2.2 points, and that difference is also real. The deficit comes from the two scores that track motion over time, while the student scores higher on where things end up. This matches what raters see: FastPAN2's text-to-video clips move a little less than PAN 2's.
 
 ## Putting it together
 
@@ -331,13 +354,13 @@ where $n_t$ is the number of video tiles. Text queries attend densely, and every
 
 ## Acknowledgements
 
-FastPan2 builds on [PAN 2](https://github.com/ifm-ai/PAN2) and its release. PDD comes from NVIDIA's FastGen team, and VSA2 from [Zhang et al.](https://arxiv.org/abs/2609.32882). Thanks to the raters who voted in the arena.
+FastPAN2 builds on [PAN 2](https://github.com/ifm-ai/PAN2) and its release. PDD comes from NVIDIA's FastGen team, and VSA2 from [Zhang et al.](https://arxiv.org/abs/2609.32882). Thanks to the raters who voted in the arena.
 
 ## Citation
 
 ```bibtex
 @misc{fastpan2_2026,
-  title  = {FastPan2: Distilling a 29B World Model to 8 Steps with VSA2},
+  title  = {FastPAN2: Distilling a 29B World Model to 8 Steps with VSA2},
   author = {FastVideo Team},
   year   = {2026},
   month  = {November},
