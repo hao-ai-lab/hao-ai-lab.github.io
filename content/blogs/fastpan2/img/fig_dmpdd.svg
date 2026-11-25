@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="430" viewBox="0 0 780 430" role="img" aria-labelledby="t d">
+<title id="t">DMPDD training loop</title>
+<desc id="d">A training clip is noised to a block start and passed once through the sparse student, which predicts all 32 heads. Integrating them gives a clean estimate for the DMD loss, computed from the frozen teacher's and the trained critic's scores at a re-noised point. One head is also supervised by the teacher's velocity (the PDD loss, weight 0.3). The critic trains on the student's clean estimates four steps out of five.</desc>
+<style>
+  .bg{fill:#fcfcfb} .t1{fill:#0b0b0b} .t2{fill:#52514e} .grid{stroke:#e4e3de} .axis{stroke:#9b9a95}
+  .ln{stroke:#52514e;fill:none} .box{fill:#f3f2ee;stroke:#c9c7c0} .boxs{fill:#e6edf5;stroke:#33557d}
+  .boxo{fill:#f6ebe3;stroke:#b86a3c} .boxg{fill:#e7f0e9;stroke:#4f7f5a}
+  .s0{fill:#b5afa5} .s1{fill:#33557d} .s2{fill:#b86a3c} .s3{fill:#4f7f5a} .s4{fill:#7a5c8a}
+  .k0{stroke:#b5afa5} .k1{stroke:#33557d} .k2{stroke:#b86a3c} .k3{stroke:#4f7f5a} .k4{stroke:#7a5c8a}
+  text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+  @media (prefers-color-scheme: dark){
+    .bg{fill:#1a1a19} .t1{fill:#ffffff} .t2{fill:#c3c2b7} .grid{stroke:#2e2e2c} .axis{stroke:#6b6a66}
+    .ln{stroke:#c3c2b7} .box{fill:#262624;stroke:#4a4945} .boxs{fill:#1f2a37;stroke:#7393bb}
+    .boxo{fill:#33251c;stroke:#c27448} .boxg{fill:#1f2b22;stroke:#78a985}
+    .s0{fill:#69655e} .s1{fill:#7393bb} .s2{fill:#c27448} .s3{fill:#78a985} .s4{fill:#a68bb5}
+    .k0{stroke:#69655e} .k1{stroke:#7393bb} .k2{stroke:#c27448} .k3{stroke:#78a985} .k4{stroke:#a68bb5}
+  }
+</style>
+<rect class="bg" width="780" height="430"/>
+<text class="t1" x="24.0" y="28.0" font-size="13.5" text-anchor="start" font-weight="700">DMPDD: one student forward feeds two losses</text>
+<rect class="box" x="24" y="60" width="180" height="78" rx="9" stroke-width="1.5"/>
+<text class="t1" x="114.0" y="82.0" font-size="13" text-anchor="middle" font-weight="700">Training clip</text>
+<text class="t2" x="114.0" y="100.0" font-size="11.5" text-anchor="middle">Wan2.2 latent, 5–20 s</text>
+<text class="t2" x="114.0" y="116.0" font-size="11.5" text-anchor="middle">noised to a block start u_n</text>
+<rect class="boxs" x="270" y="50" width="230" height="98" rx="9" stroke-width="1.5"/>
+<text class="t1" x="385.0" y="72.0" font-size="13" text-anchor="middle" font-weight="700">Student (VSA2)</text>
+<text class="t2" x="385.0" y="90.0" font-size="11.5" text-anchor="middle">PAN 2 + 32 output heads</text>
+<text class="t2" x="385.0" y="106.0" font-size="11.5" text-anchor="middle">one forward → all heads</text>
+<text class="t2" x="385.0" y="122.0" font-size="11.5" text-anchor="middle">trainable, every 5th step</text>
+<line class="ln" x1="204" y1="99" x2="270" y2="99" stroke-width="1.6"/>
+<path class="ln" d="M261.7,102.5 L270,99 L261.7,95.5" stroke-width="1.6"/>
+<rect class="box" x="560" y="50" width="196" height="98" rx="9" stroke-width="1.5"/>
+<text class="t1" x="658.0" y="72.0" font-size="13" text-anchor="middle" font-weight="700">Clean estimate x̂₀</text>
+<text class="t2" x="658.0" y="90.0" font-size="11.5" text-anchor="middle">integrate the heads</text>
+<text class="t2" x="658.0" y="106.0" font-size="11.5" text-anchor="middle">from u_n to the end</text>
+<text class="t2" x="658.0" y="122.0" font-size="11.5" text-anchor="middle">of the grid</text>
+<line class="ln" x1="500" y1="99" x2="560" y2="99" stroke-width="1.6"/>
+<path class="ln" d="M551.7,102.5 L560,99 L551.7,95.5" stroke-width="1.6"/>
+<rect class="box" x="445" y="250" width="180" height="98" rx="9" stroke-width="1.5"/>
+<text class="t1" x="535.0" y="272.0" font-size="13" text-anchor="middle" font-weight="700">Teacher (dense)</text>
+<text class="t2" x="535.0" y="290.0" font-size="11.5" text-anchor="middle">frozen PAN 2, bf16</text>
+<text class="t2" x="535.0" y="306.0" font-size="11.5" text-anchor="middle">CFG 2.5 vs. the</text>
+<text class="t2" x="535.0" y="322.0" font-size="11.5" text-anchor="middle">structured negative</text>
+<rect class="boxo" x="640" y="250" width="120" height="98" rx="9" stroke-width="1.5"/>
+<text class="t1" x="700.0" y="272.0" font-size="13" text-anchor="middle" font-weight="700">Critic</text>
+<text class="t2" x="700.0" y="290.0" font-size="11.5" text-anchor="middle">PAN 2 copy,</text>
+<text class="t2" x="700.0" y="306.0" font-size="11.5" text-anchor="middle">trained 4 of 5</text>
+<text class="t2" x="700.0" y="322.0" font-size="11.5" text-anchor="middle">steps on x̂₀</text>
+<line class="ln" x1="658" y1="148" x2="540" y2="250" stroke-width="1.6"/>
+<path class="ln" d="M544.0,241.9 L540,250 L548.6,247.2" stroke-width="1.6"/>
+<line class="ln" x1="690" y1="148" x2="700" y2="250" stroke-width="1.6"/>
+<path class="ln" d="M695.7,242.1 L700,250 L702.7,241.4" stroke-width="1.6"/>
+<text class="t2" x="535.0" y="192.0" font-size="11" text-anchor="end">re-noise at a score time</text>
+<rect class="boxg" x="445" y="372" width="315" height="48" rx="9" stroke-width="1.5"/>
+<text class="t1" x="602.5" y="394.0" font-size="12" text-anchor="middle" font-weight="700">DMD loss: ∇ ∝ s_critic(x̃) − s_teacher(x̃)</text>
+<line class="ln" x1="535" y1="348" x2="560" y2="372" stroke-width="1.6"/>
+<path class="ln" d="M551.6,368.8 L560,372 L556.4,363.7" stroke-width="1.6"/>
+<line class="ln" x1="700" y1="348" x2="660" y2="372" stroke-width="1.6"/>
+<path class="ln" d="M665.3,364.7 L660,372 L668.9,370.7" stroke-width="1.6"/>
+<rect class="box" x="24" y="250" width="360" height="98" rx="9" stroke-width="1.5"/>
+<text class="t1" x="204.0" y="272.0" font-size="13" text-anchor="middle" font-weight="700">PDD loss (weight 0.3)</text>
+<text class="t2" x="204.0" y="290.0" font-size="11.5" text-anchor="middle">pick one head k in the call's block;</text>
+<text class="t2" x="204.0" y="306.0" font-size="11.5" text-anchor="middle">roll the student's own heads to u_k;</text>
+<text class="t2" x="204.0" y="322.0" font-size="11.5" text-anchor="middle">match the teacher's velocity there</text>
+<line class="ln" x1="340" y1="148" x2="220" y2="250" stroke-width="1.6"/>
+<path class="ln" d="M224.0,242.0 L220,250 L228.6,247.3" stroke-width="1.6"/>
+<line class="ln" x1="445" y1="299" x2="384" y2="299" stroke-width="1.6"/>
+<path class="ln" d="M392.3,295.5 L384,299 L392.3,302.5" stroke-width="1.6"/>
+<rect class="boxg" x="24" y="372" width="360" height="48" rx="9" stroke-width="1.5"/>
+<text class="t1" x="204.0" y="394.0" font-size="12.5" text-anchor="middle" font-weight="700">student loss = DMD + 0.3 · PDD</text>
+<line class="ln" x1="200" y1="348" x2="200" y2="372" stroke-width="1.6"/>
+<path class="ln" d="M196.5,363.7 L200,372 L203.5,363.7" stroke-width="1.6"/>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="250" viewBox="0 0 760 250" role="img" aria-labelledby="t d">
+<title id="t">FastPan2 latency breakdown on eight B300 GPUs</title>
+<desc id="d">5 s clip: text 0.22, denoise 1.35, decode 0.23, frames to host 0.18, other 0.23 s (2.21 s). 10 s: 0.22, 2.62, 0.23, 0.36, 0.41 (3.84 s). 20 s: 0.22, 5.43, 0.45, 0.73, 0.83 (7.66 s).</desc>
+<style>
+  .bg{fill:#fcfcfb} .t1{fill:#0b0b0b} .t2{fill:#52514e} .grid{stroke:#e4e3de} .axis{stroke:#9b9a95}
+  .ln{stroke:#52514e;fill:none} .box{fill:#f3f2ee;stroke:#c9c7c0} .boxs{fill:#e6edf5;stroke:#33557d}
+  .boxo{fill:#f6ebe3;stroke:#b86a3c} .boxg{fill:#e7f0e9;stroke:#4f7f5a}
+  .s0{fill:#b5afa5} .s1{fill:#33557d} .s2{fill:#b86a3c} .s3{fill:#4f7f5a} .s4{fill:#7a5c8a}
+  .k0{stroke:#b5afa5} .k1{stroke:#33557d} .k2{stroke:#b86a3c} .k3{stroke:#4f7f5a} .k4{stroke:#7a5c8a}
+  text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+  @media (prefers-color-scheme: dark){
+    .bg{fill:#1a1a19} .t1{fill:#ffffff} .t2{fill:#c3c2b7} .grid{stroke:#2e2e2c} .axis{stroke:#6b6a66}
+    .ln{stroke:#c3c2b7} .box{fill:#262624;stroke:#4a4945} .boxs{fill:#1f2a37;stroke:#7393bb}
+    .boxo{fill:#33251c;stroke:#c27448} .boxg{fill:#1f2b22;stroke:#78a985}
+    .s0{fill:#69655e} .s1{fill:#7393bb} .s2{fill:#c27448} .s3{fill:#78a985} .s4{fill:#a68bb5}
+    .k0{stroke:#69655e} .k1{stroke:#7393bb} .k2{stroke:#c27448} .k3{stroke:#78a985} .k4{stroke:#a68bb5}
+  }
+</style>
+<rect class="bg" width="760" height="250"/>
+<text class="t1" x="24.0" y="28.0" font-size="13.5" text-anchor="start" font-weight="700">FastPan2 (8 calls) on 8 B300s: where the time goes (seconds)</text>
+<rect class="s0" x="24" y="44" width="12" height="12" rx="3"/><text class="t2" x="42.0" y="54.0" font-size="13" text-anchor="start">text encode</text>
+<rect class="s1" x="143.2" y="44" width="12" height="12" rx="3"/><text class="t2" x="161.2" y="54.0" font-size="13" text-anchor="start">denoise, 8 calls</text>
+<rect class="s2" x="298.4" y="44" width="12" height="12" rx="3"/><text class="t2" x="316.4" y="54.0" font-size="13" text-anchor="start">VAE decode</text>
+<rect class="s3" x="410.4" y="44" width="12" height="12" rx="3"/><text class="t2" x="428.4" y="54.0" font-size="13" text-anchor="start">frames to host</text>
+<rect class="s4" x="551.2" y="44" width="12" height="12" rx="3"/><text class="t2" x="569.2" y="54.0" font-size="13" text-anchor="start">other</text>
+<line class="grid" x1="90.0" x2="90.0" y1="70" y2="210"/><text class="t2" x="90.0" y="226.0" font-size="10.5" text-anchor="middle">0</text>
+<line class="grid" x1="166.2" x2="166.2" y1="70" y2="210"/><text class="t2" x="166.2" y="226.0" font-size="10.5" text-anchor="middle">1</text>
+<line class="grid" x1="242.5" x2="242.5" y1="70" y2="210"/><text class="t2" x="242.5" y="226.0" font-size="10.5" text-anchor="middle">2</text>
+<line class="grid" x1="318.8" x2="318.8" y1="70" y2="210"/><text class="t2" x="318.8" y="226.0" font-size="10.5" text-anchor="middle">3</text>
+<line class="grid" x1="395.0" x2="395.0" y1="70" y2="210"/><text class="t2" x="395.0" y="226.0" font-size="10.5" text-anchor="middle">4</text>
+<line class="grid" x1="471.2" x2="471.2" y1="70" y2="210"/><text class="t2" x="471.2" y="226.0" font-size="10.5" text-anchor="middle">5</text>
+<line class="grid" x1="547.5" x2="547.5" y1="70" y2="210"/><text class="t2" x="547.5" y="226.0" font-size="10.5" text-anchor="middle">6</text>
+<line class="grid" x1="623.8" x2="623.8" y1="70" y2="210"/><text class="t2" x="623.8" y="226.0" font-size="10.5" text-anchor="middle">7</text>
+<line class="grid" x1="700.0" x2="700.0" y1="70" y2="210"/><text class="t2" x="700.0" y="226.0" font-size="10.5" text-anchor="middle">8</text>
+<text class="t1" x="78.0" y="98.0" font-size="12.5" text-anchor="end" font-weight="600">5 s clip</text>
+<rect class="s0" x="90.0" y="80" width="16.8" height="26"/><rect class="s1" x="106.8" y="80" width="102.9" height="26"/><rect class="s2" x="209.7" y="80" width="17.5" height="26"/><rect class="s3" x="227.2" y="80" width="13.7" height="26"/><rect class="s4" x="241.0" y="80" width="17.5" height="26"/><text class="t1" x="264.5" y="98.0" font-size="12" text-anchor="start" font-weight="600">2.21 s</text>
+<text class="t1" x="78.0" y="142.0" font-size="12.5" text-anchor="end" font-weight="600">10 s clip</text>
+<rect class="s0" x="90.0" y="124" width="16.8" height="26"/><rect class="s1" x="106.8" y="124" width="199.8" height="26"/><rect class="s2" x="306.6" y="124" width="17.5" height="26"/><rect class="s3" x="324.1" y="124" width="27.4" height="26"/><rect class="s4" x="351.5" y="124" width="31.3" height="26"/><text class="t1" x="388.8" y="142.0" font-size="12" text-anchor="start" font-weight="600">3.84 s</text>
+<text class="t1" x="78.0" y="186.0" font-size="12.5" text-anchor="end" font-weight="600">20 s clip</text>
+<rect class="s0" x="90.0" y="168" width="16.8" height="26"/><rect class="s1" x="106.8" y="168" width="414.0" height="26"/><rect class="s2" x="520.8" y="168" width="34.3" height="26"/><rect class="s3" x="555.1" y="168" width="55.7" height="26"/><rect class="s4" x="610.8" y="168" width="63.3" height="26"/><text class="t1" x="680.1" y="186.0" font-size="12" text-anchor="start" font-weight="600">7.66 s</text>
+</svg>
