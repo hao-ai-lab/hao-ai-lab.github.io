@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="220" viewBox="0 0 760 220" role="img" aria-labelledby="t d">
+<title id="t">Training data mix</title>
+<desc id="d">1M clips. Length: 19.6% 5-8 s, 26.4% 8-12 s, 24.2% 12-16 s, 29.4% 16-20 s. Task: 70% text-to-video, 30% image-to-video.</desc>
+<style>
+  .bg{fill:#fcfcfb} .t1{fill:#0b0b0b} .t2{fill:#52514e} .grid{stroke:#e4e3de} .axis{stroke:#9b9a95}
+  .ln{stroke:#52514e;fill:none} .box{fill:#f3f2ee;stroke:#c9c7c0} .boxs{fill:#e6edf5;stroke:#33557d}
+  .boxo{fill:#f6ebe3;stroke:#b86a3c} .boxg{fill:#e7f0e9;stroke:#4f7f5a}
+  .s0{fill:#b5afa5} .s1{fill:#33557d} .s2{fill:#b86a3c} .s3{fill:#4f7f5a} .s4{fill:#7a5c8a}
+  .k0{stroke:#b5afa5} .k1{stroke:#33557d} .k2{stroke:#b86a3c} .k3{stroke:#4f7f5a} .k4{stroke:#7a5c8a}
+  text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+  @media (prefers-color-scheme: dark){
+    .bg{fill:#1a1a19} .t1{fill:#ffffff} .t2{fill:#c3c2b7} .grid{stroke:#2e2e2c} .axis{stroke:#6b6a66}
+    .ln{stroke:#c3c2b7} .box{fill:#262624;stroke:#4a4945} .boxs{fill:#1f2a37;stroke:#7393bb}
+    .boxo{fill:#33251c;stroke:#c27448} .boxg{fill:#1f2b22;stroke:#78a985}
+    .s0{fill:#69655e} .s1{fill:#7393bb} .s2{fill:#c27448} .s3{fill:#78a985} .s4{fill:#a68bb5}
+    .k0{stroke:#69655e} .k1{stroke:#7393bb} .k2{stroke:#c27448} .k3{stroke:#78a985} .k4{stroke:#a68bb5}
+  }
+</style>
+<rect class="bg" width="760" height="220"/>
+<text class="t1" x="24.0" y="28.0" font-size="13.5" text-anchor="start" font-weight="700">Training data: 1M clips at 704×1248, 24 fps</text>
+<text class="t2" x="24.0" y="58.0" font-size="12" text-anchor="start">Clip length (trained at full length, exact-length buckets)</text>
+<rect class="s0" x="24.0" y="70" width="82.3" height="34"/><text class="t1" x="65.2" y="92.0" font-size="12" text-anchor="middle" font-weight="600">19.6%</text>
+<text class="t2" x="65.2" y="124.0" font-size="11" text-anchor="middle">5–8 s</text>
+<rect class="s3" x="106.3" y="70" width="110.9" height="34"/><text class="t1" x="161.8" y="92.0" font-size="12" text-anchor="middle" font-weight="600">26.4%</text>
+<text class="t2" x="161.8" y="124.0" font-size="11" text-anchor="middle">8–12 s</text>
+<rect class="s1" x="217.2" y="70" width="101.6" height="34"/><text class="t1" x="268.0" y="92.0" font-size="12" text-anchor="middle" font-weight="600">24.2%</text>
+<text class="t2" x="268.0" y="124.0" font-size="11" text-anchor="middle">12–16 s</text>
+<rect class="s2" x="318.8" y="70" width="123.5" height="34"/><text class="t1" x="380.6" y="92.0" font-size="12" text-anchor="middle" font-weight="600">29.4%</text>
+<text class="t2" x="380.6" y="124.0" font-size="11" text-anchor="middle">16–20 s</text>
+<text class="t2" x="24.0" y="150.0" font-size="11" text-anchor="start">mean clip 12.7 s · 6T + 1 latent frames of 22 × 39 tokens</text>
+<text class="t2" x="480.0" y="58.0" font-size="12" text-anchor="start">Task, drawn per clip</text>
+<rect class="s1" x="480" y="70" width="179.2" height="34"/><text class="t1" x="569.6" y="92.0" font-size="11.5" text-anchor="middle" font-weight="600">70% text-to-video</text>
+<rect class="s2" x="659.2" y="70" width="76.8" height="34"/><text class="t1" x="697.6" y="92.0" font-size="11.5" text-anchor="middle" font-weight="600">30% i2v</text>
+<text class="t2" x="480.0" y="124.0" font-size="11" text-anchor="start">i2v conditions on the clip's own first</text>
+<text class="t2" x="480.0" y="140.0" font-size="11" text-anchor="start">latent frame, as PAN 2's sampler does</text>
+<text class="t2" x="24.0" y="190.0" font-size="11" text-anchor="start">Captions: PAN 2's structured JSON (style, lighting, viewpoint, subjects, first frame, timed events, quality),</text>
+<text class="t2" x="24.0" y="206.0" font-size="11" text-anchor="start">encoded online by PAN 2's text encoder; the negative is PAN 2's structured negative caption at the clip's length.</text>
+</svg>
