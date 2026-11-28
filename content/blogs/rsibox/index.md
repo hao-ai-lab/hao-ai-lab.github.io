@@ -8,10 +8,11 @@ authorOnNewLine = true
 draft = false
 math = true
 contentClass = "post-content-justified"
+aliases = ["/blogs/fastrsi/"]
 summary = "Improving AI systems through recursive self-improvement (RSI) is bottlenecked by evaluation: agents spend 60% to 95% of their wall-clock time waiting for GPU tests to finish. Today, testing even a one-line code change in a GPU engine like vLLM requires killing the process and booting the entire system from scratch, waiting several minutes to reload model weights and re-initialize the GPUs before a single test prompt can run. We introduce RSIBox, a live-editable GPU sandbox environment that keeps heavy GPU state alive in memory and hot-reloads only the small piece of the system that an edit actually changed, while isolating and rolling back faulty mutations in milliseconds. Paired with rapid targeted testing, RSIBox shrinks the time to test an edit in vLLM from 228 s to 2.4 s (95x faster), lets an agent reach a 6-hour vLLM optimization target 2.3x sooner, and generalizes across six major AI engines (vLLM, SGLang, Megatron-LM, FastVideo, veRL, and Miles) to deliver up to 1.52x end-to-end workload speedups with near-zero cold restarts."
 
 [cover]
-  image = "/img/fastrsi/cover.png"
+  image = "/img/rsibox/cover.png"
   relative = false
   alt = "Cold restart every check vs. RSIBox live hot reload"
   caption = "Testing a one-line vLLM edit: cold restart vs. RSIBox live hot reload."
@@ -32,7 +33,7 @@ summary = "Improving AI systems through recursive self-improvement (RSI) is bott
   </a>
 </div>
 
-{{< image src="/img/fastrsi/cover.png" alt="Cold restart every check vs. RSIBox live hot reload" width="100%" title="Cover Figure. Testing a one-line vLLM scheduler edit. Left: a cold restart rebuilds tuned kernels, model weights, CUDA graphs, and the engine process before every test, 228 s in total, while RSIBox keeps that GPU state warm inside a live-editable sandbox and swaps the one function, finishing a targeted test in 2.4 s (95x). Right: with the faster test, the agent reaches the same speedup 2.3x sooner in a 6-hour vLLM optimization run." >}}
+{{< image src="/img/rsibox/cover.png" alt="Cold restart every check vs. RSIBox live hot reload" width="100%" title="Cover Figure. Testing a one-line vLLM scheduler edit. Left: a cold restart rebuilds tuned kernels, model weights, CUDA graphs, and the engine process before every test, 228 s in total, while RSIBox keeps that GPU state warm inside a live-editable sandbox and swaps the one function, finishing a targeted test in 2.4 s (95x). Right: with the faster test, the agent reaches the same speedup 2.3x sooner in a 6-hour vLLM optimization run." >}}
 
 
 **TL;DR.** Improving AI systems through recursive self-improvement (RSI) is bottlenecked by evaluation: agents spend 60% to 95% of their wall-clock time waiting for GPU tests to finish. Today, testing even a one-line code change in a GPU engine like vLLM requires killing the process and booting the entire system from scratch, waiting several minutes to reload model weights and re-initialize the GPUs before a single test prompt can run.
