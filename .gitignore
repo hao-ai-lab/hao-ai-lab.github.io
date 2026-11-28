@@ -1,6 +1,12 @@
+# Editors and OS
 .idea
-.venv/
-public/*
 *.swp
-.hugo_build.lock
 .DS_Store
+
+# Python
+.venv/
+
+# Hugo build output and caches (rebuilt by `hugo` / `hugo server`)
+public/
+resources/_gen/
+.hugo_build.lock
